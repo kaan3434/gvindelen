@@ -1,0 +1,57 @@
+package Gvindln7;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$IMPLICITBUILD ON}
+
+requires
+  vcl,
+  vclx,
+  vcldb,
+  vclsmp,
+  bdertl,
+  rtl,
+  vclie,
+  dbrtl;
+
+contains
+  AutoMouse in 'AutoMouse.pas',
+  GvinAscTbl in 'GvinAscTbl.pas',
+  GvinBDE in 'GvinBDE.pas',
+  GvinDtTm in 'GvinDtTm.pas',
+  GvinFile in 'GvinFile.pas',
+  GvinMath in 'GvinMath.pas',
+  GvinStr in 'GvinStr.pas',
+  GvinVirtualPrn in 'GvinVirtualPrn.pas',
+  GvinEscSeq in 'GvinEscSeq.pas',
+  GvVars in 'GvVars.pas',
+  GvMoney in 'GvMoney.pas',
+  GvinTxtRep2 in 'GvinTxtRep2.pas',
+  GvCollapsePanel in 'GvCollapsePanel.pas',
+  GvStages in 'GvStages.pas',
+  CheckGroupBox in 'CheckGroupBox.pas',
+  gsFileVersionInfo in 'gsFileVersionInfo.pas',
+  GvTblInf in 'GvTblInf.pas',
+  GvChkCombo in 'GvChkCombo.pas';
+
+end.
