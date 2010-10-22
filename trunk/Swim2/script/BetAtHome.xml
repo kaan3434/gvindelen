@@ -1,0 +1,256 @@
+<Root>
+<!-- Футбол -->
+  <Navigate Href="https://www.bet-at-home.com/odd.aspx?action=addSport&amp;SportID=1"/>
+  <Document>
+    <FindElement TAG="INPUT" checked="1" OnClick="AddSelectedBetType(this.checked, '101')" Optional="1">
+      <Click />
+    </FindElement>
+    <FindElement TAG="INPUT" checked="1" OnClick="AddSelectedBetType(this.checked, '2604')" Optional="1">
+      <Click />
+    </FindElement>
+    <FindElement TAG="INPUT" checked="0" ONCLICK="AddSelectedBetType(this.checked, '103')" Optional="1">
+      <Click/>
+    </FindElement>
+    <FindElement TAG="INPUT" checked="0" ONCLICK="AddSelectedBetType(this.checked, '106')" Optional="1">
+      <Click/>
+    </FindElement>
+    <FindElement TAG="INPUT" class="buttong2" >
+      <Click Wait="1"/>
+    </FindElement>
+  </Document>
+  <Label Name="NextPage.Футбол"/>
+  <Document>
+    <Save FileName="[Path.Lines]BetAtHome.Футбол.html" Event="BeforeSave" Append="1"/>
+    <FindElement TAG="A" HREF="javascript:DoPage('next')" Optional="1">
+      <Click Wait="1" />
+      <Goto Label="NextPage.Футбол"/>
+    </FindElement>
+  </Document>
+  <Navigate Href="https://www.bet-at-home.com/odd.aspx?action=removeSport&amp;SportID=1" />
+<!-- Теннис -->
+  <Navigate Href="https://www.bet-at-home.com/odd.aspx?action=addSport&amp;SportID=2"/>
+  <Document>
+    <FindElement TAG="INPUT" checked="1" OnClick="AddSelectedBetType(this.checked, '201')" Optional="1">
+      <Click />
+    </FindElement>
+    <FindElement TAG="INPUT" Checked="1" OnClick="AddSelectedBetType(this.checked, '202')" Optional="1">
+      <Click />
+    </FindElement>
+    <FindElement TAG="INPUT" Checked="0" ONCLICK="AddSelectedBetType(this.checked, '205')" Optional="1">
+      <Click/>
+    </FindElement>
+    <FindElement TAG="INPUT" class="buttong2" >
+      <Click Wait="1"/>
+    </FindElement>
+  </Document>
+  <Label Name="NextPage.Теннис"/>
+  <Document>
+    <Save FileName="[Path.Lines]BetAtHome.Теннис.html" Event="BeforeSave" Append="1"/>
+    <FindElement TAG="A" HREF="javascript:DoPage('next')" Optional="1">
+      <Click Wait="1" />
+      <Goto Label="NextPage.Теннис"/>
+    </FindElement>
+  </Document>
+  <Navigate Href="https://www.bet-at-home.com/odd.aspx?action=removeSport&amp;SportID=2" />
+<!-- Гандбол -->
+  <Navigate Href="https://www.bet-at-home.com/odd.aspx?action=addSport&amp;SportID=4"/>
+  <Document>
+    <FindElement TAG="INPUT" checked="1" OnClick="AddSelectedBetType(this.checked, '401')" Optional="1">
+      <Click />
+    </FindElement>
+    <FindElement TAG="INPUT" class="buttong2" >
+      <Click Wait="1"/>
+    </FindElement>
+  </Document>
+  <Label Name="NextPage.Гандбол"/>
+  <Document>
+    <Save FileName="[Path.Lines]BetAtHome.Гандбол.html" Event="BeforeSave" Append="1"/>
+    <FindElement TAG="A" HREF="javascript:DoPage('next')" Optional="1">
+      <Click Wait="1" />
+      <Goto Label="NextPage.Гандбол"/>
+    </FindElement>
+  </Document>
+  <Navigate Href="https://www.bet-at-home.com/odd.aspx?action=removeSport&amp;SportID=4" />
+<!-- Волейбол -->
+  <Navigate Href="https://www.bet-at-home.com/odd.aspx?action=addSport&amp;SportID=15"/>
+  <Document>
+    <FindElement TAG="INPUT" checked="1" OnClick="AddSelectedBetType(this.checked, '1501')" Optional="1">
+      <Click />
+    </FindElement>
+    <FindElement TAG="INPUT" class="buttong2" >
+      <Click Wait="1"/>
+    </FindElement>
+  </Document>
+  <Label Name="NextPage.Волейбол"/>
+  <Document>
+    <Save FileName="[Path.Lines]BetAtHome.Волейбол.html" Event="BeforeSave" Append="1"/>
+    <FindElement TAG="A" HREF="javascript:DoPage('next')" Optional="1">
+      <Click Wait="1" />
+      <Goto Label="NextPage.Волейбол"/>
+    </FindElement>
+  </Document>
+  <Navigate Href="https://www.bet-at-home.com/odd.aspx?action=removeSport&amp;SportID=15" />
+<!-- Баскетбол -->
+  <Navigate Href="https://www.bet-at-home.com/odd.aspx?action=addSport&amp;SportID=5"/>
+  <Document>
+    <FindElement TAG="INPUT" checked="1" OnClick="AddSelectedBetType(this.checked, '502')" Optional="1">
+      <Click />
+    </FindElement>
+    <FindElement TAG="INPUT" checked="0" OnClick="AddSelectedBetType(this.checked, '503')" Optional="1">
+      <Click />
+    </FindElement>
+    <FindElement TAG="INPUT" checked="0" ONCLICK="AddSelectedBetType(this.checked, '504')" Optional="1">
+      <Click/>
+    </FindElement>
+    <FindElement TAG="INPUT" class="buttong2" >
+      <Click Wait="1"/>
+    </FindElement>
+  </Document>
+  <Label Name="NextPage.Баскетбол"/>
+  <Document>
+    <Save FileName="[Path.Lines]BetAtHome.Баскетбол.html" Event="BeforeSave" Append="1"/>
+    <FindElement TAG="A" HREF="javascript:DoPage('next')" Optional="1">
+      <Click Wait="1" />
+      <Goto Label="NextPage.Баскетбол"/>
+    </FindElement>
+  </Document>
+  <Navigate Href="https://www.bet-at-home.com/odd.aspx?action=removeSport&amp;SportID=5" />
+<!-- Бейсбол -->
+  <Navigate Href="https://www.bet-at-home.com/odd.aspx?action=addSport&amp;SportID=7"/>
+  <Document>
+    <FindElement TAG="INPUT" checked="1" OnClick="AddSelectedBetType(this.checked, '701')" Optional="1">
+      <Click />
+    </FindElement>
+    <FindElement TAG="INPUT" checked="0" ONCLICK="AddSelectedBetType(this.checked, '702')" Optional="1">
+      <Click/>
+    </FindElement>
+    <FindElement TAG="INPUT" checked="0" ONCLICK="AddSelectedBetType(this.checked, '703')" Optional="1">
+      <Click/>
+    </FindElement>
+    <FindElement TAG="INPUT" class="buttong2" >
+      <Click Wait="1"/>
+    </FindElement>
+  </Document>
+  <Label Name="NextPage.Бейсбол"/>
+  <Document>
+    <Save FileName="[Path.Lines]BetAtHome.Бейсбол.html" Event="BeforeSave" Append="1"/>
+    <FindElement TAG="A" HREF="javascript:DoPage('next')" Optional="1">
+      <Click Wait="1" />
+      <Goto Label="NextPage.Бейсбол"/>
+    </FindElement>
+  </Document>
+  <Navigate Href="https://www.bet-at-home.com/odd.aspx?action=removeSport&amp;SportID=7" />
+<!-- АмФутбол -->
+  <Navigate Href="https://www.bet-at-home.com/odd.aspx?action=addSport&amp;SportID=6"/>
+  <Document>
+    <FindElement TAG="INPUT" checked="1" OnClick="AddSelectedBetType(this.checked, '601')" Optional="1">
+      <Click />
+    </FindElement>
+    <FindElement TAG="INPUT" checked="0" ONCLICK="AddSelectedBetType(this.checked, '602')" Optional="1">
+      <Click/>
+    </FindElement>
+    <FindElement TAG="INPUT" checked="0" ONCLICK="AddSelectedBetType(this.checked, '603')" Optional="1">
+      <Click/>
+    </FindElement>
+    <FindElement TAG="INPUT" class="buttong2" >
+      <Click Wait="1"/>
+    </FindElement>
+  </Document>
+  <Label Name="NextPage.АмФутбол"/>
+  <Document>
+    <Save FileName="[Path.Lines]BetAtHome.Бейсбол.html" Event="BeforeSave" Append="1"/>
+    <FindElement TAG="A" HREF="javascript:DoPage('next')" Optional="1">
+      <Click Wait="1" />
+      <Goto Label="NextPage.АмФутбол"/>
+    </FindElement>
+  </Document>
+  <Navigate Href="https://www.bet-at-home.com/odd.aspx?action=removeSport&amp;SportID=6" />
+<!-- Регби -->
+  <Navigate Href="https://www.bet-at-home.com/odd.aspx?action=addSport&amp;SportID=17"/>
+  <Document>
+    <FindElement TAG="INPUT" checked="1" OnClick="AddSelectedBetType(this.checked, '1702')" Optional="1">
+      <Click />
+    </FindElement>
+    <FindElement TAG="INPUT" class="buttong2" >
+      <Click Wait="1"/>
+    </FindElement>
+  </Document>
+  <Label Name="NextPage.Регби"/>
+  <Document>
+    <Save FileName="[Path.Lines]BetAtHome.Регби.html" Event="BeforeSave" Append="1"/>
+    <FindElement TAG="A" HREF="javascript:DoPage('next')" Optional="1">
+      <Click Wait="1" />
+      <Goto Label="NextPage.Регби"/>
+    </FindElement>
+  </Document>
+  <Navigate Href="https://www.bet-at-home.com/odd.aspx?action=removeSport&amp;SportID=17" />
+<!-- Снукер -->
+  <Navigate Href="https://www.bet-at-home.com/odd.aspx?action=addSport&amp;SportID=20"/>
+  <Document>
+    <FindElement TAG="INPUT" checked="1" OnClick="AddSelectedBetType(this.checked, '2001')" Optional="1">
+      <Click />
+    </FindElement>
+    <FindElement TAG="INPUT" checked="1" OnClick="AddSelectedBetType(this.checked, '2002')" Optional="1">
+      <Click />
+    </FindElement>
+    <FindElement TAG="INPUT" class="buttong2" >
+      <Click Wait="1"/>
+    </FindElement>
+  </Document>
+  <Label Name="NextPage.Снукер"/>
+  <Document>
+    <Save FileName="[Path.Lines]BetAtHome.Снукер.html" Event="BeforeSave" Append="1"/>
+    <FindElement TAG="A" HREF="javascript:DoPage('next')" Optional="1">
+      <Click Wait="1" />
+      <Goto Label="NextPage.Снукер"/>
+    </FindElement>
+  </Document>
+  <Navigate Href="https://www.bet-at-home.com/odd.aspx?action=removeSport&amp;SportID=20" />
+
+  <Exit />
+
+  <Event Name="BeforeSave">
+    <ExtractTags Start="&lt;table class=ot " End="&lt;/table&gt;" />
+    <!-- Убираем пробелы -->
+    <ReplaceAll Text="&amp;nbsp;" New=" " />
+    <ReplaceAll Text="&CR;" New=" " />
+    <ReplaceAll Text="&LF;" New=" " />
+    <ReplaceAll Text="&gt;--&lt;" New="&gt;&lt;" />
+    <ReplaceAll Text="   " New=" " />
+    <ReplaceAll Text="  " New=" " />
+    <ReplaceAll Text=" &lt;" New="&lt;" />
+    <!-- Убираем скрипты -->
+    <DeleteAll Start="&lt;script " End="&lt;/script&gt;" />
+    <!-- Убираем форму -->
+    <DeleteAll Start="&lt;form " End="&gt;" />
+    <DeleteAll Text="&lt;/form&gt;" />
+    <!-- Убираем инпуты -->
+    <DeleteAll Start="&lt;input " End="&gt;" />
+    <DeleteAll Text="&lt;/Input&gt;" />
+    <!-- Убираем ссылки -->
+    <DeleteAll Start="&lt;a " End="&gt;" />
+    <DeleteAll Text="&lt;/a&gt;" />
+    <!-- Убираем картинки -->
+    <DeleteAll Start="&lt;img " End="&gt;" />
+    <!-- Убираем события -->
+    <DeleteAllAttribute Name="onmouseover" />
+    <DeleteAllAttribute Name="onmouseout" />
+    <DeleteAllAttribute Name="onclick" />
+    <DeleteAllAttribute Name="bgcolor" />
+    <!-- Убираем NOBR -->
+    <DeleteAll Text="&lt;nobr&gt;" />
+    <DeleteAll Text="&lt;/nobr&gt;" />
+    <!-- Убираетм TBODY -->
+    <DeleteAll Start="&lt;tbody" End="&gt;" />
+    <DeleteAll Text="&lt;/tbody&gt;" />
+    <!-- Убираем DIV -->
+    <DeleteAll Text="&lt;/div&gt;" />
+    <DeleteAll Start="&lt;div " End="&gt;" />
+    <!-- Убираем коментарии -->
+    <DeleteAll Start="&lt;!--" End="--&gt;" />
+    <!-- Патчим глюк конторы -->
+    <ReplaceAll Text="VFM - Volleyball Franches-Montagnes" New="VFM Volleyball Franches-Montagnes" />
+  </Event>
+
+</Root>
+

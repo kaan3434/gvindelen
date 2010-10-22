@@ -1,0 +1,72 @@
+<Root>
+  <Download Href="http://gvindelen.ajes.ru/betcity.php" FileName="[Path.Lines]betcity.html" />
+  <Exit/>
+
+  <Download Href="http://gvindelen.site11.com/betcity.php" FileName="[Path.Lines]betcity.html" />
+  <Exit/>
+
+  <Download Href="http://www.betcity.ru/main2.php" FileName="[Path.Lines]betcity.sport.txt" Event="ExtractSport" />
+  <Download Href="http://www.betcity.ru/bets.php" Method="POST" FileName="[Path.Lines]betcity.League.txt" Event="ExtractLeague">
+    <ParamLoad FileName="[Path.Lines]betcity.sport.txt" />
+  </Download>
+  <Download Href="http://www.betcity.ru/bets2.php" Method="POST" FileName="[Path.Lines]betcity.html" Event="BeforeSave">
+    <ParamLoad FileName="[Path.Lines]betcity.League.txt" />
+  </Download>
+
+  <Event Name="ExtractLeague">
+    <TakeBeginEnd Start="&lt;form id=&quot;fbets&quot;" End="&lt;/form&gt;" />
+    <ReplaceAll Start="долгосрочные ставки" End="&lt;/form&gt;" New="&lt;/form&gt;" />
+    <ExtractTags Start="&lt;input" Contain1="name" Contain2="value" End="&gt;" />
+    <ReplaceAll Start="&lt;input" End="name=" New="&amp;" />
+    <ReplaceAll Text=" value=&quot;" New="=" />
+    <DeleteAll Text="&quot;&gt;" />
+    <Delete End="&amp;" />
+    <ReplaceAll Text="&amp;" New="&#13;&#10;" /> 
+  </Event>
+
+  <Event Name="ExtractSport">
+    <TakeBeginEnd Start="&lt;form " Contain1="id=&quot;bets&quot;" End="&lt;/form&gt;" />
+    <ExtractTags Start="&lt;input" Contain1="name" End="&gt;" />
+    <ReplaceAll Start="&lt;input" End="name=" New="&amp;" />
+    <ReplaceAll Text=" value=&quot;" New="=" />
+    <DeleteAll Text="&quot;&gt;" />
+    <Delete End="&amp;" />
+    <ReplaceAll Text="&amp;" New="&#13;&#10;" /> 
+  </Event>
+
+  <Event Name="BeforeSave">
+    <ExtractTags Start="&lt;table cellSpacing=2 cellPadding=1" End="&lt;/table&gt;" />
+    <!-- Убираем пробелы -->
+    <ReplaceAll Text="&amp;nbsp;" New=" " />
+    <ReplaceAll Text="&#150;" New="-" />
+    <ReplaceAll Text="&#151;" New="-" />
+    <ReplaceAll Text="&CR;" New=" " />
+    <ReplaceAll Text="&LF;" New=" " />
+    <ReplaceAll Text="   " New=" " />
+    <ReplaceAll Text="  " New=" " />
+    <ReplaceAll Text=" &lt;" New="&lt;" />
+    <ReplaceAll Text="&gt; " New="&gt;" />
+    <!-- Убираем жирность  -->
+    <DeleteAll Start="&lt;b " End="&gt;" />
+    <DeleteAll Text="&lt;b&gt;" />
+    <DeleteAll Text="&lt;/b&gt;" />
+    <!-- Убираем ссылки -->
+    <DeleteAll Start="&lt;a " End="&gt;" />
+    <DeleteAll Text="&lt;/a&gt;" />
+    <!-- Убираем BR -->
+    <DeleteAll Text="&lt;br&gt;" />
+    <!-- Убираем Font  -->
+    <DeleteAll Start="&lt;font " End="&gt;" />
+    <DeleteAll Text="&lt;/font&gt;" />
+    <!-- Убираем картинки -->
+    <DeleteAll Start="&lt;img " End="&gt;" />
+    <!-- Убираем события -->
+    <DeleteAll Text=" nowrap" />
+    <DeleteAllAttribute Name="onmouseover" />
+    <DeleteAllAttribute Name="onclick" />
+    <DeleteAllAttribute Name="align" />
+    <!-- Убираем строки без ставок -->
+    <DeleteAll Start="&lt;tr&gt;" Contain1="class=&quot;t_comment&quot;" End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;tr&gt;" Contain1="class=&quot;t_comment1&quot;" End="&lt;/tr&gt;" />
+  </Event>
+</Root>

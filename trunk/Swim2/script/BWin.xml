@@ -1,0 +1,513 @@
+<Root>
+  <Event Name="CheckLastPage" >
+    <TakeBetween Start="&quot;LastPage=" End="&quot;" />
+    <SetVarValue Name="LastPage" />
+  </Event>
+
+  <Event Name="BeforeSave">
+    <Execute Name="CheckLastPage" Copy="1" />
+    <DeleteAll Start="&quot;LastPage=" End="&quot;" />
+  </Event>
+
+  <!-- Футбол. Ставки 1 Х 2 -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/bwin.php" FileName="[Path.Lines]bwin.Футбол.1_x_2.html" Event="BeforeSave" Append="1" UTF8ToAnsi="1">
+      <ParamAdd Name="Sport" Value="soccer"/>
+      <ParamAdd Name="CategoryId" Value="25" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+  <!-- Футбол. Ставки 1X Х2 12 -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/bwin.php" FileName="[Path.Lines]bwin.Футбол.1x_x2_12.html" Event="BeforeSave" Append="1" UTF8ToAnsi="1">
+      <ParamAdd Name="Sport" Value="soccer"/>
+      <ParamAdd Name="CategoryId" Value="190" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+  <!-- Футбол. Ставки Total -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/bwin.php" FileName="[Path.Lines]bwin.Футбол.Total.html" Event="BeforeSave" Append="1" UTF8ToAnsi="1">
+      <ParamAdd Name="Sport" Value="soccer"/>
+      <ParamAdd Name="CategoryId" Value="31" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+  <!-- Футзал. Ставки 1 Х 2 -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/bwin.php" FileName="[Path.Lines]bwin.Футзал.1_x_2.html" Event="BeforeSave" Append="1" UTF8ToAnsi="1">
+      <ParamAdd Name="Sport" Value="futsal"/>
+      <ParamAdd Name="CategoryId" Value="553" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+  <!-- Футзал. Ставки Total -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/bwin.php" FileName="[Path.Lines]bwin.Футзал.Total.html" Event="BeforeSave" Append="1" UTF8ToAnsi="1">
+      <ParamAdd Name="Sport" Value="futsal"/>
+      <ParamAdd Name="CategoryId" Value="703" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+  <!-- Гандбол. Ставки 1 Х 2 -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/bwin.php" FileName="[Path.Lines]bwin.Гандбол.1_x_2.html" Event="BeforeSave" Append="1" UTF8ToAnsi="1">
+      <ParamAdd Name="Sport" Value="handball"/>
+      <ParamAdd Name="CategoryId" Value="85" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+  <!-- Гандбол. Ставки Total -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/bwin.php" FileName="[Path.Lines]bwin.Гандбол.Total.html" Event="BeforeSave" Append="1" UTF8ToAnsi="1">
+      <ParamAdd Name="Sport" Value="handball"/>
+      <ParamAdd Name="CategoryId" Value="89" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+  <!-- Баскетбол. Ставки 1 2 -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/bwin.php" FileName="[Path.Lines]bwin.Баскетбол.1_2.html" Event="BeforeSave" Append="1" UTF8ToAnsi="1">
+      <ParamAdd Name="Sport" Value="basketball"/>
+      <ParamAdd Name="CategoryId" Value="43" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+  <!-- Баскетбол. Ставки Total -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/bwin.php" FileName="[Path.Lines]bwin.Баскетбол.Total.html" Event="BeforeSave" Append="1" UTF8ToAnsi="1">
+      <ParamAdd Name="Sport" Value="basketball"/>
+      <ParamAdd Name="CategoryId" Value="48" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+  <!-- Теннис. Ставки 1 2 -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/bwin.php" FileName="[Path.Lines]bwin.Теннис.1_2.html" Event="BeforeSave" Append="1" UTF8ToAnsi="1">
+      <ParamAdd Name="Sport" Value="tennis"/>
+      <ParamAdd Name="CategoryId" Value="33" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+  <!-- Теннис. Ставки Total -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/bwin.php" FileName="[Path.Lines]bwin.Теннис.Total.html" Event="BeforeSave" Append="1" UTF8ToAnsi="1">
+      <ParamAdd Name="Sport" Value="tennis"/>
+      <ParamAdd Name="CategoryId" Value="36" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+  <!-- Волейбол. Ставки 1 2 -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/bwin.php" FileName="[Path.Lines]bwin.Волейбол.1_2.html" Event="BeforeSave" Append="1" UTF8ToAnsi="1">
+      <ParamAdd Name="Sport" Value="volleyball"/>
+      <ParamAdd Name="CategoryId" Value="83" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+  <!-- Бейсбол. Ставки 1 2 -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/bwin.php" FileName="[Path.Lines]bwin.Бейсбол.1_2.html" Event="BeforeSave" Append="1" UTF8ToAnsi="1">
+      <ParamAdd Name="Sport" Value="baseball"/>
+      <ParamAdd Name="CategoryId" Value="110" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+  <!-- Бейсбол. Ставки Total -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/bwin.php" FileName="[Path.Lines]bwin.Бейсбол.Total.html" Event="BeforeSave" Append="1" UTF8ToAnsi="1">
+      <ParamAdd Name="Sport" Value="baseball"/>
+      <ParamAdd Name="CategoryId" Value="243" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+  <!-- Американский футбол. Ставки 1 2 -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/bwin.php" FileName="[Path.Lines]bwin.АмФутбол.1_2.html" Event="BeforeSave" Append="1" UTF8ToAnsi="1">
+      <ParamAdd Name="Sport" Value="american-football"/>
+      <ParamAdd Name="CategoryId" Value="58" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+  <!-- Американский футбол. Ставки Total -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/bwin.php" FileName="[Path.Lines]bwin.АмФутбол.Total.html" Event="BeforeSave" Append="1" UTF8ToAnsi="1">
+      <ParamAdd Name="Sport" Value="american-football"/>
+      <ParamAdd Name="CategoryId" Value="63" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+  <Exit/>
+
+
+
+
+
+<!-- Футбол. Перечень турниров -->
+  <Download Href="https://www.bwin.com/soccer?ShowDays=168#SportID=4" FileName="[Path.Lines]bwin.Футбол.LeagueIDs.txt" Event="ExtractLeagues">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+  <!-- Футбол. Ставки 1 Х 2 -->
+  <SetVarValue Name="CurrentPage" Value="1" />
+  <Label Name="Футбол.1_x_2" />
+  <Download Href="https://www.bwin.com/betviewiframe.aspx" FileName="[Path.Lines]bwin.Футбол.1_x_2.html" Event="BeforeSave1x2" UTF8ToAnsi="1" Append="1">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+    <ParamAdd Name="leagueIDs" ValueFromFile="[Path.Lines]bwin.Футбол.LeagueIDs.txt" />
+    <ParamAdd Name="sorting" Value="dateleague" />
+    <ParamAdd Name="categoryIDs" Value="25" />
+    <ParamAdd Name="currentPage" VarValue="CurrentPage" />
+  </Download>
+  <If Name="LastPage" Action="SEQ" Value="&quot;pagingGotoNextItem&quot;">
+    <SetVarValue Name="CurrentPage" Inc="1" />
+    <Goto Label="Футбол.1_x_2" />
+  </If>
+
+  <!-- Футбол. Ставки 1X Х2 12 -->
+  <SetVarValue Name="CurrentPage" Value="1" />
+  <Label Name="Футбол.1x_x2_12" />
+  <Download Href="https://www.bwin.com/betviewiframe.aspx" FileName="[Path.Lines]bwin.Футбол.1x_x2_12.html" Event="BeforeSave1x12x2Total" UTF8ToAnsi="1">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+    <ParamAdd Name="leagueIDs" ValueFromFile="[Path.Lines]bwin.Футбол.LeagueIDs.txt" />
+    <ParamAdd Name="sorting" Value="dateleague" />
+    <ParamAdd Name="categoryIDs" Value="190" />
+    <ParamAdd Name="currentPage" VarValue="CurrentPage" />
+  </Download>
+  <If Name="LastPage" Action="SEQ" Value="&quot;pagingGotoNextItem&quot;">
+    <SetVarValue Name="CurrentPage" Inc="1" />
+    <Goto Label="Футбол.1x_x2_12" />
+  </If>
+
+  <!-- Футбол. Ставки Total -->
+  <SetVarValue Name="CurrentPage" Value="1" />
+  <Label Name="Футбол.Total" />
+  <Download Href="https://www.bwin.com/betviewiframe.aspx" FileName="[Path.Lines]bwin.Футбол.Total.html" Event="BeforeSave1x12x2Total" UTF8ToAnsi="1">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+    <ParamAdd Name="leagueIDs" ValueFromFile="[Path.Lines]bwin.Футбол.LeagueIDs.txt" />
+    <ParamAdd Name="sorting" Value="dateleague" />
+    <ParamAdd Name="categoryIDs" Value="31" />
+    <ParamAdd Name="currentPage" VarValue="CurrentPage" />
+  </Download>
+  <If Name="LastPage" Action="SEQ" Value="&quot;pagingGotoNextItem&quot;">
+    <SetVarValue Name="CurrentPage" Inc="1" />
+    <Goto Label="Футбол.Total" />
+  </If>
+
+<!-- Футзал. Перечень турниров -->
+  <Download Href="https://www.bwin.com/futsal?ShowDays=168" FileName="[Path.Lines]bwin.Футзал.LeagueIDs.txt" Event="ExtractLeagues">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+  <!-- Футзал. Ставки 1 Х 2 -->
+  <SetVarValue Name="CurrentPage" Value="1" />
+  <Label Name="Футзал.1_x_2" />
+  <Download Href="https://www.bwin.com/betviewiframe.aspx" FileName="[Path.Lines]bwin.Футзал.1_x_2.html" Event="BeforeSave1x2" UTF8ToAnsi="1">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+    <ParamAdd Name="leagueIDs" ValueFromFile="[Path.Lines]bwin.Футзал.LeagueIDs.txt" />
+    <ParamAdd Name="sorting" Value="dateleague" />
+    <ParamAdd Name="categoryIDs" Value="553" />
+    <ParamAdd Name="currentPage" VarValue="CurrentPage" />
+  </Download>
+  <If Name="LastPage" Action="SEQ" Value="&quot;pagingGotoNextItemDisabled&quot;">
+    <SetVarValue Name="CurrentPage" Inc="1" />
+    <Goto Label="Футзал.1_x_2" />
+  </If>
+  <!-- Футзал. Ставки Total -->
+  <SetVarValue Name="CurrentPage" Value="1" />
+  <Label Name="Футзал.Total" />
+  <Download Href="https://www.bwin.com/betviewiframe.aspx" FileName="[Path.Lines]bwin.Футзал.Total.html" Event="BeforeSave1x12x2Total" UTF8ToAnsi="1">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+    <ParamAdd Name="leagueIDs" ValueFromFile="[Path.Lines]bwin.Футзал.LeagueIDs.txt" />
+    <ParamAdd Name="sorting" Value="dateleague" />
+    <ParamAdd Name="categoryIDs" Value="703" />
+    <ParamAdd Name="currentPage" VarValue="CurrentPage" />
+  </Download>
+  <If Name="LastPage" Action="SEQ" Value="&quot;pagingGotoNextItem&quot;">
+    <SetVarValue Name="CurrentPage" Inc="1" />
+    <Goto Label="Футзал.Total" />
+  </If>
+
+<!-- Гандбол. Перечень турниров -->
+  <Download Href="https://www.bwin.com/handball?ShowDays=168" FileName="[Path.Lines]bwin.Гандбол.LeagueIDs.txt" Event="ExtractLeagues">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+  <!-- Гандбол. Ставки 1 Х 2 -->
+  <SetVarValue Name="CurrentPage" Value="1" />
+  <Label Name="Гандбол.1_x_2" />
+  <Download Href="https://www.bwin.com/betviewiframe.aspx" FileName="[Path.Lines]bwin.Гандбол.1_x_2.html" Event="BeforeSave1x2" UTF8ToAnsi="1">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+    <ParamAdd Name="leagueIDs" ValueFromFile="[Path.Lines]bwin.Гандбол.LeagueIDs.txt" />
+    <ParamAdd Name="sorting" Value="dateleague" />
+    <ParamAdd Name="categoryIDs" Value="85" />
+    <ParamAdd Name="currentPage" VarValue="CurrentPage" />
+  </Download>
+  <If Name="LastPage" Action="SEQ" Value="&quot;pagingGotoNextItem&quot;">
+    <SetVarValue Name="CurrentPage" Inc="1" />
+    <Goto Label="Гандбол.1_x_2" />
+  </If>
+  <!-- Гандбол. Ставки Total -->
+  <SetVarValue Name="CurrentPage" Value="1" />
+  <Label Name="Гандбол.Total" />
+  <Download Href="https://www.bwin.com/betviewiframe.aspx" FileName="[Path.Lines]bwin.Гандбол.Total.html" Event="BeforeSave1x12x2Total" UTF8ToAnsi="1">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+    <ParamAdd Name="leagueIDs" ValueFromFile="[Path.Lines]bwin.Гандбол.LeagueIDs.txt" />
+    <ParamAdd Name="sorting" Value="dateleague" />
+    <ParamAdd Name="categoryIDs" Value="89" />
+    <ParamAdd Name="currentPage" VarValue="CurrentPage" />
+  </Download>
+  <If Name="LastPage" Action="SEQ" Value="&quot;pagingGotoNextItem&quot;">
+    <SetVarValue Name="CurrentPage" Inc="1" />
+    <Goto Label="Гандбол.Total" />
+  </If>
+
+<!-- Баскетбол. Перечень турниров -->
+  <Download Href="https://www.bwin.com/basketball?ShowDays=168" FileName="[Path.Lines]bwin.Баскетбол.LeagueIDs.txt" Event="ExtractLeagues">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+  <!-- Баскетбол. Ставки 1 2 -->
+  <SetVarValue Name="CurrentPage" Value="1" />
+  <Label Name="Баскетбол.1_2" />
+  <Download Href="https://www.bwin.com/betviewiframe.aspx" FileName="[Path.Lines]bwin.Баскетбол.1_2.html" Event="BeforeSave1x12x2Total" UTF8ToAnsi="1">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+    <ParamAdd Name="leagueIDs" ValueFromFile="[Path.Lines]bwin.Баскетбол.LeagueIDs.txt" />
+    <ParamAdd Name="sorting" Value="dateleague" />
+    <ParamAdd Name="categoryIDs" Value="43" />
+    <ParamAdd Name="currentPage" VarValue="CurrentPage" />
+  </Download>
+  <If Name="LastPage" Action="SEQ" Value="&quot;pagingGotoNextItem&quot;">
+    <SetVarValue Name="CurrentPage" Inc="1" />
+    <Goto Label="Баскетбол.1_2" />
+  </If>
+  <!-- Баскетбол. Ставки Total -->
+  <SetVarValue Name="CurrentPage" Value="1" />
+  <Label Name="Баскетбол.Total" />
+  <Download Href="https://www.bwin.com/betviewiframe.aspx" FileName="[Path.Lines]bwin.Баскетбол.Total.html" Event="BeforeSave1x12x2Total" UTF8ToAnsi="1">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+    <ParamAdd Name="leagueIDs" ValueFromFile="[Path.Lines]bwin.Баскетбол.LeagueIDs.txt" />
+    <ParamAdd Name="sorting" Value="dateleague" />
+    <ParamAdd Name="categoryIDs" Value="48" />
+    <ParamAdd Name="currentPage" VarValue="CurrentPage" />
+  </Download>
+  <If Name="LastPage" Action="SEQ" Value="&quot;pagingGotoNextItem&quot;">
+    <SetVarValue Name="CurrentPage" Inc="1" />
+    <Goto Label="Баскетбол.Total" />
+  </If>
+ 
+<!-- Теннис. Перечень турниров -->
+  <Download Href="https://www.bwin.com/tennis?ShowDays=168" FileName="[Path.Lines]bwin.Теннис.LeagueIDs.txt" Event="ExtractLeagues">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+  <!-- Теннис. Ставки 1 2 -->
+  <SetVarValue Name="CurrentPage" Value="1" />
+  <Label Name="Теннис.1_2" />
+  <Download Href="https://www.bwin.com/betviewiframe.aspx" FileName="[Path.Lines]bwin.Теннис.1_2.html" Event="BeforeSave1x2" UTF8ToAnsi="1">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+    <ParamAdd Name="leagueIDs" ValueFromFile="[Path.Lines]bwin.Теннис.LeagueIDs.txt" />
+    <ParamAdd Name="sorting" Value="dateleague" />
+    <ParamAdd Name="categoryIDs" Value="33" />
+    <ParamAdd Name="currentPage" VarValue="CurrentPage" />
+  </Download>
+  <If Name="LastPage" Action="SEQ" Value="&quot;pagingGotoNextItem&quot;">
+    <SetVarValue Name="CurrentPage" Inc="1" />
+    <Goto Label="Теннис.1_2" />
+  </If>
+  <!-- Теннис. Ставки Total -->
+  <SetVarValue Name="CurrentPage" Value="1" />
+  <Label Name="Теннис.Total" />
+  <Download Href="https://www.bwin.com/betviewiframe.aspx" FileName="[Path.Lines]bwin.Теннис.Total.html" Event="BeforeSave1x12x2Total" UTF8ToAnsi="1">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+    <ParamAdd Name="leagueIDs" ValueFromFile="[Path.Lines]bwin.Теннис.LeagueIDs.txt" />
+    <ParamAdd Name="sorting" Value="dateleague" />
+    <ParamAdd Name="categoryIDs" Value="36" />
+    <ParamAdd Name="currentPage" VarValue="CurrentPage" />
+  </Download>
+  <If Name="LastPage" Action="SEQ" Value="&quot;pagingGotoNextItem&quot;">
+    <SetVarValue Name="CurrentPage" Inc="1" />
+    <Goto Label="Теннис.Total" />
+  </If>
+
+<!-- Волейбол. Перечень турниров -->
+  <Download Href="https://www.bwin.com/volleyball?ShowDays=168" FileName="[Path.Lines]bwin.Волейбол.LeagueIDs.txt" Event="ExtractLeagues">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+  <!-- Волейбол. Ставки 1 2 -->
+  <SetVarValue Name="CurrentPage" Value="1" />
+  <Label Name="Волейбол.1_2" />
+  <Download Href="https://www.bwin.com/betviewiframe.aspx" FileName="[Path.Lines]bwin.Волейбол.1_2.html" Event="BeforeSave1x2" UTF8ToAnsi="1">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+    <ParamAdd Name="leagueIDs" ValueFromFile="[Path.Lines]bwin.Волейбол.LeagueIDs.txt" />
+    <ParamAdd Name="sorting" Value="dateleague" />
+    <ParamAdd Name="categoryIDs" Value="83" />
+    <ParamAdd Name="currentPage" VarValue="CurrentPage" />
+  </Download>
+  <If Name="LastPage" Action="SEQ" Value="&quot;pagingGotoNextItem&quot;">
+    <SetVarValue Name="CurrentPage" Inc="1" />
+    <Goto Label="Волейбол.1_2" />
+  </If>
+
+<!-- Бейсбол. Перечень турниров -->
+  <Download Href="https://www.bwin.com/baseball?ShowDays=168" FileName="[Path.Lines]bwin.Бейсбол.LeagueIDs.txt" Event="ExtractLeagues">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+  <!-- Бейсбол. Ставки 1 2 -->
+  <SetVarValue Name="CurrentPage" Value="1" />
+  <Label Name="Бейсбол.1_2" />
+  <Download Href="https://www.bwin.com/betviewiframe.aspx" FileName="[Path.Lines]bwin.Бейсбол.1_2_DEF.html" Event="BeforeSave1x2" UTF8ToAnsi="1">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+    <ParamAdd Name="leagueIDs" ValueFromFile="[Path.Lines]bwin.Бейсбол.LeagueIDs.txt" />
+    <ParamAdd Name="sorting" Value="dateleague" />
+    <ParamAdd Name="categoryIDs" Value="110" />
+    <ParamAdd Name="currentPage" VarValue="CurrentPage" />
+  </Download>
+  <If Name="LastPage" Action="SEQ" Value="&quot;pagingGotoNextItem&quot;">
+    <SetVarValue Name="CurrentPage" Inc="1" />
+    <Goto Label="Бейсбол.1_2" />
+  </If>
+  <!-- Бейсбол. Ставки Total -->
+  <SetVarValue Name="CurrentPage" Value="1" />
+  <Label Name="Бейсбол.Total" />
+  <Download Href="https://www.bwin.com/betviewiframe.aspx" FileName="[Path.Lines]bwin.Бейсбол.Total.html" Event="BeforeSave1x12x2Total" UTF8ToAnsi="1">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+    <ParamAdd Name="leagueIDs" ValueFromFile="[Path.Lines]bwin.Бейсбол.LeagueIDs.txt" />
+    <ParamAdd Name="sorting" Value="dateleague" />
+    <ParamAdd Name="categoryIDs" Value="243" />
+    <ParamAdd Name="currentPage" VarValue="CurrentPage" />
+  </Download>
+  <If Name="LastPage" Action="SEQ" Value="&quot;pagingGotoNextItem&quot;">
+    <SetVarValue Name="CurrentPage" Inc="1" />
+    <Goto Label="Бейсбол.Total" />
+  </If>
+
+<!-- Американский футбол. Перечень турниров -->
+  <Download Href="https://www.bwin.com/american-football?ShowDays=168" FileName="[Path.Lines]bwin.АмФутбол.LeagueIDs.txt" Event="ExtractLeagues">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+  <!-- Американский футбол. Ставки 1 2 -->
+  <SetVarValue Name="CurrentPage" Value="1" />
+  <Label Name="АмФутбол.1_2" />
+  <Download Href="https://www.bwin.com/betviewiframe.aspx" FileName="[Path.Lines]bwin.АмФутбол.1_2_DEF.html" Event="BeforeSave1x2" UTF8ToAnsi="1">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+    <ParamAdd Name="leagueIDs" ValueFromFile="[Path.Lines]bwin.АмФутбол.LeagueIDs.txt" />
+    <ParamAdd Name="sorting" Value="dateleague" />
+    <ParamAdd Name="categoryIDs" Value="58" />
+    <ParamAdd Name="currentPage" VarValue="CurrentPage" />
+  </Download>
+  <If Name="LastPage" Action="SEQ" Value="&quot;pagingGotoNextItem&quot;">
+    <SetVarValue Name="CurrentPage" Inc="1" />
+    <Goto Label="АмФутбол.1_2" />
+  </If>
+  <!-- Американский футбол. Ставки Total -->
+  <SetVarValue Name="CurrentPage" Value="1" />
+  <Label Name="АмФутбол.Total" />
+  <Download Href="https://www.bwin.com/betviewiframe.aspx" FileName="[Path.Lines]bwin.АмФутбол.Total.html" Event="BeforeSave1x12x2Total" UTF8ToAnsi="1">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+    <ParamAdd Name="leagueIDs" ValueFromFile="[Path.Lines]bwin.АмФутбол.LeagueIDs.txt" />
+    <ParamAdd Name="sorting" Value="dateleague" />
+    <ParamAdd Name="categoryIDs" Value="63" />
+    <ParamAdd Name="currentPage" VarValue="CurrentPage" />
+  </Download>
+  <If Name="LastPage" Action="SEQ" Value="&quot;pagingGotoNextItem&quot;">
+    <SetVarValue Name="CurrentPage" Inc="1" />
+    <Goto Label="АмФутбол.Total" />
+  </If>
+
+
+  <Exit/>
+
+  <Event Name="ExtractLeagues">
+    <ExtractTags Start="&quot;Leagues&quot;:[" End="]" />
+    <ExtractTags Start="&quot;ID&quot;:" End="," />
+    <DeleteAll Text="&quot;ID&quot;:" />
+    <Delete Start="," />
+  </Event>
+
+<  <Event Name="CheckLastPage" >
+    <TakeBeginEnd Start="&quot;pagingGotoNext" End="&quot;" />
+    <SetVarValue Name="LastPage" />
+  </Event>
+
+  <Event Name="BeforeSave_Common">
+    <NumberingTag Name="div" />
+    <ExtractTag Name="div" Contain1="bet-list" Contain2="Id=&quot;EventList_" />
+    <DeleteAllAttribute Name="TagNo" />
+
+    <DeleteAll Start="(at " End=")" />
+    <DeleteAll Start="(score: " End=")" />
+    <!-- Убираем пробелы -->
+    <ReplaceAll Text="&amp;nbsp;" New=" " />
+    <ReplaceAll Text="&#9;" New=" " />
+    <ReplaceAll Text="&CR;" New=" " />
+    <ReplaceAll Text="&LF;" New=" " />
+    <ReplaceAll Text="-.--" New=" " />
+    <ReplaceAll Text="    " New=" " />
+    <ReplaceAll Text="   " New=" " />
+    <ReplaceAll Text="  " New=" " />
+    <ReplaceAll Text="  " New=" " />
+    <ReplaceAll Text=" &lt;" New="&lt;" />
+    <ReplaceAll Text="&gt; " New="&gt;" />
+    <!-- Убираем события -->
+    <DeleteAllAttribute Name="onmouseover" />
+    <DeleteAllAttribute Name="onmouseout" />
+    <DeleteAllAttribute Name="onclick" />
+    <DeleteAllAttribute Name="bgcolor" />
+    <DeleteAllAttribute Name="class" Value="unselected"/>
+    <!-- Убираем заголовок -->
+    <DeleteAll Start="&lt;h1&gt;" End="&lt;/h1&gt;" />
+    <!-- Убираем скрипты -->
+    <DeleteAll Start="&lt;script " End="&lt;/script&gt;" />
+    <!-- Убираем форму -->
+    <DeleteAll Start="&lt;form " End="&gt;" />
+    <DeleteAll Text="&lt;/form&gt;" />
+    <!-- Убираем инпуты -->
+    <DeleteAll Start="&lt;input " End="&gt;" />
+    <DeleteAll Text="&lt;/Input&gt;" />
+    <!-- Убираем ссылки -->
+    <DeleteAll Start="&lt;a " End="&gt;" />
+    <DeleteAll Text="&lt;/a&gt;" />
+    <!-- Убираем NOBR -->
+    <DeleteAll Text="&lt;nobr&gt;" />
+    <DeleteAll Text="&lt;/nobr&gt;" />
+    <!-- Убираем картинки -->
+    <DeleteAll Start="&lt;img " End="&gt;" />
+    <!-- Убираем ячейку с дополнительными событиями -->
+    <DeleteAll Start="&lt;td class=" Contain1="rightcell" End="&lt;/td&gt;" />
+    <!-- Убираем TBODY -->
+    <DeleteAll Start="&lt;tbody" End="&gt;" />
+    <DeleteAll Text="&lt;/tbody&gt;" />
+    <!-- Убираем коментарии -->
+    <DeleteAll Start="&lt;!--" End="--&gt;" />
+
+  </Event>
+
+
+</Root>

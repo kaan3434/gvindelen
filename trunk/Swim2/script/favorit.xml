@@ -1,0 +1,82 @@
+<Root>
+  <!-- Фаворит. Футбол -->
+  <Download Href="http://gvindelen.ajes.ru/favorit.php?Sport=Футбол&amp;debug=1" FileName="[Path.Lines]Favorit.Футбол.html" Utf8ToAnsi="1"/>
+  <!-- Фаворит. Теннис -->
+  <Download Href="http://gvindelen.ajes.ru/favorit.php?Sport=Теннис&amp;debug=1" FileName="[Path.Lines]Favorit.Баскетбол.html" Utf8ToAnsi="1"/>
+  <!-- Фаворит. Волейбол -->
+  <Download Href="http://gvindelen.ajes.ru/favorit.php?Sport=Волейбол&amp;debug=1" FileName="[Path.Lines]Favorit.Теннис.html" Utf8ToAnsi="1"/>
+  <!-- Фаворит. Баскетбол -->
+  <Download Href="http://gvindelen.ajes.ru/favorit.php?Sport=Баскетбол&amp;debug=1" FileName="[Path.Lines]Favorit.Волейбол.html" Utf8ToAnsi="1"/>
+  <!-- Фаворит. Американский футбол -->
+  <Download Href="http://gvindelen.ajes.ru/favorit.php?Sport=Американский%20футбол&amp;debug=1" FileName="[Path.Lines]Favorit.АмФутбол.html" Utf8ToAnsi="1"/>
+  <!-- Фаворит. Гандбол -->
+  <Download Href="http://gvindelen.ajes.ru/favorit.php?Sport=Гандбол&amp;debug=1" FileName="[Path.Lines]Favorit.Гандбол.html" Utf8ToAnsi="1"/>
+  <Exit/>
+
+
+<!--
+  <Load Href="d:\swim2\1\Favorit.html" FileName="[Path.Lines]Favorit.html" Event="BeforeSave" />
+  <Exit />
+-->
+  <!-- Фаворит. Линия -->
+  <Download Href="http://favoritbet.com/ru/bet/all/" FileName="[Path.Lines]Favorit.html" Utf8ToAnsi="1" Event="BeforeSave" />
+
+
+  <Event Name="BeforeSave">
+    <NumberingTag Name="table" />
+    <ExtractTag Name="table" Contain1="class=&quot;content&quot;" />
+    <DeleteAll Start="&#9;TagNo=&quot;" End="&quot;" />
+    <!-- Убираем пробелы -->
+    <ReplaceAll Text="&amp;nbsp;" New=" " />
+    <ReplaceAll Text="&amp;nbsp" New=" " />
+    <ReplaceAll Text="&#150;" New="-" />
+    <ReplaceAll Text="&#151;" New="-" />
+    <ReplaceAll Text="&#9;" New=" " />
+    <ReplaceAll Text="&CR;" New=" " />
+    <ReplaceAll Text="&LF;" New=" " />
+    <ReplaceAll Text="     " New=" " />
+    <ReplaceAll Text="    " New=" " />
+    <ReplaceAll Text="   " New=" " />
+    <ReplaceAll Text="  " New=" " />
+    <ReplaceAll Text=" &lt;" New="&lt;" />
+    <ReplaceAll Text="&gt; " New="&gt;" />
+    <ReplaceAll Text=" &gt; " New="&gt;" />
+    <!-- Убираем коментарии --> 
+    <DeleteAll Start="&lt;!--" End="--&gt;" />
+    <!-- Убираем ссылки -->
+    <DeleteAll Start="&lt;a " End="&gt;" />
+    <DeleteAll Text="&lt;/a&gt;" />
+    <!-- Убираем жирность  -->
+    <DeleteAll Start="&lt;b " End="&gt;" />
+    <DeleteAll Text="&lt;b&gt;" />
+    <DeleteAll Text="&lt;/b&gt;" />
+    <!-- Убираем скрипты -->
+    <DeleteAll Start="&lt;script " End="&lt;/script&gt;" />
+    <!-- Убираем картинки -->
+    <DeleteAll Start="&lt;img " End="&gt;" />
+    <!-- Убираем Strong  -->
+    <DeleteAll Text="&lt;strong&gt;" />
+    <DeleteAll Text="&lt;/strong&gt;" />
+    <!-- Убираем лишние свойства -->
+    <DeleteAllAttribute Name="bgcolor" />
+    <DeleteAllAttribute Name="align" />
+    <DeleteAllAttribute Name="valign" />
+    <DeleteAllAttribute Name="width" />
+    <ReplaceAll Text="&gt;-&lt;" New="&gt;&lt;" />
+    <!-- Убираем дополнительные тоталы по периодам -->
+    <DeleteAll Start="&lt;tr&gt;" Contain1="1 тайм:" End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;tr&gt;" Contain1="2 тайм:" End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;tr&gt;" Contain1="1 четверть:" End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;tr&gt;" Contain1="2 четверть:" End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;tr&gt;" Contain1="3 четверть:" End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;tr&gt;" Contain1="4 четверть:" End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;tr&gt;" Contain1="1-й сет:" End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;tr&gt;" Contain1="2-й сет:" End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;tr&gt;" Contain1="Дополнительные тоталы:" End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;tr&gt;" Contain1="colspan=&quot;17&quot;" End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;tr&gt;" Contain1="Первый матч" End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;tr&gt;" Contain1="Второй матч" End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;tr&gt;" Contain1="Хозяева" End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;tr" Contain1="Счет серии" End="&lt;/tr&gt;" />
+  </Event>
+</Root>

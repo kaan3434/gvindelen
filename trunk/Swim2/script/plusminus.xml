@@ -1,0 +1,114 @@
+<Root>
+  <!-- PlusMinus. Футбол -->
+  <Download Href="http://gvindelen.ajes.ru/plusminus.php?Sport=5" FileName="[Path.Lines]PlusMinus.Футбол.html" />
+  <!-- PlusMinus. Теннис -->
+  <Download Href="http://gvindelen.ajes.ru/plusminus.php?Sport=3" FileName="[Path.Lines]PlusMinus.Теннис.html" />
+  <!-- PlusMinus. Баскетбол -->
+  <Download Href="http://gvindelen.ajes.ru/plusminus.php?Sport=1" FileName="[Path.Lines]PlusMinus.Баскетбол.html" />
+  <!-- PlusMinus. Волейбол -->
+  <Download Href="http://gvindelen.ajes.ru/plusminus.php?Sport=8" FileName="[Path.Lines]PlusMinus.Волейбол.html" />
+  <!-- PlusMinus. Гандбол -->
+  <Download Href="http://gvindelen.ajes.ru/plusminus.php?Sport=16" FileName="[Path.Lines]PlusMinus.Гандбол.html" />
+  <!-- PlusMinus. Другие -->
+  <Download Href="http://gvindelen.ajes.ru/plusminus.php?Sport=255" FileName="[Path.Lines]PlusMinus.Другие.html" />
+  <Exit/>
+
+  
+  
+  <Download Href="http://plusminus1.com/bet.php?view=on" FileName="[Path.Lines]PlusMinus.League.txt" Event="ExtractLeagues"/>
+  <Download Href="http://plusminus1.com/bet.php" Method="POST" FileName="[Path.Lines]PlusMinus.html" Event="BeforeSave">
+    <ParamLoad FileName="[Path.Lines]PlusMinus.League.txt" />
+    <ParamAdd Name="filter" Value="all" />
+    <ParamAdd Name="rospis" Value="on" />
+    <ParamAdd Name="line" Value="" />
+  </Download>
+  <Exit/>
+
+<!--
+  <Load Href="d:/swim2/1/PlusMinus0.html" FileName="[Path.Lines]PlusMinus.League.txt" Event="ExtractLeagues"/>
+  <Load Href="d:/swim2/1/PlusMinus1.html" FileName="[Path.Lines]PlusMinus.html" Event="BeforeSave"/>
+  -->
+
+
+  <Event Name="ExtractLineValue" >
+    <ExtractTags Start="&lt;input " Contain1="hidden" Contain2="line" End="&gt;" />
+    <DeleteAll Start="&lt;input " End="name='" />
+    <ReplaceAll Text="' value=" New="=" />
+    <ReplaceAll Text="&gt;" New="&#13;&#10;"/>
+    <Save FileName="[Path.Lines]PlusMinus.League.txt" />
+  </Event>
+
+  <input type="hidden" value="733961" name="line"/>
+  <Event Name="ExtractLeagues">
+    <TakeBeginEnd Start="&lt;form " Contain1="name=&quot;f1&quot;" End="&lt;/form&gt;" />
+    <Execute Name="ExtractLineValue" Copy="1" />
+    <ExtractTags Start="&lt;input " Contain1="checkbox" Contain2="events[]" End="&gt;" Separator="&#13;&#10;" />
+    <!-- Удаляем бокс -->
+    <DeleteAll Start="&lt;input " Contain1="value='2_" End="&#13;&#10;" />
+    <!-- Удаляем хоккей на траве -->
+    <DeleteAll Start="&lt;input " Contain1="value='17_" End="&#13;&#10;" />
+    <!-- Удаляем шахматы -->
+    <DeleteAll Start="&lt;input " Contain1="value='15_" End="&#13;&#10;" />
+    <!-- Удаляем лотереи -->
+    <DeleteAll Start="&lt;input " Contain1="value='254_" End="&#13;&#10;" />
+    <!-- Удаляем Формулу1 -->
+    <DeleteAll Start="&lt;input " Contain1="value='10_" End="&#13;&#10;" />
+    
+    <DeleteAll Start="&lt;input " End="name='" />
+    <ReplaceAll Text="' value='" New="=" />
+    <DeleteAll Text="'&gt;" />
+  </Event>
+
+  <Event Name="BeforeSave">
+    <TakeBeginEnd Start="&lt;form " Contain1="betform" End="&lt;/form&gt;" />
+
+    <!-- Убираем жирность  -->
+    <DeleteAll Start="&lt;b " End="&gt;" />
+    <DeleteAll Text="&lt;b&gt;" />
+    <DeleteAll Text="&lt;/b&gt;" />
+    <!-- Убираем пробелы -->
+    <ReplaceAll Text="&amp;nbsp;" New=" " />
+    <ReplaceAll Text="&#150;" New="-" />
+    <ReplaceAll Text="&#151;" New="-" />
+    <ReplaceAll Text="&CR;" New=" " />
+    <ReplaceAll Text="&LF;" New=" " />
+    <ReplaceAll Text="   " New=" " />
+    <ReplaceAll Text="  " New=" " />
+    <ReplaceAll Text=" &lt;" New="&lt;" />
+    <ReplaceAll Text="&gt; " New="&gt;" />
+    <!-- Убираем Span -->
+    <DeleteAll Start="&lt;span " End="&gt;" />
+    <DeleteAll Text="&lt;span&gt;" />
+    <DeleteAll Text="&lt;/span&gt;" />
+    <!-- Убираем BR -->
+    <DeleteAll Text="&lt;br&gt;" />
+    <!-- Убираем курсивность  -->
+    <DeleteAll Start="&lt;i " End="&gt;" />
+    <DeleteAll Text="&lt;i&gt;" />
+    <DeleteAll Text="&lt;/i&gt;" />
+    <!-- Убираем ссылки -->
+    <DeleteAll Start="&lt;a " End="&gt;" />
+    <DeleteAll Text="&lt;/a&gt;" />
+    <!-- Убираем инпуты -->
+    <DeleteAll Start="&lt;input " End="&gt;" />
+    <DeleteAll Text="&lt;/Input&gt;" />
+    <!-- Убираем form -->
+    <DeleteAll Start="&lt;form " End="&gt;" />
+    <DeleteAll Text="&lt;/form&gt;" />
+    <!-- Убираем события -->
+    <DeleteAllAttribute Name="width" />
+    <DeleteAllAttribute Name="height" />
+    <DeleteAllAttribute Name="valign" />
+    <DeleteAllAttribute Name="align" />
+    <DeleteAllAttribute Name="bgcolor" />
+    <DeleteAllAttribute Name="style" />
+
+
+    <!-- Убираем "левые" данные -->
+    <DeleteAll Start="&lt;tr" Contain1="Хозяева" End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;tr" Contain1="Гости" End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;tr" Contain1="Индив.тотал:" End="&lt;/tr&gt;" />
+    
+  </Event>
+
+</Root>

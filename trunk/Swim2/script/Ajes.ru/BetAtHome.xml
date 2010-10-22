@@ -1,0 +1,145 @@
+<Root>
+  <Event Name="CheckLastPage" >
+    <TakeBetween Start="&quot;LastPage=" End="&quot;" />
+    <SetVarValue Name="LastPage" />
+  </Event>
+
+  <Event Name="BeforeSave">
+    <Execute Name="CheckLastPage" Copy="1" />
+    <DeleteAll Start="&quot;LastPage=" End="&quot;" />
+  </Event>
+
+  <!-- Футбол. Ставки 1_x_2 -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/betathome.php" FileName="[Path.Lines]betathome.Футбол.1_x_2.html" Event="BeforeSave" Append="1">
+      <ParamAdd Name="Sport" Value="1"/>
+      <ParamAdd Name="CategoryId" Value="100" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+
+  <!-- Футбол. Ставки 1x_x2_12 -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/betathome.php" FileName="[Path.Lines]betathome.Футбол.1x_x2_12.html" Event="BeforeSave" Append="1">
+      <ParamAdd Name="Sport" Value="1"/>
+      <ParamAdd Name="CategoryId" Value="103" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+
+  <!-- Футбол. Ставки Total -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/betathome.php" FileName="[Path.Lines]betathome.Футбол.Total.html" Event="BeforeSave" Append="1">
+      <ParamAdd Name="Sport" Value="1"/>
+      <ParamAdd Name="CategoryId" Value="106" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+
+  <!-- Теннис. Ставки 1_2 -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/betathome.php" FileName="[Path.Lines]betathome.Теннис.1_2.html" Event="BeforeSave" Append="1">
+      <ParamAdd Name="Sport" Value="2"/>
+      <ParamAdd Name="CategoryId" Value="200" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+  
+  <!-- Теннис. Ставки Fora -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/betathome.php" FileName="[Path.Lines]betathome.Теннис.Fora.html" Event="BeforeSave" Append="1">
+      <ParamAdd Name="Sport" Value="2"/>
+      <ParamAdd Name="CategoryId" Value="205" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+
+  <!-- Гандбол. Ставки 1_x_2 -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/betathome.php" FileName="[Path.Lines]betathome.Гандбол.1_x_2.html" Event="BeforeSave" Append="1">
+      <ParamAdd Name="Sport" Value="4"/>
+      <ParamAdd Name="CategoryId" Value="400" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+
+  <!-- Гандбол. Ставки Total -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/betathome.php" FileName="[Path.Lines]betathome.Гандбол.Total.html" Event="BeforeSave" Append="1">
+      <ParamAdd Name="Sport" Value="4"/>
+      <ParamAdd Name="CategoryId" Value="2613" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+
+  <!-- Гандбол. Ставки Fora -->
+  <SetVarValue Name="CurrentPage" Value= "2"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/betathome.php" FileName="[Path.Lines]betathome.Гандбол.Fora.html" Event="BeforeSave" Append="1">
+      <ParamAdd Name="Sport" Value="4"/>
+      <ParamAdd Name="CategoryId" Value="2614" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+
+  <!-- Волейбол. Ставки 1_2 -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/betathome.php" FileName="[Path.Lines]betathome.Волейбол.1_2.html" Event="BeforeSave" Append="1">
+      <ParamAdd Name="Sport" Value="15"/>
+      <ParamAdd Name="CategoryId" Value="1500" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+
+  <!-- Волейбол. Ставки 1_2 -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/betathome.php" FileName="[Path.Lines]betathome.Волейбол.1_2.html" Event="BeforeSave" Append="1">
+      <ParamAdd Name="Sport" Value="15"/>
+      <ParamAdd Name="CategoryId" Value="1500" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+
+  <!-- Баскетбол. Ставки Total -->
+  <SetVarValue Name="CurrentPage" Value= "1"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/betathome.php" FileName="[Path.Lines]betathome.Баскетбол.Total.html" Event="BeforeSave" Append="1">
+      <ParamAdd Name="Sport" Value="5"/>
+      <ParamAdd Name="CategoryId" Value="503" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+
+  <!-- Баскетбол. Ставки Fora -->
+  <SetVarValue Name="CurrentPage" Value= "2"/>
+  <Do_While Name="LastPage" Action="SEQ" Value="False">
+    <Download Href="http://gvindelen.ajes.ru/betathome.php" FileName="[Path.Lines]betathome.Баскетбол.Fora.html" Event="BeforeSave" Append="1">
+      <ParamAdd Name="Sport" Value="5"/>
+      <ParamAdd Name="CategoryId" Value="504" />
+      <ParamAdd Name="CurrentPage" VarValue="CurrentPage" />
+    </Download>
+    <SetVarValue Name="CurrentPage" Inc="1" />
+  </Do_While>
+
+</Root>
+
