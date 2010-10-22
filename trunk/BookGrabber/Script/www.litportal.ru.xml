@@ -1,0 +1,40 @@
+<Root>
+  <Label Name="GetPages" />
+
+  <Download Href="[URL]" FileName="[Path.Html]Result.html" />
+  <Load Href="[Path.Html]Result.html" FileName="[Path.Html]PageLink.txt" Event="ExtractPageLink" Append="1" />
+  <Exit />
+
+  <Event Name="ExtractPageLink" >
+    <TakeBeginEnd Start="&lt;div " Contain1="/read/page/" End="&lt;/div&gt;" />
+    <ExtractTags Start="&lt;a " Contain1="read" Contain2="page" End="&lt;/a&gt;" />
+    <DeleteAll Start="&lt;a " Contain1="&gt;&amp;lt;&amp;lt;&amp;lt;" End="&lt;/a&gt;" />
+    <DeleteAll Start="&lt;a " Contain1="&gt;&amp;gt;&amp;gt;&amp;gt;" End="&lt;/a&gt;" />
+    <ExtractTags Start="&quot;" Contain1="page" End="&quot;" Separator="&#13;&#10;"/>
+    <DeleteAll Text="&quot;" />
+  </Event>
+
+
+  <Label Name="GetText" />
+  <Navigate Href="[URL]" MaxWait="90"/>
+  <Sleep Second="60"/>
+  <Document>
+    <FindElement TAG="DIV" id="page_text" >
+      <Save FileName="[Document]" Event="ExtractText" Append="1" />
+    </FindElement>
+  </Document>
+  <Exit />
+
+  <Event Name="ExtractText">
+     <DeleteAll Start="&lt;span" End="&lt;/span&gt;" />
+  </Event>
+
+  <Label Name="GetAuthor" />
+  <Load Href="[Path.Html]Result.html" FileName="[Path.Html]Author.txt" Event="ExtractAuthor" />
+  <Exit />
+  <Event Name="ExtractAuthor">
+     <TakeBetween Start="&lt;title&gt;" End=" - кхрепюрспмши яеребни пеяспя LitPORTAL.ru&lt;/title&gt;" />
+  </Event>
+
+
+</Root>

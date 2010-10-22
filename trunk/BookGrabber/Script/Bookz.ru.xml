@@ -1,0 +1,13 @@
+<Root>
+  <Navigate Href="[URL]" />
+  <Sleep Second="30" />
+  <Document>
+    <FindElement TAG="DIV" class="read1" id="chid" >
+      <Save FileName="[Document]" Event="ExtractText" Append="1" />
+    </FindElement>
+  </Document>
+
+  <Event Name="ExtractText">
+     <DeleteAll Start="&lt;span" End="&lt;/span&gt;" />
+  </Event>
+</Root>
