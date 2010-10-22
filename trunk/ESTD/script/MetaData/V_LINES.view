@@ -1,0 +1,43 @@
+CREATE VIEW V_LINES(
+    LINE_ID,
+    DOCUMENT_ID,
+    DOC_ROWNO,
+    BLOCK_ID,
+    BLOCK_SIGN,
+    LITERA,
+    BLOCK_ROWNO,
+    BAND_ID,
+    BAND_SIGN,
+    BAND_ROWNO,
+    FORM_ID,
+    PAGE_NO,
+    LINE_NO,
+    FORM_SIZE,
+    GROUP_ID,
+    IS_TILESPACES)
+AS
+select 
+    lines.line_id,
+    lines.document_id,
+    lines.doc_rowno,
+    lines.block_id,
+    blocks.block_sign,
+    block_ref.litera,
+    lines.block_rowno,
+    lines.band_id,
+    bands.band_sign,
+    lines.band_rowno,
+    forms.form_id,
+    forms.page_no,
+    lines.line_no,
+    forms.form_size,
+    lines.group_id,
+    lines.is_tilespaces
+from lines
+   inner join blocks on (lines.block_id = blocks.block_id)
+   inner join block_ref on (blocks.block_sign = block_ref.block_sign)
+   inner join bands on (lines.band_id = bands.band_id)
+   left join forms on (forms.form_id = lines.form_id)
+;
+
+

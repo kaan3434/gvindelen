@@ -1,0 +1,7 @@
+CREATE OR ALTER TRIGGER OPEREQUIPATTRS_BI0 FOR OPEREQUIPATTRS
+ACTIVE BEFORE INSERT POSITION 0
+AS
+begin
+  new.attr_id = gen_id(s_operequipattrs, 1);
+end
+^

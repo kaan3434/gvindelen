@@ -1,0 +1,7 @@
+CREATE OR ALTER TRIGGER OPERDETS_BI0 FOR OPERDETS
+ACTIVE BEFORE INSERT POSITION 0
+AS
+begin
+  new.operdet_id = gen_id(s_operobj, 1);
+end
+^

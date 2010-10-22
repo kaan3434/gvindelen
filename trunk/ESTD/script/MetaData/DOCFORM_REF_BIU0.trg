@@ -1,0 +1,7 @@
+CREATE OR ALTER TRIGGER DOCFORM_REF_BIU0 FOR DOCFORM_REF
+ACTIVE BEFORE INSERT OR UPDATE POSITION 0
+AS
+begin
+  new.docform = new.orientation||new.objtype;
+end
+^

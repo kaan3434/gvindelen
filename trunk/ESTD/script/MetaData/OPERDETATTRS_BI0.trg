@@ -1,0 +1,7 @@
+CREATE OR ALTER TRIGGER OPERDETATTRS_BI0 FOR OPERDETATTRS
+ACTIVE BEFORE INSERT POSITION 0
+AS
+begin
+  new.attr_id = gen_id(s_operdetattrs, 1);
+end
+^

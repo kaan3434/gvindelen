@@ -1,0 +1,7 @@
+CREATE OR ALTER TRIGGER XML_ELEMENTS_BI0 FOR XML_ELEMENTS
+ACTIVE BEFORE INSERT POSITION 0
+AS
+begin
+  new.elem_id = gen_id(s_xml_elements, 1);
+end
+^

@@ -1,0 +1,7 @@
+CREATE OR ALTER TRIGGER OPERINSTRS_BI0 FOR OPERINSTRS
+ACTIVE BEFORE INSERT POSITION 0
+AS
+begin
+  new.operinstr_id = gen_id(s_operobj, 1);
+end
+^

@@ -1,0 +1,7 @@
+CREATE OR ALTER TRIGGER OPERMATATTRS_BI0 FOR OPERMATATTRS
+ACTIVE BEFORE INSERT POSITION 0
+AS
+begin
+  new.attr_id= gen_id(s_opermatattrs, 1);
+end
+^

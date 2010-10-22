@@ -1,0 +1,7 @@
+CREATE OR ALTER TRIGGER OPERMATS_BI0 FOR OPERMATS
+ACTIVE BEFORE INSERT POSITION 0
+AS
+begin
+  new.opermat_id = gen_id(s_operobj, 1);
+end
+^

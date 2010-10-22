@@ -1,0 +1,7 @@
+CREATE OR ALTER TRIGGER MATATTRS_BI0 FOR MATATTRS
+ACTIVE BEFORE INSERT POSITION 0
+AS
+begin
+  new.attr_id = gen_id(s_matattrs, 1);
+end
+^

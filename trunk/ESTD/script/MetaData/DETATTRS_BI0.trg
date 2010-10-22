@@ -1,0 +1,7 @@
+CREATE OR ALTER TRIGGER DETATTRS_BI0 FOR DETATTRS
+ACTIVE BEFORE INSERT POSITION 0
+AS
+begin
+  new.attr_id = gen_id(s_detattrs, 1);
+end
+^

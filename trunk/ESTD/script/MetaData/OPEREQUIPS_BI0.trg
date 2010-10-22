@@ -1,0 +1,7 @@
+CREATE OR ALTER TRIGGER OPEREQUIPS_BI0 FOR OPEREQUIPS
+ACTIVE BEFORE INSERT POSITION 0
+AS
+begin
+  new.operequip_id = gen_id(s_operobj, 1);
+end
+^

@@ -1,0 +1,7 @@
+CREATE OR ALTER TRIGGER OPERHALFATTRS_BI0 FOR OPERHALFATTRS
+ACTIVE BEFORE INSERT POSITION 0
+AS
+begin
+  new.attr_id = gen_id(s_operhalfattrs, 1);
+end
+^

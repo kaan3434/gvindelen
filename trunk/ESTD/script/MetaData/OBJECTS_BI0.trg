@@ -1,0 +1,7 @@
+CREATE OR ALTER TRIGGER OBJECTS_BI0 FOR OBJECTS
+ACTIVE BEFORE INSERT POSITION 0
+AS
+begin
+  new.obj_id = gen_id(s_objects, 1);
+end
+^
