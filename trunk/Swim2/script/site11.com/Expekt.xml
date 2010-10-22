@@ -1,0 +1,143 @@
+<Root>
+<!-- Футбол. 1 X 2 -->
+  <Download  Href="http://www.expekt.com/odds/eventsodds.jsp?betcategoryId=SOC%25&amp;sortby=1&amp;range=96&amp;gatype=0"
+     FileName="[Path.Lines]expekt.Футбол.1_x_2.html" UTF8ToAnsi="1" Event="BeforeSave1x2" >
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+<!-- Футбол. 1X 12 X2 -->
+  <Download Href="http://www.expekt.com/odds/eventsodds.jsp?oddstype=&amp;gatype=15&amp;searchString=&amp;betcategoryId=SOC%25&amp;range=96&amp;sortby=1"
+     FileName="[Path.Lines]expekt.Футбол.1x_x2_12.html" UTF8ToAnsi="1" Event="BeforeSave1x2" >
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+<!-- Футбол. Total -->
+  <Download Href="http://www.expekt.com/odds/eventsodds.jsp?oddstype=&amp;gatype=40&amp;searchString=&amp;betcategoryId=SOC%25&amp;range=96&amp;sortby=1"
+     FileName="[Path.Lines]expekt.Футбол.Total.html" UTF8ToAnsi="1" Event="BeforeSave1x2" >
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+
+
+<!-- Гандбол. 1 X 2 -->
+  <Download Href="http://www.expekt.com/odds/eventsodds.jsp?oddstype=&amp;gatype=0&amp;searchString=&amp;betcategoryId=HBL%25&amp;range=96&amp;sortby=1"
+     FileName="[Path.Lines]expekt.Гандбол.1_x_2.html" UTF8ToAnsi="1" Event="BeforeSave1x2" >
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+<!-- Гандбол. 1X 12 X2 -->
+  <Download Href="http://www.expekt.com/odds/eventsodds.jsp?oddstype=&amp;gatype=15&amp;searchString=&amp;betcategoryId=HBL%25&amp;range=96&amp;sortby=1"
+     FileName="[Path.Lines]expekt.Гандбол.1x_x2_12.html" UTF8ToAnsi="1" Event="BeforeSave1x2" >
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+<!-- Гандбол. Total -->
+  <Download Href="http://www.expekt.com/odds/eventsodds.jsp?oddstype=&amp;gatype=40&amp;searchString=&amp;betcategoryId=HBL%25&amp;range=96&amp;sortby=1"
+     FileName="[Path.Lines]expekt.Гандбол.Total.html" UTF8ToAnsi="1" Event="BeforeSave1x2" >
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+
+
+<!-- Теннис. 1_2 -->
+  <Download Href="http://www.expekt.com/odds/eventsodds.jsp?oddstype=&amp;gatype=0&amp;searchString=&amp;betcategoryId=TEN%25&amp;range=96&amp;sortby=1"
+     FileName="[Path.Lines]expekt.Теннис.1_2.html" UTF8ToAnsi="1" Event="BeforeSave1x2" >
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+<!-- Теннис. Total -->
+  <Download Href="http://www.expekt.com/odds/eventsodds.jsp?oddstype=&amp;gatype=40&amp;searchString=&amp;betcategoryId=TEN%25&amp;range=96&amp;sortby=1"
+     FileName="[Path.Lines]expekt.Теннис.Total.html" UTF8ToAnsi="1" Event="BeforeSave1x2" >
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+
+<!-- Волейбол. 1_2 -->
+  <Download Href="http://www.expekt.com/odds/eventsodds.jsp?oddstype=&amp;gatype=0&amp;searchString=&amp;betcategoryId=VOL%25&amp;range=96&amp;sortby=1"
+     FileName="[Path.Lines]expekt.Волейбол.1_2.html" UTF8ToAnsi="1" Event="BeforeSave1x2" >
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+<!-- Волейбол. Total -->
+  <Download Href="http://www.expekt.com/odds/eventsodds.jsp?oddstype=&amp;gatype=40&amp;searchString=&amp;betcategoryId=VOL%25&amp;range=96&amp;sortby=1"
+     FileName="[Path.Lines]expekt.Волейбол.Total.html" UTF8ToAnsi="1" Event="BeforeSave1x2" >
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+
+
+<!-- Баскетбол. 1_2 -->
+  <Download Href="http://www.expekt.com/odds/eventsodds.jsp?oddstype=&amp;gatype=0&amp;searchString=&amp;betcategoryId=BAS%25&amp;range=96&amp;sortby=1"
+     FileName="[Path.Lines]expekt.Баскетбол.1_2.html" UTF8ToAnsi="1" Event="BeforeSave1x2" >
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+<!-- Баскетбол. Fora -->
+  <Download Href="http://www.expekt.com/odds/eventsodds.jsp?oddstype=&amp;gatype=10&amp;searchString=&amp;betcategoryId=BAS%25&amp;range=96&amp;sortby=1"
+     FileName="[Path.Lines]expekt.Баскетбол.Fora.html" UTF8ToAnsi="1" Event="BeforeSave1x2" >
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+<!-- Баскетбол. Total -->
+  <Download Href="http://www.expekt.com/odds/eventsodds.jsp?oddstype=&amp;gatype=40&amp;searchString=&amp;betcategoryId=BAS%25&amp;range=96&amp;sortby=1"
+     FileName="[Path.Lines]expekt.Баскетбол.Total.html" UTF8ToAnsi="1" Event="BeforeSave1x2" >
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+
+
+<!-- Американский футбол. 1 2 -->
+  <Download Href="http://www.expekt.com/odds/eventsodds.jsp?oddstype=&amp;gatype=0&amp;searchString=&amp;betcategoryId=AMF%25&amp;range=96&amp;sortby=1"
+     FileName="[Path.Lines]expekt.АмФутбол.1_2.html" UTF8ToAnsi="1" Event="BeforeSave1x2" >
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+<!-- Американский футбол. Fora -->
+  <Download Href="http://www.expekt.com/odds/eventsodds.jsp?oddstype=&amp;gatype=10&amp;searchString=&amp;betcategoryId=AMF%25&amp;range=96&amp;sortby=1"
+     FileName="[Path.Lines]expekt.АмФутбол.Fora.html" UTF8ToAnsi="1" Event="BeforeSave1x2" >
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+<!-- Американский футбол. Total -->
+  <Download Href="http://www.expekt.com/odds/eventsodds.jsp?oddstype=&amp;gatype=40&amp;searchString=&amp;betcategoryId=AMF%25&amp;range=96&amp;sortby=1"
+     FileName="[Path.Lines]expekt.АмФутбол.Fora.html" UTF8ToAnsi="1" Event="BeforeSave1x2" >
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+
+<!-- Снукер. 1_2 -->
+  <Download Href="http://www.expekt.com/odds/eventsodds.jsp?oddstype=&amp;gatype=0&amp;searchString=&amp;betcategoryId=SNK%25&amp;range=96&amp;sortby=1"
+     FileName="[Path.Lines]expekt.Снукер.1_2.html" UTF8ToAnsi="1" Event="BeforeSave1x2" >
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+
+  
+  <Exit/>
+
+
+  <Event Name="BeforeSave_Common">
+    <!-- Обрезаем хвост -->
+    <Delete Start="&lt;!-- hr " />
+    <!-- Убираем пробелы -->
+    <ReplaceAll Text="&amp;nbsp;" New=" " />
+    <ReplaceAll Text="&#9;" New=" " />
+    <ReplaceAll Text="&#10;" New=" " />
+    <ReplaceAll Text="&#13;" New=" " />
+    <ReplaceAll Text="    " New=" " />
+    <ReplaceAll Text="   " New=" " />
+    <ReplaceAll Text="  " New=" " />
+    <ReplaceAll Text="  " New=" " />
+    <ReplaceAll Text=" &lt;" New="&lt;" />
+    <ReplaceAll Text="&gt; " New="&gt;" />
+    <!-- Убираем события -->
+    <DeleteAll Text=" nowrap" />
+    <DeleteAllAttribute Name="onmouseover" />
+    <DeleteAllAttribute Name="onclick" />
+    <DeleteAllAttribute Name="align" />
+    <DeleteAllAttribute Name="bgcolor" />
+    <DeleteAllAttribute Name="style" />
+    <!-- Убираем ссылки -->
+    <DeleteAll Start="&lt;a " End="&gt;" />
+    <DeleteAll Text="&lt;/a&gt;" />
+    <!-- Убираем коментарии -->
+    <DeleteAll Start="&lt;!--" End="--&gt;" />
+    <!-- Убираем жирность  -->
+    <DeleteAll Start="&lt;b " End="&gt;" />
+    <DeleteAll Text="&lt;b&gt;" />
+    <DeleteAll Text="&lt;/b&gt;" />
+    <!-- Убираем текст между span -->
+    <DeleteAll Start="&lt;span&gt;" End="&lt;/span&gt;" />
+    <!-- Убираем картинки -->
+    <DeleteAll Start="&lt;img " End="&gt;" />
+    
+  </Event>
+
+  <Event Name="BeforeSave1x2">
+    <Execute Name="BeforeSave_Common" />
+  </Event>
+
+</Root>

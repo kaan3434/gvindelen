@@ -1,0 +1,81 @@
+<Root>
+  <!-- Пари-Матч. Перечень событий -->
+  <Download Href="http://www.parimatch.com/line.html?id=0" FileName="[Path.Lines]Parimatch.Leagues.txt" Event="ExtractLeagues">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+  </Download>
+  <!-- Пари-Матч. Линия -->
+  <Download Href="http://www.parimatch.com/bet.html" FileName="[Path.Lines]Parimatch.html" Event="BeforeSave">
+    <LoadHeader FileName="[Path.Script]RequestHeader.txt" />
+    <ParamAdd Name="hd" ValueFromFile="[Path.Lines]Parimatch.Leagues.txt" />
+    <ParamAdd Name="filter" Value="" />
+    <ParamAdd Name="linedate" Value="" />
+    <ParamAdd Name="ltype" Value="" />
+  </Download>
+
+  <Event Name="ExtractLeagues">
+    <ExtractTags Start="&lt;input type=&quot;checkbox&quot; name=&quot;hd" End="&quot;&gt;" />
+    <ReplaceAll Start="&lt;input" End="value=&quot;" New="," />
+    <DeleteAll Text="&quot;&gt;" />
+    <Delete End="," />
+  </Event>
+
+  <Event Name="BeforeSave">
+    <TakeBeginEnd Start="&lt;form name=f1" End="&lt;/form&gt;" />
+    <DeleteAll Start="&lt;form " End="&gt;" />
+    <DeleteAll Text="&lt;/form&gt;" />
+    <!-- Убираем пробелы -->
+    <ReplaceAll Text="&amp;nbsp;" New=" " />
+    <ReplaceAll Text="&#150;" New="-" />
+    <ReplaceAll Text="&#151;" New="-" />
+    <ReplaceAll Text="&#9;" New=" " />
+    <ReplaceAll Text="&CR;" New=" " />
+    <ReplaceAll Text="&LF;" New=" " />
+    <ReplaceAll Text="   " New=" " />
+    <ReplaceAll Text="  " New=" " />
+    <ReplaceAll Text=" &lt;" New="&lt;" />
+    <ReplaceAll Text="&gt; " New="&gt;" />
+    <!-- Убираем скрипты -->
+    <DeleteAll Start="&lt;script " End="&lt;/script&gt;" />
+    <!-- Убираем жирность -->
+    <DeleteAll Start="&lt;b " End="&gt;" />
+    <DeleteAll Text="&lt;b&gt;" />
+    <DeleteAll Text="&lt;/b&gt;" />
+    <!-- Убираем ссылки -->
+    <DeleteAll Start="&lt;a " End="&gt;" />
+    <DeleteAll Text="&lt;/a&gt;" />
+    <!-- Убираетм TBODY -->
+    <DeleteAll Start="&lt;tbody" End="&gt;" />
+    <DeleteAll Text="&lt;/tbody&gt;" />
+    <!-- Убираетм SMALL -->
+    <DeleteAll Text="&lt;small&gt;" />
+    <DeleteAll Text="&lt;/small&gt;" />
+    <!-- Убираем ColGroup -->
+    <DeleteAll Start="&lt;colgroup " End="&gt;" />
+    <!-- Выносим Экспресы и информацию о предыдущих встречах -->
+    <DeleteAll Text="&lt;span class=tr&gt;1&lt;/span&gt;" />
+    <DeleteAll Start="&lt;tr&gt;" Contain1="&lt;span class=tr&gt;" End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;span class=n" End="&lt;/span&gt;" />
+    <!-- Убираем строки с кнопками -->
+    <DeleteAll Start="&lt;table " Contain1="&lt;input " End="&lt;/table&gt;" />
+    <!-- Раскрываем сдвоенные таблицы -->
+    <ReplaceAll Text="&lt;TD width=&quot;50%&quot;&gt;" New="&lt;tr&gt;" />
+    <ReplaceAll Text="&lt;TD width=50%&gt;" New="&lt;tr&gt;" />
+    <!-- Заменяем IMG с информацией на igif для последующего удаления -->
+    <ReplaceAll Start="&lt;img " End="&gt;" New="igif" />
+    <!-- Убираем левые коэффициенты в скобках -->
+    <ReplaceAll Start="&gt;(" End=")" New="&gt;" />
+    <!-- Убираем оглавление -->
+    <DeleteAll Start="&lt;div " Contain1="Оглавление" End="&lt;/div&gt;" />
+    <!-- Убираем свойства -->
+    <DeleteAllAttribute Name="width" />
+    <DeleteAllAttribute Name="border" />
+    <!-- Убираем "левые" данные -->
+    <DeleteAll Start="&lt;tr&gt;" Contain1="Хозяева" Contain2="Гости" End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;tr&gt;" Contain1="Фолы " Contain2="Фолы " End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;tr&gt;" Contain1="ж/к " Contain2="ж/к " End="&lt;/tr&gt;" />
+    <DeleteAll Start="&lt;tr&gt;" Contain1="угл. " Contain2="угл. " End="&lt;/tr&gt;" />
+    <DeleteAll Text="Статистика матчей на www.uefa.com"/>
+  </Event>
+
+
+</Root>
