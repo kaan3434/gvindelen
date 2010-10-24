@@ -5,14 +5,6 @@ interface
 function HtmlEncode(St: String): String;
 function HtmlDecode(St: String): String;
 
-function TagPresent(Html, Tag:String): Boolean;
-
-function ExtractAllTags(Html, Tag: String; Devider:String=#$D#$A): string;
-
-function DeleteAllTags(Html, Tag: String): string;
-
-function ExtractTagProperty(HTML, Tag, Prop: String): String;
-
 function ExtractHostName(URL: String): String;
 
 function ExtractLinkParams(URL: String): String;
@@ -33,7 +25,7 @@ function TakeNumberedTagContains(var Html: String; TagName, Contain1: String;
 implementation
 
 uses
-  RegExpr, SysUtils, GvinStr;
+  SysUtils, GvinStr;
 
 function HtmlEncode(St: String): String;
 var
@@ -66,99 +58,6 @@ begin
       result:= result+St[i];
       Inc(i);
     end;
-  end;
-end;
-
-
-function ExtractTagProperty(HTML, Tag, Prop: String): String;
-var
-  r: TRegExpr;
-  St,Expr: String;
-begin
-  result:= '';
-  r:= TRegExpr.Create;
-  try
-    r.ModifierI:= true;
-    r.ModifierG:= false;
-    r.Expression:= Format('<%s.*?>', [Tag]);
-    if r.Exec(Html) then
-      St:= r.Match[0]
-    else
-      exit;
-    r.ModifierI:= true;
-    r.ModifierG:= false;
-    Expr:= Format(' %s="(.+?)"', [prop]);
-    r.Expression:= Expr;
-    if r.Exec(St) then
-    begin
-      Result:= r.Match[1];
-      exit;
-    end;
-    Expr:= Format(' %s=''(.+?)''', [prop]);
-    r.Expression:= Expr;
-    if r.Exec(St) then
-    begin
-      Result:= r.Match[1];
-      exit;
-    end;
-    Expr:= Format(' %s=(.+?)[ |>]', [prop]);
-    r.Expression:= Expr;
-    if r.Exec(St) then
-    begin
-      Result:= r.Match[1];
-      exit;
-    end;
-  finally
-    r.Free;
-  end;
-end;
-
-function ExtractAllTags(Html, Tag: String; Devider:String=#$D#$A): string;
-var
-  r : TRegExpr;
-begin
-  r := TRegExpr.Create;
-  try
-    r.ModifierI:= true;
-    r.ModifierG:= false;
-    r.Expression:= Tag;
-    if r.Exec(Html) then
-    Repeat
-      Result := Result + r.Match[0]+Devider;
-    Until not r.ExecNext;
-  finally
-    r.Free;
-  end;
-end;
-
-function DeleteAllTags(Html, Tag: String): string;
-var
-  r : TRegExpr;
-begin
-  r := TRegExpr.Create;
-  try
-    r.ModifierI:= true;
-    r.ModifierG:= false;
-    r.Expression:= Tag;
-    result:= Html;
-    while r.Exec(result) do
-      Delete(result, r.MatchPos[0], r.MatchLen[0]);
-  finally
-    r.Free;
-  end;
-end;
-
-function TagPresent(Html, Tag:String): Boolean;
-var
-  r : TRegExpr;
-begin
-  r:= TRegExpr.Create;
-  try
-    r.ModifierG:= false;
-    r.Expression:= Tag;
-    result:= r.Exec(Html);
-  finally
-    r.Free;
   end;
 end;
 
@@ -195,7 +94,7 @@ end;
 function NumberingTag(Html, TagName: String): String;
 var
   St1, St2, SNumber: String;
-  P1, P2, L1, L2, LSt, Number: Integer;
+  P1, L1, LSt, Number: Integer;
 begin
   Number:= 0;
   repeat

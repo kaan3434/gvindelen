@@ -35,23 +35,14 @@ requires
   dbrtl;
 
 contains
-  AutoMouse in 'AutoMouse.pas',
-  GvinAscTbl in 'GvinAscTbl.pas',
-  GvinBDE in 'GvinBDE.pas',
-  GvinDtTm in 'GvinDtTm.pas',
-  GvinFile in 'GvinFile.pas',
-  GvinMath in 'GvinMath.pas',
-  GvinStr in 'GvinStr.pas',
-  GvinVirtualPrn in 'GvinVirtualPrn.pas',
-  GvinEscSeq in 'GvinEscSeq.pas',
-  GvVars in 'GvVars.pas',
-  GvMoney in 'GvMoney.pas',
-  GvinTxtRep2 in 'GvinTxtRep2.pas',
-  GvCollapsePanel in 'GvCollapsePanel.pas',
-  GvStages in 'GvStages.pas',
-  CheckGroupBox in 'CheckGroupBox.pas',
-  gsFileVersionInfo in 'gsFileVersionInfo.pas',
-  GvTblInf in 'GvTblInf.pas',
-  GvChkCombo in 'GvChkCombo.pas';
+  GvinDtTm in '..\Source\GvinDtTm.pas',
+  GvinFile in '..\Source\GvinFile.pas',
+  GvinMath in '..\Source\GvinMath.pas',
+  GvinStr in '..\Source\GvinStr.pas',
+  GvVars in '..\Source\GvVars.pas',
+  GvMoney in '..\Source\GvMoney.pas',
+  GvStages in '..\Source\GvStages.pas',
+  gsFileVersionInfo in '..\Source\gsFileVersionInfo.pas',
+  GvChkCombo in '..\Source\GvChkCombo.pas';
 
 end.

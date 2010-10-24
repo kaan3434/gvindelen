@@ -39,7 +39,7 @@ requires
   Gvindln7;
 
 contains
-  GvWebScript in 'GvWebScript.pas',
-  GvHtmlScript in 'GvHtmlScript.pas';
+  GvWebScript in '..\Source\GvWebScript.pas',
+  GvHtmlScript in '..\Source\GvHtmlScript.pas';
 
 end.
