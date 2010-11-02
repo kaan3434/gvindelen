@@ -1,5 +1,6 @@
 unit uBaseForm;
 
+//test 2
 interface    
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
