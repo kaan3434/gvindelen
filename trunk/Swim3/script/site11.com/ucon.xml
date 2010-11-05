@@ -1,0 +1,38 @@
+<Root>
+  <Download Href="http://www.premierpari.com/bet/event_list.aspx?bet=false" FileName="[Path.Lines]Ucon.html" Event="BeforeSave" />
+
+  <Event Name="BeforeSave">
+    <TakeBeginEnd Start="&lt;form name=&quot;f1&quot;" End="&lt;/form&gt;" />
+    <DeleteAll Start="&lt;form " End="&gt;" />
+    <DeleteAll Text="&lt;/form&gt;" />
+    <!-- Убираем пробелы -->
+    <ReplaceAll Text="&amp;nbsp;" New=" " />
+    <ReplaceAll Text="&#150;" New="-" />
+    <ReplaceAll Text="&#151;" New="-" />
+    <ReplaceAll Text="&CR;" New=" " />
+    <ReplaceAll Text="&LF;" New=" " />
+    <ReplaceAll Text="   " New=" " />
+    <ReplaceAll Text="  " New=" " />
+    <ReplaceAll Text=" &lt;" New="&lt;" />
+    <ReplaceAll Text="&gt; " New="&gt;" />
+    <!-- Убираем коментарии --> 
+    <DeleteAll Start="&lt;!--" End="--&gt;" />
+    <!-- Убираем жирность  -->
+    <DeleteAll Start="&lt;b " End="&gt;" />
+    <DeleteAll Text="&lt;b&gt;" />
+    <DeleteAll Text="&lt;/b&gt;" />
+    <!-- Убираем ссылки -->
+    <DeleteAll Start="&lt;a " End="&gt;" />
+    <DeleteAll Text="&lt;/a&gt;" />
+    <!-- Убираем BR -->
+    <DeleteAll Text="&lt;br&gt;" />
+    <!-- Убираем HR -->
+    <DeleteAll Text="&lt;hr&gt;" />
+    <!-- Убираем картинки -->
+    <DeleteAll Start="&lt;img " End="&gt;" />
+    <!-- Убираем кнопки -->
+    <DeleteAll Start="&lt;button " End="&lt;/button&gt;" />
+    <!-- Убираем ставки Live -->
+    <DeleteAll Start="&lt;tr" Contain1="&gt;Live&lt;" End="&lt;/tr&gt;" />
+  </Event>
+</Root>
