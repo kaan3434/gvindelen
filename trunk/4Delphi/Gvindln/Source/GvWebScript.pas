@@ -609,7 +609,7 @@ begin
     For i:= 0 to slHeader.Count-1 do
       HTTP.Request.RawHeaders.Values[slHeader.Names[i]]:= slHeader.ValueFromIndex[i];
     For i:= 0 to slCookie.Count-1 do
-      Cookie.AddCookie(slCookie[i], LURI.Host);
+      Cookie.AddServerCookie(slCookie[i], LURI);
     try
       if UpperCase(ScriptNode.ReadAttributeString('Method', 'GET')) = 'POST' then
       begin
