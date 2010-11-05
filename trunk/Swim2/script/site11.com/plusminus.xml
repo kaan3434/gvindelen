@@ -1,14 +1,19 @@
 <Root>
   <!-- PlusMinus. Футбол -->
-  <Download Href="http://gvindelen.site11.com/plusminus.php?Sport=5" FileName="[Path.Lines]PlusMinus.Футбол.html" />
+  <Download Href="http://gvindelen.site11.com/plusminus.php?Sport=5" FileName="[Path.Lines]PlusMinus.Футбол.html" Event="BeforeSave"/>
   <!-- PlusMinus. Теннис -->
-  <Download Href="http://gvindelen.site11.com/plusminus.php?Sport=3" FileName="[Path.Lines]PlusMinus.Теннис.html" />
+  <Download Href="http://gvindelen.site11.com/plusminus.php?Sport=3" FileName="[Path.Lines]PlusMinus.Теннис.html" Event="BeforeSave"/>
   <!-- PlusMinus. Баскетбол -->
-  <Download Href="http://gvindelen.site11.com/plusminus.php?Sport=1" FileName="[Path.Lines]PlusMinus.Баскетбол.html" />
+  <Download Href="http://gvindelen.site11.com/plusminus.php?Sport=1" FileName="[Path.Lines]PlusMinus.Баскетбол.html" Event="BeforeSave"/>
   <!-- PlusMinus. Волейбол -->
-  <Download Href="http://gvindelen.site11.com/plusminus.php?Sport=8" FileName="[Path.Lines]PlusMinus.Волейбол.html" />
+  <Download Href="http://gvindelen.site11.com/plusminus.php?Sport=8" FileName="[Path.Lines]PlusMinus.Волейбол.html" Event="BeforeSave"/>
   <!-- PlusMinus. Гандбол -->
-  <Download Href="http://gvindelen.site11.com/plusminus.php?Sport=16" FileName="[Path.Lines]PlusMinus.Гандбол.html" />
+  <Download Href="http://gvindelen.site11.com/plusminus.php?Sport=16" FileName="[Path.Lines]PlusMinus.Гандбол.html" Event="BeforeSave"/>
   <!-- PlusMinus. Другие -->
-  <Download Href="http://gvindelen.site11.com/plusminus.php?Sport=255" FileName="[Path.Lines]PlusMinus.Другие.html" />
+  <Download Href="http://gvindelen.site11.com/plusminus.php?Sport=255" FileName="[Path.Lines]PlusMinus.Другие.html" Event="BeforeSave"/>
+
+  <Event Name="BeforeSave">
+    <TakeBeginEnd Start="&lt;form " End="&lt;/form&gt;" />
+  </Event>
+
 </Root>
