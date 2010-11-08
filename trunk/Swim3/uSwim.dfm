@@ -1,6 +1,6 @@
 object fSwim: TfSwim
-  Left = 152
-  Top = 203
+  Left = 621
+  Top = 232
   Width = 783
   Height = 371
   Caption = #1042#1080#1083#1086#1095#1082#1080

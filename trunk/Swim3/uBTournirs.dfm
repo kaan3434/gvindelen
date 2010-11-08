@@ -8,7 +8,7 @@ inherited frmBTournirs: TfrmBTournirs
   PixelsPerInch = 96
   TextHeight = 13
   inherited Splitter1: TSplitter
-    Top = 206
+    Top = 199
     Width = 771
   end
   inherited TBXDockUp: TTBXDock
@@ -21,7 +21,7 @@ inherited frmBTournirs: TfrmBTournirs
   end
   inherited gridMain: TDBGridEh
     Width = 764
-    Height = 180
+    Height = 173
     Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
     Columns = <
       item
@@ -132,13 +132,12 @@ inherited frmBTournirs: TfrmBTournirs
       end>
   end
   inherited Panel: TPanel
-    Top = 209
+    Top = 202
     Width = 771
     Height = 300
-    State = csExpand
     inherited pcDetail: TPageControl
       Width = 769
-      Height = 282
+      Height = 298
       ActivePage = tsTournirs
       object tsParts: TTabSheet
         Caption = 'tsParts'
@@ -197,10 +196,11 @@ inherited frmBTournirs: TfrmBTournirs
           Left = 0
           Top = 25
           Width = 761
-          Height = 229
+          Height = 245
           Align = alClient
           AutoFitColWidths = True
           Color = clBtnFace
+          DataGrouping.GroupLevels = <>
           DataSource = dsParts
           Flat = True
           FooterColor = clWindow
@@ -211,6 +211,7 @@ inherited frmBTournirs: TfrmBTournirs
           FooterFont.Style = []
           Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
           OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghIncSearch, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove]
+          RowDetailPanel.Color = clBtnFace
           TabOrder = 1
           TitleFont.Charset = DEFAULT_CHARSET
           TitleFont.Color = clWindowText
@@ -234,6 +235,8 @@ inherited frmBTournirs: TfrmBTournirs
               FieldName = 'PART_TXT'
               Footers = <>
             end>
+          object RowDetailData: TRowDetailPanelControlEh
+          end
         end
       end
       object tsTournirs: TTabSheet
@@ -242,7 +245,7 @@ inherited frmBTournirs: TfrmBTournirs
         object Splitter2: TSplitter
           Left = 438
           Top = 25
-          Height = 229
+          Height = 245
           Align = alRight
         end
         object TBXDock2: TTBXDock
@@ -287,12 +290,13 @@ inherited frmBTournirs: TfrmBTournirs
           Left = 0
           Top = 25
           Width = 438
-          Height = 229
+          Height = 245
           Align = alClient
           AutoFitColWidths = True
           Color = clBtnFace
           ColumnDefValues.Title.Alignment = taCenter
           ColumnDefValues.Title.TitleButton = True
+          DataGrouping.GroupLevels = <>
           DataSource = dsATournirs
           Flat = True
           FooterColor = clWindow
@@ -303,6 +307,7 @@ inherited frmBTournirs: TfrmBTournirs
           FooterFont.Style = []
           Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
           OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghIncSearch, dghPreferIncSearch, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove]
+          RowDetailPanel.Color = clBtnFace
           TabOrder = 1
           TitleFont.Charset = DEFAULT_CHARSET
           TitleFont.Color = clWindowText
@@ -360,15 +365,18 @@ inherited frmBTournirs: TfrmBTournirs
               FieldName = 'END_DT'
               Footers = <>
             end>
+          object RowDetailData: TRowDetailPanelControlEh
+          end
         end
         object gridHistory: TDBGridEh
           Left = 441
           Top = 25
           Width = 320
-          Height = 229
+          Height = 245
           Align = alRight
           AutoFitColWidths = True
           Color = clBtnFace
+          DataGrouping.GroupLevels = <>
           DataSource = dsHistory
           Flat = True
           FooterColor = clWhite
@@ -377,6 +385,7 @@ inherited frmBTournirs: TfrmBTournirs
           FooterFont.Height = -11
           FooterFont.Name = 'MS Sans Serif'
           FooterFont.Style = []
+          RowDetailPanel.Color = clBtnFace
           TabOrder = 2
           TitleFont.Charset = DEFAULT_CHARSET
           TitleFont.Color = clWindowText
@@ -419,6 +428,8 @@ inherited frmBTournirs: TfrmBTournirs
               FieldName = 'USED_DT'
               Footers = <>
             end>
+          object RowDetailData: TRowDetailPanelControlEh
+          end
         end
       end
       object tsBEvents: TTabSheet
@@ -435,6 +446,7 @@ inherited frmBTournirs: TfrmBTournirs
           ColumnDefValues.Title.Alignment = taCenter
           ColumnDefValues.Title.TitleButton = True
           ColumnDefValues.Title.ToolTips = True
+          DataGrouping.GroupLevels = <>
           DataSource = dsBEvents
           Flat = True
           FooterColor = clWindow
@@ -443,6 +455,7 @@ inherited frmBTournirs: TfrmBTournirs
           FooterFont.Height = -11
           FooterFont.Name = 'MS Sans Serif'
           FooterFont.Style = []
+          RowDetailPanel.Color = clBtnFace
           TabOrder = 0
           TitleFont.Charset = DEFAULT_CHARSET
           TitleFont.Color = clWindowText
@@ -528,6 +541,8 @@ inherited frmBTournirs: TfrmBTournirs
               FieldName = 'IGNORE_FLG'
               Footers = <>
             end>
+          object RowDetailData: TRowDetailPanelControlEh
+          end
         end
       end
       object tsAEvents: TTabSheet
@@ -541,6 +556,7 @@ inherited frmBTournirs: TfrmBTournirs
           Align = alClient
           AutoFitColWidths = True
           Color = clBtnFace
+          DataGrouping.GroupLevels = <>
           DataSource = dsAEvents
           Flat = True
           FooterColor = clWindow
@@ -549,6 +565,7 @@ inherited frmBTournirs: TfrmBTournirs
           FooterFont.Height = -11
           FooterFont.Name = 'MS Sans Serif'
           FooterFont.Style = []
+          RowDetailPanel.Color = clBtnFace
           TabOrder = 0
           TitleFont.Charset = DEFAULT_CHARSET
           TitleFont.Color = clWindowText
@@ -639,13 +656,15 @@ inherited frmBTournirs: TfrmBTournirs
               Footers = <>
               Visible = False
             end>
+          object RowDetailData: TRowDetailPanelControlEh
+          end
         end
       end
     end
   end
   inherited dckRight: TTBXMultiDock
     Left = 764
-    Height = 180
+    Height = 173
   end
   inherited tblMain: TpFIBDataSet
     UpdateSQL.Strings = (

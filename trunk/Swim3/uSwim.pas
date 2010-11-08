@@ -8,9 +8,9 @@ uses
   StdCtrls, Masks, ComCtrls,
   GridsEh, DBGridEh, ExtCtrls, ImgList, TB2ExtItems, TBXExtItems,
   TBXDkPanels, TB2ToolWindow, Menus, gsFileVersionInfo,
-  DBCtrlsEh, GvVars,
+  DBCtrlsEh, GvVars, uSwimCommon,
   GvWebScript, IdAntiFreezeBase, IdAntiFreeze, FIBDataSet, pFIBDataSet,
-  Mask, IdBaseComponent, DB, DBGridEhGrouping;
+  Mask, IdBaseComponent, DB, IdComponent, NativeXml, DBGridEhGrouping;
 
 const
   dsIgnore=0;
@@ -193,9 +193,9 @@ type
     LockedPresent: Boolean;
     USportsCount, UTournirsCount, UGamersCount: Integer;
     procedure UpdateState(Parent: TTBCustomItem; ShowState, BetState: Integer);
-    function GetDownloadState(Bookmaker_Id: Integer): Integer;
-    function GetShowState(Bookmaker_Id: Integer): Integer;
-    function GetBetState(Bookmaker_Id: Integer): Integer;
+    function GetDownloadState(Booker_Name: String): Integer;
+    function GetShowState(Booker_Id: integer): Integer;
+    function GetBetState(Booker_Id: integer): Integer;
     procedure RefreshData;
   private
     { Private declarations }
@@ -210,8 +210,33 @@ type
     { Public declarations }
   end;
 
+type
+  TIDMSwimImplement = class(TInterfacedObject, IDMSwim)
+    function Booker_Name(BookerId: Integer): String;
+    function Path: TVarList;
+    procedure UpdateStatusBar(aText: String);
+    procedure StepProgressBar;
+    procedure InitProgressBar(aMaxValue: Integer);
+
+    function GetASportId_byBSportName(BookerId: Integer; BSportName, TournirName: String;
+      var CountrySign: String; var BSportId, TournirId, Ways: Integer): integer;
+
+    procedure FillEventParam(TournirId: Integer; EventDtTm: TDateTime;
+              Gamer1Name, Gamer2Name: String);
+    procedure ClearBetParam;
+    function PutEvent: Integer;
+    procedure PutBet(IndexNo: Integer; BetTypeSign: String; tr: TXmlNode; Ways: Integer); overload;
+    procedure PutBet(IndexNo: Integer; BetTypeSign: String; Koef: String; Ways: Integer); overload;
+    procedure PutFora(IndexNo: Integer; BetTypeSign: String; tr: TXmlNode); overload;
+    procedure PutFora(IndexNo: Integer; BetTypeSign, Value, Koef: String); overload;
+    procedure PutTotal(IndexNo: Integer; BetTypeSign: String; tr: TXmlNode); overload;
+    procedure PutTotal(IndexNo: Integer; BetTypeSign, Value, Koef: String); overload;
+  end;
+
+
 var
   fSwim: TfSwim;
+  dmSwimImpl: IDMSwim;
 
 implementation
 
@@ -225,6 +250,95 @@ uses
 
 {$R *.dfm}
 
+{ TIDMSwimImplement }
+
+function TIDMSwimImplement.Booker_Name(BookerId: Integer): String;
+begin
+  Result:= dmSwim.GetBookerName(BookerId);
+end;
+
+procedure TIDMSwimImplement.ClearBetParam;
+begin
+  dmSwim.ClearBetParam;
+end;
+
+procedure TIDMSwimImplement.FillEventParam(TournirId: Integer;
+  EventDtTm: TDateTime; Gamer1Name, Gamer2Name: String);
+begin
+  dmSwim.FillEventParam(TournirId, EventDtTm, Gamer1Name, Gamer2Name);
+end;
+
+function TIDMSwimImplement.GetASportId_byBSportName(BookerId: Integer;
+  BSportName, TournirName: String; var CountrySign: String; var BSportId,
+  TournirId, Ways: Integer): integer;
+begin
+  Result:= dmSwim.GetASportId_byBSportName(BookerId, BSportName, TournirName,
+    CountrySign, BSportId, TournirId, Ways);
+end;
+
+procedure TIDMSwimImplement.InitProgressBar(aMaxValue: Integer);
+begin
+  fSwim.ProgressBar.Position:= 0;
+  fSwim.ProgressBar.Max:= aMaxValue;
+end;
+
+function TIDMSwimImplement.Path: TVarList;
+begin
+  Result:= Path;
+end;
+
+procedure TIDMSwimImplement.PutBet(IndexNo: Integer; BetTypeSign: String;
+  tr: TXmlNode; Ways: Integer);
+begin
+  dmSwim.PutBet(IndexNo, BetTypeSign, tr, Ways);
+end;
+
+procedure TIDMSwimImplement.PutBet(IndexNo: Integer; BetTypeSign,
+  Koef: String; Ways: Integer);
+begin
+  dmSwim.PutBet(IndexNo, BetTypeSign, Koef, Ways);
+end;
+
+function TIDMSwimImplement.PutEvent: Integer;
+begin
+  Result:= dmSwim.PutEvent;
+end;
+
+procedure TIDMSwimImplement.PutFora(IndexNo: Integer; BetTypeSign, Value,
+  Koef: String);
+begin
+  dmSwim.PutFora(IndexNo, BetTypeSign, Value, Koef);
+end;
+
+procedure TIDMSwimImplement.PutFora(IndexNo: Integer; BetTypeSign: String;
+  tr: TXmlNode);
+begin
+  dmSwim.PutFora(IndexNo, BetTypeSign, tr);
+end;
+
+procedure TIDMSwimImplement.PutTotal(IndexNo: Integer; BetTypeSign, Value,
+  Koef: String);
+begin
+  dmSwim.PutTotal(IndexNo, BetTypeSign, Value, Koef);
+end;
+
+procedure TIDMSwimImplement.PutTotal(IndexNo: Integer; BetTypeSign: String;
+  tr: TXmlNode);
+begin
+  dmSwim.PutTotal(IndexNo, BetTypeSign, tr);
+end;
+
+procedure TIDMSwimImplement.StepProgressBar;
+begin
+  fSwim.ProgressBar.StepIt;
+end;
+
+procedure TIDMSwimImplement.UpdateStatusBar(aText: String);
+begin
+  fSwim.sb.SimpleText:= aText;
+end;
+
+
 procedure TfSwim.FormCreate(Sender: TObject);
 var
   Bookmakers, St: String;
@@ -232,6 +346,55 @@ var
   Btn: TTBXItem;
   State: TTBXSubmenuItem;
   I: Integer;
+  sl: TStringList;
+  cnt: String;
+
+procedure LoadPlugin(FileName: string);
+var
+  PluginInfo: function: integer; stdcall; 
+  handle: THandle;
+  Booker_Id: Integer;
+  Booker_Name, Booker_Caption: string;
+  BookerIdx: string;
+  BookerName: string;
+begin
+  handle:= LoadLibrary(Pchar(FileName));
+  try
+    if handle <> 0 then
+    begin
+      @PluginInfo:= GetProcAddress(handle,'BookerId');
+      if @PluginInfo <> nil then
+        Booker_Id:= PluginInfo
+      else
+        Exit;
+      BookerName:= dmSwim.getBookerName(Booker_Id);
+
+      vlState.Inc('Count');
+      vlState[vlState['Count']]:= BookerName;
+      vlState[BookerName+'.Name']:= BookerName;
+      vlState[BookerName+'.Caption']:= BookerName;
+      vlState.AsInteger[BookerName+'.Id']:= Booker_Id;
+      vlState[BookerName+'.Plugin']:= FileName;
+      vlState[BookerName+'.Index']:= vlState['Count'];
+      // Кнопки верхнего тулбара
+      Btn:= DuplicateComponents(btnDefault) as TTBXItem;
+      Btn.Caption:= BookerName;
+      Btn.Tag:= Booker_Id;
+      Btn.ImageIndex:= GetDownloadState(BookerName);
+      ToolbarTop.Items.Insert(i, Btn);
+      // Кнопки нижнего тулбара
+      State:= DuplicateComponents(StateDefault) as TTBXSubmenuItem;
+      State.Tag:= Booker_id;
+      State.Caption:= BookerName;
+      ToolbarBottom.Items.Add(State);
+      UpdateState(State, GetShowState(Booker_Id), GetBetState(Booker_Id));
+
+    end;
+  finally
+    FreeLibrary(handle);
+  end;
+end;
+
 begin
   DBGridEhCenter.FilterEditCloseUpApplyFilter:= true;
   vlProxies:= TVarList.Create;
@@ -246,10 +409,7 @@ begin
   finally
     vlProxies.Free;
   end;
-  vlState:= TVarList.Create;
-  vlState.LoadSectionFromIniFile(ProjectIniFileName, 'State');
-  Caption:= Format('Вилочки. Version %s',
-    [Version.FileVersion]);
+
   InProcess:= true;
   try
     cbHour.ItemIndex:= 3;
@@ -257,39 +417,21 @@ begin
     InProcess:= false;
   end;
 
+  vlState:= TVarList.Create;
+  vlState.LoadSectionFromIniFile(ProjectIniFileName, 'State');
+  Caption:= Format('Вилочки. Version %s',
+    [Version.FileVersion]);
+  vlState['Count']:= '0';
+  sl:= TStringList.Create;
+  try
+    GvinFile.ListFileName(sl, '*.swm', false);
+    for i:= 0 to sl.Count - 1 do
+      LoadPlugin(sl[i]);
+  finally
+    sl.Free;
+  end;
   btnDefault.Visible:= false;
   StateDefault.Visible:= false;
-  vlBookmaker:= TVarList.Create;
-  try
-    Bookmakers:= Path['Bookmakers'];
-    i:=0;
-    While Bookmakers<>'' do
-    begin
-      St:= TakeFront5(Bookmakers, [',']);
-      Inc(i);
-      vlState.AsInteger['Count']:= i;
-      vlBookmaker.LoadSectionFromIniFile(ProjectIniFileName, St);
-      vlState.AddStringsAsArea(IntToStr(i), vlBookmaker);
-      vlState.AsInteger['Booker'+vlBookmaker['Tag']+'.Index']:= i;
-      // Кнопки верхнего тулбара
-      Btn:= DuplicateComponents(btnDefault) as TTBXItem;
-      Btn.Caption:= vlBookmaker['Caption'];
-      Btn.Tag:= vlBookmaker.AsInteger['Tag'];
-      Btn.Visible:= vlBookmaker.AsBoolean['Visible'];
-      Btn.ImageIndex:= GetDownloadState(Btn.Tag);
-      ToolbarTop.Items.Insert(i, Btn);
-      // Кнопки нижнего тулбара
-      State:= DuplicateComponents(StateDefault) as TTBXSubmenuItem;
-      State.Tag:= vlBookmaker.AsInteger['Tag'];
-      State.Caption:= vlBookmaker['Caption'];
-      State.Visible:= vlBookmaker.AsBoolean['Visible'];
-      ToolbarBottom.Items.Add(State);
-      UpdateState(State, GetShowState(State.Tag), GetBetState(State.Tag));
-    end;
-  finally
-    vlBookmaker.Free;
-  end;
-
 end;
 
 procedure TfSwim.FormDestroy(Sender: TObject);
@@ -306,18 +448,19 @@ end;
 
 procedure TfSwim.actDownloadAllLinesExecute(Sender: TObject);
 var
-  i, BookerId, DownloadState: Integer;
+  i, DownloadState: Integer;
   mr: Word;
-procedure UpdateHint(BookerId: Integer);
+  Booker_Name, Booker_Caption: string;
+  PluginExec: procedure (aDMSwim: IDMSwim);
+  Handle: THandle;
+
+procedure UpdateHint(Booker_Name: String);
 var
   btn: TTBCustomItem;
-  sIdx: String;
-  Idx: Integer;
 begin
-  Idx:= vlState.AsInteger[Format('Booker%u.Index', [BookerId])];
-  sIdx:= IntToStr(Idx);
-  btn:= ToolbarTop.Items[Idx];
-  btn.Hint:= Format('%s (%u)', [vlState[sIdx+'.Caption'], dmSwim.GetBetsCount(BookerId)]);
+  btn:= ToolbarTop.Items[vlState.AsInteger[Booker_Name+'.Index']];
+  btn.Hint:= Format('%s (%u)', [vlState[Booker_Name+'.Caption'],
+    dmSwim.GetBetsCount(vlState.AsInteger[Booker_Name+'.Id'])]);
 end;
 
 begin
@@ -328,38 +471,55 @@ begin
   sb.SimpleText:= 'Грузим html';
   For i:= 0 to vlState.AsInteger['Count'] do
   begin
-    if Not vlState.AsBoolean[Format('%u.Visible', [i])] then continue;
-    BookerId:= vlState.AsInteger[Format('%u.Tag', [i])];
-    DownloadState:= GetDownloadState(BookerId);
+    Booker_Name:= vlState[IntToStr(i)];
+    Booker_Caption:= vlState[Booker_Name+'.Caption'];
+    DownloadState:= GetDownloadState(Booker_Name);
     if DownloadState = 0 then continue;
-    try
-      Case BookerId of
-//        GudBet_Id: DownloadGudBetLine(DownloadState);
-        BetCity_Id: DownloadBetCityLine(DownloadState);
-        Favorit_Id: DownloadFavoriteLine(DownloadState);
-        Marathon_Id: DownloadMarathonLine(DownloadState);
-        Parimatch_Id: DownloadParimatchLine(DownloadState);
-        Ucon_Id: DownloadUconLine(DownloadState);
-        BetBy_Id: DownloadBetByLine(DownloadState);
-        PlusMinus_Id: DownloadPlusMinusLine(DownloadState);
-        BWin_Id: DownloadBWinLine(DownloadState);
-        BetAtHome_Id: DownloadBetAtHomeLine(DownloadState);
-//        LeonBet_Id: DownloadLeonBetLine(DownloadState);
-        Expekt_Id: DownloadExpektLine(DownloadState);
-        Buker_Id: DownloadBukerLine(DownloadState);
-      end;
-    except
+
+    sb.SimpleText:= Format('Грузим линию %s', [Booker_Caption]);
+    SetAppHeader(Booker_Caption);
+    if DownloadState=2 then
+    begin
+      DeleteFiles(Path['Lines']+Booker_Name+'*.*');
+      GvWebScript.ScriptFileName:= Path['Script']+Booker_Name+'.xml';
+      GvWebScript.Vars.AddStringsAsArea('Path', Path);
+      GvWebScript.Run;
     end;
-    dmSwim.CalculateSwim(BookerId);
+
+    handle := LoadLibrary(PChar(vlState[Booker_Name+'.Plugin']));
+    try
+      @PluginExec := GetProcAddress(handle,'RecognizeLine');
+      PluginExec(dmSwimImpl);
+    finally
+      FreeLibrary(handle);
+    end;
+
+//    try
+//      Case BookerId of
+//        GudBet_Id: DownloadGudBetLine(DownloadState);
+//        BetCity_Id: DownloadBetCityLine(DownloadState);
+//        Favorit_Id: DownloadFavoriteLine(DownloadState);
+//        Marathon_Id: DownloadMarathonLine(DownloadState);
+//        Parimatch_Id: DownloadParimatchLine(DownloadState);
+//        Ucon_Id: DownloadUconLine(DownloadState);
+//        BetBy_Id: DownloadBetByLine(DownloadState);
+//        PlusMinus_Id: DownloadPlusMinusLine(DownloadState);
+//        BWin_Id: DownloadBWinLine(DownloadState);
+//        BetAtHome_Id: DownloadBetAtHomeLine(DownloadState);
+//        Expekt_Id: DownloadExpektLine(DownloadState);
+//        Buker_Id: DownloadBukerLine(DownloadState);
+//      end;
+//    except
+//    end;
+    dmSwim.CalculateSwim(vlState.AsInteger[Booker_Name+'.Id']);
     UpdateUnknownCount;
     RefreshSwimEvents;
-    UpdateHint(BookerId);
+    UpdateHint(Booker_Name);
   end;
   SetAppHeader('Расчет...');
   dmSwim.DeleteEmptyEvents;
   UpdateUnknownCount;
   sb.SimpleText:= 'Все линии загружены и распознаны';
-//  SetAppHeader(Format('%u - Готово.', [tblSwims.RecordCount]));
 end;
 
 procedure TfSwim.RefreshSwimEvents;
@@ -602,8 +762,9 @@ end;
 procedure TfSwim.UpdateState(Parent: TTBCustomItem; ShowState, BetState: Integer);
 var
   i: Integer;
-
+  BookerName: string;
 begin
+  BookerName:= vlState(Parent.I
   if BetState<0 then
     BetState:= GetBetState(Parent.Tag)
   else
@@ -687,19 +848,21 @@ begin
   actChangeK2.Enabled:= Not tblSwims.Eof;
 end;
 
-function TfSwim.GetBetState(Bookmaker_Id: Integer): Integer;
+function TfSwim.GetBetState(Booker_Id: Integer): Integer;
+var
+  BookerName: string;
 begin
-  result:= vlState.AsInteger[Format('%u.Bet', [Bookmaker_Id])];
+  result:= vlState.AsInteger[Format('%s.Bet', [vlState[IntToStr(Booker_Id)]])];
 end;
 
-function TfSwim.GetDownloadState(Bookmaker_Id: Integer): Integer;
+function TfSwim.GetDownloadState(Booker_Name: String): Integer;
 begin
-  result:= vlState.AsInteger[Format('%u.Download', [Bookmaker_Id])];
+  result:= vlState.AsInteger[Format('%s.Download', [Booker_Name])];
 end;
 
-function TfSwim.GetShowState(Bookmaker_Id: Integer): Integer;
+function TfSwim.GetShowState(Booker_Id: Integer): Integer;
 begin
-  result:= vlState.AsInteger[Format('%u.Show', [Bookmaker_Id])];
+  result:= vlState.AsInteger[Format('%s.Show', [vlState[IntToStr(Booker_Id)]])];
 end;
 
 procedure TfSwim.btnBreakClick(Sender: TObject);
@@ -732,385 +895,374 @@ begin
     Application.Title:= Format('[%s]', [Str]);
 end;
 
-procedure TfSwim.DownloadMarathonLine(DownloadState: Integer);
-var
-  Html: String;
-begin
-  sb.SimpleText:= 'Грузим линию Marathon';
-  SetAppHeader(Marathon_Name);
-  if DownloadState=2 then
-  begin
-    DeleteFiles(Path['Lines']+'Marathon*.*');
-    GvWebScript.ScriptFileName:= Path['Script']+'Marathon.xml';
-    GvWebScript.Vars.AddStringsAsArea('Path', Path);
-    GvWebScript.Run;
-  end;
-  Html:= LoadFileAsString(Path['Lines']+'Marathon.html');
-  if Html<>'' then
-  begin
-    dmSwim.DeleteBookersBet(Marathon_Id);
-    RecognizeMarathonLine(Html, ProgressBar, sb);
-  end;
-end;
-
-procedure TfSwim.DownloadParimatchLine(DownloadState: Integer);
-var
-  Html, BookerName: String;
-begin
-  sb.SimpleText:= 'Грузим линию Parimatch';
-  BookerName:= 'Parimatch';
-  SetAppHeader(Parimatch_Name);
-  if DownloadState=2 then
-  begin
-    DeleteFiles(Path['Lines']+BookerName+'*.*');
-    GvWebScript.ScriptFileName:= Path['Script']+BookerName+'.xml';
-    GvWebScript.Vars.AddStringsAsArea('Path', Path);
-    GvWebScript.Run;
-  end;
-  html:= LoadFileAsString(Path['Lines']+BookerName+'.html');
-  if Html<>'' then
-  begin
-    dmSwim.DeleteBookersBet(Parimatch_Id);
-    RecognizeParimatchLine(Html, ProgressBar, sb);
-  end;
-end;
-
-procedure TfSwim.DownloadUconLine(DownloadState: Integer);
-var
-  Html: String;
-begin
-  sb.SimpleText:= 'Грузим линию Ucon';
-  SetAppHeader(Ucon_Name);
-  if DownloadState=2 then
-  begin
-    DeleteFiles(Path['Lines']+'Ucon*.*');
-    GvWebScript.ScriptFileName:= Path['Script']+'Ucon.xml';
-    GvWebScript.Vars.AddStringsAsArea('Path', Path);
-    GvWebScript.Run;
-  end;
-  Html:= LoadFileAsString(Path['Lines']+'Ucon.html');
-  if Html<>'' then
-  begin
-    dmSwim.DeleteBookersBet(Ucon_Id);
-    RecognizeUconLine(Html, ProgressBar, sb);
-  end;
-end;
-
-procedure TfSwim.DownloadBetCityLine(DownloadState: Integer);
-var
-  Html: String;
-begin
-  sb.SimpleText:= 'Грузим линию BetCity';
-  SetAppHeader(BetCity_Name);
-  if DownloadState=2 then
-  begin
-    DeleteFiles(Path['Lines']+'BetCity*.*');
-    GvWebScript.ScriptFileName:= Path['Script']+'BetCity.xml';
-    GvWebScript.Vars.AddStringsAsArea('Path', Path);
-    GvWebScript.Run;
-  end;
-  html:= LoadFileAsString(Path['Lines']+'BetCity.html');
-  if Html<>'' then
-  begin
-    dmSwim.DeleteBookersBet(BetCity_Id);
-    RecognizeBetCityLine(Html, ProgressBar, sb);
-  end;
-end;
-
-procedure TfSwim.DownloadFavoriteLine(DownloadState: Integer);
-procedure RecognizePart(SportName: String);
-var
-  FName, Html: String;
-begin
-  FName:= Format('%sfavorit.%s.html', [Path['Lines'], SportName]);
-  if FileExists(FName) then
-  begin
-    Html:= LoadFileAsString(FName);
-    if Html<>'' then
-      RecognizeFavoritLine(Html, ProgressBar, sb);
-  end;
-end;
-
-var
-  Html: String;
-begin
-  sb.SimpleText:= 'Грузим линию Favorit';
-  SetAppHeader(Favorit_Name);
-  if DownloadState=2 then
-  try
-    DeleteFiles(Path['Lines']+'Favorit*.*');
-    GvWebScript.ScriptFileName:= Path['Script']+'Favorit.xml';
-    GvWebScript.Vars.AddStringsAsArea('Path', Path);
-    GvWebScript.Run;
-  except
-  end;
-  dmSwim.DeleteBookersBet(Favorit_Id);
-  RecognizePart('Футбол');
-  RecognizePart('Теннис');
-  RecognizePart('Баскетбол');
-  RecognizePart('Волейбол');
-  RecognizePart('АмФутбол');
-  RecognizePart('Гандбол');
-  RecognizePart('Футзал');
-end;
-
-procedure TfSwim.DownloadBetByLine(DownloadState: Integer);
-var
-  Html: String;
-begin
-  sb.SimpleText:= 'Грузим линию BetBy';
-  SetAppHeader(BetBy_Name);
-  if DownloadState=2 then
-  begin
-    DeleteFiles(Path['Lines']+'BetBy*.*');
-    GvWebScript.ScriptFileName:= Path['Script']+'BetBy.xml';
-    GvWebScript.Vars.AddStringsAsArea('Path', Path);
-    GvWebScript.Run;
-  end;
-  Html:= LoadFileAsString(Path['Lines']+'BetBy.html');
-  if Html<>'' then
-  begin
-    dmSwim.DeleteBookersBet(BetBy_Id);
-    RecognizeBetByLine(Html, ProgressBar, sb);
-  end;
-end;
-
-procedure TfSwim.DownloadPlusMinusLine(DownloadState: Integer);
-procedure RecognizePart(SportName: String);
-var
-  FName, Html: String;
-begin
-  FName:= Format('%splusminus.%s.html', [Path['Lines'], SportName]);
-  if FileExists(FName) then
-  begin
-    Html:= LoadFileAsString(FName);
-    if Html<>'' then
-      RecognizePlusMinusLine(Html, ProgressBar, sb);
-  end;
-end;
-
-var
-  Html: String;
-begin
-  sb.SimpleText:= 'Грузим линию PlusMinus';
-  SetAppHeader(PlusMinus_Name);
-  if DownloadState=2 then
-  try
-    DeleteFiles(Path['Lines']+'PlusMinus*.*');
-    GvWebScript.ScriptFileName:= Path['Script']+'PlusMinus.xml';
-    GvWebScript.Vars.AddStringsAsArea('Path', Path);
-    GvWebScript.Run;
-  except
-  end;
-  dmSwim.DeleteBookersBet(PlusMinus_Id);
-  RecognizePart('Футбол');
-  RecognizePart('Теннис');
-  RecognizePart('Баскетбол');
-  RecognizePart('Волейбол');
-  RecognizePart('Гандбол');
-  RecognizePart('Другие');
-end;
-
-procedure TfSwim.DownloadGudBetLine(DownloadState: Integer);
+//procedure TfSwim.DownloadMarathonLine(DownloadState: Integer);
 //var
 //  Html: String;
-begin
-{  sb.SimpleText:= 'Грузим линию GudBet';
-  SetAppHeader(GudBet_Name);
-  if DownloadState=2 then
-  begin
-    DeleteFiles(Path['Lines']+'GudBet*.*');
-    GvWebScript.ScriptFileName:= Path['Script']+'GudBet.xml';
-    GvWebScript.Vars.AddStringsAsArea('Path', Path);
-    GvWebScript.Run;
-  end;
-  html:= LoadFileAsString(Path['Lines']+'GudBet.html');
-  if Html<>'' then
-  try
-    PrepareLine(Line, GudBet_Id);
-    Html:= KillParazit(Path['Script']+'Parazits.txt', Html);
-    RecognizeGudBetLine(Html, Line, sb);
-    dmSwim.RecognizeLine(Line, ProgressBar);
-  finally
-    Line.XmlFormat:= xfReadable;
-    Line.SaveToFile(Path['Bets']+'GudBet.xml');
-  end;}
-end;
+//begin
+//  sb.SimpleText:= 'Грузим линию Marathon';
+//  SetAppHeader(Marathon_Name);
+//  if DownloadState=2 then
+//  begin
+//    DeleteFiles(Path['Lines']+'Marathon*.*');
+//    GvWebScript.ScriptFileName:= Path['Script']+'Marathon.xml';
+//    GvWebScript.Vars.AddStringsAsArea('Path', Path);
+//    GvWebScript.Run;
+//  end;
+//  Html:= LoadFileAsString(Path['Lines']+'Marathon.html');
+//  if Html<>'' then
+//  begin
+//    dmSwim.DeleteBookersBet(Marathon_Id);
+//    RecognizeMarathonLine(Html, ProgressBar, sb);
+//  end;
+//end;
 
-procedure TfSwim.DownloadBWinLine(DownloadState: Integer);
-procedure RecognizePart(SportName, LineType: String);
-var
-  FName, Html: String;
-begin
-  FName:= Format('%sbwin.%s.%s.html', [Path['Lines'], SportName, LineType]);
-  if FileExists(FName) then
-  begin
-    Html:= LoadFileAsString(FName);
-    if Html<>'' then
-      RecognizeBWinLine(Html, SportName, LineType, ProgressBar, sb);
-  end;
-end;
+//procedure TfSwim.DownloadParimatchLine(DownloadState: Integer);
+//var
+//  Html, BookerName: String;
+//begin
+//  sb.SimpleText:= 'Грузим линию Parimatch';
+//  BookerName:= 'Parimatch';
+//  SetAppHeader(Parimatch_Name);
+//  if DownloadState=2 then
+//  begin
+//    DeleteFiles(Path['Lines']+BookerName+'*.*');
+//    GvWebScript.ScriptFileName:= Path['Script']+BookerName+'.xml';
+//    GvWebScript.Vars.AddStringsAsArea('Path', Path);
+//    GvWebScript.Run;
+//  end;
+//  html:= LoadFileAsString(Path['Lines']+BookerName+'.html');
+//  if Html<>'' then
+//  begin
+//    dmSwim.DeleteBookersBet(Parimatch_Id);
+//    RecognizeParimatchLine(Html, ProgressBar, sb);
+//  end;
+//end;
 
-begin
-  sb.SimpleText:= 'Грузим линию BWin';
-  SetAppHeader(BWin_Name);
-  if DownloadState=2 then
-  try
-    DeleteFiles(Path['Lines']+'bwin*.*');
-    GvWebScript.ScriptFileName:= Path['Script']+'bwin.xml';
-    GvWebScript.Vars.AddStringsAsArea('Path', Path);
-    GvWebScript.Run;
-  except
-  end;
-  dmSwim.DeleteBookersBet(BWin_Id);
-  RecognizePart('Теннис', '1_2');
-  RecognizePart('Теннис', 'TOTAL');
-  RecognizePart('Футбол', '1_X_2');
-  RecognizePart('Футбол', '1X_X2_12');
-  RecognizePart('Футбол', 'TOTAL');
-  RecognizePart('Футзал', '1_X_2');
-  RecognizePart('Футзал', 'TOTAL');
-  RecognizePart('Гандбол', '1_X_2');
-  RecognizePart('Гандбол', 'TOTAL');
-  RecognizePart('Баскетбол', '1_2_DEF');
-  RecognizePart('Баскетбол', 'TOTAL');
-  RecognizePart('Волейбол', '1_2');
-  RecognizePart('Волейбол', 'TOTAL');
-  RecognizePart('Бейсбол', '1_2_DEF');
-  RecognizePart('Бейсбол', 'TOTAL');
-  RecognizePart('АмФутбол', '1_2_DEF');
-  RecognizePart('АмФутбол', 'TOTAL');
-end;
-
-procedure TfSwim.DownloadBetAtHomeLine(DownloadState: Integer);
-procedure RecognizePart(SportName, LineType: String);
-var
-  FName, Html: String;
-begin
-  FName:= Format('%sBetAtHome.%s.%s.html', [Path['Lines'], SportName, LineType]);
-  if FileExists(FName) then
-  begin
-    Html:= LoadFileAsString(FName);
-    if Html<>'' then
-      RecognizeBetAtHomeLine(Html, SportName, LineType, ProgressBar, sb);
-  end;
-end;
-begin
-  sb.SimpleText:= 'Грузим линию BetAtHome';
-  SetAppHeader(BetAtHome_Name);
-  if DownloadState=2 then
-  try
-    DeleteFiles(Path['Lines']+'BetAtHome*.*');
-    GvWebScript.ScriptFileName:= Path['Script']+'BetAtHome.xml';
-    GvWebScript.Vars.AddStringsAsArea('Path', Path);
-    GvWebScript.Run;
-  except
-  end;
-  RecognizePart('Футбол', '1_X_2');
-  RecognizePart('Футбол', '1X_X2_12');
-  RecognizePart('Футбол', 'TOTAL');
-  RecognizePart('Теннис', '1_2');
-  RecognizePart('Теннис', 'FORA');
-  RecognizePart('Футзал', '1_X_2');
-  RecognizePart('Футзал', 'TOTAL');
-  RecognizePart('Гандбол', '1_X_2');
-  RecognizePart('Гандбол', 'TOTAL');
-  RecognizePart('Баскетбол', '1_2_DEF');
-  RecognizePart('Баскетбол', 'TOTAL');
-  RecognizePart('Волейбол', '1_2');
-  RecognizePart('Волейбол', 'TOTAL');
-end;
-
-procedure TfSwim.DownloadLeonBetLine(DownloadState: Integer);
+//procedure TfSwim.DownloadUconLine(DownloadState: Integer);
 //var
 //  Html: String;
-begin
-{  sb.SimpleText:= 'Грузим линию LeonBet';
-  SetAppHeader(LeonBet_Name);
-  if DownloadState=2 then
-  begin
-    DeleteFiles(Path['Lines']+'LeonBet*.*');
-    GvWebScript.ScriptFileName:= Path['Script']+'LeonBet.xml';
-    GvWebScript.Vars.AddStringsAsArea('Path', Path);
-    GvWebScript.Run;
-  end;
-  html:= LoadFileAsString(Path['Lines']+'LeonBet.html');
-  if Html<>'' then
-  try
-    PrepareLine(Line, LeonBet_Id);
-    Html:= KillParazit(Path['Script']+'Parazits.txt', Html);
-    RecognizeLeonBetLine(Html, Line, sb);
-    dmSwim.RecognizeLine(Line, ProgressBar);
-  finally
-    Line.XmlFormat:= xfReadable;
-    Line.SaveToFile(Path['Bets']+'LeonBet.xml');
-  end;}
-end;
+//begin
+//  sb.SimpleText:= 'Грузим линию Ucon';
+//  SetAppHeader(Ucon_Name);
+//  if DownloadState=2 then
+//  begin
+//    DeleteFiles(Path['Lines']+'Ucon*.*');
+//    GvWebScript.ScriptFileName:= Path['Script']+'Ucon.xml';
+//    GvWebScript.Vars.AddStringsAsArea('Path', Path);
+//    GvWebScript.Run;
+//  end;
+//  Html:= LoadFileAsString(Path['Lines']+'Ucon.html');
+//  if Html<>'' then
+//  begin
+//    dmSwim.DeleteBookersBet(Ucon_Id);
+//    RecognizeUconLine(Html, ProgressBar, sb);
+//  end;
+//end;
 
-procedure TfSwim.DownloadExpektLine(DownloadState: Integer);
-procedure RecognizePart(SportName, LineType: String);
-var
-  FName, Html: String;
-begin
-  FName:= Format('%sexpekt.%s.%s.html', [Path['Lines'], SportName, LineType]);
-  if FileExists(FName) then
-  begin
-    Html:= LoadFileAsString(FName);
-    if Html<>'' then
-      RecognizeExpektLine(Html, SportName, LineType, ProgressBar, sb);
-  end;
-end;
-begin
-  sb.SimpleText:= 'Грузим линию Expekt';
-  SetAppHeader(Expekt_Name);
-  if DownloadState=2 then
-  begin
-    DeleteFiles(Path['Lines']+'expekt*.*');
-    GvWebScript.ScriptFileName:= Path['Script']+'expekt.xml';
-    GvWebScript.Vars.AddStringsAsArea('Path', Path);
-    GvWebScript.Run;
-  end;
-  dmSwim.DeleteBookersBet(Expekt_Id);
-  RecognizePart('Футбол', '1_X_2');
-  RecognizePart('Футбол', '1X_X2_12');
-//  RecognizePart('Футбол', 'TOTAL');
-//    RecognizePart(Line, 'Футзал', '1_X_2');
-//    RecognizePart(Line, 'Футзал', 'TOTAL');
-  RecognizePart('Гандбол', '1_X_2');
-//  RecognizePart('Гандбол', 'TOTAL');
-  RecognizePart('Баскетбол', '1_2');
-//  RecognizePart('Баскетбол', 'TOTAL');
-  RecognizePart('Теннис', '1_2');
+//procedure TfSwim.DownloadBetCityLine(DownloadState: Integer);
+//var
+//  Html: String;
+//begin
+//  sb.SimpleText:= 'Грузим линию BetCity';
+//  SetAppHeader(BetCity_Name);
+//  if DownloadState=2 then
+//  begin
+//    DeleteFiles(Path['Lines']+'BetCity*.*');
+//    GvWebScript.ScriptFileName:= Path['Script']+'BetCity.xml';
+//    GvWebScript.Vars.AddStringsAsArea('Path', Path);
+//    GvWebScript.Run;
+//  end;
+//  html:= LoadFileAsString(Path['Lines']+'BetCity.html');
+//  if Html<>'' then
+//  begin
+//    dmSwim.DeleteBookersBet(BetCity_Id);
+//    RecognizeBetCityLine(Html, ProgressBar, sb);
+//  end;
+//end;
+
+//procedure TfSwim.DownloadFavoriteLine(DownloadState: Integer);
+//procedure RecognizePart(SportName: String);
+//var
+//  FName, Html: String;
+//begin
+//  FName:= Format('%sfavorit.%s.html', [Path['Lines'], SportName]);
+//  if FileExists(FName) then
+//  begin
+//    Html:= LoadFileAsString(FName);
+//    if Html<>'' then
+//      RecognizeFavoritLine(Html, ProgressBar, sb);
+//  end;
+//end;
+//
+//var
+//  Html: String;
+//begin
+//  sb.SimpleText:= 'Грузим линию Favorit';
+//  SetAppHeader(Favorit_Name);
+//  if DownloadState=2 then
+//  try
+//    DeleteFiles(Path['Lines']+'Favorit*.*');
+//    GvWebScript.ScriptFileName:= Path['Script']+'Favorit.xml';
+//    GvWebScript.Vars.AddStringsAsArea('Path', Path);
+//    GvWebScript.Run;
+//  except
+//  end;
+//  dmSwim.DeleteBookersBet(Favorit_Id);
+//  RecognizePart('Футбол');
+//  RecognizePart('Теннис');
+//  RecognizePart('Баскетбол');
+//  RecognizePart('Волейбол');
+//  RecognizePart('АмФутбол');
+//  RecognizePart('Гандбол');
+//  RecognizePart('Футзал');
+//end;
+
+//procedure TfSwim.DownloadBetByLine(DownloadState: Integer);
+//var
+//  Html: String;
+//begin
+//  sb.SimpleText:= 'Грузим линию BetBy';
+//  SetAppHeader(BetBy_Name);
+//  if DownloadState=2 then
+//  begin
+//    DeleteFiles(Path['Lines']+'BetBy*.*');
+//    GvWebScript.ScriptFileName:= Path['Script']+'BetBy.xml';
+//    GvWebScript.Vars.AddStringsAsArea('Path', Path);
+//    GvWebScript.Run;
+//  end;
+//  Html:= LoadFileAsString(Path['Lines']+'BetBy.html');
+//  if Html<>'' then
+//  begin
+//    dmSwim.DeleteBookersBet(BetBy_Id);
+//    RecognizeBetByLine(Html, ProgressBar, sb);
+//  end;
+//end;
+
+//procedure DownloadPlusMinusLine(DownloadState: Integer);
+//procedure RecognizePart(SportName: String);
+//var
+//  FName, Html: String;
+//begin
+//  FName:= Format('%splusminus.%s.html', [Path['Lines'], SportName]);
+//  if FileExists(FName) then
+//  begin
+//    Html:= LoadFileAsString(FName);
+//    if Html<>'' then
+//      RecognizePlusMinusLine(Html, ProgressBar, sb);
+//  end;
+//end;
+//
+//var
+//  Html: String;
+//begin
+//  RecognizePart('Футбол');
+//  RecognizePart('Теннис');
+//  RecognizePart('Баскетбол');
+//  RecognizePart('Волейбол');
+//  RecognizePart('Гандбол');
+//  RecognizePart('Другие');
+//end;
+
+//procedure TfSwim.DownloadGudBetLine(DownloadState: Integer);
+////var
+////  Html: String;
+//begin
+//{  sb.SimpleText:= 'Грузим линию GudBet';
+//  SetAppHeader(GudBet_Name);
+//  if DownloadState=2 then
+//  begin
+//    DeleteFiles(Path['Lines']+'GudBet*.*');
+//    GvWebScript.ScriptFileName:= Path['Script']+'GudBet.xml';
+//    GvWebScript.Vars.AddStringsAsArea('Path', Path);
+//    GvWebScript.Run;
+//  end;
+//  html:= LoadFileAsString(Path['Lines']+'GudBet.html');
+//  if Html<>'' then
+//  try
+//    PrepareLine(Line, GudBet_Id);
+//    Html:= KillParazit(Path['Script']+'Parazits.txt', Html);
+//    RecognizeGudBetLine(Html, Line, sb);
+//    dmSwim.RecognizeLine(Line, ProgressBar);
+//  finally
+//    Line.XmlFormat:= xfReadable;
+//    Line.SaveToFile(Path['Bets']+'GudBet.xml');
+//  end;}
+//end;
+
+//procedure TfSwim.DownloadBWinLine(DownloadState: Integer);
+//procedure RecognizePart(SportName, LineType: String);
+//var
+//  FName, Html: String;
+//begin
+//  FName:= Format('%sbwin.%s.%s.html', [Path['Lines'], SportName, LineType]);
+//  if FileExists(FName) then
+//  begin
+//    Html:= LoadFileAsString(FName);
+//    if Html<>'' then
+//      RecognizeBWinLine(Html, SportName, LineType, ProgressBar, sb);
+//  end;
+//end;
+//
+//begin
+//  sb.SimpleText:= 'Грузим линию BWin';
+//  SetAppHeader(BWin_Name);
+//  if DownloadState=2 then
+//  try
+//    DeleteFiles(Path['Lines']+'bwin*.*');
+//    GvWebScript.ScriptFileName:= Path['Script']+'bwin.xml';
+//    GvWebScript.Vars.AddStringsAsArea('Path', Path);
+//    GvWebScript.Run;
+//  except
+//  end;
+//  dmSwim.DeleteBookersBet(BWin_Id);
+//  RecognizePart('Теннис', '1_2');
 //  RecognizePart('Теннис', 'TOTAL');
-  RecognizePart('Волейбол', '1_2');
+//  RecognizePart('Футбол', '1_X_2');
+//  RecognizePart('Футбол', '1X_X2_12');
+//  RecognizePart('Футбол', 'TOTAL');
+//  RecognizePart('Футзал', '1_X_2');
+//  RecognizePart('Футзал', 'TOTAL');
+//  RecognizePart('Гандбол', '1_X_2');
+//  RecognizePart('Гандбол', 'TOTAL');
+//  RecognizePart('Баскетбол', '1_2_DEF');
+//  RecognizePart('Баскетбол', 'TOTAL');
+//  RecognizePart('Волейбол', '1_2');
 //  RecognizePart('Волейбол', 'TOTAL');
-//    RecognizePart(Line, 'Бейсбол', '1_2_DEF');
-//    RecognizePart(Line, 'Бейсбол', 'TOTAL');
-  RecognizePart('АмФутбол', '1_2');
+//  RecognizePart('Бейсбол', '1_2_DEF');
+//  RecognizePart('Бейсбол', 'TOTAL');
+//  RecognizePart('АмФутбол', '1_2_DEF');
 //  RecognizePart('АмФутбол', 'TOTAL');
-  RecognizePart('Снукер', '1_2');
-end;
+//end;
 
-procedure TfSwim.DownloadBukerLine(DownloadState: Integer);
-var
-  Html: String;
-begin
-  sb.SimpleText:= 'Грузим линию Buker';
-  SetAppHeader(Buker_Name);
-  if DownloadState=2 then
-  begin
-    DeleteFiles(Path['Lines']+'Buker*.*');
-    GvWebScript.ScriptFileName:= Path['Script']+'Buker.xml';
-    GvWebScript.Vars.AddStringsAsArea('Path', Path);
-    GvWebScript.Run;
-  end;
-  Html:= LoadFileAsString(Path['Lines']+'Buker.html');
-  if Html<>'' then
-  begin
-    dmSwim.DeleteBookersBet(Buker_Id);
-    RecognizeBukerLine(Html, ProgressBar, sb);
-  end;
-end;
+//procedure TfSwim.DownloadBetAtHomeLine(DownloadState: Integer);
+//procedure RecognizePart(SportName, LineType: String);
+//var
+//  FName, Html: String;
+//begin
+//  FName:= Format('%sBetAtHome.%s.%s.html', [Path['Lines'], SportName, LineType]);
+//  if FileExists(FName) then
+//  begin
+//    Html:= LoadFileAsString(FName);
+//    if Html<>'' then
+//      RecognizeBetAtHomeLine(Html, SportName, LineType, ProgressBar, sb);
+//  end;
+//end;
+//begin
+//  sb.SimpleText:= 'Грузим линию BetAtHome';
+//  SetAppHeader(BetAtHome_Name);
+//  if DownloadState=2 then
+//  try
+//    DeleteFiles(Path['Lines']+'BetAtHome*.*');
+//    GvWebScript.ScriptFileName:= Path['Script']+'BetAtHome.xml';
+//    GvWebScript.Vars.AddStringsAsArea('Path', Path);
+//    GvWebScript.Run;
+//  except
+//  end;
+//  RecognizePart('Футбол', '1_X_2');
+//  RecognizePart('Футбол', '1X_X2_12');
+//  RecognizePart('Футбол', 'TOTAL');
+//  RecognizePart('Теннис', '1_2');
+//  RecognizePart('Теннис', 'FORA');
+//  RecognizePart('Футзал', '1_X_2');
+//  RecognizePart('Футзал', 'TOTAL');
+//  RecognizePart('Гандбол', '1_X_2');
+//  RecognizePart('Гандбол', 'TOTAL');
+//  RecognizePart('Баскетбол', '1_2_DEF');
+//  RecognizePart('Баскетбол', 'TOTAL');
+//  RecognizePart('Волейбол', '1_2');
+//  RecognizePart('Волейбол', 'TOTAL');
+//end;
+
+//procedure TfSwim.DownloadLeonBetLine(DownloadState: Integer);
+////var
+////  Html: String;
+//begin
+//{  sb.SimpleText:= 'Грузим линию LeonBet';
+//  SetAppHeader(LeonBet_Name);
+//  if DownloadState=2 then
+//  begin
+//    DeleteFiles(Path['Lines']+'LeonBet*.*');
+//    GvWebScript.ScriptFileName:= Path['Script']+'LeonBet.xml';
+//    GvWebScript.Vars.AddStringsAsArea('Path', Path);
+//    GvWebScript.Run;
+//  end;
+//  html:= LoadFileAsString(Path['Lines']+'LeonBet.html');
+//  if Html<>'' then
+//  try
+//    PrepareLine(Line, LeonBet_Id);
+//    Html:= KillParazit(Path['Script']+'Parazits.txt', Html);
+//    RecognizeLeonBetLine(Html, Line, sb);
+//    dmSwim.RecognizeLine(Line, ProgressBar);
+//  finally
+//    Line.XmlFormat:= xfReadable;
+//    Line.SaveToFile(Path['Bets']+'LeonBet.xml');
+//  end;}
+//end;
+
+//procedure TfSwim.DownloadExpektLine(DownloadState: Integer);
+//procedure RecognizePart(SportName, LineType: String);
+//var
+//  FName, Html: String;
+//begin
+//  FName:= Format('%sexpekt.%s.%s.html', [Path['Lines'], SportName, LineType]);
+//  if FileExists(FName) then
+//  begin
+//    Html:= LoadFileAsString(FName);
+//    if Html<>'' then
+//      RecognizeExpektLine(Html, SportName, LineType, ProgressBar, sb);
+//  end;
+//end;
+//begin
+//  sb.SimpleText:= 'Грузим линию Expekt';
+//  SetAppHeader(Expekt_Name);
+//  if DownloadState=2 then
+//  begin
+//    DeleteFiles(Path['Lines']+'expekt*.*');
+//    GvWebScript.ScriptFileName:= Path['Script']+'expekt.xml';
+//    GvWebScript.Vars.AddStringsAsArea('Path', Path);
+//    GvWebScript.Run;
+//  end;
+//  dmSwim.DeleteBookersBet(Expekt_Id);
+//  RecognizePart('Футбол', '1_X_2');
+//  RecognizePart('Футбол', '1X_X2_12');
+////  RecognizePart('Футбол', 'TOTAL');
+////    RecognizePart(Line, 'Футзал', '1_X_2');
+////    RecognizePart(Line, 'Футзал', 'TOTAL');
+//  RecognizePart('Гандбол', '1_X_2');
+////  RecognizePart('Гандбол', 'TOTAL');
+//  RecognizePart('Баскетбол', '1_2');
+////  RecognizePart('Баскетбол', 'TOTAL');
+//  RecognizePart('Теннис', '1_2');
+////  RecognizePart('Теннис', 'TOTAL');
+//  RecognizePart('Волейбол', '1_2');
+////  RecognizePart('Волейбол', 'TOTAL');
+////    RecognizePart(Line, 'Бейсбол', '1_2_DEF');
+////    RecognizePart(Line, 'Бейсбол', 'TOTAL');
+//  RecognizePart('АмФутбол', '1_2');
+////  RecognizePart('АмФутбол', 'TOTAL');
+//  RecognizePart('Снукер', '1_2');
+//end;
+
+//procedure TfSwim.DownloadBukerLine(DownloadState: Integer);
+//var
+//  Html: String;
+//begin
+//  sb.SimpleText:= 'Грузим линию Buker';
+//  SetAppHeader(Buker_Name);
+//  if DownloadState=2 then
+//  begin
+//    DeleteFiles(Path['Lines']+'Buker*.*');
+//    GvWebScript.ScriptFileName:= Path['Script']+'Buker.xml';
+//    GvWebScript.Vars.AddStringsAsArea('Path', Path);
+//    GvWebScript.Run;
+//  end;
+//  Html:= LoadFileAsString(Path['Lines']+'Buker.html');
+//  if Html<>'' then
+//  begin
+//    dmSwim.DeleteBookersBet(Buker_Id);
+//    RecognizeBukerLine(Html, ProgressBar, sb);
+//  end;
+//end;
 
 
 procedure TfSwim.actKursUSDExecute(Sender: TObject);
@@ -1385,5 +1537,6 @@ procedure TfSwim.actRenumExecute(Sender: TObject);
 begin
   dmSwim.RenumTables;
 end;
+
 
 end.

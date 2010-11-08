@@ -108,30 +108,30 @@ inherited frmUnknowns: TfrmUnknowns
     Top = 290
     Width = 865
     Height = 300
-    State = csExpand
     inherited pcDetail: TPageControl
       Width = 863
-      Height = 282
+      Height = 298
       ActivePage = tsAGamers
       object tsAGamers: TTabSheet
         Caption = 'tsAGamers'
         object Splitter2: TSplitter
           Left = 502
           Top = 25
-          Height = 229
+          Height = 245
           Align = alRight
         end
         object gridAGamers: TDBGridEh
           Left = 0
           Top = 25
           Width = 502
-          Height = 229
+          Height = 245
           Align = alClient
           AutoFitColWidths = True
           Color = clBtnFace
           ColumnDefValues.Title.Alignment = taCenter
           ColumnDefValues.Title.ToolTips = True
           ColumnDefValues.ToolTips = True
+          DataGrouping.GroupLevels = <>
           DataSource = dsAGamers
           Flat = True
           FooterColor = clWindow
@@ -142,6 +142,7 @@ inherited frmUnknowns: TfrmUnknowns
           FooterFont.Style = []
           Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
           OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghIncSearch, dghPreferIncSearch, dghRowHighlight, dghColumnResize, dghColumnMove]
+          RowDetailPanel.Color = clBtnFace
           STFilter.Visible = True
           TabOrder = 0
           TitleFont.Charset = DEFAULT_CHARSET
@@ -177,6 +178,8 @@ inherited frmUnknowns: TfrmUnknowns
               Title.TitleButton = True
               Width = 60
             end>
+          object RowDetailData: TRowDetailPanelControlEh
+          end
         end
         object TBXDock1: TTBXDock
           Left = 0
@@ -215,13 +218,13 @@ inherited frmUnknowns: TfrmUnknowns
           Left = 505
           Top = 25
           Width = 350
-          Height = 229
+          Height = 245
           Align = alRight
           Caption = 'Panel1'
           TabOrder = 2
           object Splitter3: TSplitter
             Left = 1
-            Top = 75
+            Top = 91
             Width = 348
             Height = 3
             Cursor = crVSplit
@@ -231,11 +234,12 @@ inherited frmUnknowns: TfrmUnknowns
             Left = 1
             Top = 1
             Width = 348
-            Height = 74
+            Height = 90
             Align = alClient
             AutoFitColWidths = True
             BorderStyle = bsNone
             Color = clBtnFace
+            DataGrouping.GroupLevels = <>
             DataSource = dsHistoryByGamer
             Flat = True
             FooterColor = clWindow
@@ -245,6 +249,7 @@ inherited frmUnknowns: TfrmUnknowns
             FooterFont.Name = 'MS Sans Serif'
             FooterFont.Style = []
             Options = [dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
+            RowDetailPanel.Color = clBtnFace
             TabOrder = 0
             TitleFont.Charset = DEFAULT_CHARSET
             TitleFont.Color = clWindowText
@@ -292,10 +297,12 @@ inherited frmUnknowns: TfrmUnknowns
                 FieldName = 'USED_DT'
                 Footers = <>
               end>
+            object RowDetailData: TRowDetailPanelControlEh
+            end
           end
           object gridBGamerByAGamer: TDBGridEh
             Left = 1
-            Top = 78
+            Top = 94
             Width = 348
             Height = 150
             Align = alBottom
@@ -303,6 +310,7 @@ inherited frmUnknowns: TfrmUnknowns
             AutoFitColWidths = True
             BorderStyle = bsNone
             Color = clBtnFace
+            DataGrouping.GroupLevels = <>
             DataSource = dsBGamerByAGamer
             Flat = True
             FooterColor = clWindow
@@ -312,6 +320,7 @@ inherited frmUnknowns: TfrmUnknowns
             FooterFont.Name = 'MS Sans Serif'
             FooterFont.Style = []
             Options = [dgEditing, dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
+            RowDetailPanel.Color = clBtnFace
             TabOrder = 1
             TitleFont.Charset = DEFAULT_CHARSET
             TitleFont.Color = clWindowText
@@ -369,6 +378,8 @@ inherited frmUnknowns: TfrmUnknowns
                 Footers = <>
                 Visible = False
               end>
+            object RowDetailData: TRowDetailPanelControlEh
+            end
           end
         end
       end
@@ -409,6 +420,7 @@ inherited frmUnknowns: TfrmUnknowns
           Align = alClient
           AutoFitColWidths = True
           Color = clBtnFace
+          DataGrouping.GroupLevels = <>
           DataSource = dsAGamers1
           Flat = True
           FooterColor = clWindow
@@ -420,6 +432,7 @@ inherited frmUnknowns: TfrmUnknowns
           Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
           OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghIncSearch, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove]
           ReadOnly = True
+          RowDetailPanel.Color = clBtnFace
           TabOrder = 1
           TitleFont.Charset = DEFAULT_CHARSET
           TitleFont.Color = clWindowText
@@ -451,6 +464,8 @@ inherited frmUnknowns: TfrmUnknowns
               FieldName = 'COUNTRY_SGN'
               Footers = <>
             end>
+          object RowDetailData: TRowDetailPanelControlEh
+          end
         end
       end
       object tsAGamers2: TTabSheet
@@ -490,6 +505,7 @@ inherited frmUnknowns: TfrmUnknowns
           Align = alClient
           AutoFitColWidths = True
           Color = clBtnFace
+          DataGrouping.GroupLevels = <>
           DataSource = dsAGamers2
           Flat = True
           FooterColor = clWindow
@@ -501,6 +517,7 @@ inherited frmUnknowns: TfrmUnknowns
           Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
           OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghIncSearch, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove]
           ReadOnly = True
+          RowDetailPanel.Color = clBtnFace
           TabOrder = 1
           TitleFont.Charset = DEFAULT_CHARSET
           TitleFont.Color = clWindowText
@@ -532,6 +549,8 @@ inherited frmUnknowns: TfrmUnknowns
               FieldName = 'COUNTRY_SGN'
               Footers = <>
             end>
+          object RowDetailData: TRowDetailPanelControlEh
+          end
         end
       end
       object tsEvents: TTabSheet
@@ -548,6 +567,7 @@ inherited frmUnknowns: TfrmUnknowns
           ColumnDefValues.Title.Alignment = taCenter
           ColumnDefValues.Title.TitleButton = True
           ColumnDefValues.Title.ToolTips = True
+          DataGrouping.GroupLevels = <>
           DataSource = dsBEvents
           Flat = True
           FooterColor = clWindow
@@ -557,6 +577,7 @@ inherited frmUnknowns: TfrmUnknowns
           FooterFont.Name = 'MS Sans Serif'
           FooterFont.Style = []
           OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove]
+          RowDetailPanel.Color = clBtnFace
           TabOrder = 0
           TitleFont.Charset = DEFAULT_CHARSET
           TitleFont.Color = clWindowText
@@ -676,6 +697,8 @@ inherited frmUnknowns: TfrmUnknowns
               ReadOnly = True
               Visible = False
             end>
+          object RowDetailData: TRowDetailPanelControlEh
+          end
         end
       end
     end
@@ -703,6 +726,7 @@ inherited frmUnknowns: TfrmUnknowns
         Align = alClient
         AutoFitColWidths = True
         Color = clBtnFace
+        DataGrouping.GroupLevels = <>
         DataSource = dsHistoryByTournir
         Flat = True
         FooterColor = clWindow
@@ -713,6 +737,7 @@ inherited frmUnknowns: TfrmUnknowns
         FooterFont.Style = []
         Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
         OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghIncSearch, dghPreferIncSearch, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove]
+        RowDetailPanel.Color = clBtnFace
         TabOrder = 0
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clWindowText
@@ -734,6 +759,8 @@ inherited frmUnknowns: TfrmUnknowns
             FieldName = 'USED_DT'
             Footers = <>
           end>
+        object RowDetailData: TRowDetailPanelControlEh
+        end
       end
     end
   end

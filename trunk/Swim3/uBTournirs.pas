@@ -7,7 +7,7 @@ uses
   Dialogs, uBaseForm, Provider, pFIBClientDataSet, DB, DBClient, ImgList,
   TB2Item, ActnList, GridsEh, DBGridEh, ExtCtrls, DBCtrls, TBX, TB2Dock,
   TB2Toolbar, ComCtrls, StdCtrls, Mask, DBCtrlsEh, DBLookupEh,
-  FIBDataSet, pFIBDataSet, TBXDkPanels;
+  FIBDataSet, pFIBDataSet, TBXDkPanels, DBGridEhGrouping;
 
 type
   TfrmBTournirs = class(TfrmBaseForm)
@@ -90,7 +90,7 @@ var
 
 implementation
 
-uses dm, GvColor, uCountrys;
+uses dm, GvColor, uCountrys, uSwimCommon;
 
 {$R *.dfm}
 

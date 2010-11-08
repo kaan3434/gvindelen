@@ -6,7 +6,8 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uBaseForm, DB, FIBDataSet, pFIBDataSet, ImgList, TB2Item,
   ActnList, ComCtrls, ExtCtrls, GridsEh, DBGridEh,
-  DBCtrls, TBX, TB2Dock, TB2Toolbar, StdCtrls, TBXDkPanels;
+  DBCtrls, TBX, TB2Dock, TB2Toolbar, StdCtrls, TBXDkPanels,
+  DBGridEhGrouping;
 
 type
   TfrmUnknowns = class(TfrmBaseForm)

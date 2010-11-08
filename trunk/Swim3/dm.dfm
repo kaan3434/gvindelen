@@ -32,7 +32,7 @@ object dmSwim: TdmSwim
       'password='
       'sql_role_name=admin'
       'user_name=sysdba'
-      'lc_ctype=ASCII')
+      'lc_ctype=CYRL')
     DefaultTransaction = ReadTran
     DefaultUpdateTransaction = UpdateTran
     SQLDialect = 3

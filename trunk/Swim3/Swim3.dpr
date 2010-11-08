@@ -12,15 +12,17 @@ uses
   uAGamers in 'uAGamers.pas' {frmAGamers},
   uBGamers in 'uBGamers.pas' {frmBGamers},
   uEvents in 'uEvents.pas' {frmEvents},
-  uUnknowns in 'uUnknowns.pas' {frmUnknowns};
+  uUnknowns in 'uUnknowns.pas' {frmUnknowns},
+  uSwimCommon in 'uSwimCommon.pas';
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.Title := 'Вилочки';
-  Application.CreateForm(TfSwim, fSwim);
   Application.CreateForm(TdmSwim, dmSwim);
+  Application.CreateForm(TfSwim, fSwim);
   Application.CreateForm(TfrmUnknowns, frmUnknowns);
+  dmSwimImpl:= TIDMSwimImplement.Create;
   Application.Run;
 end.

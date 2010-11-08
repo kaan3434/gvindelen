@@ -5,7 +5,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Provider, pFIBClientDataSet, DB, DBClient, ImgList, TB2Item,
   ActnList, GridsEh, DBGridEh, TBX, ExtCtrls, DBCtrls, TB2Dock, TB2Toolbar,
-  ComCtrls, FIBDataSet, pFIBDataSet, TBXDkPanels;
+  ComCtrls, FIBDataSet, pFIBDataSet, TBXDkPanels, DBGridEhGrouping;
 
 type
   TfrmBaseForm = class(TForm)

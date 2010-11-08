@@ -1,6 +1,6 @@
 object frmBaseForm: TfrmBaseForm
-  Left = 210
-  Top = 123
+  Left = 562
+  Top = 274
   Width = 707
   Height = 433
   Caption = 'BaseForm'
@@ -18,7 +18,7 @@ object frmBaseForm: TfrmBaseForm
   TextHeight = 13
   object Splitter1: TSplitter
     Left = 0
-    Top = 385
+    Top = 285
     Width = 699
     Height = 3
     Cursor = crVSplit
@@ -64,7 +64,7 @@ object frmBaseForm: TfrmBaseForm
     Left = 0
     Top = 26
     Width = 692
-    Height = 359
+    Height = 259
     Align = alClient
     AllowedSelections = [gstRecordBookmarks]
     AutoFitColWidths = True
@@ -74,6 +74,7 @@ object frmBaseForm: TfrmBaseForm
     ColumnDefValues.Title.TitleButton = True
     ColumnDefValues.Title.ToolTips = True
     ColumnDefValues.ToolTips = True
+    DataGrouping.GroupLevels = <>
     DataSource = dsMain
     Flat = True
     Font.Charset = DEFAULT_CHARSET
@@ -87,9 +88,10 @@ object frmBaseForm: TfrmBaseForm
     FooterFont.Height = -11
     FooterFont.Name = 'MS Sans Serif'
     FooterFont.Style = []
-    OptionsEh = [dghFixed3D, dghData3D, dghResizeWholeRightPart, dghHighlightFocus, dghClearSelection, dghFitRowHeightToText, dghEnterAsTab, dghDblClickOptimizeColWidth, dghDialogFind]
+    OptionsEh = [dghFixed3D, dghData3D, dghResizeWholeRightPart, dghHighlightFocus, dghClearSelection, dghFitRowHeightToText, dghEnterAsTab, dghDblClickOptimizeColWidth, dghDialogFind, dghColumnResize, dghColumnMove]
     ParentFont = False
     ParentShowHint = False
+    RowDetailPanel.Color = clBtnFace
     RowHeight = 2
     RowLines = 1
     RowSizingAllowed = True
@@ -104,35 +106,32 @@ object frmBaseForm: TfrmBaseForm
     OnDblClick = gridMainDblClick
     OnGetCellParams = gridMainGetCellParams
     OnTitleBtnClick = gridMainTitleBtnClick
+    object RowDetailData: TRowDetailPanelControlEh
+    end
   end
   object Panel: TPanel
     Left = 0
-    Top = 388
+    Top = 288
     Width = 699
-    Height = 18
+    Height = 111
     Align = alBottom
     Alignment = taLeftJustify
-    AutoSize = False
     Caption = #1055#1086#1076#1088#1086#1073#1085#1072#1103' '#1080#1085#1092#1086#1088#1084#1072#1094#1080#1103
     TabOrder = 2
-    ExpandedHeight = 300
-    Momentally = False
-    HeaderColor = clInactiveCaption
-    State = csCollapse
     object pcDetail: TPageControl
       Left = 1
-      Top = 17
+      Top = 1
       Width = 697
-      Height = 0
+      Height = 109
       Align = alClient
-      TabOrder = 1
+      TabOrder = 0
     end
   end
   object dckRight: TTBXMultiDock
     Left = 692
     Top = 26
     Width = 7
-    Height = 359
+    Height = 259
     Position = dpRight
   end
   object ActionList: TActionList
