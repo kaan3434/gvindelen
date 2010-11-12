@@ -53,8 +53,8 @@ function extract_bet($Html) {
   $Html = kill_tag_bound($Html, 'b|span|br|i|a|input|font|img');
   $Html = delete_all($Html, '<tr', '</tr>', 'line3'); 
   
-  
-  $Html = kill_property($Html, 'width|height|valign|align|bgcolor|style|class');
+  $Html = kill_property_value_exclude($Html, 'class', 'line_table');
+  $Html = kill_property($Html, 'width|height|valign|align|bgcolor|style|border|cellspacing|cellpadding');
 
   //  Убираем "левые" данные 
   $Html = replace_all_contain($Html, '<tr', '</tr>', '', 

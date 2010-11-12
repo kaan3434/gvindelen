@@ -3,28 +3,65 @@ unit uRecPlusMinus;
 interface
 
 uses
-  Classes, NativeXML, ComCtrls;
+  Classes, NativeXML, SysUtils, uSwimCommon, GvVars;
 
 const
-  PlusMinus_Name= 'ПлюсМинус';
-  PlusMinus_Id=7;
+  Booker_Id=7;
 
-procedure RecognizePlusMinusLine(Html: String; ProgressBar: TProgressBar; StatusBar: TStatusBar);
+var
+  DMSWim: IDMSwim;
+  Path: TVarList;
+
+procedure RecognizePlusMinusLine;
 
 implementation
 
 uses
-  dm, GvinStr, GvHtml, SysUtils, Masks, Math, DateUtils, GvinFile, GvHtml2Xml, 
-  GvinMath, Forms;
+  GvinStr, DateUtils, GvHtml2Xml, GvinFile;
+
+function MySort(List: TStringList; Index1, Index2: Integer): Integer; far;
+var
+  L1, L2: Integer;
+  S1, S2: String;
+begin
+  S1:= List[Index1];
+  S2:= List[Index2];
+  L1:= Length(S1);
+  L2:= Length(S2);
+  if L1 > L2 then
+    result:= -1
+  else
+  if L1 < L2 then
+    result:= 1
+  else
+  if S1 > S2 then
+    result:= -1
+  else
+  if S1 < S2 then
+    result:= 1
+  else
+    result:= 0
+end;
+
+
+procedure RecognizePlusMinusLine;
+var
+  Line: TNativeXML;
+  PrztT, PrztG: TStringList;
+  Booker_Name: String;
+  BSportName, TournirName: String;
+  ASportId: Integer;
+  CountrySign: String;
+  BSportId, TournirId, WaysCnt: Integer;
 
 function GetEventDate(St: String): TDateTime;
 var
   D, M, Y, H, N: Word;
 begin
-  D:= StrToInt(TakeFront5(St, ['.','/']));
-  M:= StrToInt(TakeFront5(St, [' ']));
+  D:= StrToInt(TakeFront5(St, './'));
+  M:= StrToInt(TakeFront5(St, ' '));
   Y:= YearOf(Date);
-  H:= StrToInt(TakeFront5(St, [':']));
+  H:= StrToInt(TakeFront5(St, ':'));
   N:= StrToInt(St);
   Result:= EncodeDateTime(Y, M, D, H, N, 0, 0);
 //  if Result < Date then result:= IncYear(result, 1);
@@ -84,15 +121,6 @@ begin
   end;
 end;
 
-procedure RecognizePlusMinusLine(Html: String; ProgressBar: TProgressBar; StatusBar: TStatusBar);
-var
-  BSportName, TournirName: String;
-  ASportId, BookerId: Integer;
-  CountrySign: String;
-  BSportId, TournirId, WaysCnt: Integer;
-  Line: TNativeXML;
-  PrztT, PrztG: TStringList;
-
 procedure ExtractLineEvent(Html: String);
 var
   ndTable, tr, td: TXmlNode;
@@ -100,14 +128,12 @@ var
   iDate, iGamer1, iGamer2: Integer;
 
 begin
-  Html:= DeleteAllBSE(Html, '<tr class=line3', 'экспрессы', '<tr class=line', '</tr>');
-  Html:= DeleteAllBE(Html, '<tr class=line3', '</tr>');
   ndTable:= Line.Root;
   try
     TableHtmlToXML(Html, ndTable);
     RecognizeHeader(ndTable);
     CopyHeaderToAttribute(ndTable);
-    SplitCol(ndTable, ctGamer1, ctGamer2, ' - ');
+    SplitColKeyString(ndTable, ctGamer1, ctGamer2, ' - ');
     KillRowIfCol(ndTable, 0, tcaEqualSt, 'N');
 
     if ndTable.NodeCount = 0 then Exit;
@@ -125,7 +151,7 @@ begin
       begin
         tr:= ndTable.Nodes[r];
         if tr[0].ValueAsString <> '' then
-          dmSwim.FillEventParam(TournirId,
+          DMSwim.FillEventParam(TournirId,
             GetEventDate(tr[iDate].ValueAsString),
             PrepareGamerName(tr[iGamer1].ValueAsString, PrztG),
             PrepareGamerName(tr[iGamer2].ValueAsString, PrztG))
@@ -133,24 +159,24 @@ begin
         if (tr[1].ValueAsString <> '') or (tr[2].ValueAsString <> '') then
           continue
         else
-          dmSwim.ClearBetParam;
+          DMSwim.ClearBetParam;
         try
-          dmSwim.PutBet(0, btWin1, tr, WaysCnt);
-          dmSwim.PutBet(1, btWin2, tr, WaysCnt);
+          DMSwim.PutBet(0, btWin1, tr, WaysCnt);
+          DMSwim.PutBet(1, btWin2, tr, WaysCnt);
           if WaysCnt = 3 then
           begin
-            dmSwim.PutBet(2, btDraw, tr, 3);
-            dmSwim.PutBet(3, btNoLose1, tr, 3);
-            dmSwim.PutBet(4, btNoDraw, tr, 3);
-            dmSwim.PutBet(5, btNoLose2, tr, 3);
+            DMSwim.PutBet(2, btDraw, tr, 3);
+            DMSwim.PutBet(3, btNoLose1, tr, 3);
+            DMSwim.PutBet(4, btNoDraw, tr, 3);
+            DMSwim.PutBet(5, btNoLose2, tr, 3);
           end;
-          dmSwim.PutTotal(6, btTotLo, tr);
-          dmSwim.PutTotal(7, btTotHi, tr);
-          dmSwim.PutFora(8, btFora1, tr);
-          dmSwim.PutFora(9, btFora2, tr);
+          DMSwim.PutTotal(6, btTotLo, tr);
+          DMSwim.PutTotal(7, btTotHi, tr);
+          DMSwim.PutFora(8, btFora1, tr);
+          DMSwim.PutFora(9, btFora2, tr);
         except
         end;
-        dmSwim.PutEvent;
+        DMSwim.PutEvent;
       end;
     except
   //    ShowMessage(tr.WriteToString);
@@ -169,27 +195,26 @@ begin
   sl:= TStringList.Create;
   try
     sl.Text:= ReplaceAll(Html, '><table>', '>'#$D#$A'<table>');
-    ProgressBar.Max:= sl.Count;
+    DMSwim.InitProgressBar(sl.Count);
     For i:= 0 to sl.Count - 1 do
     begin
-      Application.ProcessMessages;
-      ProgressBar.StepIt;
+      DMSwim.StepProgressBar;
       St:= sl[i];
       TournirName:= PrepareTournirName(TakeBE(St, '<table>', '</table>'), PrztT);
       // Вставляем точку
-      BSportName:= TakeFront5(TournirName, [#32, '.']);
+      BSportName:= TakeFront5(TournirName, ' .');
       if BSportName = '' then Continue;
       while (TournirName<>'') and
             (TournirName[1] <> AnsiUpperCase(TournirName[1])) do
-        BSportName:= BSportName + ' ' + TakeFront5(TournirName, [#32, '.']);
+        BSportName:= BSportName + ' ' + TakeFront5(TournirName, ' .');
       TournirName:= Trim(TournirName);
-      StatusBar.SimpleText:= BSportName+'. '+ TournirName;
+      DMSwim.UpdateStatusBar(BSportName+'. '+ TournirName);
 
-      ASportId:= dmSwim.GetASportId_byBSportName(BookerID, BSportName, TournirName,
+      ASportId:= DMSwim.GetASportId_byBSportName(Booker_ID, BSportName, TournirName,
         CountrySign, BSportId, TournirId, WaysCnt);
       if ASportId > 0 then
       begin
-        St:= CopyBE(St, '<table', '</table>');
+        St:= CopyBE(St, '<table ', '</table>');
         ExtractLineEvent(St);
       end
     end;
@@ -198,16 +223,46 @@ begin
   end;
 end;
 
+procedure RecognizePart(SportName: String);
+var
+  FName, Html: String;
 begin
+  FName:= Format('%s%s.%s.html', [Path['Lines'], Booker_Name, SportName]);
+  if FileExists(FName) then
+  begin
+    Html:= LoadFileAsString(FName);
+    if Html<>'' then
+      ExtractTournir(Html);
+      DMSwim.InitProgressBar(100);
+      DMSwim.UpdateStatusBar('');
+  end;
+end;
+
+
+
+function CreateParazit(FName: String): TStringList;
+begin
+  Result:= TStringList.Create;
+  if FileExists(FName) then
+  begin
+    result.LoadFromFile(FName);
+    result.CustomSort(MySort);
+    result.SaveToFile(FName);
+  end;
+end;
+
+begin
+  Booker_Name:= DMSwim.Booker_Name(Booker_Id);
   Line:= TNativeXml.CreateName('Table');
-  PrztT:= CreateParazit(Path['Parazit.Tournir']+'PlusMinus.txt');
-  PrztG:= CreateParazit(Path['Parazit.Gamer']+'PlusMinus.txt');
+  PrztT:= CreateParazit(Path['Parazit.Tournir']+Booker_Name+'.txt');
+  PrztG:= CreateParazit(Path['Parazit.Gamer']+Booker_Name+'.txt');
   try
-    BookerId:= PlusMinus_Id;
-    ProgressBar.Position:= 0;
-    ExtractTournir(Html);
-    ProgressBar.Position:= 0;
-    StatusBar.SimpleText:= '';
+    RecognizePart('Футбол');
+    RecognizePart('Теннис');
+    RecognizePart('Баскетбол');
+    RecognizePart('Волейбол');
+    RecognizePart('Гандбол');
+    RecognizePart('Другие');
   finally
     Line.Free;
     PrztG.Free;
@@ -215,7 +270,13 @@ begin
   end;
 end;
 
-
+initialization
+  Path:= TVarList.Create;
+  Path.LoadSectionFromIniFile(ProjectIniFileName, 'Path');
+  Path.Text:= StringReplace(Path.Text, '=.\', '='+ExtractFilePath(ParamStr(0)),[rfReplaceAll]);
+  Path['Self']:= ExtractFilePath(ParamStr(0));
+finalization
+  Path.Free;
 end.
 
 

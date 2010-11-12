@@ -158,7 +158,6 @@ type
     procedure memSwimEventFilterRecord(DataSet: TDataSet;
       var Accept: Boolean);
     procedure btnShowStateClick(Sender: TObject);
-    procedure btnBetStateClick(Sender: TObject);
     procedure btnDeficitClick(Sender: TObject);
     procedure actChangeK2Execute(Sender: TObject);
     procedure actChangeK1Execute(Sender: TObject);
@@ -192,10 +191,9 @@ type
     vlState: TVarList;
     LockedPresent: Boolean;
     USportsCount, UTournirsCount, UGamersCount: Integer;
-    procedure UpdateState(Parent: TTBCustomItem; ShowState, BetState: Integer);
+    procedure UpdateState(Button: TTBCustomItem; ShowState: Integer);
     function GetDownloadState(Booker_Name: String): Integer;
     function GetShowState(Booker_Id: integer): Integer;
-    function GetBetState(Booker_Id: integer): Integer;
     procedure RefreshData;
   private
     { Private declarations }
@@ -213,7 +211,6 @@ type
 type
   TIDMSwimImplement = class(TInterfacedObject, IDMSwim)
     function Booker_Name(BookerId: Integer): String;
-    function Path: TVarList;
     procedure UpdateStatusBar(aText: String);
     procedure StepProgressBar;
     procedure InitProgressBar(aMaxValue: Integer);
@@ -280,11 +277,6 @@ procedure TIDMSwimImplement.InitProgressBar(aMaxValue: Integer);
 begin
   fSwim.ProgressBar.Position:= 0;
   fSwim.ProgressBar.Max:= aMaxValue;
-end;
-
-function TIDMSwimImplement.Path: TVarList;
-begin
-  Result:= Path;
 end;
 
 procedure TIDMSwimImplement.PutBet(IndexNo: Integer; BetTypeSign: String;
@@ -387,7 +379,7 @@ begin
       State.Tag:= Booker_id;
       State.Caption:= BookerName;
       ToolbarBottom.Items.Add(State);
-      UpdateState(State, GetShowState(Booker_Id), GetBetState(Booker_Id));
+      UpdateState(State, GetShowState(Booker_Id));
 
     end;
   finally
@@ -451,7 +443,7 @@ var
   i, DownloadState: Integer;
   mr: Word;
   Booker_Name, Booker_Caption: string;
-  PluginExec: procedure (aDMSwim: IDMSwim);
+  PluginExec: procedure (aDMSwim: IDMSwim); stdcall;
   Handle: THandle;
 
 procedure UpdateHint(Booker_Name: String);
@@ -469,7 +461,7 @@ begin
     mrCancel: Exit;
   end;
   sb.SimpleText:= 'Грузим html';
-  For i:= 0 to vlState.AsInteger['Count'] do
+  For i:= 1 to vlState.AsInteger['Count'] do
   begin
     Booker_Name:= vlState[IntToStr(i)];
     Booker_Caption:= vlState[Booker_Name+'.Caption'];
@@ -654,7 +646,7 @@ begin
   begin
     ImageIndex:= ImageIndex+1;
     if ImageIndex>2 then ImageIndex:= 0;
-    vlState.AsInteger[Format('%u.Download', [Tag])]:= ImageIndex;
+    vlState.AsInteger[Format('%s.Download', [TTbxItem(Sender).Caption])]:= ImageIndex;
   end;
 end;
 
@@ -759,23 +751,16 @@ begin
   Accept:= true;
 end;
 
-procedure TfSwim.UpdateState(Parent: TTBCustomItem; ShowState, BetState: Integer);
+procedure TfSwim.UpdateState(Button: TTBCustomItem; ShowState: Integer);
 var
   i: Integer;
   BookerName: string;
 begin
-  BookerName:= vlState(Parent.I
-  if BetState<0 then
-    BetState:= GetBetState(Parent.Tag)
-  else
-    vlState.AsInteger[Format('%u.Bets', [Parent.Tag])]:= BetState;
-  if ShowState<0 then
-    ShowState:= GetShowState(Parent.Tag)
-  else
-    vlState.AsInteger[Format('%u.Show', [Parent.Tag])]:= ShowState;
-  Parent.ImageIndex:= ShowState*3+BetState;
+  BookerName:= vlState[IntToStr(Button.Parent.IndexOf(Button))];
+  vlState.AsInteger[Format('%s.Show', [BookerName])]:= ShowState;
   LockedPresent:= false;
-  For i:= 1 to vlState.Count-1 do
+  Button.ImageIndex:= ShowState;
+  For i:= 1 to vlState.AsInteger['Count'] do
   begin
     LockedPresent:= GetShowState(i)=isLock;
     if LockedPresent then break;
@@ -784,13 +769,7 @@ end;
 
 procedure TfSwim.btnShowStateClick(Sender: TObject);
 begin
-  UpdateState(TTBXItem(Sender).Parent, TTBXItem(Sender).Tag, -1);
-  RefreshSwimEvents;
-end;
-
-procedure TfSwim.btnBetStateClick(Sender: TObject);
-begin
-  UpdateState(TTBXItem(Sender).Parent, -1, TTBXItem(Sender).Tag);
+  UpdateState(TTBXItem(Sender).Parent, TTBXItem(Sender).Tag);
   RefreshSwimEvents;
 end;
 
@@ -846,13 +825,6 @@ end;
 procedure TfSwim.actChangeK2Update(Sender: TObject);
 begin
   actChangeK2.Enabled:= Not tblSwims.Eof;
-end;
-
-function TfSwim.GetBetState(Booker_Id: Integer): Integer;
-var
-  BookerName: string;
-begin
-  result:= vlState.AsInteger[Format('%s.Bet', [vlState[IntToStr(Booker_Id)]])];
 end;
 
 function TfSwim.GetDownloadState(Booker_Name: String): Integer;
