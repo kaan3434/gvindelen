@@ -1,0 +1,22 @@
+<Root>
+  <Load Href="d:\swim3\php\lines\plusminus\ПлюсМинус.Теннис.txt" FileName="[Path.Lines]ПлюсМинус.Теннис.html" UTF8ToAnsi="1" Event="BeforeSave"/>
+  <Exit/>
+
+  <!-- PlusMinus. Футбол -->
+  <Download Href="http://gvindelen.site11.com/plusminus.php?Sport=5" FileName="[Path.Lines]ПлюсМинус.Футбол.html" Event="BeforeSave"/>
+  <!-- PlusMinus. Теннис -->
+
+  <Download Href="http://gvindelen.site11.com/plusminus.php?Sport=3" FileName="[Path.Lines]ПлюсМинус.Теннис.html" Event="BeforeSave"/>
+  <!-- PlusMinus. Баскетбол -->
+  <Download Href="http://gvindelen.site11.com/plusminus.php?Sport=1" FileName="[Path.Lines]ПлюсМинус.Баскетбол.html" Event="BeforeSave"/>
+  <!-- PlusMinus. Волейбол -->
+  <Download Href="http://gvindelen.site11.com/plusminus.php?Sport=8" FileName="[Path.Lines]ПлюсМинус.Волейбол.html" Event="BeforeSave"/>
+  <!-- PlusMinus. Гандбол -->
+  <Download Href="http://gvindelen.site11.com/plusminus.php?Sport=16" FileName="[Path.Lines]ПлюсМинус.Гандбол.html" Event="BeforeSave"/>
+  <!-- PlusMinus. Другие -->
+  <Download Href="http://gvindelen.site11.com/plusminus.php?Sport=255" FileName="[Path.Lines]ПлюсМинус.Другие.html" Event="BeforeSave"/>
+
+  <Event Name="BeforeSave">
+    <ExtractTags Start="&lt;form" End="&lt;/form&gt;"/>
+  </Event>
+</Root>
