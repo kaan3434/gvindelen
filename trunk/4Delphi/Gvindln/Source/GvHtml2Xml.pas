@@ -52,8 +52,8 @@ begin
     while Row<>'' do
     begin
       td:= tr.NodeNew('td');
-      Cell:= TakeFront5(Row, ['>']);
-      td.ValueAsString:= TakeFront4(Row, ['<']);
+      Cell:= TakeFront5(Row, '>');
+      td.ValueAsString:= TakeFront4(Row, '<');
       Cell:= trim(DeleteAll(Cell, '<td'));
       while Cell<>'' do
       begin

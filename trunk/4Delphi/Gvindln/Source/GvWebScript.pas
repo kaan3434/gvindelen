@@ -495,7 +495,7 @@ var
   CookieFName, CookName, CookValue, St: String;
   LURI: TIdURI;
   Cookie: TIdCookieManager;
-  SSL: TIdSSLIOHandlerSocketOpenSSL;
+  SSL: IdSSLOpenSSL.TIdSSLIOHandlerSocketOpenSSL;
   ChildNode: TXmlNode;
   slParams, slCookie, slNewCookie, slHeader: TStringList;
 begin
@@ -596,7 +596,7 @@ begin
       end;
     end;
     LURI.Params:= LURI.ParamsEncode(slParams.DelimitedText);
-    HTTP:= TIdHTTP.Create;
+    HTTP:= TIdHTTP.Create(nil);
     HTTP.ProxyParams.ProxyServer:= FProxyHost;
     HTTP.ProxyParams.ProxyPort:= FProxyPort;
     HTTP.HandleRedirects:= true;
