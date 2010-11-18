@@ -1,0 +1,14 @@
+<Root>
+  <!-- Фаворит. Теннис -->
+  <Download Href="http://gvindelen.site11.com/favorit.php?Sport=%D2%E5%ED%ED%E8%F1" FileName="[Path.Lines]Favorit.Теннис.html"/>
+  <!-- Фаворит. Волейбол -->
+  <Download Href="http://gvindelen.site11.com/favorit.php?Sport=Волейбол" FileName="[Path.Lines]Favorit.Волейбол.html"/>
+  <!-- Фаворит. Баскетбол -->
+  <Download Href="http://gvindelen.site11.com/favorit.php?Sport=Баскетбол" FileName="[Path.Lines]Favorit.Баскетбол.html"/>
+  <!-- Фаворит. Гандбол -->
+  <Download Href="http://gvindelen.site11.com/favorit.php?Sport=Гандбол" FileName="[Path.Lines]Favorit.Гандбол.html"/>
+  <!-- Фаворит. Футбол -->
+  <Download Href="http://gvindelen.site11.com/favorit.php?Sport=Футбол" FileName="[Path.Lines]Favorit.Футбол.html"/>
+  <!-- Фаворит. Футзал -->
+  <Download Href="http://gvindelen.site11.com/favorit.php?Sport=Футзал" FileName="[Path.Lines]Favorit.Футзал.html"/>
+</Root>
