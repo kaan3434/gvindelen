@@ -1,4 +1,8 @@
 <Root>
-  <Download Href="http://gvindelen.site11.com/buker.php" FileName="[Path.Lines]Buker.html" />
+  <Download Href="http://gvindelen.site11.com/buker.php" FileName="[Path.Lines]Buker.html" UTF8ToAnsi="1" Event="BeforeSave"/>
+
+  <Event Name="BeforeSave">
+    <TakeBetween Start="&lt;body&gt;" End="&lt;/body&gt;"/>
+  </Event>
+
 </Root>
->

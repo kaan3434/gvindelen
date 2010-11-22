@@ -415,7 +415,7 @@ begin
   vlState['Count']:= '0';
   sl:= TStringList.Create;
   try
-    GvinFile.ListFileName(sl, '*.swm', false);
+    GvinFile.ListFileName(sl, Path['Plugin']+'*.swm', false);
     for i:= 0 to sl.Count - 1 do
       LoadPlugin(sl[i]);
   finally
@@ -1214,28 +1214,6 @@ end;
 ////  RecognizePart('јм‘утбол', 'TOTAL');
 //  RecognizePart('—нукер', '1_2');
 //end;
-
-//procedure TfSwim.DownloadBukerLine(DownloadState: Integer);
-//var
-//  Html: String;
-//begin
-//  sb.SimpleText:= '√рузим линию Buker';
-//  SetAppHeader(Buker_Name);
-//  if DownloadState=2 then
-//  begin
-//    DeleteFiles(Path['Lines']+'Buker*.*');
-//    GvWebScript.ScriptFileName:= Path['Script']+'Buker.xml';
-//    GvWebScript.Vars.AddStringsAsArea('Path', Path);
-//    GvWebScript.Run;
-//  end;
-//  Html:= LoadFileAsString(Path['Lines']+'Buker.html');
-//  if Html<>'' then
-//  begin
-//    dmSwim.DeleteBookersBet(Buker_Id);
-//    RecognizeBukerLine(Html, ProgressBar, sb);
-//  end;
-//end;
-
 
 procedure TfSwim.actKursUSDExecute(Sender: TObject);
 Var
