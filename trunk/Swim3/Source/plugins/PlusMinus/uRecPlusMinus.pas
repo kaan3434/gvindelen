@@ -17,7 +17,7 @@ procedure RecognizePlusMinusLine;
 implementation
 
 uses
-  GvinStr, DateUtils, GvHtml2Xml, GvinFile;
+  GvStr, DateUtils, GvHtml2Xml, GvFile;
 
 
 

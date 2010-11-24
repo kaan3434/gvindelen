@@ -6,7 +6,7 @@ uses
   SysUtils, Classes, DB, ADODB, IdBaseComponent, IdComponent, Controls,
   IdTCPConnection, IdTCPClient, IdHTTP, GvVars, NativeXML, Variants,
   DBCtrlsEh, MemTableDataEh, MemTableEh, DataDriverEh, Dialogs, ComCtrls,
-  GvinStr, ExtCtrls, FIBDatabase, pFIBDatabase, FIBQuery, pFIBQuery,
+  GvStr, ExtCtrls, FIBDatabase, pFIBDatabase, FIBQuery, pFIBQuery,
   FIBDataSet, pFIBDataSet, pFIBStoredProc, Provider, pFIBClientDataSet,
   DBClient, FIBSQLMonitor;
 
@@ -135,7 +135,7 @@ procedure FindNearest(DataSet: TDataSet; FieldName, Value: String);
 implementation
 
 uses
-  GvinFile, DateUtils, Math, uSwimCommon;
+  GvFile, DateUtils, Math, uSwimCommon;
 
 {$R *.dfm}
 

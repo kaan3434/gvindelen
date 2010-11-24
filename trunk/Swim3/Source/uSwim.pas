@@ -238,7 +238,7 @@ var
 implementation
 
 uses
-  dm, GvinStr, GvinFile,
+  dm, GvStr, GvFile,
 //  urlmon, wininet,
   DateUtils, GvCloner,
   Math,
@@ -324,11 +324,13 @@ end;
 
 procedure TIDMSwimImplement.StepProgressBar;
 begin
+  Application.ProcessMessages;
   fSwim.ProgressBar.StepIt;
 end;
 
 procedure TIDMSwimImplement.UpdateStatusBar(aText: ShortString);
 begin
+  Application.ProcessMessages;
   fSwim.sb.SimpleText:= aText;
 end;
 
@@ -415,7 +417,7 @@ begin
   vlState['Count']:= '0';
   sl:= TStringList.Create;
   try
-    GvinFile.ListFileName(sl, Path['Plugin']+'*.swm', false);
+    ListFileName(sl, Path['Plugin']+'*.swm', false);
     for i:= 0 to sl.Count - 1 do
       LoadPlugin(sl[i]);
   finally

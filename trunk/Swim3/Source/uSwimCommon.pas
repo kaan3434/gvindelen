@@ -75,7 +75,7 @@ function CreateParazit(FName: String): TStringList;
 implementation
 
 uses
-  GvinStr;
+  GvStr;
 
 procedure CopyHeaderToAttribute(ndTable: TXmlNode; Row: Integer=0);
 var
