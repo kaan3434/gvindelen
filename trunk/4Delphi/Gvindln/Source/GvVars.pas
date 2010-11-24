@@ -3,7 +3,7 @@ unit GvVars;
 interface
 
 uses
-  Classes, IniFiles, SysUtils, GvinStr;
+  Classes, IniFiles, SysUtils, GvStr;
 
 type
   TVarList = class(TStringList)
@@ -83,7 +83,7 @@ function VarNameLevel(VarName: String):integer;
 implementation
 
 uses
-  GvinDtTm, StrUtils, GvinMath;
+  GvDtTm, StrUtils, GvMath;
 
 function ExtractName(var St: String): String;
 begin

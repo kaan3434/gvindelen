@@ -11,7 +11,7 @@ procedure TableHtmlToXML(Html: String; Xml: TXmlNode);
 implementation
 
 uses
-  SysUtils, StrUtils, GvinStr;
+  SysUtils, StrUtils, GvStr;
 
 
 procedure TableHtmlToXML(Html: String; Xml: TXmlNode);

@@ -80,7 +80,7 @@ procedure Register;
 implementation
 
 uses
-  GvinFile, GvinStr, Dialogs, Variants, Math, GvHtmlScript, DateUtils, IdURI,
+  GvFile, GvStr, Dialogs, Variants, Math, GvHtmlScript, DateUtils, IdURI,
   IdCookie;
 
 const
@@ -498,6 +498,7 @@ var
   SSL: IdSSLOpenSSL.TIdSSLIOHandlerSocketOpenSSL;
   ChildNode: TXmlNode;
   slParams, slCookie, slNewCookie, slHeader: TStringList;
+  HtmlStream: TStringStream;
 begin
   LURI:= TIdURI.Create(ScriptNode.ReadAttributeString('Href'));
   slCookie:= TStringList.Create;
@@ -610,16 +611,17 @@ begin
       HTTP.Request.RawHeaders.Values[slHeader.Names[i]]:= slHeader.ValueFromIndex[i];
     For i:= 0 to slCookie.Count-1 do
       Cookie.AddServerCookie(slCookie[i], LURI);
+    HtmlStream:= TStringStream.Create('');
     try
       if UpperCase(ScriptNode.ReadAttributeString('Method', 'GET')) = 'POST' then
       begin
        LURL:= CopyFront4(LURI.GetFullURI, '?');
-       Html:= HTTP.Post(LURL, slParams)
+       HTTP.Post(LURL, slParams, HtmlStream);
       end
       else
       begin
         LURL:= LURI.GetFullURI;
-        Html:= HTTP.Get(LURL);
+        HTTP.Get(LURL, HtmlStream);
       end;
       HTTP.Response.RawHeaders.Extract('Set-Cookie', slNewCookie);
       if slNewCookie.Count <> 0 then
@@ -633,6 +635,8 @@ begin
         if CookieFName<>'' then
           slCookie.SaveToFile(CookieFName);
       end;
+      HtmlStream.Seek(0, 0);
+      html:= HtmlStream.DataString;
       if ScriptNode.ReadAttributeInteger('UTF8ToAnsi',0) = 1 then
         html:= Utf8ToAnsi(Html);
       if ScriptNode.ReadAttributeString('Event')<>'' then
@@ -642,6 +646,7 @@ begin
       SaveStringAsFile(Html, ScriptNode.ReadAttributeString('FileName'),
                              ScriptNode.ReadAttributeInteger('Append')=1);
     finally
+      FreeAndNil(HtmlStream);
       FreeAndNil(SSL);
       FreeAndNil(Cookie);
       FreeAndNil(HTTP);

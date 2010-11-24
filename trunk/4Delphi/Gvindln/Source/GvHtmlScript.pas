@@ -10,7 +10,7 @@ function Run_HtmlScript(Root: TXmlNode; SubScriptName, Html: String; Vars: TVarL
 implementation
 
 uses
-  GvinStr, GvinFile, GvHtml, IdUri;
+  GvStr, GvFile, GvHtml, IdUri;
 
 const
   ampCR = '&CR;';

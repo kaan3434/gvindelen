@@ -42,6 +42,7 @@ contains
   GvWebScript in '..\Source\GvWebScript.pas',
   GvHtmlScript in '..\Source\GvHtmlScript.pas',
   NativeXml in '..\..\NativeXml310\NativeXml.pas',
-  GvHtml2Xml in '..\Source\GvHtml2Xml.pas';
+  GvHtml2Xml in '..\Source\GvHtml2Xml.pas',
+  GvHtml in '..\Source\GvHtml.pas';
 
 end.

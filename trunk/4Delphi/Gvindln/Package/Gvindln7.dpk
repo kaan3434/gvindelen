@@ -26,19 +26,14 @@ package Gvindln7;
 
 requires
   vcl,
-  vclx,
-  vcldb,
-  vclsmp,
-  bdertl,
   rtl,
-  vclie,
-  dbrtl;
+  vclx;
 
 contains
-  GvinDtTm in '..\Source\GvinDtTm.pas',
-  GvinFile in '..\Source\GvinFile.pas',
-  GvinMath in '..\Source\GvinMath.pas',
-  GvinStr in '..\Source\GvinStr.pas',
+  GvDtTm in '..\Source\GvDtTm.pas',
+  GvFile in '..\Source\GvFile.pas',
+  GvMath in '..\Source\GvMath.pas',
+  GvStr in '..\Source\GvStr.pas',
   GvVars in '..\Source\GvVars.pas',
   GvMoney in '..\Source\GvMoney.pas',
   GvStages in '..\Source\GvStages.pas',

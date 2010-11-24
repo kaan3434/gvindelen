@@ -63,7 +63,7 @@ function ValuteNameByOldCode(OldCode: Integer): String;
 implementation
 
 uses
-  sysutils, GvinStr, GvinMath, Math;
+  sysutils, GvStr, GvMath, Math;
 
 var
   Rod: Byte;

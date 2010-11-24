@@ -25,7 +25,7 @@ function TakeNumberedTagContains(var Html: String; TagName, Contain1: String;
 implementation
 
 uses
-  SysUtils, GvinStr;
+  SysUtils, GvStr;
 
 function HtmlEncode(St: String): String;
 var

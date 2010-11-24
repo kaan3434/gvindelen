@@ -253,7 +253,7 @@ implementation
 {$R *.res}
 
 uses
-  GvinStr;
+  GvStr;
   
 const
 	Delimit    = ',';
