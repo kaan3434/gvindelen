@@ -184,4 +184,12 @@ function index_of($needle, $haystack) {                // conversion of JavaScri
   return false;
 }
 
+function implode_hash($glue, $Hash) {
+  $DataArr = array();
+  if ($Hash) {
+    foreach ($Hash as $name => $value) $DataArr[] = $name.'='.$value;
+  }
+  return implode($glue, $DataArr);
+}
+
 ?>

@@ -203,12 +203,12 @@ begin
       St:= sl[i];
       if LowerCase(Copy(St,1, 6)) <> '<table' then Continue;
       TournirName:= PrepareTournirName(TakeBE(St, '<thead>', '</thead>'), PrztT);
-      BSportName:= TakeFront5(TournirName, ['.']);
+      BSportName:= TakeFront5(TournirName, '.');
       TournirName:= Trim(TournirName);
-      StatusBar.SimpleText:= BSportName+'. '+TournirName;
+      DMSwimIntf.UpdateStatusBar(BSportName+'. '+TournirName);
 
-      ASportId:= dmSwim.GetASportId_byBSportName(BookerId, BSportName, TournirName,
-        CountrySign, BSportId, TournirId, WaysCnt);
+      ASportId:= DMSwimIntf.GetASportId_byBSportName(Booker_Id, PChar(BSportName), PChar(TournirName),
+        BSportId, TournirId, WaysCnt);
       if ASportId > 0 then
       begin
         St:= DeleteAllBE(St, '<table ', '>');
@@ -220,11 +220,11 @@ begin
   end;
 end;
 
-procedure RecognizePart;
+procedure RecognizePart(SportName: String);
 var
   FName, Html: String;
 begin
-  FName:= Format('%s%s.html', [Path['Lines'], Booker_Name]);
+  FName:= Format('%s%s.%s.html', [Path['Lines'], Booker_Name, SportName]);
   if FileExists(FName) then
   begin
     Html:= LoadFileAsString(FName);
@@ -241,13 +241,19 @@ begin
   PrztT:= CreateParazit(Path['Parazit.Tournir']+Booker_Name+'.txt');
   PrztG:= CreateParazit(Path['Parazit.Gamer']+Booker_Name+'.txt');
   try
-    RecognizePart;
+    RecognizePart('Футбол');
+    RecognizePart('Теннис');
+    RecognizePart('Баскетбол');
+    RecognizePart('Волейбол');
+    RecognizePart('Гандбол');
+    RecognizePart('Футзал');
   finally
     Line.Free;
     PrztG.Free;
     PrztT.Free;
   end;
 end;
+
 
 initialization
   Path:= TVarList.Create;

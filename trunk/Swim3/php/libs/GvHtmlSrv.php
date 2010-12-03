@@ -77,7 +77,7 @@ function extract_property_values($Html, $Property, $Separator) {
 function extract_form_data($Html) {
   $Inputs = explode("\r\n", extract_tags($Html, '<input ', '>', "\r\n", "name"));
   foreach ($Inputs as $input) {
-    preg_match("/ name=(\'(.*)\'|\"(.*)\"|(?-U:([#0-9a-z%_]+)))/imsU", $input, $match);
+    preg_match("/ name=(\'(.*)\'|\"(.*)\"|(?-U:([#0-9a-z%_\[\]]+)))/imsU", $input, $match);
     $name = $match[2].$match[3].$match[4];
     preg_match("/ value=(\'(.*)\'|\"(.*)\"|(?-U:([#0-9a-z%_]+)))/imsU", $input, $match);
     $value = $match[2].$match[3].$match[4];
@@ -87,15 +87,29 @@ function extract_form_data($Html) {
 }
 
 function extract_form_hash($Html) {
+  $NameHash = array();
   $Inputs = explode("\r\n", extract_tags($Html, '<input ', '>', "\r\n", "name"));
   foreach ($Inputs as $input) {
-    preg_match("/ name=(\'(.*)\'|\"(.*)\"|(?-U:([#0-9a-z%_]+)))/imsU", $input, $match);
+    preg_match("/ name=(\'(.*)\'|\"(.*)\"|(?-U:([#0-9a-z%_\[\]]+)))/imsU", $input, $match);
     $name = $match[2].$match[3].$match[4];
     preg_match("/ value=(\'(.*)\'|\"(.*)\"|(?-U:([#0-9a-z%_]+)))/imsU", $input, $match);
     $value = $match[2].$match[3].$match[4];
-    if ($name) $PostHash[$name] = $value;
+    if ($name) {
+      if ($NameHash[$name]) {
+        $NameHash[$name] = $NameHash[$name] + 1;
+        $name = $name .'[{<' .$NameHash[$name].'>}]';
+      } else {
+        $NameHash[$name] = 1;
+      }
+      $PostHash[$name] = $value;
+    }
   }
   return ($PostHash);
+}
+
+function extract_form_action($Form) {
+  $Form = copy_be($Form, '<form ', '>');
+  return (extract_property_values($Form, 'action', "\r\n"));
 }
 
 function kill_space($Html) {

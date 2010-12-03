@@ -43,6 +43,7 @@ function transfer_encoding_chunked_decode($in) {
 function make_request($Url, $Method="GET", $Referer, $PostData, &$host, &$port) {
   global $login;
   $URI= parse_url($Url);
+  $PostData = replace_all($PostData, '[{<', '>}]', '');
 
   switch ($URI['scheme']) {
     case 'https':

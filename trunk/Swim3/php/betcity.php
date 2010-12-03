@@ -1,36 +1,58 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>PlusMinus</title>
+  </head>
+<body>
 <?php
   require "libs/Download.php";
   require "libs/GvStrings.php";
   require "libs/GvHtmlSrv.php";
+  require "libs/utf2win.php";
+  $Sport = $_GET['Sport'];
+  $debug = $_GET['debug'];
   $Booker = 'betcity';
   $Lines = "lines/$Booker/";
-
-function extract_league($Html) {
-  $Html = copy_be($Html, '<form id="fbets"', '</form>');
-  $Html = replace_all($Html, 'долгосрочные ставки', '</form>', '</form>');
-  $Html = extract_tags($Html, '<input', '>', "\r\n", 'name=', 'value='); 
-  $Html = delete_all($Html, '<input', 'name=');
-  $Html = str_ireplace(' value="', '=', $Html);
-  $Html = str_ireplace('">', '', $Html);
-  return $Html;  
-}
+  $Host = 'http://betcity.ru';
 
   // Получаем перечень турниров
   if ($debug) {
     $FileName = $Lines . "league.html";
-    if (!file_exists($FileName)) {
-      $Html = download_page("http://betcity.ru/bets.php?line_id[]=$Sport", "GET", "http://betcity.ru/center.php");
+    if (!file_exists($FileName)) {                                                                                                                         
+      $Html = download("$Host/bets.php?line_id[]=$Sport", "GET", "$Host/center.php");
       file_put_contents($FileName, $Html);
     } else {
       $Html = file_get_contents($FileName);
     }
   } else {
-    $Html = download_page("http://betcity.ru/bets.php?line_id[]=$Sport", "GET", "http://betcity.ru/center.php");
+    $Html = download_page("$Host/bets.php?line_id[]=$Sport", "GET", "$Host/center.php");
   }
-  $Leagues = extract_league($Html);
-  if ($debug) file_put_contents($Lines . "league.txt", $Leagues);
 
-  
+function extract_league($Html) {
+  $Html = replace_all($Html, '<table', '</table>', '', 'долгосрочные ставки');
+  return extract_form_hash($Html);
+}
+
+  $Form = copy_be(win1251_to_utf8($Html), '<form id="fbets"', '</form>');
+  if ($debug) file_put_contents($Lines . "form.txt", $Form);
+  $PostHash = extract_league($Form);
+  $FormAction = extract_form_action($Form);
+  if ($debug) file_put_contents($Lines . "league.txt", implode_hash("\r\n", $PostHash));
+
+  // Получаем перечень турниров
+  $PostHash['simple'] = 'on';
+  if ($debug) {
+    $FileName = $Lines . "bets.html";
+    if (!file_exists($FileName)) {
+      $Html = download("$Host/$FormAction", "POST", "$Host/bets.php?line_id[]=$Sport", $PostHash);
+      file_put_contents($FileName, $Html);
+    } else {          
+      $Html = file_get_contents($FileName);
+    }
+  } else {
+    $Html = download("$Host/$FormAction", "POST", "$Host/bets.php?line_id[]=$Sport", $PostHash);
+  }
+
 function extract_bet($Html) {
   $Html = extract_tags($Html, '<table cellSpacing=2 cellPadding=1', '</table>', "\r\n");
   $Html = kill_space($Html);
@@ -47,31 +69,13 @@ function extract_bet($Html) {
   return $Html;
 }
 
-  
-  // Получаем перечень турниров
-  $FileName = $Lines . "league.html";
-  if (!file_exists($FileName)) {
-    $PostData = explode("\r\n", file_get_contents($Lines . "sport.txt"));
-    $Html = download_page("http://www.betcity.ru/bets.php", "POST", "http://www.betcity.ru/main2.php", implode('&', $PostData));
-    file_put_contents($FileName, $Html);
-  }else{
-    $Html = file_get_contents($FileName);
-  }
-  $FileName = $Lines . "league.txt";
-  file_put_contents($FileName, extract_league($Html));
+  $Result = extract_bet(convert_to_utf8($Html));
+  if ($debug) file_put_contents($Lines . 'bets.txt', $Result);
+  if ($debug) file_put_contents($Lines . 'bets.txt.html', $Result);
+  if ($debug) file_put_contents($FileName, extract_league($Html));
 
-  // Получаем перечень ставок
-  $FileName = $Lines . "bets.html";
-  if (!file_exists($FileName)) {
-    $PostData = explode("\r\n", file_get_contents($Lines . 'league.txt'));
-    $Html = download_page("http://www.betcity.ru/bets2.php", "POST", "http://www.betcity.ru/bets.php", implode('&', $PostData));
-    file_put_contents($FileName, $Html);
-  }else{
-    $Html = file_get_contents($FileName);
-  }
-  $FileName = $Lines . 'bets.txt';
-  file_put_contents($FileName, extract_bet($Html));
-
-  print file_get_contents($FileName);
+  print $Result;
 ?>
+</body>
+</html>
 

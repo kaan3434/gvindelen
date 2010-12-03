@@ -26,4 +26,5 @@ begin
   Application.CreateForm(TfrmUnknowns, frmUnknowns);
   dmSwimImpl:= TIDMSwimImplement.Create;
   Application.Run;
+  dmSwimImpl:= nil;
 end.
