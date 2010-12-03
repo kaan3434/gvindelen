@@ -38,6 +38,7 @@ contains
   GvMoney in '..\Source\GvMoney.pas',
   GvStages in '..\Source\GvStages.pas',
   gsFileVersionInfo in '..\Source\gsFileVersionInfo.pas',
-  GvChkCombo in '..\Source\GvChkCombo.pas';
+  GvChkCombo in '..\Source\GvChkCombo.pas',
+  GvCloner in '..\Source\GvCloner.pas';
 
 end.

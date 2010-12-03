@@ -135,20 +135,9 @@ ProductName=
 ProductVersion=1.0.0.0
 Comments=
 [Excluded Packages]
-C:\Program Files\Borland\Delphi7\Projects\Bpl\tb2k_d7.bpl=Toolbar2000 Components (Jordan Russell)
-C:\Program Files\Borland\Delphi7\Projects\Bpl\TBX_D7.bpl=Toolbar2000 - TBX Extensions
-c:\program files\borland\delphi7\Projects\Bpl\dacvcl70.bpl=Devart Data Access GUI related Components
-c:\program files\borland\delphi7\Projects\Bpl\odacvcl70.bpl=Oracle Data Access GUI related Components
-c:\program files\borland\delphi7\Projects\Bpl\oraprov70.bpl=OraProvider package
-c:\program files\borland\delphi7\Projects\Bpl\dcldac70.bpl=Devart Data Access Components
-c:\program files\borland\delphi7\Projects\Bpl\dclodac70.bpl=Oracle Data Access Components
-c:\program files\borland\delphi7\Projects\Bpl\tmsd7.bpl=TMS Component Pack
-c:\program files\borland\delphi7\Projects\Bpl\tmsded7.bpl=TMS Component Pack Extra
-C:\Program Files\Borland\Delphi7\Projects\Bpl\tmsexd7.bpl=TMS Component Pack Extra
-c:\program files\borland\delphi7\Projects\Bpl\tmswizd7.bpl=TMS Component Pack Wizards
-c:\program files\borland\delphi7\Projects\Bpl\tmsxlsd7.bpl=TMS TAdvStringGrid Excel support
-c:\program files\borland\delphi7\Projects\Bpl\TMSUnicodeDED7.bpl=TMS Unicode Component Pack
-c:\program files\borland\delphi7\Projects\Bpl\tbxdsgn_d7.bpl=Toolbar2000 -- TBX Extensions Design Package (Alex Denisov)
+c:\program files\borland\delphi7\Projects\Bpl\dclIndyProtocols70.bpl=Indy 10 Protocols Design Time
+c:\program files\borland\delphi7\Projects\Bpl\GvindlnIndy7.bpl=(untitled)
+c:\program files\borland\delphi7\Bin\dclindy70.bpl=Internet Direct (Indy) for D7 Property and Component Editors
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
