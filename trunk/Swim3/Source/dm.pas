@@ -62,16 +62,9 @@ type
               Gamer1Name, Gamer2Name: String);
 
     procedure ClearBetParam;
-    procedure FillBetParam(IndexNo: Integer; BetTypeSign: String;
-              BetValue, BetKoef: Single);
-    function PutEvent: Integer;
+    function PutEvent(sl: TStringList): Integer; overload;
+    function PutEvent: Integer; overload;
 
-    procedure PutBet(IndexNo: Integer; BetTypeSign: String; tr: TXmlNode; Ways: Integer); overload;
-    procedure PutBet(IndexNo: Integer; BetTypeSign: String; Koef: String; Ways: Integer); overload;
-    procedure PutFora(IndexNo: Integer; BetTypeSign: String; tr: TXmlNode); overload;
-    procedure PutFora(IndexNo: Integer; BetTypeSign, Value, Koef: String); overload;
-    procedure PutTotal(IndexNo: Integer; BetTypeSign: String; tr: TXmlNode); overload;
-    procedure PutTotal(IndexNo: Integer; BetTypeSign, Value, Koef: String); overload;
     procedure GetUnknownCounts(var USportCount, UTournirCount,
               UGamerCount: Integer);
     procedure GetUnknownSportsData(ClientDataSet: TClientDataSet);
@@ -263,69 +256,6 @@ begin
   vlRestore.SaveSectionToIniFile(ProjectIniFileName, 'Restore');
 end;
 
-procedure TdmSwim.PutBet(IndexNo: Integer; BetTypeSign: String; tr: TXmlNode;
-          Ways: Integer);
-var
-  td: TXmlNode;
-begin
-  td:= tr.NodeByAttributeValue(nnTd, attTitle, BetTypeSign, false);
-  if td=nil then exit;
-  PutBet(IndexNo, BetTypeSign, td.ValueAsString, Ways);
-end;
-
-procedure TdmSwim.PutBet(IndexNo: Integer; BetTypeSign, Koef: String;
-  Ways: Integer);
-begin
-  if Koef = '' then exit;
-  Koef:= ReplaceAll(Koef, ',', DecimalSeparator);
-  Koef:= ReplaceAll(Koef, '.', DecimalSeparator);
-  if IsFloat(Koef) then
-    FillBetParam(IndexNo, IntToStr(Ways)+BetTypeSign, 0, StrToFloat(Koef));
-end;
-
-procedure TdmSwim.PutTotal(IndexNo: Integer; BetTypeSign: String; tr: TXmlNode);
-var
-  td, ndTotalV: TXmlNode;
-begin
-  td:= tr.NodeByAttributeValue(nnTd, attTitle, BetTypeSign, false);
-  if td=nil then exit;
-  ndTotalV:= tr.NodeByAttributeValue(nnTd, attTitle, ctTotV, false);
-  if ndTotalV=nil then exit;
-  PutTotal(IndexNo, BetTypeSign, ndTotalV.ValueAsString, td.ValueAsString);
-end;
-
-procedure TdmSwim.PutTotal(IndexNo: Integer; BetTypeSign, Value, Koef: String);
-begin
-  if (Koef='') or (Value='') then exit;
-  Koef:= ReplaceAll(Koef, ',', DecimalSeparator);
-  Koef:= ReplaceAll(Koef, '.', DecimalSeparator);
-  Value:= ReplaceAll(Value, ',', DecimalSeparator);
-  Value:= ReplaceAll(Value, '.', DecimalSeparator);
-  if IsFloat(Koef) and IsFloat(Value) then
-    FillBetParam(IndexNo, '2'+BetTypeSign, StrToFloat(Value), StrToFloat(Koef));
-end;
-
-procedure TdmSwim.PutFora(IndexNo: Integer; BetTypeSign: String; tr: TXmlNode);
-var
-  td, ndForaV: TXmlNode;
-begin
-  td:= tr.NodeByAttributeValue(nnTd, attTitle, BetTypeSign);
-  if td=nil then exit;
-  ndForaV:= tr.NodeByAttributeValue(nnTd, attTitle, BetTypeSign+'V');
-  if ndForaV=nil then exit;
-    PutFora(IndexNo, BetTypeSign, ndForaV.ValueAsString, td.ValueAsString);
-end;
-
-procedure TdmSwim.PutFora(IndexNo: Integer; BetTypeSign, Value, Koef: String);
-begin
-  if (Koef='') or (Value='') then exit;
-  Koef:= ReplaceAll(Koef, ',', DecimalSeparator);
-  Koef:= ReplaceAll(Koef, '.', DecimalSeparator);
-  Value:= ReplaceAll(Value, ',', DecimalSeparator);
-  Value:= ReplaceAll(Value, '.', DecimalSeparator);
-  if IsFloat(Koef) and IsFloat(Value) then
-    FillBetParam(IndexNo, '2'+BetTypeSign, StrToFloat(Value), StrToFloat(Koef));
-end;
 
 
 function TdmSwim.GetValuteKurs(ValuteSign: String): Single;
@@ -620,19 +550,6 @@ begin
   end;
 end;
 
-procedure TdmSwim.FillBetParam(IndexNo: Integer; BetTypeSign: String;
-  BetValue, BetKoef: Single);
-var
-  s: String[4];
-begin
-  s:= IntToStr(IndexNo);
-  with spPutEvent do
-  begin
-    ParamByName('i_s_'+s).Value:= BetTypeSign;
-    ParamByName('i_v_'+s).Value:= BetValue;
-    ParamByName('i_k_'+s).Value:= BetKoef;
-  end;
-end;
 
 procedure TdmSwim.FillEventParam(TournirId: Integer; EventDtTm: TDateTime;
   Gamer1Name, Gamer2Name: String);
@@ -650,6 +567,36 @@ begin
     ParamByName('i_BGamer1_Nm').AsString:= Gamer1Name;
     ParamByName('i_BGamer2_Nm').AsString:= Gamer2Name;
   end;
+end;
+
+function TdmSwim.PutEvent(sl: TStringList): Integer;
+var
+  i: integer;
+  st: String;
+begin
+  with spPutEvent do
+  begin
+    StoredProcName:= UpperCase('Put_EventBets');
+    Params.ClearValues;
+    For i:= 0 to Params.Count - 1 do
+      Params[i].Value:= null;
+    ParamByName('i_BTournir_Id').AsInteger:= StrToInt(sl.Values['BTournir_Id']);
+    ParamByName('i_Event_DTm').AsDateTime:= StrToDateTime(sl.Values['Event_DTm']);
+    ParamByName('i_BGamer1_Nm').AsString:= sl.Values['BGamer1_Nm'];
+    ParamByName('i_BGamer2_Nm').AsString:= sl.Values['BGamer2_Nm'];
+    for i:= 0 to 9 do
+    begin
+      st:= Trim(sl.Values[Format('k_%u', [i])]);
+      if  st<> '' then
+      begin
+        ParamByName(Format('i_s_%u', [i])).AsString:=  sl.Values[Format('s_%u', [i])];
+        ParamByName(Format('i_v_%u', [i])).AsString:=  sl.Values[Format('v_%u', [i])];
+        ParamByName(Format('i_k_%u', [i])).AsString:=  sl.Values[Format('k_%u', [i])];
+      end;
+    end;
+    ExecProc;
+  end;
+
 end;
 
 function TdmSwim.PutEvent: Integer;

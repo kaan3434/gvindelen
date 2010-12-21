@@ -210,6 +210,8 @@ type
 
 type
   TIDMSwimImplement = class(TInterfacedObject, IDMSwim)
+//    StoredProc: TFIBStoredProc;
+  private
     function Booker_Name(BookerId: Integer): ShortString;
     procedure UpdateStatusBar(aText: ShortString);
     procedure StepProgressBar;
@@ -221,13 +223,7 @@ type
     procedure FillEventParam(TournirId: Integer; EventDtTm: TDateTime;
               Gamer1Name, Gamer2Name: WideString);
     procedure ClearBetParam;
-    function PutEvent: Integer;
-    procedure PutBet(IndexNo: Integer; BetType: ShortString; tr: TXmlNode; Ways: Integer); overload;
-    procedure PutBet(IndexNo: Integer; BetType, Koef: ShortString; Ways: Integer); overload;
-    procedure PutFora(IndexNo: Integer; BetType: ShortString; tr: TXmlNode); overload;
-    procedure PutFora(IndexNo: Integer; BetType, Value, Koef: ShortString); overload;
-    procedure PutTotal(IndexNo: Integer; BetType: ShortString; tr: TXmlNode); overload;
-    procedure PutTotal(IndexNo: Integer; BetType, Value, Koef: ShortString); overload;
+    function PutEvent(aSt: PChar): Integer;
   end;
 
 
@@ -281,45 +277,17 @@ begin
   fSwim.ProgressBar.Max:= aMaxValue;
 end;
 
-procedure TIDMSwimImplement.PutBet(IndexNo: Integer; BetType: ShortString;
-  tr: TXmlNode; Ways: Integer);
+function TIDMSwimImplement.PutEvent(aSt: PChar): Integer;
+var
+  sl: TStringList;
 begin
-  dmSwim.PutBet(IndexNo, BetType, tr, Ways);
-end;
-
-procedure TIDMSwimImplement.PutBet(IndexNo: Integer; BetType, Koef: ShortString;
-  Ways: Integer);
-begin
-  dmSwim.PutBet(IndexNo, BetType, Koef, Ways);
-end;
-
-function TIDMSwimImplement.PutEvent: Integer;
-begin
-  Result:= dmSwim.PutEvent;
-end;
-
-procedure TIDMSwimImplement.PutFora(IndexNo: Integer;
-  BetType, Value, Koef: ShortString);
-begin
-  dmSwim.PutFora(IndexNo, BetType, Value, Koef);
-end;
-
-procedure TIDMSwimImplement.PutFora(IndexNo: Integer; BetType: ShortString;
-  tr: TXmlNode);
-begin
-  dmSwim.PutFora(IndexNo, BetType, tr);
-end;
-
-procedure TIDMSwimImplement.PutTotal(IndexNo: Integer;
-  BetType, Value, Koef: ShortString);
-begin
-  dmSwim.PutTotal(IndexNo, BetType, Value, Koef);
-end;
-
-procedure TIDMSwimImplement.PutTotal(IndexNo: Integer; BetType: ShortString;
-  tr: TXmlNode);
-begin
-  dmSwim.PutTotal(IndexNo, BetType, tr);
+  sl:= TStringList.Create;
+  try
+    sl.Text:= aSt;
+    dmSwim.PutEvent(sl);
+  finally
+    sl.Free;
+  end;
 end;
 
 procedure TIDMSwimImplement.StepProgressBar;
@@ -374,7 +342,7 @@ begin
       Btn.Caption:= BookerName;
       Btn.Tag:= Booker_Id;
       Btn.ImageIndex:= GetDownloadState(BookerName);
-      ToolbarTop.Items.Insert(i, Btn);
+      ToolbarTop.Items.Insert(i+1, Btn);
       // Кнопки нижнего тулбара
       State:= DuplicateComponents(StateDefault) as TTBXSubmenuItem;
       State.Tag:= Booker_id;
@@ -423,8 +391,8 @@ begin
   finally
     sl.Free;
   end;
-  btnDefault.Visible:= false;
-  StateDefault.Visible:= false;
+//  btnDefault.Visible:= false;
+//  StateDefault.Visible:= false;
 end;
 
 procedure TfSwim.FormDestroy(Sender: TObject);

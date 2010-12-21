@@ -105,6 +105,10 @@ HostApplication=D:\Swim3\Swim3.exe
 Launcher=
 UseLauncher=0
 DebugCWD=D:\Swim3
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
 [Version Info]
 IncludeVerInfo=0
 AutoIncBuild=0

@@ -1,7 +1,7 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>PlusMinus</title>
+    <title>BetCity</title>
   </head>
 <body>
 <?php
@@ -12,7 +12,7 @@
   $Sport = $_GET['Sport'];
   $debug = $_GET['debug'];
   $Booker = 'betcity';
-  $Lines = "lines/$Booker/";
+  $Lines = "lines/$Booker/$Sport.";
   $Host = 'http://betcity.ru';
 
   // Получаем перечень турниров
@@ -72,7 +72,6 @@ function extract_bet($Html) {
   $Result = extract_bet(convert_to_utf8($Html));
   if ($debug) file_put_contents($Lines . 'bets.txt', $Result);
   if ($debug) file_put_contents($Lines . 'bets.txt.html', $Result);
-  if ($debug) file_put_contents($FileName, extract_league($Html));
 
   print $Result;
 ?>

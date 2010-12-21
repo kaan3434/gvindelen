@@ -101,6 +101,7 @@ var
   ndTable, tr, td: TXmlNode;
   r: Integer;
   iDate, iGamer1, iGamer2: Integer;
+  st: String;
 begin
   ndTable:= Line.Root;
   try
@@ -123,27 +124,27 @@ begin
       for r:= 1 to ndTable.NodeCount-1 do
       begin
         tr:= ndTable.Nodes[r];
-        dmSwimIntf.FillEventParam(TournirId,
+        St:= FillEventParam(TournirId,
           GetEventDate(tr[iDate].ValueAsString),
           PrepareGamerName(tr[iGamer1].ValueAsString, PrztG),
           PrepareGamerName(tr[iGamer2].ValueAsString, PrztG));
         try
-          dmSwimIntf.PutBet(0, btWin1, tr, WaysCnt);
-          dmSwimIntf.PutBet(1, btWin2, tr, WaysCnt);
+          St:= st + PutBet(0, btWin1, tr, WaysCnt);
+          St:= st + PutBet(1, btWin2, tr, WaysCnt);
           if WaysCnt = 3 then
           begin
-            dmSwimIntf.PutBet(2, btDraw, tr, 3);
-            DMSwimIntf.PutBet(3, btNoLose1, tr, 3);
-            DMSwimIntf.PutBet(4, btNoDraw, tr, 3);
-            DMSwimIntf.PutBet(5, btNoLose2, tr, 3);
+            St:= st + PutBet(2, btDraw, tr, 3);
+            St:= st + PutBet(3, btNoLose1, tr, 3);
+            St:= st + PutBet(4, btNoDraw, tr, 3);
+            St:= st + PutBet(5, btNoLose2, tr, 3);
           end;
-          DMSwimIntf.PutTotal(6, btTotLo, tr);
-          DMSwimIntf.PutTotal(7, btTotHi, tr);
-          DMSwimIntf.PutFora(8, btFora1, tr);
-          DMSwimIntf.PutFora(9, btFora2, tr);
+          St:= st + PutTotal(6, btTotLo, tr);
+          St:= st + PutTotal(7, btTotHi, tr);
+          St:= st + PutFora(8, btFora1, tr);
+          St:= st + PutFora(9, btFora2, tr);
         except
         end;
-        dmSwimIntf.PutEvent;
+        dmSwimIntf.PutEvent(PChar(st));
       end;
     except
   //    ShowMessage(tr.WriteToString);

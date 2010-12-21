@@ -15,16 +15,7 @@ type
     function GetASportId_byBSportName(BookerId: Integer; BSportName, TournirName: PChar;
       var BSportId, TournirId, Ways: Integer): integer;
 
-    procedure FillEventParam(TournirId: Integer; EventDtTm: TDateTime;
-              Gamer1Name, Gamer2Name: WideString);
-    procedure ClearBetParam;
-    function PutEvent: Integer;
-    procedure PutBet(IndexNo: Integer; BetType: ShortString; tr: TXmlNode; Ways: Integer); overload;
-    procedure PutBet(IndexNo: Integer; BetType, Koef: ShortString; Ways: Integer); overload;
-    procedure PutFora(IndexNo: Integer; BetType: ShortString; tr: TXmlNode); overload;
-    procedure PutFora(IndexNo: Integer; BetType, Value, Koef: ShortString); overload;
-    procedure PutTotal(IndexNo: Integer; BetType: ShortString; tr: TXmlNode); overload;
-    procedure PutTotal(IndexNo: Integer; BetType, Value, Koef: ShortString); overload;
+    function PutEvent(aSt: PChar): Integer;
   end;
 
 const
@@ -71,6 +62,21 @@ function PrepareTournirName(Tournir_Name: String; Parazits: TStrings): String;
 function PrepareGamerName(GamerName: String; Parazits: TStrings): String;
 
 function CreateParazit(FName: String): TStringList;
+
+function FillEventParam(TournirId: Integer; EventDtTm: TDateTime;
+  Gamer1Name, Gamer2Name: String): string;
+procedure ClearBetParam(sl: TStringList);
+
+function PutBet(IndexNo: Integer; BetTypeSign, Koef: String;
+  Ways: Integer): String; overload;
+function PutBet(IndexNo: Integer; BetTypeSign: String; tr: TXmlNode;
+  Ways: Integer): String; overload;
+function PutTotal(IndexNo: Integer; BetTypeSign, Value, Koef: String): String; overload;
+function PutTotal(IndexNo: Integer; BetTypeSign: String; tr: TXmlNode): String; overload;
+function PutFora(IndexNo: Integer; BetTypeSign, Value, Koef: String): String; overload;
+function PutFora(IndexNo: Integer; BetTypeSign: String; tr: TXmlNode): String; overload;
+
+
 
 implementation
 
@@ -288,13 +294,14 @@ end;
 function KillParazits(St: String; Parazits: TStrings; ReplaceStr: Char): String;
 var
   i: Integer;
+  S: String;
 begin
   Result:= St;
   For i:= 0 to Parazits.Count-1 do
   begin
-    st:= Parazits[i];
-    if st<>'' then
-      Result:= DeleteDoubleChar(ReplaceAll(Result, st, ReplaceStr), ReplaceStr);
+    s:= Parazits[i];
+    if s<>'' then
+      Result:= DeleteDoubleChar(ReplaceAll(Result, s, ReplaceStr), ReplaceStr);
   end;
 end;
 
@@ -356,5 +363,98 @@ begin
 end;
 
 
+function FillEventParam(TournirId: Integer; EventDtTm: TDateTime;
+  Gamer1Name, Gamer2Name: String): String;
+begin
+  result:= Format(
+    'BTournir_Id=%u'#13#10'Event_DTm=%s'#13#10'BGamer1_Nm=%s'#13#10'BGamer2_Nm=%s',
+  [TournirId, DateTimeToStr(EventDtTm),Gamer1Name, Gamer2Name]);
+end;
+
+function FillBetParam(IndexNo: Integer; BetTypeSign: String;
+  BetValue, BetKoef: Single): String;
+var
+  s: String[4];
+begin
+  result:= Format(#13#10's_%u=%s'#13#10'v_%u=%5.1f'#13#10'k_%u=%5.3f',
+    [IndexNo, BetTypeSign, IndexNo, BetValue, IndexNo, BetKoef]);
+end;
+
+
+function PutBet(IndexNo: Integer; BetTypeSign, Koef: String;
+  Ways: Integer): String;
+begin
+  if Koef = '' then exit;
+  Koef:= ReplaceAll(Koef, ',', DecimalSeparator);
+  Koef:= ReplaceAll(Koef, '.', DecimalSeparator);
+  if IsFloat(Koef) then
+    result:= FillBetParam(IndexNo, IntToStr(Ways)+BetTypeSign, 0, StrToFloat(Koef));
+end;
+
+function PutBet(IndexNo: Integer; BetTypeSign: String; tr: TXmlNode;
+          Ways: Integer): String;
+var
+  td: TXmlNode;
+begin
+  td:= tr.NodeByAttributeValue(nnTd, attTitle, BetTypeSign, false);
+  if td=nil then exit;
+  Result:= PutBet(IndexNo, BetTypeSign, td.ValueAsString, Ways);
+end;
+
+function PutTotal(IndexNo: Integer; BetTypeSign, Value, Koef: String): String;
+begin
+  if (Koef='') or (Value='') then exit;
+  Koef:= ReplaceAll(Koef, ',', DecimalSeparator);
+  Koef:= ReplaceAll(Koef, '.', DecimalSeparator);
+  Value:= ReplaceAll(Value, ',', DecimalSeparator);
+  Value:= ReplaceAll(Value, '.', DecimalSeparator);
+  if IsFloat(Koef) and IsFloat(Value) then
+    Result:= FillBetParam(IndexNo, '2'+BetTypeSign, StrToFloat(Value), StrToFloat(Koef));
+end;
+
+function PutTotal(IndexNo: Integer; BetTypeSign: String; tr: TXmlNode): String;
+var
+  td, ndTotalV: TXmlNode;
+begin
+  td:= tr.NodeByAttributeValue(nnTd, attTitle, BetTypeSign, false);
+  if td=nil then exit;
+  ndTotalV:= tr.NodeByAttributeValue(nnTd, attTitle, ctTotV, false);
+  if ndTotalV=nil then exit;
+  Result:= PutTotal(IndexNo, BetTypeSign, ndTotalV.ValueAsString, td.ValueAsString);
+end;
+
+function PutFora(IndexNo: Integer; BetTypeSign, Value, Koef: String): String;
+begin
+  if (Koef='') or (Value='') then exit;
+  Koef:= ReplaceAll(Koef, ',', DecimalSeparator);
+  Koef:= ReplaceAll(Koef, '.', DecimalSeparator);
+  Value:= ReplaceAll(Value, ',', DecimalSeparator);
+  Value:= ReplaceAll(Value, '.', DecimalSeparator);
+  if IsFloat(Koef) and IsFloat(Value) then
+    Result:= FillBetParam(IndexNo, '2'+BetTypeSign, StrToFloat(Value), StrToFloat(Koef));
+end;
+
+function PutFora(IndexNo: Integer; BetTypeSign: String; tr: TXmlNode): String;
+var
+  td, ndForaV: TXmlNode;
+begin
+  td:= tr.NodeByAttributeValue(nnTd, attTitle, BetTypeSign);
+  if td=nil then exit;
+  ndForaV:= tr.NodeByAttributeValue(nnTd, attTitle, BetTypeSign+'V');
+  if ndForaV=nil then exit;
+    Result:= PutFora(IndexNo, BetTypeSign, ndForaV.ValueAsString, td.ValueAsString);
+end;
+
+procedure ClearBetParam(sl: TStringList);
+var
+  i: Integer;
+begin
+  for i:= sl.count-1 downto 0 do
+    if sl.Names[i][2] = '_' then
+      sl.Delete(i);
+end;
+
+initialization
+  DecimalSeparator:= '.';
+
 end.
- 

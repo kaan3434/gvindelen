@@ -1,4 +1,4 @@
-library pluginBuker;
+library pluginBetCity;
 
 { Important note about DLL memory management: ShareMem must be the
   first unit in your library's USES clause AND your project's (select
@@ -15,7 +15,7 @@ uses
   SysUtils,
   Classes,
   uSwimCommon,
-  uRecBuker in 'uRecBuker.pas';
+  uRecBetCity in 'uRecBetCity.pas';
 
 {$R *.res}
 {$E swm}
@@ -28,7 +28,7 @@ end;
 procedure RecognizeLine(aDMSwim: IDMSwim); stdcall;
 begin
   DMSwimIntf:= aDMSwim;
-  RecognizeBukerLine;
+  RecognizeBetCityLine;
   DMSwimIntf:= nil;
 end;
 

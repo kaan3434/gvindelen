@@ -29,6 +29,7 @@ procedure RecognizeLine(aDMSwim: IDMSwim); stdcall;
 begin
   DMSwimIntf:= aDMSwim;
   RecognizePlusMinusLine;
+  DMSwimIntf:= nil;
 end;
 
 

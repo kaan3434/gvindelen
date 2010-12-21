@@ -1,0 +1,21 @@
+<Root>
+  <!--Download Href="http://gvindelen.site11.com/betcity.php" FileName="[Path.Lines]betcity.html" /-->
+
+  <!-- betcity. Футбол -->
+  <Download Href="http://gvindelen.site11.com/betcity.php?Sport=1" FileName="[Path.Lines]БетСити.Футбол.html" UTF8ToAnsi="1" Event="BeforeSave"/>
+  <!-- betcity. Теннис -->
+  <Download Href="http://gvindelen.site11.com/betcity.php?Sport=2" FileName="[Path.Lines]БетСити.Теннис.html" UTF8ToAnsi="1" Event="BeforeSave"/>
+  <!-- betcity. Баскетбол -->
+  <Download Href="http://gvindelen.site11.com/betcity.php?Sport=3" FileName="[Path.Lines]БетСити.Баскетбол.html" UTF8ToAnsi="1" Event="BeforeSave"/>
+  <!-- betcity. Волейбол -->
+  <Download Href="http://gvindelen.site11.com/betcity.php?Sport=12" FileName="[Path.Lines]БетСити.Волейбол.html" UTF8ToAnsi="1" Event="BeforeSave"/>
+  <!-- betcity. Гандбол -->
+  <Download Href="http://gvindelen.site11.com/betcity.php?Sport=8" FileName="[Path.Lines]БетСити.Гандбол.html" UTF8ToAnsi="1" Event="BeforeSave"/>
+  <!-- betcity. Футзал -->
+  <Download Href="http://gvindelen.site11.com/betcity.php?Sport=19" FileName="[Path.Lines]БетСити.Футзал.html" UTF8ToAnsi="1" Event="BeforeSave"/>
+
+  <Event Name="BeforeSave">
+    <ExtractTags Start="&lt;body" End="&lt;/body&gt;"/>
+  </Event>
+
+</Root>
