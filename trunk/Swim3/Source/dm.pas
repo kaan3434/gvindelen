@@ -58,10 +58,6 @@ type
               var BSportId: variant);
     procedure ModifyASport(var ASportId: Integer; ASportName: String);
 
-    procedure FillEventParam(TournirId: Integer; EventDtTm: TDateTime;
-              Gamer1Name, Gamer2Name: String);
-
-    procedure ClearBetParam;
     function PutEvent(sl: TStringList): Integer; overload;
     function PutEvent: Integer; overload;
 
@@ -533,42 +529,6 @@ begin
   end;
 end;
 
-procedure TdmSwim.ClearBetParam;
-var
-  s: String[4];
-  i: Integer;
-begin
-  For i:= 0 to 9 do
-  begin
-    s:= IntToStr(i);
-    with spPutEvent do
-    begin
-      ParamByName('i_s_'+s).Value:= null;
-      ParamByName('i_v_'+s).Value:= null;
-      ParamByName('i_k_'+s).Value:= null;
-    end
-  end;
-end;
-
-
-procedure TdmSwim.FillEventParam(TournirId: Integer; EventDtTm: TDateTime;
-  Gamer1Name, Gamer2Name: String);
-var
-  i: Integer;
-begin
-  with spPutEvent do
-  begin
-    StoredProcName:= UpperCase('Put_EventBets');
-    Params.ClearValues;
-    For i:= 0 to Params.Count - 1 do
-      Params[i].Value:= null;
-    ParamByName('i_BTournir_Id').AsInteger:= TournirId;
-    ParamByName('i_Event_DTm').AsDateTime:= EventDtTm;
-    ParamByName('i_BGamer1_Nm').AsString:= Gamer1Name;
-    ParamByName('i_BGamer2_Nm').AsString:= Gamer2Name;
-  end;
-end;
-
 function TdmSwim.PutEvent(sl: TStringList): Integer;
 var
   i: integer;
@@ -578,8 +538,6 @@ begin
   begin
     StoredProcName:= UpperCase('Put_EventBets');
     Params.ClearValues;
-    For i:= 0 to Params.Count - 1 do
-      Params[i].Value:= null;
     ParamByName('i_BTournir_Id').AsInteger:= StrToInt(sl.Values['BTournir_Id']);
     ParamByName('i_Event_DTm').AsDateTime:= StrToDateTime(sl.Values['Event_DTm']);
     ParamByName('i_BGamer1_Nm').AsString:= sl.Values['BGamer1_Nm'];
@@ -592,6 +550,12 @@ begin
         ParamByName(Format('i_s_%u', [i])).AsString:=  sl.Values[Format('s_%u', [i])];
         ParamByName(Format('i_v_%u', [i])).AsString:=  sl.Values[Format('v_%u', [i])];
         ParamByName(Format('i_k_%u', [i])).AsString:=  sl.Values[Format('k_%u', [i])];
+      end
+      else
+      begin
+        ParamByName(Format('i_s_%u', [i])).Value:= null;
+        ParamByName(Format('i_v_%u', [i])).Value:= null;
+        ParamByName(Format('i_k_%u', [i])).Value:= null;
       end;
     end;
     ExecProc;

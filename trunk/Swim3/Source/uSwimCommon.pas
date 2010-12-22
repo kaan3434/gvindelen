@@ -384,6 +384,7 @@ end;
 function PutBet(IndexNo: Integer; BetTypeSign, Koef: String;
   Ways: Integer): String;
 begin
+  Result:= '';
   if Koef = '' then exit;
   Koef:= ReplaceAll(Koef, ',', DecimalSeparator);
   Koef:= ReplaceAll(Koef, '.', DecimalSeparator);
@@ -396,6 +397,7 @@ function PutBet(IndexNo: Integer; BetTypeSign: String; tr: TXmlNode;
 var
   td: TXmlNode;
 begin
+  Result:= '';
   td:= tr.NodeByAttributeValue(nnTd, attTitle, BetTypeSign, false);
   if td=nil then exit;
   Result:= PutBet(IndexNo, BetTypeSign, td.ValueAsString, Ways);
@@ -403,6 +405,7 @@ end;
 
 function PutTotal(IndexNo: Integer; BetTypeSign, Value, Koef: String): String;
 begin
+  Result:= '';
   if (Koef='') or (Value='') then exit;
   Koef:= ReplaceAll(Koef, ',', DecimalSeparator);
   Koef:= ReplaceAll(Koef, '.', DecimalSeparator);
@@ -416,6 +419,7 @@ function PutTotal(IndexNo: Integer; BetTypeSign: String; tr: TXmlNode): String;
 var
   td, ndTotalV: TXmlNode;
 begin
+  Result:= '';
   td:= tr.NodeByAttributeValue(nnTd, attTitle, BetTypeSign, false);
   if td=nil then exit;
   ndTotalV:= tr.NodeByAttributeValue(nnTd, attTitle, ctTotV, false);
@@ -425,6 +429,7 @@ end;
 
 function PutFora(IndexNo: Integer; BetTypeSign, Value, Koef: String): String;
 begin
+  Result:= '';
   if (Koef='') or (Value='') then exit;
   Koef:= ReplaceAll(Koef, ',', DecimalSeparator);
   Koef:= ReplaceAll(Koef, '.', DecimalSeparator);
@@ -438,6 +443,7 @@ function PutFora(IndexNo: Integer; BetTypeSign: String; tr: TXmlNode): String;
 var
   td, ndForaV: TXmlNode;
 begin
+  Result:= '';
   td:= tr.NodeByAttributeValue(nnTd, attTitle, BetTypeSign);
   if td=nil then exit;
   ndForaV:= tr.NodeByAttributeValue(nnTd, attTitle, BetTypeSign+'V');

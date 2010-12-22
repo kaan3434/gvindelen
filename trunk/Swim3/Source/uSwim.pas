@@ -220,9 +220,6 @@ type
     function GetASportId_byBSportName(BookerId: Integer; BSportName, TournirName: PChar;
       var BSportId, TournirId, Ways: Integer): integer;
 
-    procedure FillEventParam(TournirId: Integer; EventDtTm: TDateTime;
-              Gamer1Name, Gamer2Name: WideString);
-    procedure ClearBetParam;
     function PutEvent(aSt: PChar): Integer;
   end;
 
@@ -248,17 +245,6 @@ uses
 function TIDMSwimImplement.Booker_Name(BookerId: Integer): ShortString;
 begin
   Result:= dmSwim.GetBookerName(BookerId);
-end;
-
-procedure TIDMSwimImplement.ClearBetParam;
-begin
-  dmSwim.ClearBetParam;
-end;
-
-procedure TIDMSwimImplement.FillEventParam(TournirId: Integer;
-  EventDtTm: TDateTime; Gamer1Name, Gamer2Name: WideString);
-begin
-  dmSwim.FillEventParam(TournirId, EventDtTm, Gamer1Name, Gamer2Name);
 end;
 
 function TIDMSwimImplement.GetASportId_byBSportName(BookerId: Integer;
