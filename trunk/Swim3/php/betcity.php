@@ -1,9 +1,3 @@
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>BetCity</title>
-  </head>
-<body>
 <?php
   require "libs/Download.php";
   require "libs/GvStrings.php";
@@ -14,7 +8,14 @@
   $Booker = 'betcity';
   $Lines = "lines/$Booker/$Sport.";
   $Host = 'http://betcity.ru';
-
+?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BetCity<?php print "Sport:$Sport";?></title>
+  </head>
+<body>
+<?php
   // Получаем перечень турниров
   if ($debug) {
     $FileName = $Lines . "league.html";

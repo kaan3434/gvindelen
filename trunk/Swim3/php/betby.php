@@ -2,21 +2,30 @@
   require "libs/Download.php";
   require "libs/GvStrings.php";
   require "libs/GvHtmlSrv.php";
+  require "libs/utf2win.php";
   $Booker = 'betby';
   $debug = $_GET['debug'];
   $Lines = "lines/$Booker/";
-  
-  // Удаляем старые файлы c турнирами
-  if (!$debug) {
-    $FileName = $Lines . 'bets.html';
-    if (file_exists($FileName)) {
-      $CurDtTm = getdate();
-      $Seconds = $CurDtTm['0']-filectime($FileName);
-      if ($Seconds > 5*60) {
-        unlink($Lines . "league.html");
-        unlink($Lines . "bets.html");
-      }
+  $Host = 'http://bet.by';
+?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BetBy</title>
+  </head>
+<body>
+<?php  
+  // Получаем перечень турниров
+  if ($debug) {
+    $FileName = $Lines . "league.html";
+    if (!file_exists($FileName)) {                                                                                                                         
+      $Html = download("$Host/lines_set_turnir.php?period=all", "GET", "$Host/");
+      file_put_contents($FileName, $Html);
+    } else {
+      $Html = file_get_contents($FileName);
     }
+  } else {
+    $Html = download("$Host/lines_set_turnir.php?period=all", "GET", "$Host/");
   }
 
 function extract_league($Html) {
@@ -31,15 +40,7 @@ function extract_league($Html) {
   return $Html;  
 }
 
-  // Получаем перечень турниров
-  $FileName = $Lines . "league.html";
-  if (!file_exists($FileName)) {
-    $Html = download("http://bet.by/lines_set_turnir.php?period=all", "GET", "http://bet.by/");
-    file_put_contents($FileName, $Html);
-  } else {
-    $Html = file_get_contents($FileName);
-  }
-  $LeagueList = extract_league($Html);
+  $LeagueList = extract_league(win1251_to_utf8($Html));
   if ($debug) file_put_contents($Lines . "league.txt", $LeagueList);
   
 function extract_bet($Html) {
@@ -76,24 +77,29 @@ function extract_bet($Html) {
 }
 
   // Получаем перечень ставок
-  $FileName = $Lines . "bets.html";
-  if (!file_exists($FileName)) {
-    $PostData['txtQuery'] = $LeagueList;
-    $PostData['period'] = 'all';
-    $PostData['stavka'] = 1;
-    $turnirs = explode(';', $LeagueList);
-    foreach ($turnirs as $turnir) {
-      $PostData[$turnir] = 'on';
+  $PostData['txtQuery'] = $LeagueList;
+  $PostData['period'] = 'all';
+  $PostData['stavka'] = 1;
+  $turnirs = explode(';', $LeagueList);
+  foreach ($turnirs as $turnir) $PostData[$turnir] = 'on';
+  if ($debug) {
+    $FileName = $Lines . "bets.html";
+    if (!file_exists($FileName)) {
+      $Html = download("$Host/lines.php", "POST", "$Host/lines_set_turnir.php?period=all", $PostData);
+      file_put_contents($FileName, $Html);
+    } else {
+      $Html = file_get_contents($FileName);
     }
-    $Html = download("http://bet.by/lines.php", "POST", "http://bet.by/lines_set_turnir.php?period=all", $PostData);
-    file_put_contents($FileName, $Html);
   } else {
-    $Html = file_get_contents($FileName);
+    $Html = download("$Host/lines.php", "POST", "$Host/lines_set_turnir.php?period=all", $PostData);
   }
-  $Result = extract_bet($Html);
+
+  $Result = extract_bet(convert_to_utf8($Html));
   if ($debug) file_put_contents($Lines . 'bets.txt.html', $Result);
   if ($debug) file_put_contents($Lines . 'bets.txt', $Result);
 
-  print ($Result);
+  print $Result;
 ?>
+</body>
+</html>
 
