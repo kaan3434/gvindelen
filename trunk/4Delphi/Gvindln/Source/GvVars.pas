@@ -159,10 +159,10 @@ begin
   try
     sl.LoadFromFile(IniFileName);
     repeat
-      St:= UpperCase(sl.Text);
-      sl.Text:= Copy(sl.Text, Pos('['+UpperCase(Section)+']', St), Length(St));
+      St:= AnsiUpperCase(sl.Text);
+      sl.Text:= Copy(sl.Text, Pos('['+AnsiUpperCase(Section)+']', St), Length(St));
       if sl.Count=0 then Exit;
-      if UpperCase(Trim(sl[0]))='['+UpperCase(Section)+']' then
+      if AnsiUpperCase(Trim(sl[0]))='['+AnsiUpperCase(Section)+']' then
         Break
       else
         sl.Delete(0);
@@ -249,7 +249,7 @@ var
   TPos,LPos: Integer;
   FindedName: String;
 begin
-  VarName:= UpperCase(VarName);
+  VarName:= AnsiUpperCase(VarName);
   if Count=0 then
   begin
     result:= false;
@@ -322,7 +322,7 @@ function TVarList.GetAsString(VarName: String): String;
 var
   Position: integer;
 begin
-  VarName:= UpperCase(VarName);
+  VarName:= AnsiUpperCase(VarName);
   if FindVar(VarName, Position) then
   begin
     result:=  Strings[Position];
@@ -386,7 +386,7 @@ procedure TVarList.SetAsString(VarName, Value: String);
 var
   Position: integer;
 begin
-  VarName:= UpperCase(VarName);
+  VarName:= AnsiUpperCase(VarName);
   if FindVar(VarName, Position) then
     Strings[Position]:= VarName+'='+Value
   else
@@ -494,7 +494,7 @@ var
   AreaName, FrontMask, BackMask, St, Value, Name: String;
   Pos, LenAreaName: integer;
 begin
-  AreaNames:= UpperCase(AreaNames);
+  AreaNames:= AnsiUpperCase(AreaNames);
   result:= TVarList.Create;
   while AreaNames<> '' do
   begin
@@ -528,7 +528,7 @@ var
   AreaName, St, StName: String;
   Pos, LenAreaName: integer;
 begin
-  AreaNames:= UpperCase(AreaNames);
+  AreaNames:= AnsiUpperCase(AreaNames);
   result:= TVarList.Create;
   while AreaNames<> '' do
   begin
@@ -555,7 +555,7 @@ var
   AreaName, St, StName: String;
   Pos, LenAreaName: integer;
 begin
-  AreaNames:= UpperCase(AreaNames);
+  AreaNames:= AnsiUpperCase(AreaNames);
   while AreaNames<> '' do
   begin
     AreaName:= TakeFront5(AreaNames, ';, ');
@@ -595,7 +595,7 @@ var
   Cutted: TStringList;
 begin
   Cutted:= CutAreas(OldName);
-  NewName:= UpperCase(NewName);
+  NewName:= AnsiUpperCase(NewName);
   LenOldName:= Length(OldName);
   for i:= 0 to Cutted.Count-1 do
   begin
@@ -697,7 +697,7 @@ var
   i: Integer;
   PropName, St: String;
 begin
-  AreaName:= UpperCase(AreaName);
+  AreaName:= AnsiUpperCase(AreaName);
   For i:= 0 to List.Count-1 do
   begin
     St:= List[i];
