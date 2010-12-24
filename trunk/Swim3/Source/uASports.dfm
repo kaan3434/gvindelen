@@ -7,7 +7,7 @@ inherited frmASports: TfrmASports
   PixelsPerInch = 96
   TextHeight = 13
   inherited Splitter1: TSplitter
-    Top = 209
+    Top = 202
   end
   inherited TBXDockUp: TTBXDock
     inherited TBXToolbar: TTBXToolbar
@@ -17,7 +17,7 @@ inherited frmASports: TfrmASports
     end
   end
   inherited gridMain: TDBGridEh
-    Height = 183
+    Height = 176
     Columns = <
       item
         AutoFitColWidth = False
@@ -34,7 +34,6 @@ inherited frmASports: TfrmASports
         HighlightRequired = True
         Title.Caption = #1053#1072#1080#1084#1077#1085#1086#1074#1072#1085#1080#1077
         Title.Hint = #1053#1072#1080#1084#1077#1085#1086#1074#1072#1085#1080#1077' '#1089#1087#1086#1088#1090#1072
-        Width = 64
       end
       item
         AutoFitColWidth = False
@@ -85,7 +84,6 @@ inherited frmASports: TfrmASports
         FieldName = 'ASUBSPORT2_NM'
         Footers = <>
         Title.Caption = #1057#1087#1086#1088#1090' 2-'#1075#1086' '#1080#1075#1088#1086#1082#1072
-        Width = 64
       end
       item
         AutoFitColWidth = False
@@ -107,13 +105,15 @@ inherited frmASports: TfrmASports
       end>
   end
   inherited Panel: TPanel
-    Top = 212
+    Top = 205
     Height = 300
     Visible = False
-    State = csExpand
     inherited pcDetail: TPageControl
-      Height = 282
+      Height = 298
     end
+  end
+  inherited dckRight: TTBXMultiDock
+    Height = 176
   end
   object dsASubSports: TDataSource [5]
     AutoEdit = False

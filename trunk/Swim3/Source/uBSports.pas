@@ -7,7 +7,7 @@ uses
   Dialogs, uBaseForm, Provider, pFIBClientDataSet, DB, DBClient, ImgList,
   TB2Item, ActnList, GridsEh, DBGridEh, ExtCtrls, DBCtrls, TBX, TB2Dock,
   TB2Toolbar, ComCtrls, FIBSQLMonitor, StdCtrls,
-  FIBDataSet, pFIBDataSet;
+  FIBDataSet, pFIBDataSet, DBGridEhGrouping, TBXDkPanels;
 
 type
   TfrmBSports = class(TfrmBaseForm)

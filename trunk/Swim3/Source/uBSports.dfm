@@ -8,7 +8,7 @@ inherited frmBSports: TfrmBSports
   PixelsPerInch = 96
   TextHeight = 13
   inherited Splitter1: TSplitter
-    Top = 112
+    Top = 105
     Width = 707
   end
   inherited TBXDockUp: TTBXDock
@@ -20,8 +20,8 @@ inherited frmBSports: TfrmBSports
     end
   end
   inherited gridMain: TDBGridEh
-    Width = 707
-    Height = 86
+    Width = 700
+    Height = 79
     ColumnDefValues.AutoDropDown = False
     Columns = <
       item
@@ -74,14 +74,12 @@ inherited frmBSports: TfrmBSports
       end>
   end
   inherited Panel: TPanel
-    Top = 115
+    Top = 108
     Width = 707
     Height = 300
-    ExpandedHeight = 300
-    State = csExpand
     inherited pcDetail: TPageControl
       Width = 705
-      Height = 282
+      Height = 298
       ActivePage = tsASports
       object tsASports: TTabSheet
         Caption = 'tsASports'
@@ -90,10 +88,11 @@ inherited frmBSports: TfrmBSports
           Left = 0
           Top = 0
           Width = 697
-          Height = 254
+          Height = 270
           Align = alClient
           AutoFitColWidths = True
           Color = clBtnFace
+          DataGrouping.GroupLevels = <>
           DataSource = dsASports
           Flat = True
           FooterColor = clWindow
@@ -103,7 +102,8 @@ inherited frmBSports: TfrmBSports
           FooterFont.Name = 'MS Sans Serif'
           FooterFont.Style = []
           Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
-          OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghRowHighlight, dghDialogFind]
+          OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove]
+          RowDetailPanel.Color = clBtnFace
           TabOrder = 0
           TitleFont.Charset = DEFAULT_CHARSET
           TitleFont.Color = clWindowText
@@ -151,6 +151,8 @@ inherited frmBSports: TfrmBSports
               FieldName = 'EVENT_OFS'
               Footers = <>
             end>
+          object RowDetailData: TRowDetailPanelControlEh
+          end
         end
       end
       object tsTournirs: TTabSheet
@@ -164,6 +166,7 @@ inherited frmBSports: TfrmBSports
           AutoFitColWidths = True
           Color = clBtnFace
           ColumnDefValues.Title.Alignment = taCenter
+          DataGrouping.GroupLevels = <>
           DataSource = dsBTournirs
           Flat = True
           FooterColor = clWindow
@@ -173,6 +176,7 @@ inherited frmBSports: TfrmBSports
           FooterFont.Name = 'MS Sans Serif'
           FooterFont.Style = []
           ReadOnly = True
+          RowDetailPanel.Color = clBtnFace
           TabOrder = 0
           TitleFont.Charset = DEFAULT_CHARSET
           TitleFont.Color = clWindowText
@@ -230,9 +234,15 @@ inherited frmBSports: TfrmBSports
               Title.Caption = 'Ignore'
               Width = 40
             end>
+          object RowDetailData: TRowDetailPanelControlEh
+          end
         end
       end
     end
+  end
+  inherited dckRight: TTBXMultiDock
+    Left = 700
+    Height = 79
   end
   inherited ActionList: TActionList
     object actSelectASports: TAction [2]
