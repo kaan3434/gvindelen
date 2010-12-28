@@ -1,3 +1,7 @@
 <Root>
   <Download Href="http://gvindelen.site11.com/betby.php" FileName="[Path.Lines]betby.html" />
+
+  <Event Name="BeforeSave">
+    <ExtractTags Start="&lt;body" End="&lt;/body&gt;"/>
+  </Event>
 </Root>
