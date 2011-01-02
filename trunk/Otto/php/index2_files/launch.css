@@ -1,0 +1,120 @@
+/* #################################### DOCK ANIMATION ###################################### */
+
+#dock_animation{
+  display:none;
+  position:absolute;
+  top:0px;
+  left:0px;
+  z-index:100000;
+}
+
+
+#dock_animation .dock_1{
+  width:212px;
+  overflow:hidden;
+  height:189px;
+  position:relative;
+}
+
+#dock_animation .dock_1 .inner{
+  background:url(dock_background.png) no-repeat;
+  position:absolute;
+  width:212px;
+  height:189px;/* must be same as dock_1 height */
+  margin-top:189px;/* must be same as dock_1 height */
+}
+
+*html #dock_animation .dock_1 .inner{
+  position:fixed;
+}
+
+#dock_animation .dock_1 .button{
+  position:absolute;
+  cursor:pointer;
+  top:144px;
+  left:23px;
+  z-index:1000010;
+  float:left;
+}
+
+*html #dock_animation .dock_1 .button{
+  top:124px;
+}
+
+#dock_animation .dock_1 .close{
+  position:absolute;
+  cursor:pointer;
+  top:118px;
+  left:184px;
+  width:20px;
+  height:20px;
+  background:transparent;
+}
+
+/* ###### Gewinnspiel-Reihe ###### */
+
+#layer #container {
+  position:relative;
+}
+
+#layer #content #serie {
+  padding:25px 15px;
+  border:1px solid #c4c4c4;
+}
+
+#layer #content #serie #picture{
+  float:left;
+}
+
+#layer #content #serie #picture #image{
+  float:left;
+}
+
+#layer #content #serie #picture #space{
+  width:15px;
+  float:left;
+}
+
+#layer #content #serie #text{
+  float:left;
+  width:272px;
+}
+
+#layer #content #serie #text .info{
+  height:320px;
+  padding-top:7px;
+  line-height:17px;
+}
+
+#layer #content #serie #text .button{
+  margin-top:26px;
+  float:right;
+  cursor:pointer;
+}
+
+#layer #content #serie #text .back_button{
+  margin-top:26px;
+  float:left;
+  cursor:pointer;
+}
+
+*html #layer #content #serie #text .back_button{
+  margin-top:18px;
+  float:left;
+  cursor:pointer;
+}
+
+*html #layer #content #serie #text .button{
+  margin-top:18px;
+  float:right;
+  cursor:pointer;
+}
+
+#layer #content #serie #text .link{
+  color:#3a98d4;
+}
+
+#layer #content #serie #text .link a{
+  color:#3a98d4;
+}
+

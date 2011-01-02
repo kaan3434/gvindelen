@@ -1,0 +1,296 @@
+#isa_navigation ul, #isa_navigation li, #isa_navigation a
+{
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+    text-decoration: none;
+}
+
+#isa_navigation
+{
+    height: 60px;
+}
+
+#isa_navigation .isa_navigation_level0
+{
+    position: relative;
+}
+
+#isa_navigation .isa_navigation_level0 li
+{
+    position: absolute;
+}
+
+div.isa_submenue
+{
+    width: 965px;
+    position: absolute;
+    background-color: Aqua;
+    z-index: 500;
+    display:none;
+}
+
+#isa_navigation .isa_navigation_level0 li.point div
+{
+    overflow:hidden;
+    width: 3px;
+    height: 3px;
+    margin-top: 21px;
+}
+
+#isa_navigation #isa_nav0
+{
+    top: 0px;
+    left: 0px;
+}
+#isa_navigation #isa_nav0point
+{
+    top: 0px;
+    left: 169px;
+}
+#isa_navigation #isa_nav0point div
+{
+    background-color:#DA2031;
+}
+
+#isa_navigation #isa_nav1
+{
+    top: 0px;
+    left: 176px;
+}
+#isa_navigation #isa_nav1point
+{
+    top: 0px;
+    left: 346px;
+}
+#isa_navigation #isa_nav1point div
+{
+    background-color:#0089C0;
+}
+
+#isa_navigation #isa_nav2
+{
+    top: 0px;
+    left: 353px;
+}
+#isa_navigation #isa_nav2point
+{
+    top: 0px;
+    left: 558px;
+}
+#isa_navigation #isa_nav2point div
+{
+    background-color:#F88000;
+}
+
+#isa_navigation #isa_nav3
+{
+    top: 0px;
+    left: 564px;
+}
+#isa_navigation #isa_nav3point
+{
+    top: 0px;
+    left: 810px;
+}
+#isa_navigation #isa_nav3point div
+{
+    background-color:#BF2F7F;
+}
+
+#isa_navigation #isa_nav4
+{
+    top: 0px;
+    left: 817px;
+}
+#isa_navigation #isa_nav4point
+{
+    top: 0px;
+    left: 895px;
+}
+#isa_navigation #isa_nav4point div
+{
+    background-color:#11A3A1;
+}
+
+
+
+#isa_navigation #isa_nav5
+{
+    top: 29px;
+    left: 0px;
+}
+#isa_navigation #isa_nav5point
+{
+    top: 29px;
+    left: 77px;
+}
+#isa_navigation #isa_nav5point div
+{
+    background-color:#fe297b;
+}
+
+#isa_navigation #isa_nav6
+{
+    top: 29px;
+    left: 84px;
+}
+#isa_navigation #isa_nav6point
+{
+    top: 29px;
+    left: 306px;
+}
+#isa_navigation #isa_nav6point div
+{
+    background-color:#7F9A01;
+}
+
+#isa_navigation #isa_nav7
+{
+    top: 29px;
+    left: 313px;
+}
+#isa_navigation #isa_nav7point
+{
+    top: 29px;
+    left: 464px;
+}
+#isa_navigation #isa_nav7point div
+{
+    background-color:#A1CDF2;
+}
+
+#isa_navigation #isa_nav8
+{
+    top: 29px;
+    left: 471px;
+}
+#isa_navigation #isa_nav8point
+{
+    top: 29px;
+    left: 563px;
+}
+#isa_navigation #isa_nav8point div
+{
+    background-color:#A1CDF2;
+}
+
+/* ################## subnavi ################# */
+.isa_submenue {
+  display: none;
+  position: absolute;
+  left: 20px;
+  top: 0px;
+  width: 965px;
+  background: #3a98d4;
+  padding-bottom: 15px;
+  z-index: 500;
+  line-height: 20px;
+}
+
+.isa_submenue em {
+  display: block;
+  padding-left: 10px;
+  font-family: Arial;
+  font-size: 13px;
+}
+
+.isa_submenue p {
+  padding-bottom: 10px;
+  padding-left: 10px;
+  width: 183px;
+  padding-right: 0px;
+  font-family: Arial;
+  font-size: 15px;
+  font-weight: bold;
+  padding-top: 10px;
+  text-decoration : none;
+  line-height: 23px;
+}
+
+.isa_submenue em {
+  padding-bottom: 0px;
+  font-style: normal;
+  padding: 0px 10px 0px 10px;
+  display: block;
+  font-family : Arial;
+  font-size: 13px;
+}
+
+.isa_submenue p a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.isa_submenue em a,
+.isa_submenue em a:link,
+.isa_submenue em a:visited {
+  padding-bottom: 0px;
+  padding-left: 3px;
+  padding-right: 3px;
+  display: inline;
+  background: none transparent scroll repeat 0% 0%;
+  height: 22px;
+  color: #ffffff;
+  text-decoration: none;
+  padding-top: 0px;
+}
+
+.isa_submenue em a:hover {
+  background-color: #ffffff;
+}
+
+.isa_submenue .mehrMarken {
+  margin-top: 10px;
+  font-weight: bold;
+  text-decoration: underline;
+  margin-bottom: 5px;
+}
+
+.isa_submenue td {
+  background:
+    url(../images/navigation/dot_flyout.gif)
+    no-repeat right 18px;
+}
+
+.isa_submenue td.simple {
+  background: none;
+}
+
+/* Statische Definition der Schriftfarben */
+.isa_nav0 em a:hover {
+  color:#DA2031 !important;
+}
+
+.isa_nav1 em a:hover {
+  color:#0089C0 !important;
+}
+
+.isa_nav2 em a:hover {
+  color:#F88000 !important;
+}
+
+.isa_nav3 em a:hover {
+  color:#BF2F7F !important;
+}
+
+.isa_nav4 em a:hover {
+  color:#11A3A2 !important;
+}
+
+.isa_nav5 em a:hover {
+  color:#FE297B !important;
+}
+
+.isa_nav6 em a:hover {
+  color:#7F9A01 !important;
+}
+
+.isa_nav7 em a:hover {
+  color:#A1CDF2 !important;
+}
+
+.isa_nav8 em a:hover {
+  color:#A1CDF2 !important;
+}
+

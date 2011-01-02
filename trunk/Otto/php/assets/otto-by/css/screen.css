@@ -1,0 +1,234 @@
+.fits_together {
+  margin-top: 24px !important;
+}
+.fits_together .main #slide #show .container IMG {
+  margin: 3px;
+}
+.fits_together .main #slide #show .container .text .link A {
+  text-decoration: underline !important;
+}
+.fits_together .main #slide #show .container .border {
+  width: 164px;
+  height: 164px;
+  text-align: center;
+}
+.fits_together .main #right_arrow {
+  padding-left:0px;
+  overflow:hidden;
+  text-align: right;
+}
+#pdaItemInfos #articleInformation  {
+  /* Bugfix IE6: Scrolling */
+  zoom: 1;
+}
+#pdaItemInfos #articleInformation .pad .rightColumn .infoBox {
+  padding-top:12px;
+  text-align:center;
+}
+#pdaItemInfos #articleInformation .pad .rightColumn div.infoBox {
+  background:url("../images/spacer/dotline_horizontal.gif") repeat-x scroll 0 0 transparent;
+  margin:0 0 20px;
+  padding:20px 0 0;
+}
+#pdaItemInfos #articleInformation .pad .rightColumn div {
+  overflow: hidden;
+}
+/*
+ * Colorscheme 1
+ */
+.colorscheme1 .fits_together .coloredbg {
+  background: #fcebec;
+}
+.colorscheme1 .fits_together .main #slide #show .container .border {
+  border: 1px solid #F3BCC1;
+}
+.colorscheme1  #pdaItemInfos .tabs ul li {
+  background-image:url("../images/colorscheme1/tab_inact_left.gif");
+}
+.colorscheme1 #pdaItemInfos .tabs ul li a {
+  background-image:url("../images/colorscheme1/tab_inact_right.gif");
+}
+.colorscheme1 #pdaItemInfos #articleInformation .pad .rightColumn H1 {
+  color:#DA2031;
+}
+.colorscheme1 #pdaItemInfos #articleInformation .pad .rightColumn .border {
+  border:1px solid #F4BCC1;
+}
+.colorscheme1 #pdaItemInfos #articleInformation .pad .rightColumn div.infoBox A {
+  color: #DA2031;
+}
+/*
+ * Colorscheme 2
+ */
+.colorscheme2 .fits_together .coloredbg {
+  background: #E8F4F9;
+}
+.colorscheme2 .fits_together .main #slide #show .container .border {
+  border: 1px solid #B2DBEC;
+}
+.colorscheme2 #pdaItemInfos .tabs ul li {
+  background-image:url("../images/colorscheme2/tab_inact_left.gif");
+}
+.colorscheme2 #pdaItemInfos .tabs ul li a {
+  background-image:url("../images/colorscheme2/tab_inact_right.gif");
+}
+.colorscheme2 #pdaItemInfos #articleInformation .pad .rightColumn H1 {
+  color:#0089C0;
+}
+.colorscheme2 #pdaItemInfos #articleInformation .pad .rightColumn .border {
+  border:1px solid #B2DBEC;
+}
+.colorscheme2 #pdaItemInfos #articleInformation .pad .rightColumn div.infoBox A {
+  color: #0089C0;
+}
+/*
+ * Colorscheme 3
+ */
+.colorscheme3 .fits_together .coloredbg {
+  background: #FEF4E8;
+}
+.colorscheme3 .fits_together .main #slide #show .container .border {
+  border: 1px solid #FDD9B2;
+}
+.colorscheme3 #pdaItemInfos .tabs ul li {
+  background-image:url("../images/colorscheme3/tab_inact_left.gif");
+}
+.colorscheme3 #pdaItemInfos .tabs ul li a {
+  background-image:url("../images/colorscheme3/tab_inact_right.gif");
+}
+.colorscheme3 #pdaItemInfos #articleInformation .pad .rightColumn H1 {
+  color:#F88000;
+}
+.colorscheme3 #pdaItemInfos #articleInformation .pad .rightColumn .border {
+  border:1px solid #FDD9B2;
+}
+.colorscheme3 #pdaItemInfos #articleInformation .pad .rightColumn div.infoBox A {
+  color: #F88000;
+}
+/*
+ * Colorscheme 4
+ */
+.colorscheme4 .fits_together .coloredbg {
+  background: #ffffff;
+}
+.colorscheme4 .fits_together .main #slide #show .container .border {
+  border: 1px solid #ECC0D8;
+}
+.colorscheme4 #pdaItemInfos .tabs ul li {
+  background-image:url("../images/colorscheme4/tab_inact_left.gif");
+}
+.colorscheme4 #pdaItemInfos .tabs ul li a {
+  background-image:url("../images/colorscheme4/tab_inact_right.gif");
+}
+.colorscheme4 #pdaItemInfos #articleInformation .pad .rightColumn H1 {
+  color:#BF2F7F;
+}
+.colorscheme4 #pdaItemInfos #articleInformation .pad .rightColumn .border {
+  border:1px solid #ECC0D8;
+}
+.colorscheme4 #pdaItemInfos #articleInformation .pad .rightColumn div.infoBox A {
+  color: #BF2F7F;
+}
+ /*
+ * Colorscheme 5
+ */
+.colorscheme5 .fits_together .coloredbg {
+  background: #EAF7F7;
+}
+.colorscheme5 .fits_together .main #slide #show .container .border {
+  border: 1px solid #B7E3E3;
+}
+.colorscheme5 #pdaItemInfos .tabs ul li {
+  background-image:url("../images/colorscheme5/tab_inact_left.gif");
+}
+.colorscheme5 #pdaItemInfos .tabs ul li a {
+  background-image:url("../images/colorscheme5/tab_inact_right.gif");
+}
+.colorscheme5 #pdaItemInfos #articleInformation .pad .rightColumn H1 {
+  color:#11A3A1;
+}
+.colorscheme5 #pdaItemInfos #articleInformation .pad .rightColumn .border {
+  border:1px solid #B7E3E3;
+}
+.colorscheme5 #pdaItemInfos #articleInformation .pad .rightColumn div.infoBox A {
+  color: #11A3A1;
+}
+ /*
+ * Colorscheme 6
+ */
+.colorscheme6 .fits_together .coloredbg {
+  background: #FFECF3;
+}
+.colorscheme6 .fits_together .main #slide #show .container .border {
+  border: 1px solid #FFBED7;
+}
+.colorscheme6 #pdaItemInfos .tabs ul li {
+  background-image:url("../images/colorscheme6/tab_inact_left.gif");
+}
+.colorscheme6 #pdaItemInfos .tabs ul li a {
+  background-image:url("../images/colorscheme6/tab_inact_right.gif");
+}
+.colorscheme6 #pdaItemInfos #articleInformation .pad .rightColumn H1 {
+  color:#FE297A;
+}
+.colorscheme6 #pdaItemInfos #articleInformation .pad .rightColumn .border {
+  border:1px solid #FFBED7;
+}
+.colorscheme6 #pdaItemInfos #articleInformation .pad .rightColumn div.infoBox A {
+  color: #FE297A;
+}
+ /*
+ * Colorscheme 7
+ */
+.colorscheme7 .fits_together .coloredbg {
+  background: #EDF6FB;
+}
+.colorscheme7 .fits_together .main #slide #show .container .border {
+  border: 1px solid #C7E1F7;
+}
+.colorscheme7 #pdaItemInfos .tabs ul li {
+  background-image:url("../images/colorscheme7/tab_inact_left.gif");
+}
+.colorscheme7 #pdaItemInfos .tabs ul li a {
+  background-image:url("../images/colorscheme7/tab_inact_right.gif");
+}
+.colorscheme7 .fits_together #head .text  {
+  color:#3A98D4;
+}
+.colorscheme7 #pdaItemInfos #articleInformation .pad .rightColumn H1 {
+  color:#3A98D4;
+}
+.colorscheme7 #pdaItemInfos #articleInformation .pad .rightColumn .border {
+  border:1px solid #C7E1F7;
+}
+.colorscheme7 #pdaItemInfos #articleInformation .pad .rightColumn div.infoBox A {
+  color: #3A98D4;
+}
+
+ /*
+ * Colorscheme 9
+ */
+.colorscheme9 .fits_together .coloredbg {
+  background: #F3F5E7;
+}
+.colorscheme9 .fits_together .main #slide #show .container .border {
+  border: 1px solid #D8E1B2;
+}
+.colorscheme9 #pdaItemInfos .tabs ul li {
+  background-image:url("../images/colorscheme9/tab_inact_left.gif");
+}
+.colorscheme9 #pdaItemInfos .tabs ul li a {
+  background-image:url("../images/colorscheme9/tab_inact_right.gif");
+}
+.colorscheme9 .fits_together #head .text  {
+  color:#7F9A01;
+}
+.colorscheme9 #pdaItemInfos #articleInformation .pad .rightColumn H1 {
+  color:#7F9A01;
+}
+.colorscheme9 #pdaItemInfos #articleInformation .pad .rightColumn .border {
+  border:1px solid #D8E1B2;
+}
+.colorscheme9 #pdaItemInfos #articleInformation .pad .rightColumn div.infoBox A {
+  color: #7F9A01;
+}
