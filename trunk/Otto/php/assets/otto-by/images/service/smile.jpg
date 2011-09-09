@@ -1,0 +1,311 @@
+DLG_UFS_SuperScript="Superscript"
+DLG_UFS_ToplineCheck="Topline"
+DLG_UFS_TransparencyCheck="Set no Highlight Colour"
+DLG_UFS_UnderlineCheck="Underline"
+DLG_ULANG_AvailableLanguages="Available Languages"
+DLG_ULANG_DefaultLangChkbox="Make default for document"
+DLG_ULANG_DefaultLangLabel="Default language: "
+DLG_ULANG_LangLabel="Select Language:"
+DLG_ULANG_LangTitle="Set Language"
+DLG_ULANG_SetLangButton="&amp;Set Language"
+DLG_UP_All="All"
+DLG_UP_BlackWhite="Black &amp; White"
+DLG_UP_Collate="Collate"
+DLG_UP_Color="Colour"
+DLG_UP_Copies="Copies: "
+DLG_UP_EmbedFonts="Embed Fonts"
+DLG_UP_File="File"
+DLG_UP_From="From: "
+DLG_UP_Grayscale="Grayscale"
+DLG_UP_InvalidPrintString="The print command string is not valid."
+DLG_UP_PageRanges="Page ranges:"
+DLG_UP_PrintButton="Print"
+DLG_UP_PrintIn="Print in: "
+DLG_UP_PrintPreviewTitle="AbiWord: Print Preview"
+DLG_UP_PrintTitle="Print"
+DLG_UP_PrintTo="Print to: "
+DLG_UP_Printer="Printer"
+DLG_UP_PrinterCommand="Printer command: "
+DLG_UP_Selection="Selection"
+DLG_UP_To=" to "
+DLG_Unit_cm="cm"
+DLG_Unit_inch="inch"
+DLG_Unit_mm="mm"
+DLG_Unit_pica="pica"
+DLG_Unit_points="points"
+DLG_UnixMB_No="_No"
+DLG_UnixMB_Yes="_Yes"
+DLG_Update="Update"
+DLG_Zoom_100="&amp;100%"
+DLG_Zoom_200="&amp;200%"
+DLG_Zoom_75="&amp;75%"
+DLG_Zoom_PageWidth="&amp;Page width"
+DLG_Zoom_Percent="P&amp;ercent:"
+DLG_Zoom_PreviewFrame="Preview"
+DLG_Zoom_RadioFrameCaption="Zoom to"
+DLG_Zoom_WholePage="&amp;Whole page"
+DLG_Zoom_ZoomTitle="Zoom"
+ENC_ARAB_ISO="Arabic, ISO-8859-6"
+ENC_ARAB_MAC="Arabic, Macintosh"
+ENC_ARAB_WIN="Arabic, Windows Code Page 1256"
+ENC_ARME_ARMSCII="Armenian, ARMSCII-8"
+ENC_BALT_ISO="Baltic, ISO-8859-4"
+ENC_BALT_WIN="Baltic, Windows Code Page 1257"
+ENC_CENT_ISO="Central European, ISO-8859-2"
+ENC_CENT_MAC="Central European, Macintosh"
+ENC_CENT_WIN="Central European, Windows Code Page 1250"
+ENC_CHSI_EUC="Chinese Simplified, EUC-CN (GB2312)"
+ENC_CHSI_GB="Chinese Simplified, GB_2312-80"
+ENC_CHSI_HZ="Chinese Simplified, HZ"
+ENC_CHSI_WIN="Chinese Simplified, Windows Code Page 936"
+ENC_CHTR_BIG5="Chinese Traditional, BIG5"
+ENC_CHTR_BIG5HKSCS="Chinese Traditional, BIG5-HKSCS"
+ENC_CHTR_EUC="Chinese Traditional, EUC-TW"
+ENC_CHTR_WIN="Chinese Traditional, Windows Code Page 950"
+ENC_CROA_MAC="Croatian, Macintosh"
+ENC_CYRL_ISO="Cyrillic, ISO-8859-5"
+ENC_CYRL_KOI="Cyrillic, KOI8-R"
+ENC_CYRL_MAC="Cyrillic, Macintosh"
+ENC_CYRL_WIN="Cyrillic, Windows Code Page 1251"
+ENC_GEOR_ACADEMY="Georgian, Academy"
+ENC_GEOR_PS="Georgian, PS"
+ENC_GREE_ISO="Greek, ISO-8859-7"
+ENC_GREE_MAC="Greek, Macintosh"
+ENC_GREE_WIN="Greek, Windows Code Page 1253"
+ENC_HEBR_ISO="Hebrew, ISO-8859-8"
+ENC_HEBR_MAC="Hebrew, Macintosh"
+ENC_HEBR_WIN="Hebrew, Windows Code Page 1255"
+ENC_ICEL_MAC="Icelandic, Macintosh"
+ENC_JAPN_EUC="Japanese, EUC-JP"
+ENC_JAPN_ISO="Japanese, ISO-2022-JP"
+ENC_JAPN_SJIS="Japanese, Shift-JIS"
+ENC_JAPN_WIN="Japanese, Windows Code Page 932"
+ENC_KORE_EUC="Korean, EUC-KR"
+ENC_KORE_JOHAB="Korean, Johab"
+ENC_KORE_KSC="Korean, KSC_5601"
+ENC_KORE_WIN="Korean, Windows Code Page 949"
+ENC_MLNG_DOS="Western European, DOS/Windows Code Page 850"
+ENC_ROMA_MAC="Romanian, Macintosh"
+ENC_THAI_MAC="Thai, Macintosh"
+ENC_THAI_TIS="Thai, TIS-620"
+ENC_THAI_WIN="Thai, Windows Code Page 874"
+ENC_TURK_ISO="Turkish, ISO-8859-9"
+ENC_TURK_MAC="Turkish, Macintosh"
+ENC_TURK_WIN="Turkish, Windows Code Page 1254"
+ENC_UKRA_KOI="Ukrainian, KOI8-U"
+ENC_UKRA_MAC="Ukrainian, Macintosh"
+ENC_UNIC_UCS2="Unicode UCS-2"
+ENC_UNIC_UCS4="Unicode UCS-4"
+ENC_UNIC_UCS_2BE="Unicode UCS-2 Big Endian"
+ENC_UNIC_UCS_2LE="Unicode UCS-2 Little Endian"
+ENC_UNIC_UCS_4BE="Unicode UCS-4 Big Endian"
+ENC_UNIC_UCS_4LE="Unicode UCS-4 Little Endian"
+ENC_UNIC_UTF_16="Unicode UTF-16"
+ENC_UNIC_UTF_16BE="Unicode UTF-16 Big Endian"
+ENC_UNIC_UTF_16LE="Unicode UTF-16 Little Endian"
+ENC_UNIC_UTF_32="Unicode UTF-32"
+ENC_UNIC_UTF_32BE="Unicode UTF-32 Big Endian"
+ENC_UNIC_UTF_32LE="Unicode UTF-32 Little Endian"
+ENC_UNIC_UTF_7="Unicode UTF-7"
+ENC_UNIC_UTF_8="Unicode UTF-8"
+ENC_US_DOS="Western European, DOS/Windows Code Page 437"
+ENC_VIET_TCVN="Vietnamese, TCVN"
+ENC_VIET_VISCII="Vietnamese, VISCII"
+ENC_VIET_WIN="Vietnamese, Windows Code Page 1258"
+ENC_WEST_ASCII="US-ASCII"
+ENC_WEST_HP="Western European, HP"
+ENC_WEST_ISO="Western European, ISO-8859-1"
+ENC_WEST_MAC="Western European, Macintosh"
+ENC_WEST_NXT="Western European, NeXT"
+ENC_WEST_WIN="Western European, Windows Code Page 1252"
+FIELD_Application_Version="Version"
+LANG_0="(no proofing)"
+LANG_AF_ZA="Afrikaans"
+LANG_AM_ET="Amharic (Ethiopia)"
+LANG_AR_EG="Arabic (Egypt)"
+LANG_AR_SA="Arabic (Saudi Arabia)"
+LANG_AST_ES="Asturian (Spain)"
+LANG_AS_IN="Assamese"
+LANG_BE_BY="Belarusian"
+LANG_BG_BG="Bulgarian"
+LANG_BN_IN="Bengali"
+LANG_BR_FR="Breton"
+LANG_CA_ES="Catalan"
+LANG_CO_FR="Corsican"
+LANG_CS_CZ="Czech"
+LANG_CY_GB="Welsh"
+LANG_DA_DK="Danish"
+LANG_DE_AT="German (Austria)"
+LANG_DE_CH="German (Switzerland)"
+LANG_DE_DE="German (Germany)"
+LANG_EL_GR="Greek"
+LANG_EN_AU="English (Australia)"
+LANG_EN_CA="English (Canada)"
+LANG_EN_GB="English (UK)"
+LANG_EN_IE="English (Ireland)"
+LANG_EN_NZ="English (New Zealand)"
+LANG_EN_US="English (US)"
+LANG_EN_ZA="English (South Africa)"
+LANG_EO="Esperanto"
+LANG_ES_ES="Spanish (Spain)"
+LANG_ES_MX="Spanish (Mexico)"
+LANG_ET="Estonian"
+LANG_EU_ES="Basque"
+LANG_FA_IR="Farsi"
+LANG_FI_FI="Finnish"
+LANG_FR_BE="French (Belgium)"
+LANG_FR_CA="French (Canada)"
+LANG_FR_CH="French (Switzerland)"
+LANG_FR_FR="French (France)"
+LANG_FY_NL="Frisian"
+LANG_GA_IE="Irish"
+LANG_GL_ES="Galician"
+LANG_HAW_US="Hawaiian"
+LANG_HA_NE="Hausa (Niger)"
+LANG_HA_NG="Hausa (Nigeria)"
+LANG_HE_IL="Hebrew"
+LANG_HI_IN="Hindi"
+LANG_HR="Croatian"
+LANG_HU_HU="Hungarian"
+LANG_HY_AM="Armenian"
+LANG_IA="Interlingua"
+LANG_ID_ID="Indonesian"
+LANG_IS_IS="Icelandic"
+LANG_IT_IT="Italian (Italy)"
+LANG_IU_CA="Inuktitut"
+LANG_JA_JP="Japanese"
+LANG_KA_GE="Georgian"
+LANG_KN_IN="Kannada"
+LANG_KO_KR="Korean"
+LANG_KU="Kurdish"
+LANG_KW_GB="Cornish"
+LANG_LA_IT="Latin (Renaissance)"
+LANG_LO_LA="Lao"
+LANG_LT_LT="Lithuanian"
+LANG_LV_LV="Latvian"
+LANG_MH_MH="Marshallese (Marshall Islands)"
+LANG_MH_NR="Marshallese (Nauru)"
+LANG_MI_NZ="Maori"
+LANG_MK="Macedonian"
+LANG_MN_MN="Mongolian"
+LANG_MR_IN="Marathi"
+LANG_NB_NO="Norwegian Bokmal"
+LANG_NL_BE="Flemish (Belgium)"
+LANG_NL_NL="Dutch (Netherlands)"
+LANG_NN_NO="Norwegian Nynorsk"
+LANG_OC_FR="Occitan"
+LANG_PA_IN="Punjabi (Gurmukhi)"
+LANG_PA_PK="Punjabi (Shahmukhi)"
+LANG_PL_PL="Polish"
+LANG_PT_BR="Portuguese (Brazil)"
+LANG_PT_PT="Portuguese (Portugal)"
+LANG_QU_BO="Quechua"
+LANG_RO_RO="Romanian"
+LANG_RU_RU="Russian (Russia)"
+LANG_SC_IT="Sardinian"
+LANG_SK_SK="Slovak"
+LANG_SL_SI="Slovenian"
+LANG_SQ_AL="Albanian"
+LANG_SR="Serbian"
+LANG_SV_SE="Swedish"
+LANG_SW="Swahili"
+LANG_SYR="Syriac"
+LANG_TA_IN="Tamil"
+LANG_TE_IN="Telugu"
+LANG_TH_TH="Thai"
+LANG_TL_PH="Tagalog"
+LANG_TR_TR="Turkish"
+LANG_UK_UA="Ukrainian"
+LANG_UR_PK="Urdu"
+LANG_UZ_UZ="Uzbek"
+LANG_VI_VN="Vietnamese"
+LANG_YI="Yiddish"
+LANG_ZH_CN="Chinese (PRC)"
+LANG_ZH_HK="Chinese (Hong Kong)"
+LANG_ZH_SG="Chinese (Singapore)"
+LANG_ZH_TW="Chinese (Taiwan)"
+MENU_LABEL_FMT_BOTTOMLINE="Bottomline"
+MENU_LABEL_FMT_TOPLINE="Topline"
+MENU_LABEL_INSERT="&amp;Insert"
+MENU_LABEL_TABLE_INSERT="&amp;Insert"
+MENU_LABEL_VIEW="&amp;View"
+MENU_STATUSLINE_TABLE="Table"
+MENU_STATUSLINE_TABLE_DELETE="Delete"
+MENU_STATUSLINE_TABLE_INSERT="Insert"
+MENU_STATUSLINE_TABLE_SELECT="Select"
+MSG_AutoRevision="Autorevision"
+MSG_BuildingDoc="Building Document:"
+MSG_HistoryConfirmSave="You must save changes to document %s before proceeding. Save now?"
+MSG_HistoryNoRestore="AbiWord cannot restore version %d of the document because the version information is missing."
+MSG_HistoryPartRestore1="AbiWord cannot fully restore version %d of the document because the version information is incomplete."
+MSG_HistoryPartRestore2="The nearest version that can be restored fully is %d. Would you like to restore this version instead? To partially restore version %d press No."
+MSG_HistoryPartRestore3="To continue anyway,ÿØÿà JFIF  ` `  ÿá hExif  II*         >       F   (       1    N       `      `      Paint.NET v3.5.6 ÿÿÛ C 			
+
+
+
+
+
+	
+
+
+ÿÛ C
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ÿÀ  µ1" ÿÄ           	
+ÿÄ µ   } !1AQa"q2‘¡#B±ÁRÑð$3br‚	
+%&'()*456789:CDEFGHIJSTUVWXYZcdefghijstuvwxyzƒ„…†‡ˆ‰Š’“”•–—˜™š¢£¤¥¦§¨©ª²³´µ¶·¸¹ºÂÃÄÅÆÇÈÉÊÒÓÔÕÖ×ØÙÚáâãäåæçèéêñòóôõö÷øùúÿÄ        	
+ÿÄ µ  w !1AQaq"2B‘¡±Á	#3RðbrÑ
+$4á%ñ&'()*56789:CDEFGHIJSTUVWXYZcdefghijstuvwxyz‚ƒ„…†‡ˆ‰Š’“”•–—˜™š¢£¤¥¦§¨©ª²³´µ¶·¸¹ºÂÃÄÅÆÇÈÉÊÒÓÔÕÖ×ØÙÚâãäåæçèéêòóôõö÷øùúÿÚ   ? õ[{‹'­KmQC÷jÕ½¿ï«Cé	`ïRQEfh\ƒ½C«È"ëþ¸MRÃoqQj–ÿ ñ-ºÿ ¯zÑìTw<GöWð¡á¿Ø‡Tøá§ý’Ö[O‰³y¿óÊ¾åý—|={â¯ÙÞ×]ñÆ³iª[x–y¸›ÿ iWÃ_°Ã›sàf©qâbëþøZŸdÕlaŸ÷Pþú¿B?g­;OÒ>Eá­?@Š[+[¼þÊýÿ ïb†¿™ø¾«úíX|ú¬/ûº<Kö’Ñ>~Ì¾µøãU°Ð®¯aÓáÖ`×fýÅåyÎ“ûi~Èúæ½ý¡qñC[–Ãþ^/·?{}oû[XxCÆ³:\\h²ÚÚø¢Ü_Aþª¾HÕ<;ð^ßNº¸¸ð?‡¿soûÿ ôkèr£›eXÄÔ9jf>Ê¯³:8mÙš_íøñâkX¡ŸÍƒíÚ¬5ÖøWöÊýŸ®5‰n5Ú#Ä6²Éÿ -¡½ÿ Êù“Ä~0ýŸõie·ðÿ Ãÿ Euä®þÊ†¸?jŸü-¾(ñ…ü=kk5Ç•3i_ëkjœ–ÿ ÏÃ?íïÿ þÚþy¢þÉý¥îˆšù~òu]…¿iÿ ØèwŽŸûJÝEûÿ õW>o›_šž$ñÃ{›8´oüðô^wü|yÖ_çÉ¨¾øwG›Ä‘ÂQá}:]êo+þšéßõÖ¹jp5ùwˆÿ ÉëÔ%ÿ .Õí#ö‘ð¶µ£ßÏâöžTÓù"â*Yk¦Ó?i­ ·øË¥Kßê¾×eþª¾‡öeø}Wÿ Ééª_ødùûOö>£ýq×.ë¦>U¯ûÚXƒ‰Â?ùv}ýÇíkK³üNÑ,bŽoõ0Cþ¶®ê¼/}º}Î¿á	|ïøýßëkó¾oÙ'áxŸþ%þ ñ<_õÇÄWtCû2ø~þñ#Çy?õ1MYTðÃ2ÿ —Xƒ¬`¿çÙúI7Ä½3H¹ñ†¼©!òÿ ±¾Û•ä×7xŸ
+ui4ëuø}àkØ¡—Í‚&ƒ÷ùÿ qû=êo´[üoñ¼_÷ª¿ðÏ>(†in4Ú#Å‘yßõÇÿ ŒÖ?ñ³ïùúiN¦ý×,<¯xr×J×|%á­RÖÂ÷Í‚IâŠ+˜¸øSð‡í÷Þ(Óÿ f¿ËïúF§5„ñU¿ÀŸ‹Å-¾ûKø†(¦ÿ žÚU¥Eqð¯ö†	môÿ Ú¢ïþÛhpþö³ÿ ˆkŸ<þ»‚>ÐñçÂï5–þãÄ ôôº¼Ò¼¯´ZX~êXkŸðïìñû8|:Ñâÿ „öFÒd°’Óý"òîÃÍ—þº×ÉSx?ö¸·ò­ôÿ Úb×Ê‡÷_¾ðçúßü\GÇïÚö°øá¸¼AãÚcÃRùñ*Ó&Ò¦óeÿ ®_¾¬ÿ âqÿ öÍ?´0Q¢}7ã?Ùçö*¸–×Pñ¿õk3N·ófòÑa‹þÚ×ÇŸ·wí7ûè~*Òüð[ÂþWÙ-æ´ŸSÑo|ß6oùeûÙ«ç?µ·ÆÚoìÿ xâh¬.ÿ ãËK²ó¢´¯¸Õ-î>Á¬~çì‡ú&«eú¨¿éµ}fIÁR£ïãfx™‡{_ádx?þ
+yà}AÒþ\|?Õ¥¿Òl~ÉäÍ}þ·þ›ÓjÞ±ÿ ‚¡|¸–/´|?ÖâŠiü¯:&¾·†ßý+Áÿ hó~ÉûÝ*öyÿ ÔÔ_ÚÖóCÿ 	¡o•uû­rôu~ƒ„£õ*^Ê‘åhUª~›|+ý­¾ühš-;@ñD1j“Ì3T·ò¥¯Ašü—·‡Èÿ H¸¸ò¥´¸ýõô7Wýr½¯©d?Û›XÒ|¯†ÿ 56Öü¨5©¿åÏÿ ´×z¬ÂŽ`}}qoYwÐÖÏú?“Í½Ï›ÖþlOüµªÐÖ§yCþYÕi¿Ôþn š´w kÊ«qþ¦¶o¡ªC@—Äèn.>ë6ÿ õ
+š¾··ýÍ}ÿ ñßíÕ-ÏüøÍ_Ö´v3­¹CÉZ*z+s3õš~ÕfÞßÉ¥†ÜÕ¨mûW¡bŠ‚Äê®¹5¼:=×Ú.!‹÷òÚ¯ÛÛþæ*¡â¯´[é²ÛÛÛý«Î‚•jžÉáŸüañ'Lø3ª|ÑþÇÿ ½ßˆ¾×û›õÓ×ZíìjŠÿ 4y|àý÷º‡ï¯láýíyÏÃŸˆÞÐü7uÿ 	Š4í.þÓ\ò­ô[{õ°ÿ Ïjóïµ¶ŸàÝ_…ú>Ÿiu5ÇÚüé¬aób¯Í«åX|F"¤¥Lëž+Ø¯âñª~Ù^8›Àrü7ø‘ñ#íQ]\h}†+Êÿ ¶µä2øÑ£ézÕÅ¾¡åjžG›äÃÿ -kÆô¿\hzü^ ·ñ2ËwoæÜM}oÿ =åµq_Ç]ø‘aðßþy¢º»Õf—ûRûþ[y_ôÊ»p™$yiµ±G·Cc¨x’SXÓõO7N¸ÿ N±û?ïbóôuqßéúO‰"·ÿ JŠëÏón/µ¨&ÿ Ú5jãT¸‡MºñÅ½ÄÒÚêÐ}’i¡ÿ [-eéµKþëZê“Mþ‘äÞù¿ê¿ëµwÓ£mÎolÎßáÌÞ¾›YÑ´oZKu«ÿ Çö©5÷ïí”UÙx;B¸ð~±/‡õCV–XmüØ&¾²¯¾ñ%Ç…obÔ5ÿ jKiqþºÊ*î¾–øñ;á¿íQðÊ+êjþÎ·ò¼èuwsTÂšSÅ{#Ð~üTÔ<;5ÔÇˆ&Ömaÿ xå¬¿÷ú½/áÏÇøâh´}cO»Òî¦ÿ (o¿å­|çá»ïŒu+[‹'Äv~ößS³ÿ Ú±Ïjôˆ.4ïøH4ÿ Úk:7úÙá±²ÿ Uÿ l¡ýõuakVÂ|íx¾ýüÑ\Zÿ ª¢¹/„<ñH–Ûû>òÖXuqßòÊºß³b´Û×Ñáqtk MEooûê—È¸ÇÙê_%k¨Ð‹È÷¢hj×Ù½ª)­ÿ sŸüƒ@¿¼aá‡>	Õ> xÂãÊÒô›6ú¿">8~Ð¾0ý¡¾'jŸ5‹õ×è6SË(å”5ï¿ðXïÛKÄ5µý‘þëeŠÒuMöõ³Ë(kâÛëKo¬y2Ëioÿ ,mÿ ÖÍYVÜññU×ðŽ¢øø¢ûRŠâãP‡ÊÓìûúÁ·±ñ¿…%ÿ GóÒ<ïÜÿ Ë_ßT¿ñ1šh´´M/“ûÛÙ¼ÿ õµ½¡Ü\\^K¬jºŠÓ÷V5žsš¶©äë^±pÔþç÷ÕjÆúßûKTðÿ ü²Ômüßøøÿ U[×·ñ&›-Çˆ4ù®¥›÷¶PÃû¯ßW9®xWXÒ|Ia¬\ióE,ßºòfÿ –µTŒËZ^¸n!Òîn<é|ïø•_TºN­qoö[´©Ÿû*oý¥X67ðéº¦Ÿoçy¶—ßk·«÷Ú¾×_ñ0†/µÏßï ª3>Üÿ ‚{~Ôäßð¡þ j}ªø§&šüƒ_U_B?ãß>W“_~ø¨xÆ¾0Ñ¼Aþ•§\}®Æo³×ëoüU§|FðNã?ýV¯¥CwAîåõ½µY¡¨®-ê[‰î|œzŠâã÷5¡ÞU¸·¬»‹&¶n&·¬»‰­è39Ï[ãÃwYÿ –ÐWÀ¹ž[ùã=~„øªçí=Õ¹ÿ –Öõùí®~çSº·ÿ ¦óV´v4ÿ —%_´ûÑQyÐQ[œçëå½½Z··¢ÞÞ­[Ûþæ¹Î‚·‘ïRCKooV­íè4*ß\XhzlºÆ±qV°Áþ‘çWÅ¿´'íÝñcâf¿/Ãÿ ÙŸO†+?ìŸÛ0ÿ ­—ÿ Œ×Ð_´¥ˆ<}¾Óüè´müÝWÉ¸ÿ ŒßóÆ¾AñWŒ´ø“þÿ ÛÚE“oæê¾Oî¾×yÿ <ëŒUåâ«U3¬cxâÆãÂš–—§i÷mý¤n«4?½–_úåT5ÏÜ[ýªãX¸ò¯æ±ÿ –ßòÊ»/Ù·Àú~¹5×ÆcPšþë[½þÏÐ¼éü¨¢ò¿åµKñ;íüNÒôÛýª×û*ò/ø÷ýì¾Wü¶ÿ ¿ÕãÖ9ižiã(mõËÉ|áýBÖYaÒ¼ÝVo?ýMtsx?ûÂ·^8Ô4ûM/T›Jò¼ù¿å”?üz¼æâøE|a¯[ÛÜC,Zwî®?é¬Õè:åŠ.4-/ÄÚ¥Ô'ò­ÿ å—•ÿ -k*”ëQ69+ˆÞ·øKk§éÿ l—K†âóíuÇïj_
+üvð=¼1hú‡Œ!µŠÖùmoåKûÚ>#xoFþÍºÓôý?NÒî¼C¥M/“çÿ ªò«Ï¼}¤Ü\h?gÓí¢Š_õPM5kìý©´ö'Ðú_Š¼â¨bÓõµy7oÛ¬ãî*«à‡:ÇÃˆQ|Xø_¨ÃkªMqþ›4?ºþÑÿ ®±W†|±Ô,oeø‘¬}’+]Vxb¸ò`ÿ Uÿ ,+Ù>üjÖ<+ãy~xââÒ+û_ÝXýºÇýUrºuèüW´£[ã>ª½¸·×!µø‘ðÞâkíøšÙC?•-ž¥ÿ =¿ëZðŠ­¼7ñRÿ OñÄÚ]×ŸæÛêžú%ßý1–*åüñSÃúæ›-¿Ú>Ëî®<›+þÛU_ˆ>ø5­¾¡qö]R:]*ûíº»›þxÿ ×jª5iµ)Õ>–ñ'†ôÿ ;ûcíeÕ!¸ò¾Ýüµÿ ®µ.‡®kM½ÆŸæÅî¼økç?|hñ‡Ã˜¼9ã¨C¥Ýi_dñT0ÿ Ë)¢ÿ –ß÷æ½“áÏÇ?\†-bßO†X¦ýî©7ù» ÿ ~îzü÷w¤Uj¢Òî4ýoM‹PÓî<Ø¦ÿ –ÐÕ£oäô¯¢£±ÜU¸·®7ö†øáàÙ—á.³ñƒÇ…¤VºE¿ú<3Oÿ —ŸòÊï:ÓZøSþ-ûþ×µGü#ž øqkªxsÃÚW›}á‰¯¼©~Ùÿ =¿éµ5½­¿t~dü@ø¨|Nø…¬üpø‘âôýnúmB{)®?ÕÏ(k˜¾øÛccwie [Mu%¯ïfh`ÿ [5mü*ý~ üKñ|6¾3™l­d½h.iùÊ¯Ô/Ùþ	©û/ü4Ðm|QâÚøŽ_#ý"o#ýUxù†k„Â•ð¶+7—´«û³òÇÃ×´Œ!º·Ð>jqM›ÿ 5ÖY|ý¸/´Ø®4ÿ „ú¿Ùfÿ &
+ýþøgð¯àü:¿ð¯ü?§Úÿ £ùPC¯ñ_Âú'†/|9e'‚äIo?uý§c•ûïúk^/úÉV·ðà}•Êã¥Z“? õOÿ ·ÅŒQ\\| ñd¶¶ÇÅŒÒùµâ¿|XÒu+]?âÃÿ xr(fò¼íODš¿¦ox>ïT‚-GDñ.¡kkäÿ ©š*ëõOhZŽ”tÛi^ ó!ýíž¯¦Ã.kªŽw[þ^Àó±¼!—PþÏåGþ>‚úÌÖþ-Óc1]~êËY±ÿ –µ³ö}Bú®<?â‹«û_#ýLOî«úøÅÿ œÿ ‚u|QðÝÎŸâÙKÃ²Ýÿ ËîoöY¢ÿ ®Uù×û]ÿ Á·Þ%ÐõÈükû|Cû=¬Pþû@×ïÿ çÓ*ï£Ÿ`¥/Þž+ƒ±¾ÇÚÒ™ùÉ®hù?h¹û\±Cÿ =¿{_©ÿ ðNßÜx«ö9ð¾¡qÿ ,|ëOøøÿ žSWÆ~2ÿ ‚Zÿ ÁC¼ðÊox×öšXtû6÷û÷ý./+þ[WÖðL¸mô¿ØÏA¸·>oÚï¯%ÿ ÈÕêQ­B·ð#„­‚«ìªžñ7ÚwU	®;Ô·×ßh‡µPšúÞµ=B+é«.ââ¥¾¾ƒÖ±¯µco>>ÑA¡‰&Ù²ÿ ×½|â›'^Õ-ÿ çìÕöç‰<Eÿ .ÿ h¯ƒþ _[Ûø«T·óš´£±oà•´=¿J+ûZçÓô¢´9ÏÛˆaýÍKooRÃoÚ­C½¹¬ÎÀ†–ÞÞßÎéE½½Köoj ñoÚÛÆWðLº>oüL?uçÏ*üññV“oá¿‡ºÏÄ‹‹6_øôƒÏ·ýìµú1û[øWûsÂ×ZÅÅ¿ú-­¿ýý¯ÉÏÚ‹â¡á¹´¿Ü\yV¶—ßêaÿ ®ÕãÕ£í

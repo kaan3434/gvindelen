@@ -1,0 +1,14 @@
+nabled=true, sizingMethod=scale src='/images/shadow_rb.png');}
+
+.userlogged {position: absolute; font-size: 11px; font-weight: bold; top: 7px; color: rgb(50, 89, 160); left: 180px;}
+
+/* MY BILL */
+.my_bill_title ul { background:#c6e0f7; height:29px; padding:10px 0px 0px 10px;}
+.my_bill_title ul li { list-style:none; float:left; height:29px; background:none; color:#3a98d4; text-decoration:underline; line-height:28px; padding:0px;}
+.my_bill_title ul li span { display:block; float:left; padding:0px 10px; cursor:pointer;}
+.my_bill_title ul li.current { background:url(/images/bg_my_bill_title.gif) no-repeat left -29px; text-decoration:none; font-weight:bold;}
+.my_bill_title ul li.current span { background:url(/images/bg_my_bill_title.gif) no-repeat right top;  cursor:default;}
+
+.tabs_body {padding:20px; zoom:1}
+.table_style_3 {}
+.table_style_3 th {color:#3a98d4; font-size:15px; te

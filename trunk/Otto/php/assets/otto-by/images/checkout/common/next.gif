@@ -1,0 +1,39 @@
+.fits_together {
+  margin-top: 24px !important;
+}
+.fits_together .main #slide #show .container IMG {
+  margin: 3px;
+}
+.fits_together .main #slide #show .container .text .link A {
+  text-decoration: underline !important;
+}
+.fits_together .main #slide #show .container .border {
+  width: 164px;
+  height: 164px;
+  text-align: center;
+}
+.fits_together .main #right_arrow {
+  padding-left:0px;
+  overflow:hidden;
+  text-align: right;
+}
+#pdaItemInfos #articleInformation  {
+  /* Bugfix IE6: Scrolling */
+  zoom: 1;
+}
+#pdaItemInfos #articleInformation .pad .rightColumn .infoBox {
+  padding-top:12px;
+  text-align:center;
+}
+#pdaItemInfos #articleInformation .pad .rightColumn div.infoBox {
+  background:url("../images/spacer/dotline_horizontal.gif") repeat-x scroll 0 0 transparent;
+  margin:0 0 20px;
+  padding:20px 0 0;
+}
+#pdaItemInfos #articleInformation .pad .rightColumn div {
+  overflow: hidden;
+}
+/*
+ * Colorscheme 1
+ */
+.colorscheme1 .fi

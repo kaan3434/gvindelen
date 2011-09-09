@@ -1,0 +1,21 @@
+xmptk="3.1.1-112">
+   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <rdf:Description rdf:about=""
+            xmlns:xapMM="http://ns.adobe.com/xap/1.0/mm/">
+         <xapMM:DocumentID>uuid:E5342DC785FB11DFAED6A8EC5F134691</xapMM:DocumentID>
+         <xapMM:InstanceID>uuid:4837534D85FC11DFAED6A8EC5F134691</xapMM:InstanceID>
+      </rdf:Description>
+      <rdf:Description rdf:about=""
+            xmlns:xap="http://ns.adobe.com/xap/1.0/">
+         <xap:CreateDate>2010-06-30T13:36:05+02:00</xap:CreateDate>
+         <xap:ModifyDate>2010-06-30T17:08:04+02:00</xap:ModifyDate>
+         <xap:MetadataDate>2010-06-30T17:08:04+02:00</xap:MetadataDate>
+         <xap:CreatorTool>Adobe Photoshop CS2 Macintosh</xap:CreatorTool>
+      </rdf:Description>
+      <rdf:Description rdf:about=""
+            xmlns:dc="http://purl.org/dc/elements/1.1/">
+         <dc:format>image/jpeg</dc:format>
+      </rdf:Description>
+      <rdf:Description rdf:about=""
+            xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/">
+         <photos
