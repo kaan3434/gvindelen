@@ -1,0 +1,201 @@
+t: right;
+  margin: 15px;
+  cursor: pointer;
+}
+
+* html #competition #close {
+  margin-right: 7px;
+}
+
+#competition #header {
+  margin-left: 15px;
+  width: 745px;
+  height: auto;
+  color: #3259A0;
+  clear: right;
+  float: none;
+  font-size: 28px;
+}
+
+#competition #content {
+  margin-top: 10px;
+  margin-left: 15px;
+  width: 728px;
+}
+
+/* ###### Basket ###### */
+#competition #content #basket a {
+  text-decoration: underline;
+}
+
+#competition #content #basket {
+  width: 728px;
+  border: 1px solid #c4c4c4;
+  line-height: 17px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#competition #content #basket #inner {
+  padding: 20px;
+}
+
+#competition #content #basket #inner #error {
+  color: #DA2031;
+}
+
+#competition #content #basket ul {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+  clear: left;
+}
+
+#competition #content #basket li {
+  float: left;
+}
+
+/* ######## headline ######### */
+#competition #content #basket #headline {
+  height: 80px;
+  float: left;
+}
+
+#competition #content #basket #headline img {
+  padding-top: 37px;
+  float: left;
+}
+
+#competition #content #basket #headline h1 {
+  padding-top: 28px;
+  padding-left: 45px;
+  font-family: Century Gothic, Arial;
+  font-size: 36px;
+  color: #3259a0;
+}
+
+/* ######## STEP 1 ######### */
+#competition #content #basket #item_head {
+  height: 28px;
+  width: 769px;
+}
+
+#competition #content #basket #item_head li {
+  font-size: 16px;
+  color: #3259a0;
+  background-color: #c7e1f7;
+  height: 28px;
+  border-right: 2px solid #ffffff;
+}
+
+#competition #content #basket #item_head li p {
+  padding-top: 5px;
+}
+
+#competition #content #basket #item_block {
+  float: left;
+  background: url(../images/spacer/dotline_horizontal.gif) repeat-x bottom
+    ;
+  padding-bottom: 20px;
+}
+
+#competition #content #basket #item_block .picture {
+  width: 104px;
+  float: left;
+  text-align: center;
+}
+
+#competition #content #basket #item_block .picture img {
+  margin-top: 20px;
+  border: 1px solid #999999;
+}
+
+#competition #content #basket #item_block .info {
+  width: 245px;
+  float: left;;
+}
+
+#competition #content #basket #item_block .info .text {
+  padding-left: 5px;
+  padding-top: 20px;
+}
+
+#competition #content #basket #item_block .info .text a {
+  color: #000000;
+  font-weight: bold;
+}
+
+#competition #content #basket #item_block .info .buttons {
+  padding-left: 5px;
+  padding-top: 20px;
+}
+
+#competition #content #basket #item_block .propertys {
+  width: 180px;
+  float: left;
+  padding-top: 20px;
+  margin-left: 20px;
+}
+
+#competition #content #basket #item_block .propertys select {
+  width: 160px;
+  margin-bottom: 4px;
+}
+
+#competition #content #basket #item_block .count {
+  width: 70px;
+  float: left;
+  padding-top: 20px;
+  margin-left: 20px;
+}
+
+#competition #content #basket #item_block .count input {
+  width: 50px;
+}
+
+#competition #content #basket #buttom {
+  padding-top: 20px;
+}
+
+/* #################################### Mein Otto ###################################### */
+#contentbox {
+  display: inline;
+  margin-left: 15px;
+  float: left;
+  width: 769px;
+}
+
+#contentbox #headline {
+  padding-top: 20px;
+}
+
+#contentbox #headline h1 {
+  height: 59px;
+  font-size: 36px;
+  font-family: "Century Gothic", Arial, sans-serif;
+  color: #e33423;
+}
+
+#navigation {
+  overflow: hidden;
+  display: block;
+  width: 100%;
+}
+
+#navigation * {
+  padding: 0;
+  margin: 0;
+}
+
+#navigation ul {
+  display: block;
+}
+
+#navigation ul li {
+  list-style: none;
+  float: left;
+  margin: 0 5px 0 0;
+}
+
+#navigation ul li a {
+  b

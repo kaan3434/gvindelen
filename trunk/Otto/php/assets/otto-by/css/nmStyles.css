@@ -1,0 +1,118 @@
+
+.colorscheme4 .fits_together #head {
+  background-color: #ECC0D8;
+}
+
+.colorscheme5 .fits_together #head {
+  background-color: #B7E3E3;
+}
+
+.colorscheme6 .fits_together #head {
+  background-color: #FFBED7;
+}
+
+.colorscheme7 .fits_together #head {
+  background-color: #C7E1F7;
+}
+
+.colorscheme9 .fits_together #head {
+  background-color: #D8E1B2;
+}
+
+.fits_together #head .text {
+  font-size: 16px;
+  padding-top: 5px;
+  padding-left: 35px;
+}
+
+.colorscheme1 .fits_together #head .text {
+  color: #DA2031;
+  background: url(../images/colorscheme1/head_visible.gif) no-repeat 8px
+    8px
+}
+
+.colorscheme2 .fits_together #head .text {
+  color: #0089C0;
+  background: url(../images/colorscheme2/head_visible.gif) no-repeat 8px
+    8px
+}
+
+.colorscheme3 .fits_together #head .text {
+  color: #F88000;
+  background: url(../images/colorscheme3/head_visible.gif) no-repeat 8px
+    8px
+}
+
+.colorscheme4 .fits_together #head .text {
+  color: #BF2F7F;
+  background: url(../images/colorscheme4/head_visible.gif) no-repeat 8px
+    8px
+}
+
+.colorscheme5 .fits_together #head .text {
+  color: #11A3A1;
+  background: url(../images/colorscheme5/head_visible.gif) no-repeat 8px
+    8px
+}
+
+.colorscheme6 .fits_together #head .text {
+  color: #FE297A;
+  background: url(../images/colorscheme6/head_visible.gif) no-repeat 8px
+    8px
+}
+
+.colorscheme7 .fits_together #head .text {
+  color: #A1CDF2;
+  background: url(../images/colorscheme7/head_visible.gif) no-repeat 8px
+    8px
+}
+
+.colorscheme9 .fits_together #head .text {
+  color: #7F9A01;
+  background: url(../images/colorscheme9/head_visible.gif) no-repeat 8px
+    8px
+}
+
+.fits_together .main {
+  margin-top: 2px;
+  width: 767px;
+  min-height: 265px;
+  height: auto !important;
+  height: 265px;
+  border: 1px solid;
+}
+
+.colorscheme1 .fits_together .main {
+  border-color: #F4BCC1;
+}
+
+.colorscheme2 .fits_together .main {
+  border-color: #B2DBEC;
+}
+
+.colorscheme3 .fits_together .main {
+  border-color: #FDD9B2;
+}
+
+.colorscheme4 .fits_together .main {
+  border-color: #ECC0D8;
+}
+
+.colorscheme5 .fits_together .main {
+  border-color: #B7E3E3;
+}
+
+.colorscheme6 .fits_together .main {
+  border-color: #FFBED7;
+}
+
+.colorscheme7 .fits_together .main {
+  border-color: #C7E1F7;
+}
+
+.colorscheme9 .fits_together .main {
+  border-color: #D8E1B2;
+}
+
+.fits_together .main #big_pic {
+  width: 180p

@@ -1,0 +1,154 @@
+v div,#emailhelp li.activ li.activ div {
+  background:
+    url(../images/images_ru/module_07_-_02_sitemap/arrow_activated_closed_white.gif)
+    no-repeat 10px 7px #D88400;
+}
+
+/* IE6 fix */
+* html #emailhelp ul ul {
+  top: -1px;
+  left: 6px;
+}
+
+* html #emailhelp ul ul ul {
+  top: -1px;
+  left: 30px;
+}
+
+* html #emailhelp li.activ {
+  margin-bottom: -3px;
+}
+
+#emailhelp .error_box {
+  width: 550px;
+  border: 1px solid #E43524;
+  padding: 15px;
+  margin-bottom: 15px;
+  color: #E43524;
+}
+
+#emailhelp .info {
+  color: #999999;
+}
+
+#emailhelp .formfield {
+  margin-bottom: 9px;
+}
+
+#emailhelp .formfield label {
+  cursor: pointer;
+  width: 170px;
+  display: block;
+  float: left;
+  clear: left;
+}
+
+#emailhelp .formfield label.label-long {
+  cursor: pointer;
+  width: 510px;
+  display: block;
+  float: none;
+  clear: none;
+  margin-left: 35px;
+  margin-top: 4px;
+}
+
+#emailhelp .formfield input.input-text-short {
+  width: 35px;
+}
+
+#emailhelp .formfield input.input-text-middle {
+  width: 60px;
+}
+
+#emailhelp .formfield input.input-text-long1 {
+  width: 140px;
+}
+
+#emailhelp .formfield input.input-text-long2 {
+  width: 180px;
+}
+
+#emailhelp .formfield textarea.input-text-long3 {
+  width: 458px;
+  height: 150px;
+  margin: 0;
+  padding: 0;
+}
+
+#emailhelp .formfield input.error,#emailhelp .formfield textarea.error {
+  border: 2px solid #E43524;
+}
+
+#emailhelp .formfield label.error {
+  color: #E43524;
+  font-weight: bold;
+}
+
+#emailhelp .formfield input.input-checkbox {
+  float: left;
+  clear: left;
+}
+
+#emailhelp .formfield span.error {
+  color: #E43524;
+  font-weight: bold;
+}
+
+#emailhelp div.error {
+  color: #E43524;
+  font-weight: bold;
+}
+
+#emailhelp .error {
+  color: inherit;
+}
+
+#emailhelp .formbuttons {
+  width: 600px;
+  margin-bottom: 50px;
+}
+
+#emailhelp .formbuttons .float-left {
+  float: left;
+}
+
+#emailhelp .formbuttons .float-right {
+  float: right;
+}
+
+/*---------------------*/
+#emailhelp_feedback {
+  width: 769px;
+  float: left;
+  padding-bottom: 15px;
+  font-family: arial;
+  font-size: 13px;
+  color: #212121;
+  line-height: 18px;
+}
+
+#emailhelp_feedback h2 {
+  color: #D88400;
+  font-size: 24px;
+  line-height: 26px;
+  margin-bottom: 10px;
+  padding-top: 15px;
+}
+
+#emailhelp_feedback p {
+  line-height: 17px;
+}
+
+#emailhelp_feedback .row-left {
+  float: left;
+  clear: left;
+}
+
+#emailhelp_feedback .row-right {
+  margin-left: 395px;
+  height: 181px;
+  background: #ffffff url(../images/static/line.gif) repeat-x top left;
+}
+
+#emailhelp_feedback #regi

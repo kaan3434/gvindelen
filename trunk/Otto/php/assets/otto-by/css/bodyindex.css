@@ -1,0 +1,203 @@
+/* ################# LAYER bodyindex #################### */
+#bodyindex {
+  width:800px;
+}
+#bodyindex #content {
+  margin-top: 2px;
+  padding:0px;
+}
+
+#bodyindex #content .initiation {
+  padding-bottom:15px;
+  line-height:17px;
+  background:url(../images/icons/90x90/bild1.gif) no-repeat top left;
+  padding-left:105px;
+}
+
+/*container*/
+#bodyindex .container {
+  padding-bottom:5px;
+  width: 770px;
+}
+
+/*container-head*/
+#bodyindex .head {
+  padding:6px 25px;
+  cursor:pointer;
+  color:#d88400;
+  font-size:17px;
+  line-height:21px;
+  font-weight:normal;
+}
+#bodyindex .head-visible {
+  background:#fee7b2 url(../images/static/bodyindex/head_visible.gif) no-repeat 5px center;
+}
+#bodyindex .head-hidden {
+  background:#fee7b2 url(../images/static/bodyindex/head_hidden.gif) no-repeat 5px center;
+}
+
+/*container-box*/
+#bodyindex .box {
+  display:block;
+  margin-top:2px;
+  margin-bottom:10px;
+  border:1px solid #ffeab2;
+}
+#bodyindex .box-style1 {
+  padding:15px;
+}
+#bodyindex .box-style2 {
+  padding:0;
+}
+#bodyindex .box-style3 {
+  padding-top:10px;
+}
+
+/*list-layout*/
+#bodyindex .list {
+  list-style:none;
+  padding:0px;
+  margin:0px;
+}
+
+#bodyindex .list .li {
+  line-height:17px;
+  padding-left:25px;
+  padding-bottom:12px;
+}
+#bodyindex .list .li_float1 {
+  float:left;
+  width:180px;
+  padding-left:42px;
+  line-height:17px;
+}
+#bodyindex .list .li_float1_4 {
+  float:left;
+  width:130px;
+  padding-left:42px;
+  line-height:17px;
+}
+
+#bodyindex .list .li_float2 {
+  float:left;
+  width:1px;
+  height:50px;
+  margin-left:10px;
+  margin-right:10px;
+}
+
+#bodyindex .list .li1 {
+  background:url(../images/service/bodyindex/list1.gif) no-repeat left 3px;
+}
+#bodyindex .list .li2 {
+  background:url(../images/service/bodyindex/list2.gif) no-repeat left 3px;
+}
+#bodyindex .list .li3 {
+  background:url(../images/service/bodyindex/list3.gif) no-repeat left 3px;
+}
+#bodyindex .list .li4 {
+  background:url(../images/service/bodyindex/list4.gif) no-repeat left 3px;
+}
+#bodyindex .list .li5 {
+  background:url(../images/service/bodyindex/list5.gif) no-repeat left 3px;
+}
+#bodyindex .list .li6 {
+  background:url(../images/service/bodyindex/list6.gif) no-repeat left 3px;
+}
+#bodyindex .list .li7 {
+  background:url(../images/service/bodyindex/list7.gif) no-repeat left 3px;
+}
+#bodyindex .list .li8 {
+  background:url(../images/service/bodyindex/list8.gif) no-repeat left 3px;
+}
+#bodyindex .list .lib {
+  background:url(../images/service/bodyindex/listb.gif) no-repeat left 3px;
+}
+#bodyindex .list .lic {
+  background:url(../images/service/bodyindex/listc.gif) no-repeat left 3px;
+}
+#bodyindex .list .lih {
+  background:url(../images/service/bodyindex/listh.gif) no-repeat left 3px;
+}
+#bodyindex .list .lik {
+  background:url(../images/service/bodyindex/listk.gif) no-repeat left 3px;
+}
+#bodyindex .list .lim {
+  background:url(../images/service/bodyindex/listm.gif) no-repeat left 3px;
+}
+#bodyindex .list .lis {
+  background:url(../images/service/bodyindex/lists.gif) no-repeat left 3px;
+}
+#bodyindex .list .liek {
+  background:url(../images/service/bodyindex/listek.gif) no-repeat left 3px;
+}
+#bodyindex .list .lil {
+  background:url(../images/spacer/dotline_vertikal.gif) repeat-y top left;
+}
+
+/*table-layout1*/
+#bodyindex .table1 {
+  text-align:center;
+}
+#bodyindex .table1 th {
+  line-height:17px;
+  width:128px;
+  background:url(../images/spacer/dotline_vertikal.gif) repeat-y top right;
+  font-weight:normal;
+  padding-bottom:15px;
+  vertical-align:top;
+}
+#bodyindex .table1 td {
+  line-height:25px;
+  vertical-align:top;
+}
+#bodyindex .table1 .spacer {
+  height:1px;
+  background:url(../images/spacer/dotline_horizontal.gif) repeat-x bottom left;
+}
+#bodyindex .table1 .row1 {
+  background:#fff4d8 url(../images/spacer/dotline_vertikal.gif) repeat-y top right;
+}
+#bodyindex .table1 .row1_first {
+  background:#fff4d8 url(../images/spacer/dotline_vertikal.gif) repeat-y top right;
+  font-weight:bold;
+}
+#bodyindex .table1 .row1_last {
+  background:#fff4d8;
+}
+#bodyindex .table1 .row2 {
+  background:#ffffff url(../images/spacer/dotline_vertikal.gif) repeat-y top right;
+}
+#bodyindex .table1 .row2_first {
+  background:#ffffff url(../images/spacer/dotline_vertikal.gif) repeat-y top right;
+  font-weight:bold;
+}
+#bodyindex .table1 .row2_last {
+  background:#ffffff;
+}
+
+/*table-layout2*/
+#bodyindex .table2 {
+  text-align:center;
+}
+#bodyindex .table2 td {
+  line-height:25px; vertical-align:top;
+}
+#bodyindex .table2 .row1 {
+  background:#fff4d8 url(../images/spacer/dotline_vertikal.gif) repeat-y top right;
+}
+#bodyindex .table2 .row1_first {
+  background:#fff4d8 url(../images/spacer/dotline_vertikal.gif) repeat-y top right; text-align:left; padding-left:10px;
+}
+#bodyindex .table2 .row1_last {
+  background:#fff4d8;
+}
+#bodyindex .table2 .row2 {
+  background:#ffffff url(../images/spacer/dotline_vertikal.gif) repeat-y top right;
+}
+#bodyindex .table2 .row2_first {
+  background:#ffffff url(../images/spacer/dotline_vertikal.gif) repeat-y top right; text-align:left; padding-left:10px;
+}
+#bodyindex .table2 .row2_last {
+  background:#ffffff;
+}

@@ -1,0 +1,614 @@
+
+  font-size: 12px;
+}
+
+#checkout #item_sum .text .discount,
+#checkout #item_sum .text .voucherCredit {
+	font-size: 12px;
+	color: #F59D32;
+}
+
+#checkout #item_sum .text h3 {
+  font-weight: bold;
+  font-size: 16px;
+  padding-top: 12px;
+}
+
+#checkout #item_sum .prices {
+  width: 350px;
+  text-align:right;
+  font-size: 13px;
+  float: right;
+  color: #3259a0;
+}
+
+#checkout #item_sum .prices .pad {
+	padding: 0px 180px 0px 0px;
+}
+
+#checkout #item_sum .prices #value {
+  font-weight: bold;
+}
+
+#checkout #item_sum .prices #addCost {
+  font-size: 12px;
+}
+
+#checkout #item_sum .prices .discount,
+#checkout #item_sum .prices .voucherCredit {
+	font-size: 12px;
+	color: #F59D32;
+}
+
+#checkout #item_sum .prices #sum {
+  font-weight: bold;
+  font-size: 16px;
+  padding-top: 12px;
+}
+
+#checkout #to_checkout {
+}
+
+#checkout #to_checkout .button {
+  padding-left: 437px;
+  padding-top: 15px;
+}
+
+/* ######## STEP 2 ######### */
+#checkout #header {
+  height: 25px;
+  width: 749px;
+  background-color: #c7e1f7;
+  font-size: 16px;
+  color: #3259a0;
+  padding-top: 3px;
+  padding-left: 20px;
+  margin-top:0px;
+}
+
+#checkout #step_back {
+  float: left;
+  margin-top: 14px;
+  margin-bottom: 15px;
+}
+
+#checkout #submit {
+  float: right;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding-right: 210px;
+}
+
+#checkout #submit_completion {
+  float: right;
+  margin-top: 15px;
+}
+
+#checkout #yourdata {
+  float: left;
+  padding-bottom: 30px;
+}
+
+#checkout #yourdata .error_box {
+	border:1px solid #E43524;
+	color:#E43524;
+	margin-bottom:15px;
+	width:568px;
+	clear:left;
+  z-index:1;
+}
+
+#checkout #yourdata .error_box .padding {
+  padding: 15px;
+}
+
+#checkout #yourdata #headline2 {
+  font-size:36px;
+  height:79px;
+}
+
+#checkout #yourdata #headline2 .text{
+	color:#3259A0;
+	font-family:Century Gothic,Arial;
+	font-size:36px;
+	padding-top:28px;
+}
+
+#checkout #yourdata #header {
+  clear:left;
+  z-index:1;
+  margin-top:0px;
+}
+
+#checkout #yourdata #new_customer {
+  height: 58px;
+}
+
+#checkout #yourdata #new_customer .text {
+  padding-top: 20px;
+  padding-left: 20px;
+  float: left;
+}
+
+#checkout #yourdata #new_customer .button {
+  padding-top: 15px;
+  padding-right: 200px;
+  float: right;
+}
+
+#checkout #yourdata #login {
+  width: 769px;
+  height: 249px;
+  background: url(../images/spacer/dotline_horizontal.gif) repeat-x bottom;
+  border: 1px solid transparent;
+}
+
+/* hack for IE6 */
+* html #checkout #yourdata #login {
+  border: 0px;
+}
+
+#checkout #yourdata #login #login_form {
+  display: inline;
+}
+
+#checkout #yourdata #login #box {
+  width: 568px;
+  height: 69px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #c7e1f7;
+}
+
+#checkout #yourdata #login #box .email {
+  width: 213px;
+  padding-top: 10px;
+  padding-left: 20px;
+  float: left;
+}
+
+#checkout #yourdata #login #box input {
+  margin-top: 5px;
+}
+
+#checkout #yourdata #login #box .password {
+  width: 99px;
+  padding-top: 10px;
+  padding-left: 20px;
+  float: left;
+}
+
+#checkout #yourdata #login #box .forgotten_password {
+  float: left;
+  padding-top: 32px;
+  padding-left: 20px;
+}
+
+#checkout #yourdata #login #box .forgotten_password a {
+  color: #3a98d4;
+}
+
+#checkout #yourdata #login #box .customer_id {
+  width: 140px;
+  padding-top: 10px;
+  padding-left: 20px;
+  float: left;
+}
+
+#checkout #yourdata #login #box input {
+  margin-top: 5px;
+}
+
+#checkout #yourdata #login #box .birthday {
+  width: 170px;
+  padding-top: 10px;
+  padding-left: 31px;
+  float: left;
+  font-weight:bold;
+}
+
+#checkout #yourdata #login #box .forgotten_id {
+  float: left;
+  padding-top: 32px;
+  padding-left: 12px;
+}
+
+#checkout #yourdata #login #box .forgotten_id a {
+  color: #3a98d4;
+}
+
+#checkout #yourdata #login #or {
+  height: 29px;
+}
+
+#checkout #yourdata #login #or .image {
+  padding-left: 162px;
+  line-height: 0px;
+  font-size: 0px;
+}
+
+#checkout #yourdata #login #button {
+  width: 568px;
+  padding-top: 7px;
+  text-align: right;
+}
+
+/* ####### forgotten password ######## */
+#checkout #forgotten {
+  width: 525px;
+  height: 560px;
+  padding: 15px;
+  font-family: arial;
+  font-size: 13px;
+  color: #212121;
+  border: 2px solid #da2031;
+}
+
+#checkout #forgotten #content {
+  height: 425px;
+  border: 1px solid #c4c4c4;
+  padding: 15px;
+  padding-bottom: 0px;
+  font-size: 13px;
+  line-height: 17px;
+}
+
+#checkout #forgotten #content .text {
+  margin-top: 10px;
+  width: 414px;
+}
+
+#checkout #forgotten #content .box {
+  margin-top: 30px;
+  padding-left: 20px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  width: 448px;
+  border: 1px solid #c7e1f7;
+}
+
+#checkout #forgotten #content .box .email_forgotten {
+  margin-top: 20px;
+  display: none;
+  margin-bottom: 10px;
+}
+
+#checkout #forgotten #content .link {
+  margin-top: 15px;
+}
+
+#checkout #forgotten #content .box input {
+  margin-top: 8px;
+}
+
+#checkout #forgotten #content .box p {
+  margin-top: 12px;
+  color: #3a98d4;
+}
+
+#checkout #forgotten #content .box a {
+  text-decoration: underline;
+  color: #3a98d4;
+  cursor: pointer;
+}
+
+#checkout #forgotten #content ul {
+  margin: 0px;
+  margin-top: 15px;
+  padding-left: 15px;
+}
+
+#checkout #forgotten #content li {
+  list-style-image:
+    url(../images/checkout/shopcart/bullet.gif);
+  padding-left: 8px;
+  padding-bottom: 15px;
+}
+
+/* ######## completion ######### */
+#checkout #completion {
+  float: left;
+}
+
+#checkout #completion #header {
+  clear:left;
+  z-index: 1;
+}
+
+#checkout #completion .error_box {
+  float: left;
+  width: 550px;
+  height: 30px;
+  border: 1px solid #E43524;
+  padding: 15px;
+  margin-bottom: 25px;
+  color: #E43524;
+}
+
+#checkout #completion #login {
+  width: 570px;
+  border: 1px solid transparent;
+}
+
+/* hack for IE6 */
+* html #checkout #completion #login {
+  border: 0px;
+}
+
+#checkout #completion #login .text {
+  width: 565px;
+  padding: 15px;
+  padding-left: 20px;
+  font-size: 13px;
+  line-height: 17px;
+}
+
+#checkout #completion #login #login_form {
+  display: inline;
+}
+
+#checkout #completion #login #box {
+  width: 568px;
+  height: 69px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #c7e1f7;
+}
+
+#checkout #completion #login #box .email {
+  width: 213px;
+  padding-top: 10px;
+  padding-left: 20px;
+  float: left;
+}
+
+#checkout #completion #login #box input {
+  margin-top: 5px;
+}
+
+#checkout #completion #login #box input.error {
+  border: 2px solid #E43524;
+}
+
+#checkout #completion #login #box .password {
+  width: 99px;
+  padding-top: 10px;
+  padding-left: 30px;
+  float: left;
+}
+
+#checkout #completion #login #box .forgotten_password {
+  float: left;
+  padding-top: 32px;
+  padding-left: 20px;
+}
+
+#checkout #completion #login #step_back {
+  float: left;
+  margin-top: 10px;
+}
+
+#checkout #completion #login #submit {
+  float: right;
+  margin-top: 10px;
+}
+
+/* ###### registration ###### */
+#checkout #registration div,#checkout #registration span,#checkout #registration h1,#checkout #registration h2,#checkout #registration h3,#checkout #registration h4,#checkout #registration h5,#checkout #registration h6,#checkout #registration p,#checkout #registration a,#checkout #registration img,#checkout #registration ul,#checkout #registration ol,#checkout #registration li
+  {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+}
+
+#checkout #headline_item {
+	height:auto;
+	margin-left:0px;
+	margin-top:19px;
+}
+#checkout #headline_item h1 {
+	font-family:Century Gothic,Arial,sans-serif;
+	font-size:36px;
+	font-weight:normal;
+	margin:0;
+	padding:0;
+}
+
+#checkout #registration {
+  width: 769px;
+  padding: 15px;
+  padding-left: 0px;
+  padding-right: 0px;
+  font-family: arial;
+  font-size: 13px;
+  color: #212121;
+  float: left;
+}
+
+#checkout .header #headline {
+	margin-left: 15px;
+}
+
+#checkout #registration a,a:link {
+  color: #212121;
+  text-decoration: none;
+}
+
+#checkout #registration a:hover {
+  color: #212121;
+  text-decoration: none;
+}
+
+#checkout #registration a:visited {
+  color: #212121;
+  text-decoration: none;
+}
+
+#checkout #registration a:active {
+  color: #212121;
+  text-decoration: none;
+}
+
+/* ######## headline ######### */
+#checkout #headline_conf {
+  height: 130px;
+}
+
+#checkout #headline_conf img {
+  padding-top: 36px;
+  float: left;
+}
+
+#checkout #headline_conf h1 {
+  padding-top: 27px;
+  padding-left: 45px;
+  font-family: Century Gothic, Arial;
+  font-size: 36px;
+  color: #3259a0;
+}
+
+#checkout #registration .spacer {
+  background: url(../images/spacer/dotline_horizontal.gif) repeat-x center left;
+  height: 35px;
+  line-height: 35px;
+  margin-bottom: 9px;
+}
+
+/*formular*/
+#checkout #registration .formdescription {
+  color: #999999;
+  margin-bottom: 15px;
+}
+
+#checkout #registration .formfield {
+  margin-bottom: 15px;
+  clear: left;
+  position: relative;
+}
+
+#checkout #registration .formfield label {
+  width: 130px;
+  display: block;
+  float: left;
+  clear: left;
+}
+
+#checkout #registration .formfield label.label-long {
+  cursor: pointer;
+  width: 510px;
+  display: block;
+  float: none;
+  clear: none;
+  margin-left: 35px;
+  margin-top: 4px;
+}
+
+#checkout #registration .formfield input.input-text-short {
+  width: 35px;
+}
+
+#checkout #registration .formfield input.input-text-middle {
+  width: 60px;
+}
+
+#checkout #registration .formfield input.input-text-long1 {
+  width: 140px;
+}
+
+#checkout #registration .formfield input.input-text-long2 {
+  width: 180px;
+}
+
+#checkout #registration .formfield input.error {
+  border: 2px solid #E43524;
+}
+
+#checkout #registration .formfield label.error {
+  color: #E43524;
+  font-weight: bold;
+}
+
+#checkout #registration .formfield input.input-checkbox {
+  float: left;
+  clear: left;
+}
+
+#checkout #registration .formfield span.error {
+  color: #E43524;
+  font-weight: bold;
+}
+
+#checkout #registration div.error {
+  color: #E43524;
+  font-weight: bold;
+}
+
+#checkout #registration .formfield input.input-text-short1 {
+	  width: 20px;
+}
+
+#checkout #registration .formfield input.input-text-middle1 {
+	  width: 45px;
+}
+
+#checkout #registration .formfield input.input-text-middle3 {
+  width: 70px;
+}
+
+#checkout #registration  .float-left {
+	        float: left;
+}
+
+#checkout #registration  div.note {
+  position: absolute;
+  top: 0px;
+  right: 10px;
+	  margin: -4px 0 -8px 15px;
+	  border: 1px solid #395374;
+	  width: 400px;
+	  color: #E43524;
+	  background-color: #fff;
+	  font-weight: normal;
+}
+
+#checkout #registration  div.small {
+   width: 200px !important;
+}
+
+*HTML #checkout #registration  div.note {
+	  margin: 0;
+}
+
+*+HTML #checkout #registration  div.note {
+  margin: 0;
+}
+#checkout #registration  div.note H1{
+	  margin: 3px 3px 3px 3px;
+	  padding: 0 0 0 20px;
+	  font-size: 13px;
+	  background: url(../images/global/icon_ausrufezeichen_db1d1d.gif) left 4px no-repeat;
+}
+#checkout #registration  div.note P {
+	  margin: 5px 10px 10px 10px;
+	  font-size: 13px;
+}
+
+#checkout #registration .formbuttons {
+  width: 600px;
+  margin-bottom: 50px;
+}
+
+#checkout #registration .formbuttons .float-left {
+  float: left;
+}
+
+#checkout #registration .formbuttons .float-right {
+  float: right;
+}
+
+#checkout #registration .error_box {
+  width: 600px;
+  border: 1px solid #E43524;
+  padding: 15px;
+  marg

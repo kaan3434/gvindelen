@@ -1,0 +1,82 @@
+ft {
+  float: left;
+  clear: left;
+}
+
+#emailhelp #head .row-right {
+  margin-left: 395px;
+  height: 181px;
+  background: #ffffff url(../images/static/line.gif) repeat-x top left;
+}
+
+#emailhelp #head .row-right h2 {
+  color: #D88400;
+  font-size: 24px;
+  line-height: 26px;
+  margin-bottom: 10px;
+  padding-top: 15px;
+}
+
+#emailhelp #head .row-right p {
+  line-height: 17px;
+}
+
+#emailhelp #head .row-right .categories {
+  padding-top: 10px
+}
+
+#emailhelp #head .row-right .categories	a {
+  text-decoration: underline;
+  color: #000000;
+  font-size: 12px;
+  line-height: 21px
+}
+
+#emailhelp #head .row-right .categories .left {
+  float: left
+}
+
+#emailhelp #head .row-right .categories	.right {
+  float: left;
+  margin-left: 30px
+}
+
+#emailhelp #head .row-right .categories	.right a {
+  text-decoration: underline;
+  color: #000000;
+}
+
+#emailhelp .activ a,#emailhelp .activ a:link,#emailhelp .activ a:hover,#emailhelp .activ a:visited,#emailhelp .activ a:active,#emailhelp .activ ul .activ a,#emailhelp .activ ul .activ a:link,#emailhelp .activ ul .activ a:hover,#emailhelp .activ ul .activ a:visited,#emailhelp .activ ul .activ a:active
+  {
+  color: #ffffff;
+  text-decoration: none;
+  line-height: 21px;
+}
+
+#emailhelp a,#emailhelp a:link,#emailhelp a:hover,#emailhelp a:visited,#emailhelp a:active,#emailhelp .activ ul a,#emailhelp .activ ul a:link,#emailhelp .activ ul a:hover,#emailhelp .activ ul a:visited,#emailhelp .activ ul a:active,#emailhelp .activ ul .activ ul a,#emailhelp .activ ul .activ ul a:link,#emailhelp .activ ul .activ ul a:hover,#emailhelp .activ ul .activ ul a:visited,#emailhelp .activ ul .activ ul a:active
+  {
+  color: #d78603;
+  text-decoration: none;
+  line-height: 21px;
+}
+
+#emailhelp .clear {
+  clear: both;
+}
+
+#emailhelp .container {
+  clear: both;
+  position: relative;
+  padding-bottom: 5px;
+}
+
+#emailhelp .head {
+  padding: 6px 25px;
+  cursor: pointer;
+  color: #d88400;
+  font-size: 17px;
+  line-height: 21px;
+  font-weight: normal;
+}
+
+#

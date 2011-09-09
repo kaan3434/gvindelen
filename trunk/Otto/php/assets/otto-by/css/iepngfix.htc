@@ -1,0 +1,103 @@
+ve.gif) top right no-repeat;
+  color: #3A98D4;
+  font-weight: bold;
+}
+
+#navigation ul li.active a span {
+  background: url(../images/myotto/tab-active.gif) top left no-repeat;
+}
+
+/* ###### Merkzettel ###### */
+#wishlist #headline {
+  float: left;
+  height: 79px;
+  width: 784px;
+}
+
+#wishlist #headline .text {
+  font-family: "Century Gothic", Arial, sans-serif;
+  font-size: 36px;
+  line-height: 42px;
+  margin-left: 12px;
+  margin-top: 20px;
+  color: #E33423;
+}
+
+#wishlist .emptylist {
+  padding: 46px 15px;
+}
+
+* html #wishlist {
+  margin-left: -15px;
+}
+
+#my_notepad div,#my_notepad span,#my_notepad h1,#my_notepad h2,#my_notepad h3,#my_notepad h4,#my_notepad h5,#my_notepad h6,#my_notepad p,#my_notepad a,#my_notepad img,#my_notepad ul,#my_notepad ol,#my_notepad li
+  {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+}
+
+#my_notepad a,#my_notepad a:link {
+  color: #212121;
+  text-decoration: none;
+}
+
+#my_notepad a:hover {
+  color: #212121;
+  text-decoration: none;
+}
+
+#my_notepad a:visited {
+  color: #212121;
+  text-decoration: none;
+}
+
+#my_notepad a:active {
+  color: #212121;
+  text-decoration: none;
+}
+
+#my_notepad .clear {
+  clear: both;
+}
+
+#my_notepad {
+  width: 769px;
+  float: left;
+  margin-left: 15px;
+  padding-bottom: 30px;
+  font-family: arial;
+  font-size: 13px;
+  color: #212121;
+  line-height: 18px;
+}
+
+#my_notepad .info_box {
+  width: 500px;
+  border: 1px solid #a1cdf2;
+  padding: 15px;
+  margin-bottom: 20px;
+  color: #3259a0;
+}
+
+#my_notepad .info_box a {
+  color: #3259a0;
+}
+
+#my_notepad .info_box a:hover {
+  color: #3259a0;
+  text-decoration: underline;
+}
+
+#my_notepad h1 {
+  font-size: 36px;
+  line-height: 33px;
+  font-family: "Century Gothic", Arial, sans-serif;
+  color: #e33423;
+  margin-bottom: 20px;
+}
+
+#my_notepad h2 {
+  float: left;
