@@ -1,118 +1,129 @@
+/* nmStyles - custom styles for RU*/
 
-.colorscheme4 .fits_together #head {
-  background-color: #ECC0D8;
+
+/* START - myOtto Leftnav Last Visited Items*/
+.NavigationBox {
+  margin:0;
 }
 
-.colorscheme5 .fits_together #head {
-  background-color: #B7E3E3;
+.NavigationBox div.Wrapper {
+  overflow:hidden;
+  padding:15px 0;
 }
 
-.colorscheme6 .fits_together #head {
-  background-color: #FFBED7;
+.NavigationBox div.Wrapper h2{
+  margin:0 0 15px;
 }
 
-.colorscheme7 .fits_together #head {
-  background-color: #C7E1F7;
+.NavigationBox div.Wrapper h2 a{
+  font-size:22px;
+  font-weight:normal;
+  line-height:23px;
+  text-decoration:none;
+  color:#E43524;
 }
 
-.colorscheme9 .fits_together #head {
-  background-color: #D8E1B2;
+.NavigationBox div.Wrapper span.NavigationBoxItems{
+  display:block;
+  font-size:13px;
+  margin:0 0 4px;
 }
 
-.fits_together #head .text {
-  font-size: 16px;
-  padding-top: 5px;
-  padding-left: 35px;
+.NavigationBox div.Wrapper span.NavigationBoxItems a {
+  color:#000000;
+}
+/* END - myOtto Leftnav Last Visited Items*/
+
+/* START - myOtto Last Visited Items Layer*/
+
+#content div.ModalBoxContent {
+  width:745px;
+  height:300px;
+  overflow-y:scroll;
+  overflow-x:hidden;
 }
 
-.colorscheme1 .fits_together #head .text {
-  color: #DA2031;
-  background: url(../images/colorscheme1/head_visible.gif) no-repeat 8px
-    8px
+#content div.ModalBoxContent div.Wrapper {
+  margin:20px;
 }
 
-.colorscheme2 .fits_together #head .text {
-  color: #0089C0;
-  background: url(../images/colorscheme2/head_visible.gif) no-repeat 8px
-    8px
+#content div.ModalBoxContent div.Wrapper div.detailHeadline {
+  background:none repeat scroll 0 0 #C7E2F7;
+  color:#3797D1;
+  font-size:16px;
+  width:450px;
+  height:25px;
+  margin:0;
+  padding-left:30px;
+  padding-top:5px;
 }
 
-.colorscheme3 .fits_together #head .text {
-  color: #F88000;
-  background: url(../images/colorscheme3/head_visible.gif) no-repeat 8px
-    8px
+#content div.ModalBoxContent div.Wrapper div.Indent{
+  margin:0 0 20px 30px;
 }
 
-.colorscheme4 .fits_together #head .text {
-  color: #BF2F7F;
-  background: url(../images/colorscheme4/head_visible.gif) no-repeat 8px
-    8px
+#content div.ModalBoxContent div.Wrapper div.Indent div.pictureBigLeft {
+  float:left;
+  margin-right:15px;
+  overflow:hidden;
+  width:90px;
 }
 
-.colorscheme5 .fits_together #head .text {
-  color: #11A3A1;
-  background: url(../images/colorscheme5/head_visible.gif) no-repeat 8px
-    8px
+#content div.ModalBoxContent td.Price {
+  color:#0089C0;
+  font-weight:700;
+  padding-right:20px;
+  text-align:right;
+  vertical-align:top;
 }
 
-.colorscheme6 .fits_together #head .text {
-  color: #FE297A;
-  background: url(../images/colorscheme6/head_visible.gif) no-repeat 8px
-    8px
+#layer div.headline  {
+  font-size:24px;
+  height:24px;
+  margin-left:15px;
 }
 
-.colorscheme7 .fits_together #head .text {
-  color: #A1CDF2;
-  background: url(../images/colorscheme7/head_visible.gif) no-repeat 8px
-    8px
+.ErrorBorder, #recommend .ErrorBorder {
+	border: 1px solid red;	
 }
 
-.colorscheme9 .fits_together #head .text {
-  color: #7F9A01;
-  background: url(../images/colorscheme9/head_visible.gif) no-repeat 8px
-    8px
+.ErrorInfo, #recommend .ErrorInfo {
+	margin: .5em;
+	padding: .5em;
+	border: solid 2px red;
+	}
+
+/* END - myOtto Last Visited Items Layer*/
+
+#competition #content #basket .stock {
+  color: #198504;
+  font-weight: bold;
 }
 
-.fits_together .main {
-  margin-top: 2px;
-  width: 767px;
-  min-height: 265px;
-  height: auto !important;
-  height: 265px;
-  border: 1px solid;
+#competition #content #basket .not_in_stock {
+  color: red;
+  font-weight: bold;
 }
 
-.colorscheme1 .fits_together .main {
-  border-color: #F4BCC1;
+#competition #content #basket .temp_not_in_stock {
+  color: #FBB100;
+  font-weight: bold;
 }
 
-.colorscheme2 .fits_together .main {
-  border-color: #B2DBEC;
+#pdaDetail .pdaContent .contentRight .stockamount .not_in_stock {
+  color: red;
+  font-weight: bold;
 }
 
-.colorscheme3 .fits_together .main {
-  border-color: #FDD9B2;
+.categoryteaser #textcontainer .text_info .oldPrice {
+  font-size: 14px;
+  text-decoration: line-through;
 }
 
-.colorscheme4 .fits_together .main {
-  border-color: #ECC0D8;
+.categoryteaser #textcontainer .text_info .newPrice span {
+  background-color: #FFFFFF;
+  color: #E22F19;
+  font-size: 13px;
 }
 
-.colorscheme5 .fits_together .main {
-  border-color: #B7E3E3;
-}
 
-.colorscheme6 .fits_together .main {
-  border-color: #FFBED7;
-}
-
-.colorscheme7 .fits_together .main {
-  border-color: #C7E1F7;
-}
-
-.colorscheme9 .fits_together .main {
-  border-color: #D8E1B2;
-}
-
-.fits_together .main #big_pic {
-  width: 180p

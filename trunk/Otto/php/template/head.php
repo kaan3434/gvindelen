@@ -61,5 +61,5 @@
   <link href="/assets/otto-by/css/service.css" rel="stylesheet" type="text/css" />
   <!--#head_menu#-->
   <!--#head_level1#-->
-  <!--#google-analytics#-->
+  <!--#google-analytics/$_SERVER[SERVER_NAME]/google-analytics#-->
 </head>

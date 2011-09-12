@@ -1,201 +1,200 @@
-t: right;
-  margin: 15px;
-  cursor: pointer;
+.greyed
+{
+	color:#999 !important;
 }
 
-* html #competition #close {
-  margin-right: 7px;
+div#GSLayer
+{
+	width: 740px;
+	position: relative;
 }
 
-#competition #header {
-  margin-left: 15px;
-  width: 745px;
-  height: auto;
-  color: #3259A0;
-  clear: right;
-  float: none;
-  font-size: 28px;
+div#GSPositionRight {}
+div#GSPositionLeft {}
+
+div.GSBackground
+{
+	position: absolute;
+	top: 20px;
+	overflow:hidden;
+	z-index:-1;
 }
 
-#competition #content {
-  margin-top: 10px;
-  margin-left: 15px;
-  width: 728px;
+div.GSBackground img
+{
+	margin:0;
+	padding:0;
+	z-index:-1;
 }
 
-/* ###### Basket ###### */
-#competition #content #basket a {
-  text-decoration: underline;
+
+div#GSPositionRight div.GSBackground { left: 20px; }
+div#GSPositionLeft div.GSBackground { right: 20px; }
+
+div.GSContent
+{
+	margin:20px 0;
+	position:static;
+	z-index:10;
 }
 
-#competition #content #basket {
-  width: 728px;
-  border: 1px solid #c4c4c4;
-  line-height: 17px;
-  overflow-y: auto;
-  overflow-x: hidden;
+div#GSPositionRight div.GSContent { float: right; }
+div#GSPositionLeft div.GSContent { float: left; }
+
+div.GSContent .Error,
+div.GSContent .Error td
+{
+	font-weight:bold;
 }
 
-#competition #content #basket #inner {
-  padding: 20px;
+div.GSContent h1
+{
+	font-size:24px;
+	font-weight:400;
+	color:#3A98D4;
+	margin:0 0 8px 0;
 }
 
-#competition #content #basket #inner #error {
-  color: #DA2031;
+div.GSBox
+{
+	margin:0 0 15px 0;
 }
 
-#competition #content #basket ul {
-  list-style-type: none;
-  margin: 0px;
-  padding: 0px;
-  clear: left;
+div.GSBox textarea,
+table.formtable textarea
+{
+	width:300px;
+	height:80px;
+	border:1px solid #CCC;
+	padding:5px;
 }
 
-#competition #content #basket li {
-  float: left;
+div#GSLayer span.BlockLink a,
+div#GSLayer span.BlockLinkLeft a,
+div.GSFooter span.BlockLink a,
+div.GSFooter span.BlockLinkLeft a
+{
+	margin:0;
+	color:#3A98D4;
+	background-color:#C7E1F7;
+	background-repeat:no-repeat;
 }
 
-/* ######## headline ######### */
-#competition #content #basket #headline {
-  height: 80px;
-  float: left;
+div#GSLayer span.BlockLink a,
+div.GSFooter span.BlockLink a
+{
+	background-image:url(../images/arrow/gs_arrow_right.gif);
 }
 
-#competition #content #basket #headline img {
-  padding-top: 37px;
-  float: left;
+div#GSLayer span.BlockLinkLeft a,
+div.GSFooter span.BlockLinkLeft a
+{
+	background-image:url(../images/arrow/gs_arrow_left.gif);
 }
 
-#competition #content #basket #headline h1 {
-  padding-top: 28px;
-  padding-left: 45px;
-  font-family: Century Gothic, Arial;
-  font-size: 36px;
-  color: #3259a0;
+div.GSBox input
+{
+	width:auto !important;
+	height:auto !important;
+	margin:0;
 }
 
-/* ######## STEP 1 ######### */
-#competition #content #basket #item_head {
-  height: 28px;
-  width: 769px;
+div.GSBox td
+{
+	vertical-align:top;
+	padding:0 0 5px 0;
 }
 
-#competition #content #basket #item_head li {
-  font-size: 16px;
-  color: #3259a0;
-  background-color: #c7e1f7;
-  height: 28px;
-  border-right: 2px solid #ffffff;
+table.formtable td.VTop
+{
+	vertical-align:top;
 }
 
-#competition #content #basket #item_head li p {
-  padding-top: 5px;
+a.GSFooterLink
+{
+	display:block;
+	margin:0 15px 0 0;
+	float:left;
+	width:300px;
+	height:20px;
 }
 
-#competition #content #basket #item_block {
-  float: left;
-  background: url(../images/spacer/dotline_horizontal.gif) repeat-x bottom
-    ;
-  padding-bottom: 20px;
+table.formtable td td{vertical-align:middle;padding:0}
+table.formtable td input{width:159px;border:1px solid #d3d3d3}
+table.formtable td input.Radio{margin:0;width:auto;border:0}
+table.formtable td input.small2{width:29px}
+table.formtable td input.small3,
+table.formtable td input.small4,
+table.formtable td input.small5{width:44px}
+table.formtable td.Error input{border-color:#da2131}
+table.formtable td.pright {
+    padding-right: 10px;
+    vertical-align: middle;
 }
 
-#competition #content #basket #item_block .picture {
-  width: 104px;
-  float: left;
-  text-align: center;
+table.formtable td {
+    padding: 0 0 10px;
+    vertical-align: middle;
 }
 
-#competition #content #basket #item_block .picture img {
-  margin-top: 20px;
-  border: 1px solid #999999;
+.pright {
+    padding-right: 15px !important;
 }
 
-#competition #content #basket #item_block .info {
-  width: 245px;
-  float: left;;
+.hidden {
+    display: none;
+    visibility: hidden;
 }
 
-#competition #content #basket #item_block .info .text {
-  padding-left: 5px;
-  padding-top: 20px;
+#GS-Subnavigation {
+		padding: 11px 0pt 0pt;width:700px;float:left;font-family: 'Lucida Grande',Tahoma,sans-serif;
+    margin-top: -10px;
+    display:block;
+    float:left;
+    font-family: 'Lucida Grande',Tahoma,sans-serif;
 }
 
-#competition #content #basket #item_block .info .text a {
-  color: #000000;
-  font-weight: bold;
+a.BlockLink {
+    background-image: url("../images/arrow/BlockLinkArrowBlue.gif");
+    background-position: 0 4px;
+    background-repeat: no-repeat;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 20px;
+    padding: 0 0 0 12px;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #3A98D4;
+}
+span.BlockLinkLeft {
+    clear: left;
 }
 
-#competition #content #basket #item_block .info .buttons {
-  padding-left: 5px;
-  padding-top: 20px;
+.mright {
+    margin-right: 15px;
 }
 
-#competition #content #basket #item_block .propertys {
-  width: 180px;
-  float: left;
-  padding-top: 20px;
-  margin-left: 20px;
+div.GSFooter span.BlockLinkLeft a {
+    background-image: url("../images/arrow/gs_arrow_left.gif");
 }
 
-#competition #content #basket #item_block .propertys select {
-  width: 160px;
-  margin-bottom: 4px;
+.FLeft {float:left;}
+
+span.BlockLink a, span.BlockLinkLeft a, span.GlobalBlockLink a, span.GlobalBlockLinkLeft a {
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    float: left;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding: 3px 5px 4px 30px;
+    text-decoration: none;
+    text-transform: uppercase;
+    white-space: nowrap;
 }
 
-#competition #content #basket #item_block .count {
-  width: 70px;
-  float: left;
-  padding-top: 20px;
-  margin-left: 20px;
+.nm-no-top-left
+{
+	top: 0px !important;
+	left: 0px !important;
 }
-
-#competition #content #basket #item_block .count input {
-  width: 50px;
-}
-
-#competition #content #basket #buttom {
-  padding-top: 20px;
-}
-
-/* #################################### Mein Otto ###################################### */
-#contentbox {
-  display: inline;
-  margin-left: 15px;
-  float: left;
-  width: 769px;
-}
-
-#contentbox #headline {
-  padding-top: 20px;
-}
-
-#contentbox #headline h1 {
-  height: 59px;
-  font-size: 36px;
-  font-family: "Century Gothic", Arial, sans-serif;
-  color: #e33423;
-}
-
-#navigation {
-  overflow: hidden;
-  display: block;
-  width: 100%;
-}
-
-#navigation * {
-  padding: 0;
-  margin: 0;
-}
-
-#navigation ul {
-  display: block;
-}
-
-#navigation ul li {
-  list-style: none;
-  float: left;
-  margin: 0 5px 0 0;
-}
-
-#navigation ul li a {
-  b

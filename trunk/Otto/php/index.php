@@ -3,8 +3,9 @@
   require "libs/GvStrings.php";
   require "libs/GvHtmlSrv.php";
   require "libs/utf2win.php";
-  require "settings/mail.inc";
-  require "settings/mysql.inc";
+  $server_name = $_SERVER['SERVER_NAME'];
+  require "settings/$server_name/mail.inc";
+  require "settings/$server_name/mysql.inc";
   $ext = '.php';
   $template_path = 'template/';
   
@@ -36,6 +37,7 @@ function extract_searches($template_path, $path) {
     global $ext;
     $template_name = str_replace('<!--#', '', $template);
     $template_name = str_replace('#-->', $ext, $template_name);
+    $template_name = str_ireplace('$_SERVER[SERVER_NAME]', $_SERVER['SERVER_NAME'], $template_name);
     $c = count($searches);  
     for ($i=$c-1; $i>=0; $i--) {
       $file_name = $searches[$i] . $template_name;

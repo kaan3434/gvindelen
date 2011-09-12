@@ -1,103 +1,72 @@
-ve.gif) top right no-repeat;
-  color: #3A98D4;
-  font-weight: bold;
+<public:component>
+<public:attach event="onpropertychange" onevent="doFix()" />
+
+<script type="text/javascript">
+
+// IE5.5+ PNG Alpha Fix v1.0RC4
+// (c) 2004-2005 Angus Turnbull http://www.twinhelix.com
+
+// This is licensed under the CC-GNU LGPL, version 2.1 or later.
+// For details, see: http://creativecommons.org/licenses/LGPL/2.1/
+
+
+// This must be a path to a blank image. That's all the configuration you need.
+if (typeof blankImg == 'undefined') var blankImg = 'assets/images/spacer/blank.gif';
+
+
+var f = 'DXImageTransform.Microsoft.AlphaImageLoader';
+
+function filt(s, m)
+{
+ if (filters[f])
+ {
+  filters[f].enabled = s ? true : false;
+  if (s) with (filters[f]) { src = s; sizingMethod = m }
+ }
+ else if (s) style.filter = 'progid:'+f+'(src="'+s+'",sizingMethod="'+m+'")';
 }
 
-#navigation ul li.active a span {
-  background: url(../images/myotto/tab-active.gif) top left no-repeat;
-}
+function doFix()
+{
+ // Assume IE7 is OK.
+ if (!/MSIE (5\.5|6\.)/.test(navigator.userAgent) ||
+  (event && !/(background|src)/.test(event.propertyName))) return;
 
-/* ###### Merkzettel ###### */
-#wishlist #headline {
-  float: left;
-  height: 79px;
-  width: 784px;
-}
+ var bgImg = currentStyle.backgroundImage || style.backgroundImage;
 
-#wishlist #headline .text {
-  font-family: "Century Gothic", Arial, sans-serif;
-  font-size: 36px;
-  line-height: 42px;
-  margin-left: 12px;
-  margin-top: 20px;
-  color: #E33423;
-}
-
-#wishlist .emptylist {
-  padding: 46px 15px;
-}
-
-* html #wishlist {
-  margin-left: -15px;
-}
-
-#my_notepad div,#my_notepad span,#my_notepad h1,#my_notepad h2,#my_notepad h3,#my_notepad h4,#my_notepad h5,#my_notepad h6,#my_notepad p,#my_notepad a,#my_notepad img,#my_notepad ul,#my_notepad ol,#my_notepad li
+ if (tagName == 'IMG')
+ {
+  if ((/\.png$/i).test(src))
   {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  outline: 0;
+   if (currentStyle.width == 'auto')
+    style.width = offsetWidth + 'px';
+
+   if(currentStyle.height == 'auto')
+    style.height = offsetHeight + 'px';
+
+   filt(src, 'scale');
+   src = blankImg;
+  }
+  else if (src.indexOf(blankImg) < 0) filt();
+ }
+ else if (bgImg && bgImg != 'none')
+ {
+  if (bgImg.match(/^url[("']+(.*\.png)[)"']+$/i))
+  {
+   var s = RegExp.$1;
+   if (currentStyle.width == 'auto' && currentStyle.height == 'auto')
+    style.width = offsetWidth + 'px';
+   style.backgroundImage = 'none';
+   filt(s, 'crop');
+   // IE link fix.
+   for (var n = 0; n < childNodes.length; n++)
+    if (childNodes[n].style) childNodes[n].style.position = 'relative';
+  }
+  else filt();
+ }
 }
 
-#my_notepad a,#my_notepad a:link {
-  color: #212121;
-  text-decoration: none;
-}
+doFix();
 
-#my_notepad a:hover {
-  color: #212121;
-  text-decoration: none;
-}
-
-#my_notepad a:visited {
-  color: #212121;
-  text-decoration: none;
-}
-
-#my_notepad a:active {
-  color: #212121;
-  text-decoration: none;
-}
-
-#my_notepad .clear {
-  clear: both;
-}
-
-#my_notepad {
-  width: 769px;
-  float: left;
-  margin-left: 15px;
-  padding-bottom: 30px;
-  font-family: arial;
-  font-size: 13px;
-  color: #212121;
-  line-height: 18px;
-}
-
-#my_notepad .info_box {
-  width: 500px;
-  border: 1px solid #a1cdf2;
-  padding: 15px;
-  margin-bottom: 20px;
-  color: #3259a0;
-}
-
-#my_notepad .info_box a {
-  color: #3259a0;
-}
-
-#my_notepad .info_box a:hover {
-  color: #3259a0;
-  text-decoration: underline;
-}
-
-#my_notepad h1 {
-  font-size: 36px;
-  line-height: 33px;
-  font-family: "Century Gothic", Arial, sans-serif;
-  color: #e33423;
-  margin-bottom: 20px;
-}
-
-#my_notepad h2 {
-  float: left;
+</script>
+</public:component>
