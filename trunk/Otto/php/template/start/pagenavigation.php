@@ -11,7 +11,7 @@
 }
 </style>
 
-	<h1 id="square"><span class="text">Лето с ОТТО</span></h1>
+	<h1 id="square"><span class="text">Осень с ОТТО</span></h1>
 
   <div class="block dotline" id="meinotto">
     <div class="headline">Мой OTTO</div>

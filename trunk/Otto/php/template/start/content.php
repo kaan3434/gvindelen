@@ -30,6 +30,18 @@
         </div>
       </li>
 
+      <li>
+        <div class="picture">
+          <a href="?path=service/return"><img width="179" height="179" border="0" src="/assets/otto-by/images/service/return.jpg"/></a>
+        </div>
+        <div class="txt">
+          <div class="hl">
+            <a href="?path=service/return">Новые условия возврата »</a>
+          </div>
+          Ознакомьтесь с обновленными условия возврата товара.
+        </div>
+      </li>
+      
     </ul>
     <div class="clear_both"></div>
   </div>
