@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 function utf8_ucfirst($str) {
   return win1251_to_utf8(ucfirst(strtolower(utf8_to_ansi_ru($str)))); 
@@ -69,13 +69,13 @@ function on_redirect_path ($path) {
   $valid += valid_mandatory('Email', 'E-mail');// + valid_email('Email', 'E-mail');
 
   $_POST['Street'] = utf8_ucfirst($_POST['Street']); 
-  $valid += valid_mandatory('Street', 'Улица') + valid_filter('Street', 'Улица', $filter_cyr."\.\-");
+  $valid += valid_mandatory('Street', 'Улица') + valid_filter('Street', 'Улица', $filter_cyr.$filter_integer." \.\-");
   
-  $valid += valid_mandatory('House', '№ дома') + valid_filter('House', '№ дома', $filter_integer."\-");
+  $valid += valid_mandatory('House', '№ дома') + valid_filter('House', '№ дома', $filter_cyr.$filter_integer."\-");
   
   $valid += valid_filter('Corpus', 'Корпус', $filter_integer);
 
-  $valid += valid_mandatory('Flat', 'Квартира') + valid_filter('Flat', 'Квартира', $filter_integer."\-");
+  $valid += valid_mandatory('Flat', 'Квартира') + valid_filter('Flat', 'Квартира', $filter_cyr.$filter_integer."\-");
 
   $valid += valid_mandatory('PostIndex', 'Индекс') + valid_length('PostIndex', 'Индекс', 6, 6);
 
