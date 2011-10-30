@@ -1,4 +1,4 @@
-﻿<div class="maincontent" id="servicecontent">
+<div class="maincontent" id="servicecontent">
 <div style="position: relative; margin-top: 10px;">
   <div id="aboutus">
     <ul class="ulist">
@@ -9,7 +9,7 @@
         </div>
         <div class="txt">
           <div class="hl">
-            <a href="?path=service/order">Прием<br>заявок »</a>
+            <a href="?path=service/delivery">Прием<br>заявок »</a>
           </div>
           Информация о местах приема заявок
         </div>
@@ -59,7 +59,7 @@
           <div class="hl">
             <a href="?path=service/return">Возврат,<br>ануляция »</a>
           </div>
-          Информация о возврате товаров и аннуляции 
+          Информация о возврате товаров и ануляции 
         </div>
       </li>
 
