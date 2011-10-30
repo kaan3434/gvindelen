@@ -232,7 +232,7 @@
     </div>
     
     <div class="container">
-      <h3 class="head head-hidden">Рекомендации по заполнению "Состава Заявки"</h3>
+      <h3 class="head head-hidden">Рекомеендации по заполнению "Состава Заявки"</h3>
       <div class="box">
         <div class="pad">
           <p><font color="red">Каталог</font> - Наименование каталога, из которого выбран актикул.<br/>

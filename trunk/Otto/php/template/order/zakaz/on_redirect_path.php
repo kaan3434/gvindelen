@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 function utf8_ucfirst($str) {
   return win1251_to_utf8(ucfirst(strtolower(utf8_to_ansi_ru($str)))); 
