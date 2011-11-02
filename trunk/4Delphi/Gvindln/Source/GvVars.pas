@@ -159,10 +159,10 @@ begin
   try
     sl.LoadFromFile(IniFileName);
     repeat
-      St:= AnsiUpperCase(sl.Text);
-      sl.Text:= Copy(sl.Text, Pos('['+AnsiUpperCase(Section)+']', St), Length(St));
+      St:= UpperCase(sl.Text);
+      sl.Text:= Copy(sl.Text, Pos('['+UpperCase(Section)+']', St), Length(St));
       if sl.Count=0 then Exit;
-      if AnsiUpperCase(Trim(sl[0]))='['+AnsiUpperCase(Section)+']' then
+      if UpperCase(Trim(sl[0]))='['+UpperCase(Section)+']' then
         Break
       else
         sl.Delete(0);

@@ -91,7 +91,7 @@ ImageBase=4194304
 ExeDescription=
 [Directories]
 OutputDir=
-UnitOutputDir=D:\dcu70
+UnitOutputDir=$(DELPHI)\Lib
 PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=..\Source
@@ -134,8 +134,6 @@ OriginalFilename=
 ProductName=
 ProductVersion=1.0.0.0
 Comments=
-[Excluded Packages]
-c:\program files\borland\delphi7\Bin\dclindy70.bpl=Internet Direct (Indy) for D7 Property and Component Editors
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
@@ -143,5 +141,6 @@ Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 Count=1
 Item0=..\Source
 [HistoryLists\hlUnitOutputDirectory]
-Count=1
-Item0=D:\dcu70
+Count=2
+Item0=$(DELPHI)\Lib
+Item1=D:\dcu70

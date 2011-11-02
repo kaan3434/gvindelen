@@ -16,6 +16,8 @@ function FolderSize(FileMask: String;
 
 function ExtractFileNameOnly(FileName: String): String;
 
+function GetNextFileName(NameMask: string; StartIdx: Integer = 1): string;
+
 function UniqueFileName(NameMask,Ext: String): String;
 
 function CopyFile(const FileName, DestName: string;
@@ -64,6 +66,8 @@ procedure CopyFileDate(DestFileName, SourceFileName: string;
   DeltaTimeSec: integer=0; ElseSourceFileName: String='');
 
 procedure SetFileAge(FileName: string; DateTime: TDateTime);
+
+function GetFileSize(FileName: string): Integer;
 
 function ReadIniSection(IniFileName, SectionName: String;
   Notes: Boolean=false; BlankRow: Boolean=false): String;
@@ -398,6 +402,16 @@ begin
   end;
 end;
 
+function GetNextFileName(NameMask: string; StartIdx: Integer = 1): string;
+begin
+  result:= Format(NameMask, [StartIdx]);
+  While FileExists(result) do
+  begin
+    Inc(StartIdx);
+    result:= Format(NameMask, [StartIdx]);
+  end;
+end;
+
 function UniqueFileName(NameMask, Ext: String): String;
 var
   Value: String;
@@ -586,6 +600,20 @@ begin
   finally
     sl.Free;
   end;
+end;
+
+function GetFileSize(FileName: string): Integer;
+var
+  FileHandle: Integer;
+begin
+  Result:= -1;
+  FileHandle:= FileOpen(FileName, fmOpenRead or fmShareDenyNone);
+  if FileHandle=-1 then Exit;
+  try
+    Result:= FileSeek(FileHandle, 0, 2);
+  finally
+    FileClose(FileHandle);
+  end
 end;
 
 end.

@@ -53,6 +53,7 @@ function CopyFront4(St: WideString; KeyChar: WideString=' '): WideString; overlo
 function TakeFront3(var St: String; KeyChar: String=#32): String; overload;
 function TakeFront4(var St: String; KeyChar: String=#32): String; overload;
 function TakeFront5(var St: String; KeyChar: String=#32): String; overload;
+function TakeFront5(var St: WideString; KeyChar: WideString=#32): WideString; overload;
 
 function CopyBack3(St: String; KeyChar: String=#32): String; overload;
 function CopyBack4(St: String; KeyChar: String=#32): String; overload;
@@ -224,11 +225,18 @@ function TakeAttName(var St: String): String;
 function TakeAttValue(var St: String): String;
 
 function GvUtf8ToAnsi(St: String): String;
+//function GvUTF8ToAnsiSmart(Value: String): String;
 
-function EscapeString(St: String): string; overload;
-function EscapeString(St: WideString): WideString; overload;
-function UnEscapeString(St: string): string; overload;
-function UnEscapeString(St: WideString): WideString; overload;
+function EscapeString(St: String; AddChar: String = ''): string; overload;
+function EscapeString(St: WideString; AddChar: WideString = ''): WideString; overload;
+function UnEscapeString(St: string; AddChar: String = ''): string; overload;
+function UnEscapeString(St: WideString; AddChar: WideString = ''): WideString; overload;
+
+function FilterString(St, KeyChars: string): string;
+
+function Translit(St: string): string;
+function UpCaseFirst(St: string): string;
+function UpCaseWord(St: string; KeyChars: string=' ,.!-:?'): string;
 
 implementation
 uses
@@ -310,11 +318,7 @@ begin
   if LS>=Len then
     result:= St
   else
-  begin
-    SetLength(result, Len);
-    FillChar(result, Len-LS, Ch);
-    Move(St[1], result[Len-LS+1], LS);
-  end;
+    Result:= StringOfChar(Ch,Len-LS)+St;
 end;
 
 function FillBack(St: String; Len: Integer; Ch: Char=#32): String;
@@ -467,6 +471,18 @@ begin
 end;
 
 function TakeFront5(var St: String; KeyChar: String): String;
+var
+  LS, P: Integer;
+begin
+  LS:= Length(St);
+  P:= 1;
+  While (P<=LS) and (Pos(St[P], KeyChar)=0) do inc(P);
+  result:= Copy(St, 1, P-1);
+  While (P<=LS) and (Pos(St[P], KeyChar)>0) do inc(P);
+  St:= Copy(St, P, LS-P+1);
+end;
+
+function TakeFront5(var St: WideString; KeyChar: WideString): WideString;
 var
   LS, P: Integer;
 begin
@@ -2035,10 +2051,18 @@ const
      'O','o','O','o','R','r','R','r','R','r','S','s','S','s','S','s',
      'S','s','T','t','T','t','T','t','U','u','U','u','U','u','U','u',
      'U','u','U','u','W','w','Y','y','Y','Z','z','Z','z','Z','z','l');
+  D0: array [$80..$BF] of char =
+    ('Å','¨','Ò','Ã','Å','S','I','I','J','Ë','Í','h','Ê','É','Ó','Ö',
+     'À','Á','Â','Ã','Ä','Å','Æ','Ç','È','É','Ê','Ë','Ì','Í','Î','Ï',
+     'Ð','Ñ','Ò','Ó','Ô','Õ','Ö','×','Ø','Ù','Ú','Û','Ü','Ý','Þ','ß',
+     'à','á','â','ã','ä','å','æ','ç','è','é','ê','ë','ì','í','î','ï');
+  D1: array [$80..$9F] of char =
+    ('ð','ñ','ò','ó','ô','õ','ö','÷','ø','ù','ú','û','ü','ý','þ','ÿ',
+     'å','å','h','ã','å','s','i','i','j','ë','í','h','ê','é','ó','ö');
 
-
-     var
+var
   i, r, LSt: Integer;
+  c1, c2: byte;
 begin
   LSt:= Length(St);
   i:= 1;
@@ -2047,16 +2071,20 @@ begin
   while i<=LSt do
   begin
     r:= succ(r);
-    if byte(St[i]) in [$C3,$C4, $C5] then
+    c1:= byte(St[i]);
+    if c1 < $80 then
+      result[r]:= st[i]
+    else
     begin
       i:= succ(i);
-      Case byte(St[i-1]) of
+      c2:= byte(St[i]);
+      case c1 of
         $C3: begin
-               result[r]:= C3[byte(St[i])];
-               if byte(St[i]) in [$86, $9F, $A6, $B0] then
+               result[r]:= C3[c2];
+               if c2 in [$86, $9F, $A6, $B0] then
                begin
                  r:= succ(r);
-                 case byte(St[i]) of
+                 case c2 of
                    $86: result[r]:= 'E';
                    $9F: result[r]:= 's';
                    $A6: result[r]:= 'e';
@@ -2065,81 +2093,213 @@ begin
                end
              end;
         $C4: begin
-               result[r]:= C4[byte(St[i])];
-               if byte(St[i]) in [$B2, $B3] then
+               result[r]:= C4[c2];
+               if c2 in [$B2, $B3] then
                begin
                  r:= succ(r);
-                 case byte(St[i]) of
+                 case c2 of
                    $B2: result[r]:= 'J';
                    $B3: result[r]:= 'j';
                  end
                end
              end;
         $C5: begin
-               result[r]:= C4[byte(St[i])];
-               if byte(St[i]) in [$92, $93] then
+               result[r]:= C4[c2];
+               if c2 in [$92, $93] then
                begin
                  r:= succ(r);
-                 case byte(St[i]) of
+                 case c2 of
                    $92: result[r]:= 'E';
                    $93: result[r]:= 'e';
                  end
                end
              end;
-
+        $D0: begin
+               result[r]:= D0[c2];
+               if c2 in [$89, $8A] then
+               begin
+                 r:= succ(r);
+                 case c2 of
+                   $89: result[r]:= 'Ü';
+                   $8A: result[r]:= 'Ü';
+                 end
+               end
+             end;
+        $D1: begin
+               result[r]:= D1[c2];
+               if c2 in [$99, $9A] then
+               begin
+                 r:= succ(r);
+                 case c2 of
+                   $99: result[r]:= 'ü';
+                   $9A: result[r]:= 'ü';
+                 end
+               end
+             end;
+      else
+      begin
+        Result[r]:= '?';
+        i:= pred(i);
+      end
       end;
-    end
-    else
-      result[r]:= st[i];
+    end;
     i:= succ(i);
   end;
   SetLength(result, r);
-  result:= Utf8ToAnsi(result);
+//  result:= Utf8ToAnsi(result);
 end;
 
-function EscapeString(St: String): string;
+{Convert string from UTF-8 format mixed with standart ASCII symbols($00..$7f)}
+//function UTF8ToStrSmart(Value: String): String;
+//var
+//  Digit: String;
+//  i: Integer;
+//  HByte: Byte;
+//  Len: Byte;
+//begin
+//  Result := '';
+//  Len := 0;
+//  if Value = '' then Exit;
+//  for i := 1 to Length(Value) do
+//  begin
+//    if Len > 0 then
+//    begin
+//      Digit := Digit + Value[i];
+//      Dec(Len);
+//      if Len = 0 then
+//        Result := Result + UTF8ToStr(Digit);
+//    end else
+//    begin
+//      HByte := Ord(Value[i]);
+//      if HByte in [$00..$7f] then       //Standart ASCII chars
+//        Result := Result + Value[i]
+//      else begin
+//        //Get length of UTF-8 char
+//        if HByte and $FC = $FC then
+//          Len := 6
+//        else if HByte and $F8 = $F8 then
+//          Len := 5
+//        else if HByte and $F0 = $F0 then
+//          Len := 4
+//        else if HByte and $E0 = $E0 then
+//          Len := 3
+//        else if HByte and $C0 = $C0 then
+//          Len := 2
+//        else begin
+//          Result := Result + Value[i];
+//          Continue;
+//        end;
+//        Dec(Len);
+//        Digit := Value[i];
+//      end;
+//    end;
+//  end;
+//end;
+
+function EscapeString(St: String; AddChar: String = ''): string;
 const
-  EscChar : string = '|,<>"''';
+  EscChar : string = '|,<>"''=';
 var
   i: Byte;
+  EscChars : WideString;
 begin
-  for i:= 1 to Length(EscChar) do
-    St:= ReplaceAll(St, EscChar[i], '&#'+IntToStr(ord(EscChar[i]))+';');
+  EscChars:= EscChar + AddChar;
+  for i:= 1 to Length(EscChars) do
+    St:= ReplaceAll(St, EscChars[i], '&#'+IntToStr(ord(EscChars[i]))+';');
   result:= St;
 end;
 
-function EscapeString(St: WideString): WideString;
+function EscapeString(St: WideString; AddChar: WideString = ''): WideString;
 const
-  EscChar : WideString = '|,<>"''';
+  EscChar : WideString = '|,<>"''=';
 var
   i: Byte;
+  EscChars : WideString;
 begin
-  for i:= 1 to Length(EscChar) do
-    St:= ReplaceAll(St, EscChar[i], '&#'+IntToStr(ord(EscChar[i]))+';');
+  EscChars:= EscChar + AddChar;
+  for i:= 1 to Length(EscChars) do
+    St:= ReplaceAll(St, EscChars[i], '&#'+IntToStr(ord(EscChars[i]))+';');
   result:= St;
 end;
 
-function UnEscapeString(St: string): string;
+function UnEscapeString(St: string; AddChar: String = ''): string;
 const
   EscChar : string = '|,';
 var
   i: Byte;
+  EscChars : WideString;
 begin
-  for i:= 1 to Length(EscChar) do
-    St:= ReplaceAll(St, '&#'+IntToStr(ord(EscChar[i]))+';', EscChar[i] );
+  EscChars:= EscChar + AddChar;
+  for i:= 1 to Length(EscChars) do
+    St:= ReplaceAll(St, '&#'+IntToStr(ord(EscChars[i]))+';', EscChars[i] );
   result:= St;
 end;
 
-function UnEscapeString(St: WideString): WideString;
+function UnEscapeString(St: WideString; AddChar: WideString = ''): WideString;
 const
   EscChar : WideString = '|,';
 var
   i: Byte;
+  EscChars : WideString;
 begin
-  for i:= 1 to Length(EscChar) do
-    St:= ReplaceAll(St, '&#'+IntToStr(ord(EscChar[i]))+';', EscChar[i]);
+  EscChars:= EscChar + AddChar;
+  for i:= 1 to Length(EscChars) do
+    St:= ReplaceAll(St, '&#'+IntToStr(ord(EscChars[i]))+';', EscChars[i]);
   result:= St;
 end;
 
+
+function FilterString(St, KeyChars: string): string;
+var
+  RLen, SLen, i: Integer;
+begin
+  RLen:= 0;
+  SLen:= Length(St);
+  SetLength(Result, SLen);
+  for i:= 1 to SLen do
+    if Pos(St[i], KeyChars) > 0 then
+    begin
+      RLen:= succ(RLen);
+      Result[RLen]:= st[i];
+    end;
+  SetLength(Result, RLen);
+end;
+
+function Translit(St: string): string;
+const
+  Rus='ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖÚÛÝàáâãäåæçèéêëìíîïðñòóôõöúûý';
+  Lat='ABVGDEJZIYKLMNOPRSTUFHC`YEabvgdejziyklmnoprstufhc`ye';
+var
+  Mapping: TStringList;
+  i, lr, p: Integer;
+begin
+  Result:= St;
+  Mapping:= TStringList.Create;
+  try
+    Mapping.Text:= ReplaceAll('Ëþ=Liu;ëþ=liu;¸=yo;×=Ch;÷=ch;Ø=Sh;ø=sh;Ù=Sch;ù=sch;Þ=Yu;þ=yu;ß=Ya;ÿ=ya;ü=', ';', #13#10);
+    for i:= 0 to Mapping.count - 1 do
+      Result:= ReplaceAll(Result, Mapping.Names[i], Mapping.ValueFromIndex[i], true);
+  finally
+    Mapping.Free;
+  end;
+  lr:= Length(Result);
+  for i:= 1 to lr do
+  begin
+    p:= Pos(Result[i], Rus);
+    if p > 0 then
+      Result[i]:= Lat[p];
+  end;
+end;
+
+function UpCaseFirst(St: string): string;
+begin
+  Result:= AnsiUpperCase(Copy(St, 1, 1)) + AnsiLowerCase(Copy(St, 2, Length(St)));
+end;
+
+function UpCaseWord(St: string; KeyChars: string=' ,.!-:?'): string;
+begin
+  While St<>'' do
+    Result:= Result + UpCaseFirst(TakeFront3(St, KeyChars));
+end;
 
 end.

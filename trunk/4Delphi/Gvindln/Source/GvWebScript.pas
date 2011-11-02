@@ -638,7 +638,7 @@ begin
       HtmlStream.Seek(0, 0);
       html:= HtmlStream.DataString;
       if ScriptNode.ReadAttributeInteger('UTF8ToAnsi',0) = 1 then
-        html:= Utf8ToAnsi(Html);
+        Html:= GvUtf8ToAnsi(Html);
       if ScriptNode.ReadAttributeString('Event')<>'' then
         Html:= Run_HtmlScript(ndScript,
                               ScriptNode.ReadAttributeString('Event'), Html,
@@ -689,7 +689,7 @@ var
 begin
   Html:= LoadFileAsString(ScriptNode.ReadAttributeString('href'));
   if ScriptNode.ReadAttributeInteger('UTF8ToAnsi',0) = 1 then
-    html:= Utf8ToAnsi(Html);
+    html:= GvUtf8ToAnsi(Html);
   if ScriptNode.ReadAttributeString('Event')<>'' then
     Html:= Run_HtmlScript(ndScript,
                           ScriptNode.ReadAttributeString('Event'), Html,

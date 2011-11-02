@@ -14,6 +14,8 @@ function RoundUp(Value: Extended; Power: Integer):Extended;
 
 function Between(Value, RangeStart, RangeEnd: Extended): Boolean;
 
+function IfThen(Condition: boolean; value1, Value2: Variant): Variant;
+
 implementation
 
 function Max(Flt1, Flt2: Extended): Extended;
@@ -105,5 +107,14 @@ function Between(Value, RangeStart, RangeEnd: Extended): Boolean;
 begin
   result:= (Value>=RangeStart) and (Value<=RangeEnd);
 end;
+
+function IfThen(Condition: boolean; Value1, Value2: Variant): Variant;
+begin
+  if Condition then
+    Result:= Value1
+  else
+    Result:= Value2;
+end;
+
 
 end.

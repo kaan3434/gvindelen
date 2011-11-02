@@ -39,6 +39,7 @@ contains
   GvStages in '..\Source\GvStages.pas',
   gsFileVersionInfo in '..\Source\gsFileVersionInfo.pas',
   GvChkCombo in '..\Source\GvChkCombo.pas',
-  GvCloner in '..\Source\GvCloner.pas';
+  GvCloner in '..\Source\GvCloner.pas',
+  GvColor in '..\Source\GvColor.pas';
 
 end.
