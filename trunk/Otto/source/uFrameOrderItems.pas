@@ -55,11 +55,12 @@ type
     btn2: TTBXItem;
     actDublicate: TAction;
     btn3: TTBXItem;
+    actApprove: TAction;
+    btn4: TTBXItem;
     procedure ProgressCheckAvailShow(Sender: TObject);
     procedure actCheckAvailableExecute(Sender: TObject);
     procedure grdOrderItemsColEnter(Sender: TObject);
     procedure grdArticlesDblClick(Sender: TObject);
-    procedure mtblOrderItemsBeforeDelete(DataSet: TDataSet);
     procedure grdOrderItemsRowDetailPanelShow(Sender: TCustomDBGridEh;
       var CanShow: Boolean);
     procedure grdArticlesKeyDown(Sender: TObject; var Key: Word;
@@ -79,6 +80,8 @@ type
     procedure actCheckAvailableUpdate(Sender: TObject);
     procedure grdOrderItemsEnter(Sender: TObject);
     procedure actDublicateExecute(Sender: TObject);
+    procedure actApproveExecute(Sender: TObject);
+    procedure actApproveUpdate(Sender: TObject);
   private
     { Private declarations }
     FQryStatuses: Pointer;
@@ -392,12 +395,6 @@ begin
   end
 end;
 
-procedure TFrameOrderItems.mtblOrderItemsBeforeDelete(DataSet: TDataSet);
-begin
-  if Pos(',DELETEABLE,', DataSet['FLAG_SIGN_LIST']) = 0 then
-    Abort;
-end;
-
 procedure TFrameOrderItems.mtblOrderItemsBeforeEdit(DataSet: TDataSet);
 begin
   if Pos(',EDITABLE,', DataSet['FLAG_SIGN_LIST']) = 0 then
@@ -457,7 +454,13 @@ begin
       mtblOrderItems.Delete;
     end
     else
-      dmOtto.ActionExecute(trnWrite, ndOrderItem, 0, 'CANCELREQUEST');
+    begin
+      SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'CANCELREQUEST');
+      ndOrderItem.ValueAsBool:= True;
+      dmOtto.ActionExecute(trnWrite, ndOrderItem);
+      dmOtto.ObjectGet(ndOrderItem, mtblOrderItems['ORDERITEM_ID'], trnWrite);
+      Read;
+    end;
   end;
 end;
 
@@ -492,8 +495,7 @@ end;
 
 procedure TFrameOrderItems.actCheckAvailableUpdate(Sender: TObject);
 begin
-  actCheckAvailable.Enabled:= Pos(GetXmlAttr(ndOrder, 'STATUS_SIGN', ',', ','),
-    ',NEW,DRAFT,APPROVED,ACCEPTREQUEST,ACCEPTED,') > 0;
+  actCheckAvailable.Enabled:= XmlAttrIn(ndOrder, 'STATUS_SIGN', 'NEW,DRAFT,APPROVED,ACCEPTREQUEST,ACCEPTED');
 end;
 
 procedure TFrameOrderItems.grdOrderItemsEnter(Sender: TObject);
@@ -518,6 +520,23 @@ begin
   mtblOrderItems.Post;
   Write;
   Read;
+end;
+
+procedure TFrameOrderItems.actApproveExecute(Sender: TObject);
+begin
+  ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM','ID', mtblOrderItems['ORDERITEM_ID']);
+  if ndOrderItem <> nil then
+  begin
+    SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'APPROVED');
+    dmOtto.ActionExecute(trnWrite, ndOrderItem);
+    dmOtto.ObjectGet(ndOrderItem, mtblOrderItems['ORDERITEM_ID'], trnWrite);
+    Read;
+  end;
+end;
+
+procedure TFrameOrderItems.actApproveUpdate(Sender: TObject);
+begin
+  actApprove.Enabled:= mtblOrderItems['STATUS_SIGN'] = 'NEW';
 end;
 
 end.

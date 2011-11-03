@@ -135,8 +135,9 @@ ProductName=
 ProductVersion=1.0.0.0
 Comments=
 [Excluded Packages]
-c:\program files\borland\delphi7\Projects\Bpl\dclfrxIBX7.bpl=FastReport 4.0 IBX Components
 c:\program files\borland\delphi7\Projects\Bpl\FIBDBMidas7.bpl=FIBPlus ClientDataSet
+c:\program files\borland\delphi7\Projects\Bpl\dclfrxTee7.bpl=FastReport 4.0 Tee Components
+c:\program files\borland\delphi7\Projects\Bpl\dclfrxIBX7.bpl=FastReport 4.0 IBX Components
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
