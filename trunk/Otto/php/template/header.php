@@ -5,11 +5,6 @@
       <li class="search_top"></li>
       <li class="basket_top">
         <!--div class="picture">
-          <a href="https://www.otto-moda.by/wishlist"><img src="/assets/otto-by/images/header/keep_it_for_later.gif" width="105" height="26" border="0" alt="На Заметку"></a>
-        </div>
-        <div class="link">
-          <a href="https://www.otto-moda.by/wishlist" style="text-decoration: none;">[&nbsp;0&nbsp;]</a>
-
         </div-->
       </li>
       <li class="meinotto_top">
