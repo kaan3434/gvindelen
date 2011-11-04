@@ -478,3 +478,40 @@ ul#servicenav li.open li.open li {
 #imprint .col1 {float:left;width:375px;margin-bottom:30px;}
 #imprint .col2 {float:left;margin-left:15px;width:375px;}
 
+
+/* ratgeber */
+#main ul.pager {
+    margin: 15px 0 0 0;
+    float: right;
+}
+#main ul.pager a {
+    color: #000;
+}
+#main ul.pager li {
+    margin: 0;
+    float: left;
+}
+#main ul.pager li.number {
+    margin: 0;
+    padding: 0 5px 0 5px;
+    float: left;
+}
+#main ul.pager li.number.active {
+    font-weight: bold;
+    color: #e38803;
+}
+
+
+.downloadBox {
+    float: left;
+    width: 377px;
+    margin: 0px 7px 15px 0;
+}
+
+.downloadBox .text {
+    float: left;
+}
+.downloadBox .text .inner {
+    height: 168px;
+    width: 220px;
+}

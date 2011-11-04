@@ -4491,3 +4491,14 @@ span.ac_count {
 .colorscheme9 #notepad .fits_together .main {
   border-color: #D8E1B2;
 }
+
+.imageWrapper {
+height:192px;width:140px;
+float:left;margin-right:15px;
+}
+
+.dottedTop { background: url(../images/imagesOnline/frame/dotline_horizontal.gif) top left repeat-x transparent; }
+
+.dottedBottom { background: url(../images/imagesOnline/frame/dotline_horizontal.gif) bottom left repeat-x transparent; }
+
+.dotted { background: url(../images/imagesOnline/frame/dotline_horizontal.gif) top left repeat-x transparent !important; }
