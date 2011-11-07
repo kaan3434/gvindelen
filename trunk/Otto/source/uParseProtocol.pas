@@ -68,92 +68,74 @@ begin
       dmOtto.OrderItemsGet(ndOrderItems, OrderId, aTransaction);
     end;
 
-    if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'ACCEPTREQUEST') then
-      ndOrder.ValueAsBool:= True;
-
     Dimension:= dmOtto.Recode('ARTICLE', 'DIMENSION', sl[6]);
 
-    ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'), 'ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
-      ['', sl[5], Dimension]);
+    ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'), 'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
+      [sl[5], Dimension, 'ACCEPTREQUEST']);
 
     if ndOrderItem <> nil then
     begin
-      if XmlAttrIn(ndOrderItem, 'STATUS_SIGN', 'ACCEPTREQUEST') then
+      ndOrder.ValueAsBool:= True;
+      SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', sl[8]);
+
+      if GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') <> GetXmlAttrAsMoney(ndOrderItem, 'COST_EUR') then
       begin
-        SetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX', sl[4]);
-        SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', sl[8]);
+        dmOtto.Notify(aMessageId,
+          '[LINE_NO]. Клиент [CLIENT_ID]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Измнена цена [COST_EUR] => [PRICE_EUR].',
+          IfThen(GetXmlAttrValue(ndOrderItem, 'MAGAZINE_ID') = 1, 'W', 'E'),
+          XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDER_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR',
+          XmlAttrs2Vars(ndOrder, 'CLIENT_ID;ORDER_CODE',
+          Strings2Vars(sl, 'ORDERITEM_INDEX=4',
+          Value2Vars(LineNo, 'LINE_NO')))));
+      end;
 
-        if GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') <> GetXmlAttrAsMoney(ndOrderItem, 'COST_EUR') then
-        begin
-          dmOtto.Notify(aMessageId,
-            '[LINE_NO]. Клиент [CLIENT_ID]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Измнена цена [COST_EUR] => [PRICE_EUR].',
-            IfThen(GetXmlAttrValue(ndOrderItem, 'MAGAZINE_ID') = 1, 'W', 'E'),
-            XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_INDEX;ORDERITEM_ID=ID;ORDER_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR',
-            XmlAttrs2Vars(ndOrder, 'CLIENT_ID;ORDER_CODE',
-            Value2Vars(LineNo, 'LINE_NO'))));
-        end;
+      StateSign:= dmOtto.Recode('ARTICLE', 'DELIVERY_CODE_TIME', sl[9]+sl[10]);
+      if StateSign = sl[9]+sl[10] then
+      begin
+        StateId:= GetXmlAttrValue(ndOrderItem, 'STATE_ID');
+        dmOtto.Notify(aMessageId,
+          '[LINE_NO]. Клиент [CLIENT_ID]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестная комбинация DeliveryCode = [DELIVERY_CODE], DeliveryTime = [DELIVERY_TIME]',
+          'E',
+          XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDER_ID;ARTICLE_CODE;DIMENSION',
+          XmlAttrs2Vars(ndOrder, 'ORDER_CODE;CLIENT_ID',
+          Value2Vars(LineNo, 'LINE_NO',
+          Strings2Vars(sl, 'ORDERITEM_INDEX=4;DELIVERY_CODE=9;DELIVERY_TIME=10')))));
+      end
+      else
+        StateId:= dmOtto.GetStatusBySign('ARTICLE', StateSign);
+      NewDeliveryMessage:= dmOtto.Recode('ARTICLE', 'DELIVERY_MESSAGE', sl[11]);
+      if NewDeliveryMessage <> sl[11] then
+        StateId:= dmOtto.GetStatusBySign('ARTICLE', NewDeliveryMessage);
+      SetXmlAttr(ndOrderItem, 'STATE_ID', StateId);
 
-        StateSign:= dmOtto.Recode('ARTICLE', 'DELIVERY_CODE_TIME', sl[9]+sl[10]);
-        if StateSign = sl[9]+sl[10] then
-        begin
-          StateId:= GetXmlAttrValue(ndOrderItem, 'STATE_ID');
+      if Pos(',AVAILABLE,', dmOtto.GetFlagListById(StateId)) = 0 then
+        SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'REJECTED')
+      else
+        SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'ACCEPTED');
+
+      try
+        StatusName:= aTransaction.DefaultDatabase.QueryValue(
+          'select status_name from statuses where object_sign=''ORDERITEM'' and status_sign = :status_sign',
+          0, [GetXmlAttrValue(ndOrderItem, 'NEW.STATUS_SIGN')]);
+        ndOrderItem.ValueAsBool:= True;
+        dmOtto.ActionExecute(aTransaction, ndOrderItem, DealId);
+        dmOtto.Notify(aMessageId,
+          '[LINE_NO]. Клиент [CLIENT_ID]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [NEW.STATUS_NAME].',
+          'I',
+          Strings2Vars(sl, 'ORDERITEM_INDEX=4;ARTICLE_CODE=5;DIMENSION=6',
+          XmlAttrs2Vars(ndOrder, 'ORDER_CODE;CLIENT_ID',
+          Value2Vars(LineNo, 'LINE_NO',
+          Value2Vars(StatusName, 'NEW.STATUS_NAME')))));
+      except
+        on E: Exception do
           dmOtto.Notify(aMessageId,
-            '[LINE_NO]. Клиент [CLIENT_ID]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестная комбинация DeliveryCode = [DELIVERY_CODE], DeliveryTime = [DELIVERY_TIME]',
+            '[LINE_NO]. Клиент [CLIENT_ID]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Ошибка ([ERROR_TEXT])',
             'E',
             XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_INDEX;ORDERITEM_ID=ID;ORDER_ID;ARTICLE_CODE;DIMENSION',
             XmlAttrs2Vars(ndOrder, 'ORDER_CODE;CLIENT_ID',
             Value2Vars(LineNo, 'LINE_NO',
-            Strings2Vars(sl, 'DELIVERY_CODE=9;DELIVERY_TIME=10')))));
-        end
-        else
-          StateId:= dmOtto.GetStatusBySign('ARTICLE', StateSign);
-        NewDeliveryMessage:= dmOtto.Recode('ARTICLE', 'DELIVERY_MESSAGE', sl[11]);
-        if NewDeliveryMessage <> sl[11] then
-          StateId:= dmOtto.GetStatusBySign('ARTICLE', NewDeliveryMessage);
-        SetXmlAttr(ndOrderItem, 'STATE_ID', StateId);
-
-        if Pos(',AVAILABLE,', dmOtto.GetFlagListById(StateId)) = 0 then
-          SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'REJECTED')
-        else
-          SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'ACCEPTED');
-
-        try
-          StatusName:= aTransaction.DefaultDatabase.QueryValue(
-            'select status_name from statuses where object_sign=''ORDERITEM'' and status_sign = :status_sign',
-            0, [GetXmlAttrValue(ndOrderItem, 'NEW.STATUS_SIGN')]);
-          ndOrderItem.ValueAsBool:= True;
-          dmOtto.ActionExecute(aTransaction, ndOrderItem, DealId);
-          dmOtto.Notify(aMessageId,
-            '[LINE_NO]. Клиент [CLIENT_ID]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [NEW.STATUS_NAME].',
-            'I',
-            Strings2Vars(sl, 'ORDERITEM_INDEX=4;ARTICLE_CODE=5;DIMENSION=6',
-            XmlAttrs2Vars(ndOrder, 'ORDER_CODE;CLIENT_ID',
-            Value2Vars(LineNo, 'LINE_NO',
-            Value2Vars(StatusName, 'NEW.STATUS_NAME')))));
-        except
-          on E: Exception do
-            dmOtto.Notify(aMessageId,
-              '[LINE_NO]. Клиент [CLIENT_ID]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Ошибка ([ERROR_TEXT])',
-              'E',
-              XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_INDEX;ORDERITEM_ID=ID;ORDER_ID;ARTICLE_CODE;DIMENSION',
-              XmlAttrs2Vars(ndOrder, 'ORDER_CODE;CLIENT_ID',
-              Value2Vars(LineNo, 'LINE_NO',
-              Value2Vars(E.Message, 'ERROR_TEXT')))));
-        end;
-      end
-      else
-      begin
-        StatusName:= aTransaction.DefaultDatabase.QueryValue(
-          'select status_name from statuses where status_id = :status_id',
-          0, [GetXmlAttrValue(ndOrder, 'STATUS_ID')]);
-        dmOtto.Notify(aMessageId,
-          '[LINE_NO]. Клиент [CLIENT_ID]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Позиция в статусе "[STATUS_NAME]".',
-          'W',
-          Strings2Vars(sl, 'ORDERITEM_INDEX=4;ARTICLE_CODE=5;DIMENSION=6',
-          XmlAttrs2Vars(ndOrder, 'ORDER_CODE;CLIENT_ID',
-          Value2Vars(LineNo, 'LINE_NO',
-          Value2Vars(StatusName, 'STATUS_NAME')))));
-      end
+            Value2Vars(E.Message, 'ERROR_TEXT')))));
+      end;
     end
     else
       dmOtto.Notify(aMessageId,
