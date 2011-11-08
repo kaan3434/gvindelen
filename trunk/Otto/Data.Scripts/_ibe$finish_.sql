@@ -652,6 +652,7 @@ CREATE OR ALTER TRIGGER ORDERITEMS_BI0 FOR ORDERITEMS
 ACTIVE BEFORE INSERT POSITION 0
 AS
 begin
+  new.article_code = upper(new.article_code);
   if (new.orderitem_id is null) then
     new.orderitem_id = gen_id(seq_orderitem_id, 1);
   if (new.status_id is null) then
@@ -674,6 +675,7 @@ ACTIVE BEFORE UPDATE POSITION 0
 AS
 declare variable v_flaglist list_signs;
 begin
+  new.article_code = upper(new.article_code);
   if (old.status_id <> new.status_id) then
   begin
     new.status_dtm = current_timestamp;
