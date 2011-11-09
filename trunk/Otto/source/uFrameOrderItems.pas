@@ -527,6 +527,7 @@ begin
   ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM','ID', mtblOrderItems['ORDERITEM_ID']);
   if ndOrderItem <> nil then
   begin
+    Write;
     SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'APPROVED');
     dmOtto.ActionExecute(trnWrite, ndOrderItem);
     dmOtto.ObjectGet(ndOrderItem, mtblOrderItems['ORDERITEM_ID'], trnWrite);

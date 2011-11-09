@@ -102,10 +102,10 @@ begin
           Strings2Vars(sl, 'ORDERITEM_INDEX=4;DELIVERY_CODE=9;DELIVERY_TIME=10')))));
       end
       else
-        StateId:= dmOtto.GetStatusBySign('ARTICLE', StateSign);
+        StateId:= dmOtto.GetStatusBySign('ORDERITEM', StateSign);
       NewDeliveryMessage:= dmOtto.Recode('ARTICLE', 'DELIVERY_MESSAGE', sl[11]);
       if NewDeliveryMessage <> sl[11] then
-        StateId:= dmOtto.GetStatusBySign('ARTICLE', NewDeliveryMessage);
+        StateId:= dmOtto.GetStatusBySign('ORDERITEM', NewDeliveryMessage);
       SetXmlAttr(ndOrderItem, 'STATE_ID', StateId);
 
       if Pos(',AVAILABLE,', dmOtto.GetFlagListById(StateId)) = 0 then

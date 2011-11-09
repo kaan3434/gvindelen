@@ -110,7 +110,8 @@ begin
           '[LINE_NO]. Клиент [CLIENT_ID]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Позиция не найдена в заявке [ORDER_CODE].',
           'E',
           Strings2Vars(sl, 'ORDERITEM_INDEX=4;ARTICLE_CODE=5;DIMENSION=6',
-          XmlAttrs2Vars(ndOrder, 'ORDER_CODE;CLIENT_ID;ORDER_ID=ID')));
+          XmlAttrs2Vars(ndOrder, 'ORDER_CODE;CLIENT_ID;ORDER_ID=ID',
+          Value2Vars(LineNo, 'LINE_NO'))));
     end
     else
       dmOtto.Notify(aMessageId,

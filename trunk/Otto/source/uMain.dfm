@@ -1126,7 +1126,7 @@ object MainForm: TMainForm
     Top = 96
   end
   object frxReport: TfrxReport
-    Version = '4.10.5'
+    Version = '4.9.64'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -1188,7 +1188,7 @@ object MainForm: TMainForm
     Top = 144
   end
   object frxReportOnePage: TfrxReport
-    Version = '4.10.5'
+    Version = '4.9.64'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
