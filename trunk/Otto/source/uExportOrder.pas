@@ -60,7 +60,7 @@ begin
     ndOrder.ValueAsBool:= True;
 
     Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
-    Line.Add(GetXmlAttr(ndClient, 'ID'));
+    Line.Add(FilterString(GetXmlAttr(ndOrder, 'ORDER_CODE'), '0123456789'));
     Line.Add('100');
     Line.Add(IfThen(LastChar(GetXmlAttr(ndClient, 'FIRST_NAME')) in ['à', 'ÿ'], '2', '1'));
     Line.Add(Translit(GetXmlAttr(ndClient, 'LAST_NAME')));
@@ -92,7 +92,7 @@ begin
     dmOtto.ObjectGet(ndOrderItem, aOrderItemId, aTransaction);
     ndOrderItem.ValueAsBool:= True;
     Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
-    Line.Add(GetXmlAttr(ndOrder, 'CLIENT_ID'));
+    Line.Add(FilterString(GetXmlAttr(ndOrder, 'ORDER_CODE'), '0123456789'));
     Line.Add('200');
     Line.Add(FilterString(GetXmlAttr(ndOrder, 'ORDER_CODE'), '0123456789'));
     Line.Add(GetXmlAttr(ndOrderItem, 'ARTICLE_CODE'));

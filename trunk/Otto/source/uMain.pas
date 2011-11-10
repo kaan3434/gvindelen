@@ -594,6 +594,9 @@ begin
           raise;
         end;
       end;
+      trnWrite.ExecSQLImmediate(Format(
+        'insert into builds (build) values (%s)',
+        [NewBuild]));
       trnWrite.Commit;
     except
       trnWrite.Rollback;
