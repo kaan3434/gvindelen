@@ -10,7 +10,7 @@ uses
   FIBDatabase, pFIBDatabase, JvDSADialogs, frxClass, frxExportPDF,
   frxFIBComponents, ExtCtrls, DBGridEhGrouping, GridsEh, DBGridEh,
   JvEmbeddedForms, JvExControls, JvProgressComponent, frxRich, pFIBScripter,
-  JvDialogs, JvDesktopAlert, JvBaseDlg, IB_Services, pngimage,
+  JvDialogs, JvBaseDlg, IB_Services, pngimage,
   gsFileVersionInfo, JvLogFile, JvThread, JvProgressDialog;
 
 type
@@ -116,9 +116,7 @@ type
     actSetByr2Eur: TAction;
     verInfo: TgsFileVersionInfo;
     log1: TJvLogFile;
-    AlertStock: TJvDesktopAlertStack;
     imgListAlerts: TPngImageList;
-    Alert1: TJvDesktopAlert;
     tmr1: TTimer;
     dlgPatch: TJvProgressDialog;
     actExportSMSRejected: TAction;
@@ -128,6 +126,8 @@ type
     btn13: TTBXItem;
     ProgressMakeCancelRequest: TJvProgressComponent;
     ProgressMakeOrderRequest: TJvProgressComponent;
+    actExportPayment: TAction;
+    btn14: TTBXItem;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -160,12 +160,11 @@ type
     procedure ProgressMakeSMSRejectedShow(Sender: TObject);
     procedure ProgressMakeCancelRequestShow(Sender: TObject);
     procedure ProgressMakeOrderRequestShow(Sender: TObject);
+    procedure actExportPaymentExecute(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
-    procedure CreateAlert(aHeaderText, aMessageText: string;
-      DlgType: TMsgDlgType; Duration: Integer = 0);
   end;
 
 var
@@ -180,7 +179,7 @@ uses
   uFormTableOrder, uFormTableClients, uParseProtocol, uParseLiefer,
   uParseConsignment, uFormProtocol, GvNativeXml, pFIBQuery, uParsePayments,
   uFormWizardOrder, uExportOrders, uSetByr2Eur, uExportSMSReject,
-  uExportCancellation, uExportOrder;
+  uExportCancellation, uExportOrder, uExportInvoices;
 
 procedure TMainForm.actParseOrderXmlExecute(Sender: TObject);
 var
@@ -481,45 +480,6 @@ begin
     end;
 end;
 
-procedure TMainForm.CreateAlert(aHeaderText, aMessageText: string;
-  DlgType: TMsgDlgType; Duration: Integer = 0);
-var
-  DesktopAlert: TJvDesktopAlert;
-  i: Integer;
-begin
-  DesktopAlert := TJvDesktopAlert.Create(nil);
-  with DesktopAlert do
-  begin
-    AutoFree := True;
-    HeaderText := aHeaderText;
-    if Length(aMessageText) < 100 then
-      MessageText := aMessageText
-    else
-    begin
-      MessageText := Copy(aMessageText, 1, 100) + '...';
-      ShowHint := True;
-      Hint := aMessageText;
-    end;
-    StyleOptions.DisplayDuration := Duration;
-    Options := [daoCanClose];
-    ParentFont := True;
-    //    Image.Bitmap.Canvas.FillRect(Image.BitmapClientRect); //очищаем канву
-    if DlgType = mtError then
-      imgListAlerts.Draw(Image.Bitmap.Canvas, 0, 0, 1)
-    else
-      imgListAlerts.Draw(Image.Bitmap.Canvas, 0, 0, 0);
-    with StyleOptions do
-    begin
-      StartInterval := 1;
-      StartSteps := 0;
-    end;
-    Execute;
-  end;
-  Sleep(100);
-  for i := 0 to 100 do
-    Application.ProcessMessages;
-end;
-
 procedure TMainForm.FormShow(Sender: TObject);
 var
   Byr2EurDate: variant;
@@ -545,7 +505,7 @@ var
   NewBuild: string;
 begin
   NewBuild := FillFront(IntToStr(dmOtto.Build + 1), 6, '0');
-  CreateAlert(HeaderText, Format('Установка патча %s ...', [NewBuild]),
+  dmOtto.CreateAlert(HeaderText, Format('Установка патча %s ...', [NewBuild]),
     mtInformation, 10000);
   if dmOtto.dbOtto.Connected then
     dmOtto.dbOtto.Close;
@@ -563,7 +523,7 @@ begin
     except
       on E: Exception do
       begin
-        CreateAlert(HeaderText,
+        dmOtto.CreateAlert(HeaderText,
           Format('Ошибка создания резервной копии "%s" (%s)',
           [BeforeBackupFileName, E.Message]), mtError);
         raise;
@@ -577,7 +537,7 @@ begin
       except
         on E: Exception do
         begin
-          CreateAlert(HeaderText,
+          dmOtto.CreateAlert(HeaderText,
             Format('Ошибка при выпонении скрипта "%s" (%s)',
             [ScriptMeta, E.Message]), mtError);
           raise;
@@ -588,7 +548,7 @@ begin
       except
         on E: Exception do
         begin
-          CreateAlert(HeaderText,
+          dmOtto.CreateAlert(HeaderText,
             Format('Ошибка при выпонении скрипта "%s" (%s)',
             [ScriptData, E.Message]), mtError);
           raise;
@@ -605,12 +565,12 @@ begin
     dmOtto.dbOtto.Close;
     try
       dmOtto.BackupDatabase(AfterBackupFileName);
-      CreateAlert(HeaderText, Format('Версия %s установлена',
+      dmOtto.CreateAlert(HeaderText, Format('Версия %s установлена',
         [NewBuild]), mtInformation);
     except
       on E: Exception do
       begin
-        CreateAlert(HeaderText,
+        dmOtto.CreateAlert(HeaderText,
           Format('Ошибка создания резервной копии "%s" (%s)',
           [BeforeBackupFileName, E.Message]), mtError);
         raise;
@@ -621,12 +581,12 @@ begin
     NewBuild := FillFront(IntToStr(dmOtto.Build), 6, '0');
     try
       dmOtto.RestoreDatabase(BeforeBackupFileName);
-      CreateAlert(HeaderText, Format('Версия %s восстановлена', [NewBuild]),
+      dmOtto.CreateAlert(HeaderText, Format('Версия %s восстановлена', [NewBuild]),
         mtWarning);
       dmOtto.dbOtto.Open(true);
     except
       on E: Exception do
-        CreateAlert(HeaderText,
+        dmOtto.CreateAlert(HeaderText,
           Format('Ошибка при восстановлении верcии "%s". Восстановите базу из резеврное копии вручную. (%s)',
           [NewBuild, E.Message]), mtError);
     end;
@@ -711,6 +671,11 @@ end;
 procedure TMainForm.ProgressMakeOrderRequestShow(Sender: TObject);
 begin
   ExportApprovedOrder(trnWrite, ProgressMakeOrderRequest);
+end;
+
+procedure TMainForm.actExportPaymentExecute(Sender: TObject);
+begin
+  ExportInvoices(trnWrite);
 end;
 
 end.

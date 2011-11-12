@@ -1,28 +1,28 @@
 inherited FrameClient: TFrameClient
   Width = 1166
-  Height = 688
+  Height = 407
   inherited dckTop: TTBXDock
     Width = 1166
   end
   inherited sb: TTBXStatusBar
-    Top = 666
+    Top = 385
     Width = 1166
   end
   inherited pnl1: TJvPanel
     Width = 1166
-    Height = 640
+    Height = 359
     Caption = ''
     object pnlCenterOnClient: TPanel
       Left = 4
       Top = 4
       Width = 868
-      Height = 632
+      Height = 351
       Align = alClient
       BorderWidth = 4
       TabOrder = 0
       object splitClient: TJvNetscapeSplitter
         Left = 5
-        Top = 472
+        Top = 191
         Width = 858
         Height = 10
         Cursor = crVSplit
@@ -35,7 +35,7 @@ inherited FrameClient: TFrameClient
         Left = 5
         Top = 5
         Width = 858
-        Height = 467
+        Height = 186
         Align = alClient
         AutoFitColWidths = True
         DataGrouping.GroupLevels = <>
@@ -125,7 +125,7 @@ inherited FrameClient: TFrameClient
       end
       object grdClientOrders: TDBGridEh
         Left = 5
-        Top = 482
+        Top = 201
         Width = 858
         Height = 145
         Align = alBottom
@@ -332,7 +332,7 @@ inherited FrameClient: TFrameClient
       Left = 872
       Top = 4
       Width = 290
-      Height = 632
+      Height = 351
       Align = alRight
       BorderWidth = 4
       Constraints.MaxWidth = 290
@@ -434,6 +434,7 @@ inherited FrameClient: TFrameClient
           OnEnter = EditEnter
           OnExit = dedLastNameExit
           OnKeyDown = EditKeyDown
+          OnKeyPress = dedLastNameKeyPress
         end
         object dedFirstName: TDBEditEh
           Tag = 4
@@ -490,7 +491,7 @@ inherited FrameClient: TFrameClient
         Left = 5
         Top = 189
         Width = 280
-        Height = 438
+        Height = 157
         Align = alClient
         Caption = 'grBoxAdress'
         TabOrder = 1
@@ -498,7 +499,7 @@ inherited FrameClient: TFrameClient
           Left = 2
           Top = 15
           Width = 276
-          Height = 421
+          Height = 140
           Align = alClient
           AutoSize = False
           BorderStyle = sbsSunken

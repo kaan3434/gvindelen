@@ -35,7 +35,8 @@ uses
   uExportSMSReject in 'uExportSMSReject.pas',
   uExportCancellation in 'uExportCancellation.pas',
   uExportOrder in 'uExportOrder.pas',
-  uParseProtocol in 'uParseProtocol.pas';
+  uParseProtocol in 'uParseProtocol.pas',
+  uExportInvoices in 'uExportInvoices.pas';
 
 {$R *.res}
 

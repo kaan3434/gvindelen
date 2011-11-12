@@ -62,6 +62,7 @@ type
     procedure EditKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure dedEmailExit(Sender: TObject);
+    procedure dedLastNameKeyPress(Sender: TObject; var Key: Char);
   private
     function GetOrderId: Integer;
     function FullAdress: String;
@@ -242,6 +243,15 @@ procedure TFrameClient.UpdateCaptions;
 begin
   grBoxClient.Caption:= DetectCaption(ndClient, 'Клиент');
   grBoxAdress.Caption:= DetectCaption(ndAdress, 'Адрес');
+end;
+
+procedure TFrameClient.dedLastNameKeyPress(Sender: TObject; var Key: Char);
+begin
+  if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'NEW') then
+  begin
+    SetXmlAttr(ndClient, 'ID', null);
+    UpdateCaptions;
+  end;
 end;
 
 end.

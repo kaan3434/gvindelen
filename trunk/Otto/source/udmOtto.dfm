@@ -7,7 +7,7 @@ object dmOtto: TdmOtto
   Height = 312
   Width = 555
   object dbOtto: TpFIBDatabase
-    DBName = 'D:\Otto\Data\otto_ppz.fdb'
+    DBName = 'D:\otto\Data\otto_ppz.fdb'
     DBParams.Strings = (
       'lc_ctype=CYRL'
       'password=masterkey'
@@ -261,5 +261,9 @@ object dmOtto: TdmOtto
     Options = [Replace, CreateNewDB]
     Left = 456
     Top = 176
+  end
+  object AlertStock: TJvDesktopAlertStack
+    Left = 24
+    Top = 216
   end
 end

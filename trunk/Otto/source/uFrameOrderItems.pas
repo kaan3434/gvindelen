@@ -295,7 +295,8 @@ begin
       aWeight:= trnWrite.DefaultDatabase.QueryValue(
         'select max(a.weight) from v_articles a where a.article_sign = :article_sign and a.dimension = :dimension',
         0, [nArticleSign, nDimension], trnWrite);
-      SetXmlAttr(ndOrderItem, 'WEIGHT', aWeight);
+      if aWeight <> null then
+        SetXmlAttr(ndOrderItem, 'WEIGHT', aWeight);
       if mtblOrderItems.Locate('ORDERITEM_ID', GetXmlAttrValue(ndOrderItem, 'ID'), []) then
       begin
         if mtblOrderItems.State = dsBrowse then

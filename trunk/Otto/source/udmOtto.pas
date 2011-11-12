@@ -33,6 +33,7 @@ type
     spArticleGoC: TpFIBStoredProc;
     fibBackup: TpFIBBackupService;
     fibRestore: TpFIBRestoreService;
+    AlertStock: TJvDesktopAlertStack;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
     procedure dbOttoAfterConnect(Sender: TObject);
@@ -93,6 +94,8 @@ type
     procedure ClearNotify(aMessageId: integer);
     procedure Notify(aMessageId: integer; aNotifyText: string; aNotifyClass: string = 'I'; aParams: string = '');
     procedure GetInvoices(aInvoicesNode: TXmlNode; aOrderId: Integer; aTransaction: TpFIBTransaction);
+    procedure CreateAlert(aHeaderText, aMessageText: string;
+      DlgType: TMsgDlgType; Duration: Integer=0);
   end;
 
 var
@@ -167,10 +170,10 @@ begin
   if not FileExists(BackupFileName) then
   try
     BackupDatabase(BackupFileName);
-    MainForm.CreateAlert('Ежедневная резервная копия', Format(
+    CreateAlert('Ежедневная резервная копия', Format(
       'Успеспешно создана (%s)', [BackupFileName]), mtInformation);
   except
-    MainForm.CreateAlert('Ежедневная резервная копия', Format(
+    CreateAlert('Ежедневная резервная копия', Format(
       'Ошибка создания (%s)', [BackupFileName]), mtError);
   end;
   if dbOtto.Connected then dbOtto.Close;
@@ -761,6 +764,45 @@ var
 begin
   FlagList:= GetFlagListById(GetXmlAttrValue(aNode, 'STATUS_ID'));
   Result:= Pos(','+aFlagSign+',', FlagList) > 0;
+end;
+
+procedure TdmOtto.CreateAlert(aHeaderText, aMessageText: string;
+  DlgType: TMsgDlgType; Duration: Integer = 0);
+var
+  DesktopAlert: TJvDesktopAlert;
+  i: Integer;
+begin
+  DesktopAlert := TJvDesktopAlert.Create(nil);
+  with DesktopAlert do
+  begin
+    AutoFree := True;
+    HeaderText := aHeaderText;
+    if Length(aMessageText) < 100 then
+      MessageText := aMessageText
+    else
+    begin
+      MessageText := Copy(aMessageText, 1, 100) + '...';
+      ShowHint := True;
+      Hint := aMessageText;
+    end;
+    StyleOptions.DisplayDuration := Duration;
+    Options := [daoCanClose];
+    ParentFont := True;
+    //    Image.Bitmap.Canvas.FillRect(Image.BitmapClientRect); //очищаем канву
+//    if DlgType = mtError then
+//      imgListAlerts.Draw(Image.Bitmap.Canvas, 0, 0, 1)
+//    else
+//      imgListAlerts.Draw(Image.Bitmap.Canvas, 0, 0, 0);
+    with StyleOptions do
+    begin
+      StartInterval := 1;
+      StartSteps := 0;
+    end;
+    Execute;
+  end;
+  Sleep(100);
+  for i := 0 to 100 do
+    Application.ProcessMessages;
 end;
 
 initialization

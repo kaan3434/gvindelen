@@ -67,6 +67,9 @@ object MainForm: TMainForm
         object btn13: TTBXItem
           Action = actExportCancellation
         end
+        object btn14: TTBXItem
+          Action = actExportPayment
+        end
       end
       object btnParseOrder: TTBXItem
         Action = actParseOrder
@@ -291,6 +294,11 @@ object MainForm: TMainForm
       Category = 'ProcessMessages'
       Caption = #1054#1090#1087#1088#1072#1074#1080#1090#1100' '#1079#1072#1087#1088#1086#1089#1099' '#1085#1072' '#1072#1085#1091#1083#1103#1094#1080#1102
       OnExecute = actExportCancellationExecute
+    end
+    object actExportPayment: TAction
+      Category = 'ProcessMessages'
+      Caption = #1054#1090#1087#1088#1072#1074#1080#1090#1100' '#1054#1087#1083#1072#1095#1077#1085#1085#1099#1077' '#1079#1072#1103#1074#1082#1080
+      OnExecute = actExportPaymentExecute
     end
   end
   object imgListMainMenu: TPngImageList
@@ -1126,7 +1134,7 @@ object MainForm: TMainForm
     Top = 96
   end
   object frxReport: TfrxReport
-    Version = '4.9.64'
+    Version = '4.10.5'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -1188,7 +1196,7 @@ object MainForm: TMainForm
     Top = 144
   end
   object frxReportOnePage: TfrxReport
-    Version = '4.9.64'
+    Version = '4.10.5'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -1223,10 +1231,6 @@ object MainForm: TMainForm
     AutoSave = True
     Left = 560
     Top = 64
-  end
-  object AlertStock: TJvDesktopAlertStack
-    Left = 360
-    Top = 256
   end
   object imgListAlerts: TPngImageList
     DrawingStyle = dsTransparent
@@ -1486,30 +1490,6 @@ object MainForm: TMainForm
     Left = 288
     Top = 256
     Bitmap = {}
-  end
-  object Alert1: TJvDesktopAlert
-    AlertStack = AlertStock
-    AutoFocus = True
-    AutoFree = True
-    Location.Top = 0
-    Location.Left = 0
-    Location.Width = 0
-    Location.Height = 0
-    HeaderFont.Charset = DEFAULT_CHARSET
-    HeaderFont.Color = clWindowText
-    HeaderFont.Height = -11
-    HeaderFont.Name = 'Tahoma'
-    HeaderFont.Style = [fsBold]
-    ShowHint = False
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    Buttons = <>
-    Left = 512
-    Top = 272
   end
   object tmr1: TTimer
     Interval = 10

@@ -1,21 +1,22 @@
 inherited FrameAdress: TFrameAdress
   Width = 920
-  Height = 445
+  Height = 450
+  Constraints.MinHeight = 450
   inherited dckTop: TTBXDock
     Width = 920
   end
   inherited sb: TTBXStatusBar
-    Top = 423
+    Top = 428
     Width = 920
   end
   inherited pnl1: TJvPanel
     Width = 920
-    Height = 397
+    Height = 402
     object pnlRightOnAdress: TJvPanel
       Left = 626
       Top = 4
       Width = 290
-      Height = 389
+      Height = 394
       HotTrackFont.Charset = DEFAULT_CHARSET
       HotTrackFont.Color = clWindowText
       HotTrackFont.Height = -11
@@ -28,7 +29,7 @@ inherited FrameAdress: TFrameAdress
       TabOrder = 0
       object grBoxAdress: TJvGroupBox
         Left = 5
-        Top = 233
+        Top = 238
         Width = 280
         Height = 151
         Align = alBottom
@@ -149,7 +150,7 @@ inherited FrameAdress: TFrameAdress
       end
       object grBoxPlace: TJvGroupBox
         Left = 5
-        Top = 113
+        Top = 118
         Width = 280
         Height = 120
         Align = alBottom
@@ -250,7 +251,7 @@ inherited FrameAdress: TFrameAdress
         Left = 5
         Top = 5
         Width = 280
-        Height = 108
+        Height = 113
         Align = alClient
         Caption = #1050#1083#1080#1077#1085#1090' ('#1053#1086#1074#1099#1081')'
         TabOrder = 2
@@ -259,7 +260,7 @@ inherited FrameAdress: TFrameAdress
           Left = 2
           Top = 15
           Width = 276
-          Height = 91
+          Height = 96
           Align = alClient
           AutoSize = False
           BorderStyle = sbsSunken
@@ -271,14 +272,14 @@ inherited FrameAdress: TFrameAdress
       Left = 4
       Top = 4
       Width = 622
-      Height = 389
+      Height = 394
       Align = alClient
       BorderWidth = 4
       Caption = 'pCenter'
       TabOrder = 1
       object split1: TJvNetscapeSplitter
         Left = 5
-        Top = 198
+        Top = 203
         Width = 612
         Height = 10
         Cursor = crVSplit
@@ -378,7 +379,7 @@ inherited FrameAdress: TFrameAdress
       end
       object grBoxgb1: TJvGroupBox
         Left = 5
-        Top = 208
+        Top = 213
         Width = 612
         Height = 176
         Align = alBottom
