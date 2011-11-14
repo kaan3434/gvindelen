@@ -58,14 +58,10 @@
 
 
 <div class="downloadBox">
-<table class="imageWrapper">
-<tbody><tr>
-<td>
-<div class="content" style="background-color:#fff;margin:1px 0 0 1px;"><a href="http://issuu.com/aristhoteles/docs/alba_moda_il_grande_hw11_opt2?mode=embed&amp;layout=http%3A//skin.issuu.com/v/light/layout.xml&amp;showFlipBtn=true" title="Alba Moda" target="_blank"><img src="assets/otto-by/images/catalogs2011_07/alba_moda_il_grande.jpg" alt="Alba Moda" width="102" height="125" border="0" /></a>
+  <div class="imageWrapper">
+    <div class="content" style="background-color:#fff;margin:1px 0 0 1px;"><a href="http://issuu.com/aristhoteles/docs/alba_moda_il_grande_hw11_opt2?mode=embed&amp;layout=http%3A//skin.issuu.com/v/light/layout.xml&amp;showFlipBtn=true" title="Alba Moda" target="_blank"><img src="assets/otto-by/images/catalogs2011_07/alba_moda_il_grande.jpg" alt="Alba Moda" width="102" height="125" border="0" /></a>
+    </div>
 </div>
-</td>
-</tr>
-</tbody></table>
 <div class="text">
 <div class="inner">
 <p><b>Alba Moda IL Grande 2011</b></p>
