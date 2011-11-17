@@ -62,7 +62,7 @@ begin
     Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
     Line.Add(FilterString(GetXmlAttr(ndOrder, 'ORDER_CODE'), '0123456789'));
     Line.Add('100');
-    Line.Add(IfThen(LastChar(GetXmlAttr(ndClient, 'FIRST_NAME')) in ['à', 'ÿ'], '2', '1'));
+    Line.Add(IfThen(LastChar(GetXmlAttr(ndClient, 'FIRST_NAME')) in ['à', 'ÿ'], '3', '1'));
     Line.Add(Translit(GetXmlAttr(ndClient, 'LAST_NAME')));
     Line.Add(Translit(GetXmlAttr(ndClient, 'FIRST_NAME') + ' '+ Copy(GetXmlAttr(ndClient, 'MID_NAME'), 1, 1)));
     Line.Add('');

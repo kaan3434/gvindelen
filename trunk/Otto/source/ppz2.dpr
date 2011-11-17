@@ -36,7 +36,8 @@ uses
   uExportCancellation in 'uExportCancellation.pas',
   uExportOrder in 'uExportOrder.pas',
   uParseProtocol in 'uParseProtocol.pas',
-  uExportInvoices in 'uExportInvoices.pas';
+  uExportInvoices in 'uExportInvoices.pas',
+  uExportPackList in 'uExportPackList.pas';
 
 {$R *.res}
 

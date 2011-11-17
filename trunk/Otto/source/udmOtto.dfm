@@ -4,8 +4,8 @@ object dmOtto: TdmOtto
   OnDestroy = DataModuleDestroy
   Left = 581
   Top = 155
-  Height = 312
-  Width = 555
+  Height = 405
+  Width = 624
   object dbOtto: TpFIBDatabase
     DBName = 'D:\otto\Data\otto_ppz.fdb'
     DBParams.Strings = (
@@ -265,5 +265,11 @@ object dmOtto: TdmOtto
   object AlertStock: TJvDesktopAlertStack
     Left = 24
     Top = 216
+  end
+  object dbfCons: TDbf
+    IndexDefs = <>
+    TableLevel = 4
+    Left = 144
+    Top = 224
   end
 end

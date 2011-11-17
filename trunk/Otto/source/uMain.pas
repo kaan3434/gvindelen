@@ -126,7 +126,6 @@ type
     btn13: TTBXItem;
     actExportPayment: TAction;
     btn14: TTBXItem;
-    dbf2: TDbf;
     actExportPackList: TAction;
     btn15: TTBXItem;
     procedure actParseOrderXmlExecute(Sender: TObject);
@@ -179,7 +178,7 @@ uses
   uFormTableOrder, uFormTableClients, uParseProtocol, uParseLiefer,
   uParseConsignment, uFormProtocol, GvNativeXml, pFIBQuery, uParsePayments,
   uFormWizardOrder, uExportOrders, uSetByr2Eur, uExportSMSReject,
-  uExportCancellation, uExportOrder, uExportInvoices;
+  uExportCancellation, uExportOrder, uExportInvoices, uExportPackList;
 
 procedure TMainForm.actParseOrderXmlExecute(Sender: TObject);
 var
