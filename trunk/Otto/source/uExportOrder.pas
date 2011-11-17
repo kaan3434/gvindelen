@@ -3,7 +3,7 @@ interface
 uses
   Classes, SysUtils, FIBDatabase, pFIBDatabase, JvProgressComponent;
 
-procedure ExportApprovedOrder(aTransaction: TpFIBTransaction; aProgressIndicator: TJvProgressComponent);
+procedure ExportApprovedOrder(aTransaction: TpFIBTransaction);
 
 implementation
 uses
@@ -170,13 +170,14 @@ begin
       DayOfTheYear(Date)]));
     ForceDirectories(ExtractFileDir(FileName));
     SaveStringAsFile(ClientText+OrderItemText, FileName);
+    dmOtto.CreateAlert('Отправка заявок', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
     // CreateOutgoingMessage(FileName);
   finally
     ndProduct.Clear;
   end;
 end;
 
-procedure ExportApprovedOrder(aTransaction: TpFIBTransaction; aProgressIndicator: TJvProgressComponent);
+procedure ExportApprovedOrder(aTransaction: TpFIBTransaction);
 var
   Xml: TNativeXml;
   ndProducts: TXmlNode;
@@ -186,15 +187,6 @@ begin
   if aTransaction.Active then aTransaction.Rollback;
   aTransaction.StartTransaction;
   try
-    ProgressIndicator:= aProgressIndicator;
-    ProgressIndicator.ProgressMax:= aTransaction.DefaultDatabase.QueryValue(
-      'select count(oi.orderitem_id) '+
-      'from orderitems oi '+
-      'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''APPROVED'') '+
-      'left join statuses s2 on (s2.status_id = oi.state_id and s2.status_sign <> ''ACCEPTREQUESTSENT'') '+
-      'inner join orders o on (o.order_id = oi.order_id)',
-      0, aTransaction);
-
     xml:= TNativeXml.CreateName('PRODUCTS');
     try
       ndProducts:= Xml.Root;

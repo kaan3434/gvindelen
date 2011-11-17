@@ -38,7 +38,7 @@ begin
         if XmlAttrIn(ndOrderItem, 'STATUS_SIGN', 'REJECTED') then
         begin
           Line:= Line + GetXmlAttr(ndOrderItem, 'ARTICLE_CODE', ' артикул ')
-                      + GetXmlAttr(ndOrderItem, 'NAME_RUS')
+                      + GetXmlAttr(ndOrderItem, 'NAME_RUS', ' ')
                       + GetXmlAttr(ndOrderItem, 'KIND_RUS', ' ')
                       + GetXmlAttr(ndOrderItem, 'PRICE_EUR', ' (', ' EUR);');
           ndOrderItem.ValueAsBool:= True;

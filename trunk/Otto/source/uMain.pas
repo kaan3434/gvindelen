@@ -11,7 +11,7 @@ uses
   frxFIBComponents, ExtCtrls, DBGridEhGrouping, GridsEh, DBGridEh,
   JvEmbeddedForms, JvExControls, JvProgressComponent, frxRich, pFIBScripter,
   JvDialogs, JvBaseDlg, IB_Services, pngimage,
-  gsFileVersionInfo, JvLogFile, JvThread, JvProgressDialog;
+  gsFileVersionInfo, JvLogFile, JvThread, JvProgressDialog, dbf;
 
 type
   TMainForm = class(TForm)
@@ -124,10 +124,11 @@ type
     btn12: TTBXItem;
     actExportCancellation: TAction;
     btn13: TTBXItem;
-    ProgressMakeCancelRequest: TJvProgressComponent;
-    ProgressMakeOrderRequest: TJvProgressComponent;
     actExportPayment: TAction;
     btn14: TTBXItem;
+    dbf2: TDbf;
+    actExportPackList: TAction;
+    btn15: TTBXItem;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -158,9 +159,8 @@ type
       Line: Integer; Statement: TStrings; SQLCode: Integer;
       const Msg: string; var doRollBack, Stop: Boolean);
     procedure ProgressMakeSMSRejectedShow(Sender: TObject);
-    procedure ProgressMakeCancelRequestShow(Sender: TObject);
-    procedure ProgressMakeOrderRequestShow(Sender: TObject);
     procedure actExportPaymentExecute(Sender: TObject);
+    procedure actExportPackListExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -465,9 +465,8 @@ var
   p: Integer;
   FileName: string;
 begin
-  if MessageDlg('—формировать файл с за€вками?', mtConfirmation, mbOkCancel, 0)
-    = mrOk then
-    ProgressMakeOrderRequest.Execute;
+  if MessageDlg('—формировать файл с за€вками?', mtConfirmation, mbOkCancel, 0) = mrOk then
+    ExportApprovedOrder(trnWrite);
 end;
 
 procedure TMainForm.actSetByr2EurExecute(Sender: TObject);
@@ -660,22 +659,17 @@ end;
 
 procedure TMainForm.actExportCancellationExecute(Sender: TObject);
 begin
-  ProgressMakeCancelRequest.Execute;
-end;
-
-procedure TMainForm.ProgressMakeCancelRequestShow(Sender: TObject);
-begin
-  ExportCancelRequest(trnWrite, ProgressMakeCancelRequest);
-end;
-
-procedure TMainForm.ProgressMakeOrderRequestShow(Sender: TObject);
-begin
-  ExportApprovedOrder(trnWrite, ProgressMakeOrderRequest);
+  ExportCancelRequest(trnWrite);
 end;
 
 procedure TMainForm.actExportPaymentExecute(Sender: TObject);
 begin
   ExportInvoices(trnWrite);
+end;
+
+procedure TMainForm.actExportPackListExecute(Sender: TObject);
+begin
+  ExportPackList(trnWrite);
 end;
 
 end.

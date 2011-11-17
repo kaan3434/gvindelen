@@ -3,12 +3,12 @@ interface
 uses
   Classes, SysUtils, FIBDatabase, pFIBDatabase, JvProgressComponent;
 
-procedure ExportCancelRequest(aTransaction: TpFIBTransaction; aProgressIndicator: TJvProgressComponent);
+procedure ExportCancelRequest(aTransaction: TpFIBTransaction);
 
 implementation
 
 uses
-  NativeXml, GvNativeXml, udmOtto, GvStr, GvFile, GvDtTm, DateUtils;
+  NativeXml, GvNativeXml, udmOtto, GvStr, GvFile, GvDtTm, DateUtils, Dialogs;
 
 var
   ProgressIndicator: TJvProgressComponent;
@@ -50,11 +50,11 @@ begin
   try
     dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
     OrderItemList:= aTransaction.DefaultDatabase.QueryValue(
-      'select list(oi.orderitems) '+
+      'select list(oi.orderitem_id) '+
       'from orderitems oi '+
       'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''CANCELREQUEST'') '+
       'left join statuses s2 on (s2.status_id = oi.state_id and s2.status_sign <> ''CANCELREQUESTSENT'') '+
-      'where o.order_id = :order_id',
+      'where oi.order_id = :order_id',
       0, [aOrderId], aTransaction);
     while OrderItemList <> '' do
     begin
@@ -90,32 +90,25 @@ begin
       OrderId:= TakeFront5(OrderList, ',');
       Text:= Text + ExportOrder(aTransaction, ndProduct, OrderId);
     end;
+    ForceDirectories(Path['CancelRequests']);
     FileName:= GetNextFileName(Format('%ss%s_%%.2u.%.3d', [
       Path['CancelRequests'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
       DayOfTheYear(Date)]));
     SaveStringAsFile(Text, FileName);
+    dmOtto.CreateAlert('Запрос на ануляцию', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
     // CreateOutgoingMessage(FileName);
   finally
     ndProduct.Clear;
   end;
 end;
 
-procedure ExportCancelRequest(aTransaction: TpFIBTransaction; aProgressIndicator: TJvProgressComponent);
+procedure ExportCancelRequest(aTransaction: TpFIBTransaction);
 var
   Xml: TNativeXml;
   ndProducts: TXmlNode;
   ProductId: Variant;
   ProductList: string;
 begin
-  ProgressIndicator:= aProgressIndicator;
-  ProgressIndicator.ProgressMax:= aTransaction.DefaultDatabase.QueryValue(
-    'select count(oi.orderitem_id) '+
-    'from orderitems oi '+
-    'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''CANCELREQUEST'') '+
-    'left join statuses s2 on (s2.status_id = oi.state_id and s2.status_sign <> ''CANCELREQUESTSENT'') '+
-    'inner join orders o on (o.order_id = oi.order_id)',
-    0, aTransaction);
-
   xml:= TNativeXml.CreateName('PRODUCTS');
   try
     ndProducts:= Xml.Root;

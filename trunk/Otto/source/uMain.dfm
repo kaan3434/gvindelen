@@ -70,6 +70,9 @@ object MainForm: TMainForm
         object btn14: TTBXItem
           Action = actExportPayment
         end
+        object btn15: TTBXItem
+          Action = actExportPackList
+        end
       end
       object btnParseOrder: TTBXItem
         Action = actParseOrder
@@ -299,6 +302,11 @@ object MainForm: TMainForm
       Category = 'ProcessMessages'
       Caption = #1054#1090#1087#1088#1072#1074#1080#1090#1100' '#1054#1087#1083#1072#1095#1077#1085#1085#1099#1077' '#1079#1072#1103#1074#1082#1080
       OnExecute = actExportPaymentExecute
+    end
+    object actExportPackList: TAction
+      Category = 'ProcessMessages'
+      Caption = #1054#1090#1087#1088#1072#1074#1080#1090#1100' '#1055#1072#1082#1083#1080#1089#1090' '#1074' '#1042#1080#1083#1100#1085#1102#1089
+      OnExecute = actExportPackListExecute
     end
   end
   object imgListMainMenu: TPngImageList
@@ -1134,7 +1142,7 @@ object MainForm: TMainForm
     Top = 96
   end
   object frxReport: TfrxReport
-    Version = '4.10.5'
+    Version = '4.9.64'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -1196,7 +1204,7 @@ object MainForm: TMainForm
     Top = 144
   end
   object frxReportOnePage: TfrxReport
-    Version = '4.10.5'
+    Version = '4.9.64'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -1509,16 +1517,10 @@ object MainForm: TMainForm
     Left = 648
     Top = 200
   end
-  object ProgressMakeCancelRequest: TJvProgressComponent
-    Caption = #1047#1072#1087#1088#1086#1089#1099#1099' '#1085#1072' '#1072#1085#1091#1083#1103#1094#1080#1102
-    OnShow = ProgressMakeCancelRequestShow
-    Left = 656
-    Top = 264
-  end
-  object ProgressMakeOrderRequest: TJvProgressComponent
-    Caption = #1054#1090#1087#1088#1072#1074#1082#1072' '#1079#1072#1103#1074#1086#1082
-    OnShow = ProgressMakeOrderRequestShow
-    Left = 656
-    Top = 312
+  object dbf2: TDbf
+    IndexDefs = <>
+    TableLevel = 4
+    Left = 544
+    Top = 272
   end
 end

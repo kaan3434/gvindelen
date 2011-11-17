@@ -83,7 +83,7 @@ begin
           Value2Vars(LineNo, 'LINE_NO')))));
       end;
 
-      StateSign:= dmOtto.Recode('ARTICLE', 'DELIVERY_CODE_TIME', sl[9]+sl[10]);
+      StateSign:= dmOtto.Recode('ORDERITEM', 'DELIVERY_CODE_TIME', sl[9]+sl[10]);
       if StateSign = sl[9]+sl[10] then
       begin
         StateId:= GetXmlAttrValue(ndOrderItem, 'STATE_ID');
@@ -97,7 +97,7 @@ begin
       end
       else
         StateId:= dmOtto.GetStatusBySign('ORDERITEM', StateSign);
-      NewDeliveryMessage:= dmOtto.Recode('ARTICLE', 'DELIVERY_MESSAGE', sl[11]);
+      NewDeliveryMessage:= dmOtto.Recode('ORDERITEM', 'DELIVERY_MESSAGE', sl[11]);
       if NewDeliveryMessage <> sl[11] then
         StateId:= dmOtto.GetStatusBySign('ORDERITEM', NewDeliveryMessage);
       SetXmlAttr(ndOrderItem, 'STATE_ID', StateId);

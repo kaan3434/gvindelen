@@ -56,7 +56,7 @@ begin
         end;
 
         StateId:= null;
-        StateSign:= dmOtto.Recode('ARTICLE', 'DELIVERY_CODE_TIME', sl[10]);
+        StateSign:= dmOtto.Recode('ORDERITEM', 'DELIVERY_CODE_TIME', sl[10]);
         if StateSign = sl[10] then
         begin
           StateId:= GetXmlAttrValue(ndOrderItem, 'STATE_ID');
