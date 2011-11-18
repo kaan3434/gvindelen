@@ -1,10 +1,22 @@
 <div class="maincontent" id="servicecontent">
   <div style="position: relative; margin-top: 10px;">
     <ul class="ulist">
-      <li>
+
+      <!--li>
         <div class="picture">
           <a href="?path=order/catalogs"><img width="377" height="181" border="0" src="/assets/otto-by/images/start/advert_2011_1.jpg"></a>
         </div>  
+      </li-->
+
+      <li>
+        <div class="widetxt">
+          <div class="hl">
+            <a href="">Уважаемые клиенты!</a>
+          </div>
+          <strong>
+          В связи со сменой собственников банка "Снорас", с которым сотрудничает ЗАО "BALT-POST", платежи за заявки отделениями "Беларусбанка"  временно не принимаются. Следите за изменениями ситуации на нашем сайте! Приносим извинения за неудобства.
+          </strong>
+        </div>
       </li>
 
       <li>

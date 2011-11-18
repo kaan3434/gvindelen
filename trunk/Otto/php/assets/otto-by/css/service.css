@@ -393,6 +393,19 @@ ul#servicenav li.open li.open li {
   color:#D88400;
   font-size:24px;
 }
+#servicecontent ul.ulist li .widetxt {
+  float:left;
+  width:328px;
+  padding:15px 15px 0px 15px;
+  color: #FF0000;  
+}
+#servicecontent ul.ulist li .widetxt .hl {
+  margin-bottom:15px;
+}
+#servicecontent ul.ulist li .widetxt .hl a {
+  color:#D88400;
+  font-size:24px;
+}
 
 /* ################# Service / Order Catalog #################### */
 #ordercatalog {}
