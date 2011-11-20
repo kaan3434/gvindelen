@@ -58,9 +58,10 @@ begin
     BatchMoveFields2(tblCons, ndProduct, 'KTPART=PARTNER_NUMBER');
     BatchMoveFields2(tblCons, ndOrder,
       'KTKUNDE=ORDER_CODE;NRSENDUNG=PACKLIST_NO;NRKARTON=PALETTE_NO;'+
-      'NEWICHT=WEIGHT;NREGWG');
+      'NEWICHT=WEIGHT');
     BatchMoveFields2(tblCons, ndOrderItem,
-      'NRART=ARTICLE_CODE;BZARTORG=DESCRIPTION;MENGE=AMOUNT;PRVK=PRICE_EUR');
+      'NRART=ARTICLE_CODE;BZARTORG=DESCRIPTION;MENGE=AMOUNT;PRVK=PRICE_EUR;'+
+      'NREGWG');
     BatchMoveFields2(tblCons, ndTaxSSbor,
       'SBOR=COST_EUR');
     BatchMoveFields2(tblCons, ndAdress,

@@ -30,7 +30,7 @@ var
   NewDeliveryMessage: string;
   Dimension: string;
 begin
-  OrderCode:= FillFront(sl[3], 5, '0');
+  OrderCode:= FillFront(sl[2], 5, '0');
   OrderId:= aTransaction.DefaultDatabase.QueryValue(
     'select order_id from orders where order_code like ''_''||:order_code',
     0, [OrderCode], aTransaction);
@@ -43,8 +43,6 @@ begin
       dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
       dmOtto.OrderItemsGet(ndOrder.NodeNew('ORDERITEMS'), OrderId, aTransaction);
       BatchMoveFields2(ndOrder, ndOrders, 'PACKLIST_NO;PACKLIST_DT;PALETTE_NO;PACKET_NO');
-      SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'PACKED');
-      dmOtto.ActionExecute(aTransaction, ndOrder);
     end;
     Dimension:= dmOtto.Recode('ARTICLE', 'DIMENSION', sl[5]);
 
@@ -95,12 +93,20 @@ end;
 procedure ParseConsignmentLine300(aMessageId, LineNo, DealId: Integer;
   sl: TStringList; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
+  OrderCode: string;
+  OrderId: Variant;
   ndOrder: TXmlNode;
 begin
-  ndOrder:= ndOrders.NodeByAttributeValue('ORDER', 'PACKET_NO', sl[1]);
-  if ndOrder<>nil then
+  OrderCode:= FillFront(sl[2], 5, '0');
+  OrderId:= aTransaction.DefaultDatabase.QueryValue(
+    'select order_id from orders where order_code like ''_''||:order_code',
+    0, [OrderCode], aTransaction);
+  if OrderId<>null then
   begin
+    ndOrder:= ndOrders.NodeByAttributeValue('ORDER', 'ID', OrderId);
     SetXmlAttr(ndOrder, 'WEIGHT', sl[6]);
+    SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'PACKED');
+    dmOtto.ActionExecute(aTransaction, ndOrder);
   end;
 end;
 
