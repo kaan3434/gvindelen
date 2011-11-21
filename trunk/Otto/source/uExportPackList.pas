@@ -81,10 +81,11 @@ begin
     tblCons['CITYRUS']:= GetPlace(ndPlace);
     tblCons['REGIONRUS']:= GetXmlAttr(ndPlace, 'REGION_NAME',
                            GetXmlAttr(ndPlace, 'AREA_NAME', '', ' р-н '), ' обл.');
-    tblCons['STREET']:= Translit(tblCons['STREETRUS']);
-//    tblCons['CITY']:= Translit(tblCons['CITYRUS']);
-//    tblCons['REGION']:= Translit(tblCons['REGIONRUS']);
-    tblCons['TEL']:= replaceAll(GetXmlAttr(ndClient, 'MOBILE_PHONE', '+375'), '+3750', '+375');
+    tblCons['STREET']:= Translit(GetAdress(ndAdress));
+    tblCons['CITY']:= Translit(GetPlace(ndPlace));
+    tblCons['REGION']:= Translit(GetXmlAttr(ndPlace, 'REGION_NAME',
+                           GetXmlAttr(ndPlace, 'AREA_NAME', '', ' р-н '), ' обл.'));
+    tblCons['TEL']:= ReplaceAll(replaceAll(GetXmlAttr(ndClient, 'MOBILE_PHONE', '+375'), '+3750', '+375'), '+', '');
 
     tblCons.Post;
   finally
