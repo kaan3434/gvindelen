@@ -128,7 +128,7 @@ begin
       ParamByName('I_DEAL_ID').Value:= IfThen(aDealId = 0, null, aDealId);
       stBlob:= TStringStream.Create(aParams);
       try
-        ParamByName('I_PARAMS').LoadFromStream(stBlob);
+        ParamByName('I_PARAMS').LoadFromStream(stBlob);   TBlobStream
         SaveStringAsFile(aParams, 'params.txt');
       finally
         stBlob.Free;
