@@ -6,7 +6,7 @@ uses
   Forms,
   uMain in 'uMain.pas' {MainForm},
   udmOtto in 'udmOtto.pas' {dmOtto: TDataModule},
-  uParseLiefer in 'uParseLiefer.pas',
+  uParseCancellation in 'uParseCancellation.pas',
   uFormWizardBase in 'uFormWizardBase.pas' {FormWizardBase},
   uOttoArticleUpdate in 'uOttoArticleUpdate.pas',
   uWzOrderOtto in 'uWzOrderOtto.pas' {WzOrderOtto},

@@ -1,4 +1,4 @@
-unit uParseLiefer;
+unit uParseCancellation;
 
 interface
 
@@ -13,7 +13,7 @@ uses
   Classes, SysUtils, GvStr, udmOtto, pFIBStoredProc, Variants, GvNativeXml,
   Dialogs, Controls, StrUtils;
 
-procedure ParseLieferLine(aMessageId, LineNo, DealId: Integer; aLine: string; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseCancelLine(aMessageId, LineNo, DealId: Integer; aLine: string; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
   OrderId: variant;
   sl: TStringList;
@@ -31,7 +31,7 @@ begin
 
     OrderId:= aTransaction.DefaultDatabase.QueryValue(
       'select order_id from orders where order_code like ''_''||:order_code',
-      0, [FilterString(sl[2], '0123456789')], aTransaction);
+      0, [FilterString(sl[1], '0123456789')], aTransaction);
     if OrderId<>null then
     begin
       ndOrder:= ndOrders.NodeNew('ORDER');
@@ -41,47 +41,24 @@ begin
       if ndOrderItem <> nil then
       begin
         ndOrderItem.ValueAsBool:= true;
-        SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', sl[9]);
 
-        if GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') <> GetXmlAttrAsMoney(ndOrderItem, 'COST_EUR') then
-        begin
-          dmOtto.Notify(aMessageId,
-            '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Измнена цена [COST_EUR] => [PRICE_EUR].',
-            IfThen(GetXmlAttrValue(ndOrderItem, 'MAGAZINE_ID') = 1, 'W', 'E'),
-            XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR',
-            XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
-            Value2Vars(LineNo, 'LINE_NO'))));
-        end;
-
-        StateId:= null;
-        StateSign:= dmOtto.Recode('ORDERITEM', 'DELIVERY_CODE_TIME', sl[10]);
+        StateSign:= dmOtto.Recode('ORDERITEM', 'CANCEL_CODE', sl[10]);
         if StateSign = sl[10] then
         begin
-          StateId:= GetXmlAttrValue(ndOrderItem, 'STATE_ID');
           dmOtto.Notify(aMessageId,
-            '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестный DeliveryCode = [DELIVERY_CODE]',
+            '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестный DeliveryCode = [CANCEL_CODE]',
             'E',
             XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION',
             XmlAttrs2Vars(ndOrder, 'ORDER_CODE;CLIENT_ID',
             Value2Vars(LineNo, 'LINE_NO',
-            Strings2Vars(sl, 'DELIVERY_CODE=10')))))
-        end
-        else
-          StateId:= dmOtto.GetStatusBySign(ndOrderItem.Name, StateSign);
-        SetXmlAttr(ndOrderItem, 'STATE_ID', StateId);
+            Strings2Vars(sl, 'CANCEL_CODE=10')))))
+        end;
+        SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', StateSign);
 
-        if sl[12] <> '00000000000000' then
-        begin
-          SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'BUNDLING');
-          MessageClass:= 'I';
-        end
-        else
-          MessageClass:= 'W';
         StatusName:= aTransaction.DefaultDatabase.QueryValue(
           'select status_name from statuses where object_sign=''ORDERITEM'' and status_sign = :status_sign',
-          0, [GetXmlAttrValue(ndOrderItem, 'STATUS_SIGN')]);
+          0, [GetXmlAttrValue(ndOrderItem, 'NEW.STATUS_SIGN')]);
         try
-          ndOrderItem.ValueAsBool:= True;
           dmOtto.ActionExecute(aTransaction, ndOrderItem, DealId);
           dmOtto.Notify(aMessageId,
             '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [STATUS_NAME]',
@@ -120,7 +97,7 @@ begin
   end;
 end;
 
-procedure ParseLiefer(aMessageId: Integer; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseCancellation(aMessageId: Integer; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
   LineNo, DealId: Integer;
   Lines: TStringList;
@@ -140,7 +117,7 @@ begin
   try
     Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
     For LineNo:= 0 to Lines.Count - 1 do
-      ParseLieferLine(aMessageId, LineNo, DealId, Lines[LineNo], ndOrders, aTransaction);
+      ParseCancelLine(aMessageId, LineNo, DealId, Lines[LineNo], ndOrders, aTransaction);
   finally
     Lines.Free;
   end;
@@ -159,7 +136,7 @@ begin
     if not aTransaction.Active then
       aTransaction.StartTransaction;
     try
-      ParseLiefer(aMessageId, aXml.Root, aTransaction);
+      ParseCancellation(aMessageId, aXml.Root, aTransaction);
       dmOtto.MessageRelease(aTransaction, aMessageId);
       dmOtto.MessageSuccess(aTransaction, aMessageId);
       aTransaction.Commit;
