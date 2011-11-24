@@ -205,17 +205,6 @@ begin
   dmOtto.Notify(aMessageId,
     'Конец обработки файла: [FILE_NAME]', 'I',
     Value2Vars(MessageFileName, 'FILE_NAME'));
-//  try
-//    dmOtto.ActionExecute(aTransaction, 'EVENT', '',
-//      Value2Vars('FORM_PROTOCOL', 'EVENT_SIGN',
-//      Value2Vars(aMessageId, 'OBJECT_ID')), DealId);
-//  except
-//    on E: Exception do
-//      dmOtto.Notify(aMessageId,
-//        'Содание события FORM_PROTOCOL. Ошибка ([ERROR_TEXT])',
-//        'E',
-//        Value2Vars(E.Message, 'ERROR_TEXT'));
-//  end;
 end;
 
 procedure ProcessProtocol(aMessageId: Integer; aTransaction: TpFIBTransaction);
