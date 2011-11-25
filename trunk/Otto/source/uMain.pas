@@ -107,8 +107,7 @@ type
     ProgressMakeInvoices: TJvProgressComponent;
     ProgressPrintInvoices: TJvProgressComponent;
     frxReportOnePage: TfrxReport;
-    actUpdateScript: TAction;
-    btn2: TTBXItem;
+    actInstallPatch: TAction;
     scrptUpdate: TpFIBScripter;
     btn10: TTBXItem;
     actExportOrders: TAction;
@@ -118,7 +117,6 @@ type
     log1: TJvLogFile;
     imgListAlerts: TPngImageList;
     tmr1: TTimer;
-    dlgPatch: TJvProgressDialog;
     actExportSMSRejected: TAction;
     ProgressMakeSMSRejected: TJvProgressComponent;
     btn12: TTBXItem;
@@ -128,6 +126,14 @@ type
     btn14: TTBXItem;
     actExportPackList: TAction;
     btn15: TTBXItem;
+    actBackup: TAction;
+    actRestore: TAction;
+    TBXSubmenuItem1: TTBXSubmenuItem;
+    subMenuSystem: TTBXSubmenuItem;
+    btnBackup: TTBXItem;
+    btnRestore: TTBXItem;
+    btnPatch: TTBXItem;
+    dlgOpenRestore: TOpenDialog;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -151,15 +157,17 @@ type
     procedure actExportOrdersExecute(Sender: TObject);
     procedure actSetByr2EurExecute(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure actUpdateScriptExecute(Sender: TObject);
+    procedure actInstallPatchExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure actUpdateScriptUpdate(Sender: TObject);
+    procedure actInstallPatchUpdate(Sender: TObject);
     procedure scrptUpdateExecuteError(Sender: TObject; StatementNo,
       Line: Integer; Statement: TStrings; SQLCode: Integer;
       const Msg: string; var doRollBack, Stop: Boolean);
     procedure ProgressMakeSMSRejectedShow(Sender: TObject);
     procedure actExportPaymentExecute(Sender: TObject);
     procedure actExportPackListExecute(Sender: TObject);
+    procedure actBackupExecute(Sender: TObject);
+    procedure actRestoreExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -493,7 +501,7 @@ begin
     actSetByr2Eur.Execute;
 end;
 
-procedure TMainForm.actUpdateScriptExecute(Sender: TObject);
+procedure TMainForm.actInstallPatchExecute(Sender: TObject);
 const
   HeaderText = 'Установка обновлений';
 var
@@ -596,9 +604,13 @@ begin
   verInfo.Filename := ParamStr(0);
 end;
 
-procedure TMainForm.actUpdateScriptUpdate(Sender: TObject);
+procedure TMainForm.actInstallPatchUpdate(Sender: TObject);
 begin
-  actUpdateScript.Enabled := verInfo.GetBuildOnly > dmOtto.Build;
+  actInstallPatch.Enabled := verInfo.GetBuildOnly > dmOtto.Build;
+  if actInstallPatch.Enabled then
+    subMenuSystem.Action:= actInstallPatch
+  else
+    subMenuSystem.Action:= nil;
 end;
 
 procedure TMainForm.scrptUpdateExecuteError(Sender: TObject; StatementNo,
@@ -669,6 +681,74 @@ end;
 procedure TMainForm.actExportPackListExecute(Sender: TObject);
 begin
   ExportPackList(trnWrite);
+end;
+
+procedure TMainForm.actBackupExecute(Sender: TObject);
+const
+  HeaderText = 'Резерная копия';
+var
+  Build, FileName: string;
+begin
+  Build := FillFront(IntToStr(dmOtto.Build), 6, '0');
+  dmOtto.CreateAlert(HeaderText, Format('Создание копии %s ...', [Build]),
+    mtInformation, 10000);
+  FileName:= GetNextFileName(Format('%s%s_%s_%%u.fbk',
+    [Path['Backup'], FormatDateTime('YYYYMMDD', Date), Build]), 1);
+  try
+    if dmOtto.dbOtto.Connected then
+      dmOtto.dbOtto.Close;
+    dmOtto.BackupDatabase(FileName);
+    dmOtto.CreateAlert(HeaderText, Format('Резерная копия %s создана',
+       [ExtractFileNameOnly(FileName)]), mtInformation);
+  finally
+    dmOtto.dbOtto.Open;
+  end;
+end;
+
+procedure TMainForm.actRestoreExecute(Sender: TObject);
+const
+  HeaderText = 'Резерная копия';
+var
+  Build, BeforeBackupFileName: string;
+begin
+  dlgOpenRestore.InitialDir:= Path['Backup'];
+  if not dlgOpenRestore.Execute then
+  begin
+    Build:= FillFront(IntToStr(dmOtto.Build), 6, '0');
+    dmOtto.CreateAlert(HeaderText, Format('Создание копии %s ...', [Build]),
+      mtInformation, 10000);
+    BeforeBackupFileName:= Format('%s%s_%s_prerestore.fbk',
+      [Path['Backup'], FormatDateTime('YYYYMMDD', Date), Build]);
+    if dmOtto.dbOtto.Connected then
+      dmOtto.dbOtto.Close;
+    try
+      dmOtto.CreateAlert(HeaderText, Format('Восстановление копии %s ...',
+        [ExtractFileNameOnly(dlgOpenRestore.FileName)]),
+        mtInformation, 10000);
+      dmOtto.RestoreDatabase(dlgOpenRestore.FileName);
+      dmOtto.CreateAlert(HeaderText, Format('Восстановлено из копии %s ...',
+        [ExtractFileNameOnly(dlgOpenRestore.FileName)]),
+        mtInformation);
+    except
+      try
+        dmOtto.RestoreDatabase(BeforeBackupFileName);
+        dmOtto.CreateAlert(HeaderText, Format('Версия %s восстановлена', [Build]),
+          mtWarning);
+      except
+        on E: Exception do
+          dmOtto.CreateAlert(HeaderText,
+            Format('Ошибка при восстановлении верcии "%s". Восстановите базу из резеврное копии вручную. (%s)',
+            [Build, E.Message]), mtError);
+      end;
+    end;
+    dmOtto.dbOtto.Open(true);
+  end
+  else
+  begin
+    dmOtto.CreateAlert(HeaderText, 'Восстановление из копии отменено',
+      mtInformation, 10000);
+    Exit;
+  end;
 end;
 
 end.
