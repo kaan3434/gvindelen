@@ -37,7 +37,8 @@ uses
   uExportOrder in 'uExportOrder.pas',
   uParseProtocol in 'uParseProtocol.pas',
   uExportInvoices in 'uExportInvoices.pas',
-  uExportPackList in 'uExportPackList.pas';
+  uExportPackList in 'uExportPackList.pas',
+  uParseArtN in 'uParseArtN.pas';
 
 {$R *.res}
 

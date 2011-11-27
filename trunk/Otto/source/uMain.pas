@@ -134,6 +134,8 @@ type
     btnRestore: TTBXItem;
     btnPatch: TTBXItem;
     dlgOpenRestore: TOpenDialog;
+    actProcessArtN: TAction;
+    btn2: TTBXItem;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -168,6 +170,7 @@ type
     procedure actExportPackListExecute(Sender: TObject);
     procedure actBackupExecute(Sender: TObject);
     procedure actRestoreExecute(Sender: TObject);
+    procedure actProcessArtNExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -186,7 +189,8 @@ uses
   uFormTableOrder, uFormTableClients, uParseProtocol, uParseLiefer,
   uParseConsignment, uFormProtocol, GvNativeXml, pFIBQuery, uParsePayments,
   uFormWizardOrder, uExportOrders, uSetByr2Eur, uExportSMSReject,
-  uExportCancellation, uExportOrder, uExportInvoices, uExportPackList;
+  uExportCancellation, uExportOrder, uExportInvoices, uExportPackList, 
+  uParseArtN;
 
 procedure TMainForm.actParseOrderXmlExecute(Sender: TObject);
 var
@@ -323,12 +327,30 @@ begin
   until vMessageId = 0;
 end;
 
+procedure TMainForm.actProcessArtNExecute(Sender: TObject);
+var
+  vMessageId: Integer;
+begin
+  repeat
+    vMessageId := dmOtto.MessageBusy(9);
+    if vMessageId > 0 then
+    begin
+      ProcessArtN(vMessageId, trnWrite);
+      with TFormProtocol.Create(Self, vMessageId) do
+        Show;
+    end;
+  until vMessageId = 0;
+end;
+
+
+
 procedure TMainForm.tmrImportMessagesTimer(Sender: TObject);
 var
   sl: TStringList;
   i: Integer;
   MessageCount: integer;
-  FileName: string;
+  MessageId: Variant;
+  StatusSign, FileName: string;
 begin
   sl := TStringList.Create;
   trnWrite.StartTransaction;
@@ -342,21 +364,38 @@ begin
       MessageCount := 0;
       for i := 0 to sl.Count - 1 do
       begin
-        try
-          trnWrite.SetSavePoint('CreateMessage');
-          FileName := AnsiToUtf8(Copy(sl[i], Length(Path['Messages.In']) + 1,
-            Length(sl[i])));
-          ParamByName('I_FILE_NAME').Value := FileName;
-          ParamByName('I_FILE_SIZE').Value := GetFileSize(sl[i]);
-          ParamByName('I_FILE_DTM').AsDateTime :=
-            FileDateToDateTime(fileAge(sl[i]));
-          ExecProc;
-          if VarIsNull(ParamValue('O_MESSAGE_ID')) then
-            trnWrite.RollBackToSavePoint('CreateMessage')
-          else
-            Inc(MessageCount);
-        except
-          trnWrite.RollBackToSavePoint('CreateMessage');
+        // проверяем зарегистрирован ли файл
+        MessageId:= trnWrite.DefaultDatabase.QueryValue(
+          'select m.message_id from messages m where m.file_name = :file_name',
+          0, [ExtractFileName(sl[i])], trnWrite);
+        // Если зарегистрирован, проверяем статус обработки
+        if MessageId <> null then
+        begin
+          StatusSign:= trnWrite.DefaultDatabase.QueryValue(
+            'select s.status_sign from messages m'+
+            ' inner join statuses s on (s.status_id = m.status_id)'+
+            ' where m.message_id = :message_id',
+            0, [MessageId], trnWrite);
+          if StatusSign = 'SUCCESS' then
+            DeleteFile(sl[i]);
+        end
+        else
+        begin
+          try
+            trnWrite.SetSavePoint('CreateMessage');
+            FileName := AnsiToUtf8(Copy(sl[i], Length(Path['Messages.In']) + 1,
+              Length(sl[i])));
+            ParamByName('I_FILE_NAME').Value:= FileName;
+            ParamByName('I_FILE_SIZE').Value:= GetFileSize(sl[i]);
+            ParamByName('I_FILE_DTM').AsDateTime:= FileDateToDateTime(fileAge(sl[i]));
+            ExecProc;
+            if VarIsNull(ParamValue('O_MESSAGE_ID')) then
+              trnWrite.RollBackToSavePoint('CreateMessage')
+            else
+              Inc(MessageCount);
+          except
+            trnWrite.RollBackToSavePoint('CreateMessage');
+          end;
         end;
       end;
     end;
@@ -712,7 +751,7 @@ var
   Build, BeforeBackupFileName: string;
 begin
   dlgOpenRestore.InitialDir:= Path['Backup'];
-  if not dlgOpenRestore.Execute then
+  if dlgOpenRestore.Execute then
   begin
     Build:= FillFront(IntToStr(dmOtto.Build), 6, '0');
     dmOtto.CreateAlert(HeaderText, Format('Создание копии %s ...', [Build]),

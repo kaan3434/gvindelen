@@ -61,6 +61,9 @@ object MainForm: TMainForm
         object btn8: TTBXItem
           Action = actImportPayments
         end
+        object btn2: TTBXItem
+          Action = actProcessArtN
+        end
         object btn12: TTBXItem
           Action = actExportSMSRejected
         end
@@ -330,6 +333,11 @@ object MainForm: TMainForm
       Caption = #1042#1086#1089#1089#1090#1072#1085#1086#1074#1080#1090#1100' '#1080#1079' '#1088#1077#1079#1077#1088#1074#1085#1086#1081' '#1082#1086#1087#1080#1080
       ImageIndex = 15
       OnExecute = actRestoreExecute
+    end
+    object actProcessArtN: TAction
+      Category = 'ProcessMessages'
+      Caption = 'ArtN'
+      OnExecute = actProcessArtNExecute
     end
   end
   object imgListMainMenu: TPngImageList
@@ -1299,7 +1307,7 @@ object MainForm: TMainForm
     Top = 96
   end
   object frxReport: TfrxReport
-    Version = '4.9.64'
+    Version = '4.10.5'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -1361,7 +1369,7 @@ object MainForm: TMainForm
     Top = 144
   end
   object frxReportOnePage: TfrxReport
-    Version = '4.9.64'
+    Version = '4.10.5'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]

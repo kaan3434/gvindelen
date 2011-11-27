@@ -241,7 +241,7 @@ var
 begin
   if AttrExists(aNode, aAttributeName) then
   begin
-    aNode.ReadAttributeString(aAttributeName, aDefaultValue)
+    Result:= aNode.ReadAttributeString(aAttributeName, aDefaultValue)
   end
   else
   if aDefaultValue <> '' then

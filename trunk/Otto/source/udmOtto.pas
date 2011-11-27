@@ -310,8 +310,19 @@ begin
 end;
 
 procedure TdmOtto.MessageSuccess(aTransaction: TpFIBTransaction; aMessageId: Integer);
+var
+  PathDest, FileName: string;
 begin
   ActionExecute(aTransaction, 'MESSAGE', 'MESSAGE_SUCCESS', '', 0, aMessageId);
+  FileName:= aTransaction.DefaultDatabase.QueryValue(
+    'select file_name from messages m where m.message_id = :message_id',
+    0, [aMessageId], aTransaction);
+  if FileExists(Path['Messages.In']+FileName) then
+  begin
+    PathDest:= Path['Messages.Processed'] + FormatDateTime('YYYY.MM.DD\', Date);
+    ForceDirectories(PathDest);
+    GvFile.MoveFile(Path['Messages.In']+FileName, PathDest+FileName);
+  end;
 end;
 
 
@@ -638,7 +649,18 @@ end;
 
 procedure TdmOtto.Notify(aMessageId: integer;
   aNotifyText: string; aNotifyClass: string = 'I'; aParams: string = '');
+var
+  vl: TVarList;
+  i: Integer;
 begin
+  vl:= TVarList.Create;
+  try
+    vl.Text:= aParams;
+    for i:= 0 to vl.Count-1 do
+      aNotifyText:= ReplaceAll(aNotifyText, '['+vl.Names[i]+']', vl.ValueFromIndex[i]);
+  finally
+    vl.Free;
+  end;
   dbOtto.QueryValue(
     'select o_notify_id from notify_create(:Message_id, :notify_text, :params, :notify_class)',
     0, [aMessageId, aNotifyText, aParams, aNotifyClass]);
