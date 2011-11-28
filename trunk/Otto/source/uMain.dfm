@@ -76,6 +76,9 @@ object MainForm: TMainForm
         object btn15: TTBXItem
           Action = actExportPackList
         end
+        object btnCancellation: TTBXItem
+          Action = actProcessCancellation
+        end
       end
       object btnParseOrder: TTBXItem
         Action = actParseOrder
@@ -200,6 +203,11 @@ object MainForm: TMainForm
     Images = imgListMainMenu
     Left = 128
     Top = 96
+    object actExportOrders: TAction
+      Category = 'ProcessMessages'
+      Caption = #1054#1090#1087#1088#1072#1074#1080#1090#1100' '#1079#1072#1103#1074#1082#1080
+      OnExecute = actExportOrdersExecute
+    end
     object actImportMessages: TAction
       Caption = #1048#1084#1087#1086#1088#1090' '#1089#1086#1086#1073#1097#1077#1085#1080#1081
       Hint = #1048#1084#1087#1086#1088#1090#1080#1088#1086#1074#1072#1090#1100' '#1079#1072#1103#1074#1082#1080
@@ -294,11 +302,6 @@ object MainForm: TMainForm
       OnExecute = actInstallPatchExecute
       OnUpdate = actInstallPatchUpdate
     end
-    object actExportOrders: TAction
-      Category = 'ProcessMessages'
-      Caption = #1054#1090#1087#1088#1072#1074#1080#1090#1100' '#1079#1072#1103#1074#1082#1080
-      OnExecute = actExportOrdersExecute
-    end
     object actSetByr2Eur: TAction
       Caption = 'BYR->EUR'
       ImageIndex = 12
@@ -338,6 +341,11 @@ object MainForm: TMainForm
       Category = 'ProcessMessages'
       Caption = 'ArtN'
       OnExecute = actProcessArtNExecute
+    end
+    object actProcessCancellation: TAction
+      Category = 'ProcessMessages'
+      Caption = #1055#1088#1086#1090#1086#1082#1086#1083#1099' '#1040#1085#1091#1083#1103#1094#1080#1080
+      OnExecute = actProcessCancellationExecute
     end
   end
   object imgListMainMenu: TPngImageList
@@ -1307,7 +1315,7 @@ object MainForm: TMainForm
     Top = 96
   end
   object frxReport: TfrxReport
-    Version = '4.10.5'
+    Version = '4.9.64'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -1319,7 +1327,7 @@ object MainForm: TMainForm
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 40846.600248657410000000
+    ReportOptions.LastChange = 40875.549125891200000000
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
     OnBeforeConnect = frxReportBeforeConnect
@@ -1369,7 +1377,7 @@ object MainForm: TMainForm
     Top = 144
   end
   object frxReportOnePage: TfrxReport
-    Version = '4.10.5'
+    Version = '4.9.64'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]

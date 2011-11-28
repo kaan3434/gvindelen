@@ -136,6 +136,8 @@ type
     dlgOpenRestore: TOpenDialog;
     actProcessArtN: TAction;
     btn2: TTBXItem;
+    btnCancellation: TTBXItem;
+    actProcessCancellation: TAction;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -171,6 +173,7 @@ type
     procedure actBackupExecute(Sender: TObject);
     procedure actRestoreExecute(Sender: TObject);
     procedure actProcessArtNExecute(Sender: TObject);
+    procedure actProcessCancellationExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -190,7 +193,7 @@ uses
   uParseConsignment, uFormProtocol, GvNativeXml, pFIBQuery, uParsePayments,
   uFormWizardOrder, uExportOrders, uSetByr2Eur, uExportSMSReject,
   uExportCancellation, uExportOrder, uExportInvoices, uExportPackList, 
-  uParseArtN;
+  uParseArtN, uParseCancellation;
 
 procedure TMainForm.actParseOrderXmlExecute(Sender: TObject);
 var
@@ -317,7 +320,7 @@ var
   vMessageId: Integer;
 begin
   repeat
-    vMessageId := dmOtto.MessageBusy(7);
+    vMessageId := dmOtto.MessageBusy(8);
     if vMessageId > 0 then
     begin
       ProcessPayment(vMessageId, trnWrite);
@@ -336,6 +339,21 @@ begin
     if vMessageId > 0 then
     begin
       ProcessArtN(vMessageId, trnWrite);
+      with TFormProtocol.Create(Self, vMessageId) do
+        Show;
+    end;
+  until vMessageId = 0;
+end;
+
+procedure TMainForm.actProcessCancellationExecute(Sender: TObject);
+var
+  vMessageId: Integer;
+begin
+  repeat
+    vMessageId := dmOtto.MessageBusy(9);
+    if vMessageId > 0 then
+    begin
+      ProcessCancellation(vMessageId, trnWrite);
       with TFormProtocol.Create(Self, vMessageId) do
         Show;
     end;
@@ -385,16 +403,20 @@ begin
             trnWrite.SetSavePoint('CreateMessage');
             FileName := AnsiToUtf8(Copy(sl[i], Length(Path['Messages.In']) + 1,
               Length(sl[i])));
-            ParamByName('I_FILE_NAME').Value:= FileName;
+            ParamByName('I_FILE_NAME').Value:= AnsiLowerCaseFileName(FileName);
             ParamByName('I_FILE_SIZE').Value:= GetFileSize(sl[i]);
             ParamByName('I_FILE_DTM').AsDateTime:= FileDateToDateTime(fileAge(sl[i]));
             ExecProc;
             if VarIsNull(ParamValue('O_MESSAGE_ID')) then
-              trnWrite.RollBackToSavePoint('CreateMessage')
+            begin
+              trnWrite.RollBackToSavePoint('CreateMessage');
+            end
             else
               Inc(MessageCount);
           except
             trnWrite.RollBackToSavePoint('CreateMessage');
+            ForceDirectories(Path['Messages.Unknown']);
+            GvFile.MoveFile(sl[i], Path['Messages.Unknown']);
           end;
         end;
       end;

@@ -5,7 +5,7 @@ interface
 uses
   NativeXml, FIBDatabase, pFIBDatabase;
 
-procedure ProcessLiefer(aMessageId: Integer; aTransaction: TpFIBTransaction);
+procedure ProcessCancellation(aMessageId: Integer; aTransaction: TpFIBTransaction);
 
 implementation
 
@@ -126,7 +126,7 @@ begin
     Value2Vars(MessageFileName, 'FILE_NAME'));
 end;
 
-procedure ProcessLiefer(aMessageId: Integer; aTransaction: TpFIBTransaction);
+procedure ProcessCancellation(aMessageId: Integer; aTransaction: TpFIBTransaction);
 var
   aXml: TNativeXml;
 begin
