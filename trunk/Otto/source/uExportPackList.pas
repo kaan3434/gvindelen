@@ -126,16 +126,17 @@ end;
 
 function CalcControlChar(St: string): Char;
 var
-  l, n, i: Byte;
+  k: Integer;
 begin
-  n:= 0;
-  l:= Length(St);
-  for i:= 1 to l do
-    Inc(n, Ord(St[i])-Ord('0'));
-  if n > 9 then
-    Result:= CalcControlChar(IntToStr(n))
+  k:= 11 - (8*StrToInt(st[1]) + 6*StrToInt(st[2]) + 4*StrToInt(st[3]) +
+            2*StrToInt(st[4]) + 3*StrToInt(st[5]) + 5*StrToInt(st[6]) +
+            9*StrToInt(st[7]) + 7*StrToInt(st[8])) mod 11;
+  case k of
+    10 : Result:= '0';
+    11 : Result:= '5';
   else
-    Result:= IntToStr(n)[1];
+    Result:= IntToStr(k)[1];
+  end;  
 end;
 
 function GetBarCode(ndOrder: TXmlNode): string;

@@ -320,7 +320,7 @@ var
   vMessageId: Integer;
 begin
   repeat
-    vMessageId := dmOtto.MessageBusy(8);
+    vMessageId := dmOtto.MessageBusy(7);
     if vMessageId > 0 then
     begin
       ProcessPayment(vMessageId, trnWrite);
@@ -350,7 +350,7 @@ var
   vMessageId: Integer;
 begin
   repeat
-    vMessageId := dmOtto.MessageBusy(9);
+    vMessageId := dmOtto.MessageBusy(8);
     if vMessageId > 0 then
     begin
       ProcessCancellation(vMessageId, trnWrite);
