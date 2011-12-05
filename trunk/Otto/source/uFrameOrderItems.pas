@@ -199,32 +199,35 @@ begin
       handle := LoadLibrary('request_xml.plg');
       xmlAvail:= TNativeXml.Create;
       try
-        if handle > 0 then
         try
-          @PluginExec := GetProcAddress(handle,'Execute');
-          XmlText:= ndOrderItem.WriteToString;
-          WXml:= XmlText;
-          PluginExec(url, 'availability', WXml);
-          if WXml <> '' then
-            xmlAvail.ReadFromString(WXml);
-        finally
-          FreeLibrary(handle);
-        end;
-        BatchMoveFields2(ndOrderItem, xmlAvail.Root, 'AVAILABLE=available;AVAILABILITY_CODE=availability_code');
-        if AttrExists(ndOrderItem, 'AVAILABLE') then
-        begin
-          Case GetXmlAttrValue(ndOrderItem, 'AVAILABLE') of
-           0: begin
-                SetXmlAttr(ndOrderItem, 'STATE_ID', dmOtto.GetStatusBySign(ndOrderItem, 'UNAVAILABLE'));
-                SetXmlAttr(ndOrderItem, 'STATUS_ID', dmOtto.GetStatusBySign(ndOrderItem, 'SOLD'));
-              end;
-           1: SetXmlAttr(ndOrderItem, 'STATE_ID', dmOtto.GetStatusBySign(ndOrderItem, 'AVAILABLE'));
-           2: SetXmlAttr(ndOrderItem, 'STATE_ID', dmOtto.GetStatusBySign(ndOrderItem, 'DELAY3WEEK'));
-           21: SetXmlAttr(ndOrderItem, 'STATE_ID', dmOtto.GetStatusBySign(ndOrderItem, 'DELAY3WEEK'));
+          if handle > 0 then
+          try
+            @PluginExec := GetProcAddress(handle,'Execute');
+            XmlText:= ndOrderItem.WriteToString;
+            WXml:= XmlText;
+            PluginExec(url, 'availability', WXml);
+            if WXml <> '' then
+              xmlAvail.ReadFromString(WXml);
+          finally
+            FreeLibrary(handle);
           end;
+          BatchMoveFields2(ndOrderItem, xmlAvail.Root, 'AVAILABLE=available;AVAILABILITY_CODE=availability_code');
+          if AttrExists(ndOrderItem, 'AVAILABLE') then
+          begin
+            Case GetXmlAttrValue(ndOrderItem, 'AVAILABLE') of
+             0: begin
+                  SetXmlAttr(ndOrderItem, 'STATE_ID', dmOtto.GetStatusBySign(ndOrderItem, 'UNAVAILABLE'));
+                  SetXmlAttr(ndOrderItem, 'STATUS_ID', dmOtto.GetStatusBySign(ndOrderItem, 'SOLD'));
+                end;
+             1: SetXmlAttr(ndOrderItem, 'STATE_ID', dmOtto.GetStatusBySign(ndOrderItem, 'AVAILABLE'));
+             2: SetXmlAttr(ndOrderItem, 'STATE_ID', dmOtto.GetStatusBySign(ndOrderItem, 'DELAY3WEEK'));
+             21: SetXmlAttr(ndOrderItem, 'STATE_ID', dmOtto.GetStatusBySign(ndOrderItem, 'DELAY3WEEK'));
+            end;
+          end;
+        finally
+          xmlAvail.Free;
         end;
-      finally
-        xmlAvail.Free;
+      except
       end;
 
       if GetXmlAttrValue(ndOrderItem, 'MAGAZINE_ID') = 1 then
@@ -235,60 +238,64 @@ begin
         handle := LoadLibrary('request_xml.plg');
         xmlArticle:= TNativeXml.Create;
         try
-          if handle > 0 then
           try
-            @PluginExec := GetProcAddress(handle,'Execute');
-            XmlText:= ndOrderItem.WriteToString;
-            WXml:= XmlText;
-            PluginExec(url, 'ArticleSign', WXml);
-            if WXml <> '' then
-            begin
-              xmlArticle.ReadFromString(WXml);
-              xmlArticle.XmlFormat:= xfReadable;
-              xmlArticle.SaveToFile(GetXmlAttr(ndOrderItem, 'ARTICLE_CODE', Path['Articles'], '.xml'));
-            end;
-          finally
-            FreeLibrary(handle);
-          end;
-          nl:= TXmlNodeList.Create;
-          try
-            xmlArticle.Root.FindNodes('Article', nl);
-            For j:= 0 to nl.Count-1 do
-            begin
-              aArticleSign:= dmOtto.GetArticleSign(GetXmlAttrValue(nl[j], 'article_code'),
-                GetXmlAttrValue(ndOrderItem, 'MAGAZINE_ID'));
-              aDimension:= CopyFront4(GetXmlAttrValue(nl[j], 'dimension', '0'), '(');
-              aWeight:= trnRead.DefaultDatabase.QueryValue(
-                'select max(weight) from v_articles where article_sign = :article_sign and dimension = :dimension',
-                0, [aArticleSign, aDimension]);
-              aColor:= dmOtto.Recode('ARTICLECODE', 'DIMENSION', GetXmlAttrValue(nl[j].Parent, 'DIMENSION'));
-              aDescription:= dmOtto.Recode('ARTICLECODE', 'NAME', GetXmlAttrValue(nl[j].Parent, 'name'));
-              ArticleId:= trnWrite.DefaultDatabase.QueryValue(
-                'select o_article_id from article_goc(:magazine_id,:article_code, :color, :dimension, :price_eur, :weight, :description, :image)',
-                0, [GetXmlAttrValue(ndOrderItem, 'MAGAZINE_ID'),
-                    GetXmlAttrValue(nl[j], 'article_code'),
-                    aColor,
-                    aDimension,
-                    GetXmlAttrValue(nl[j], 'price_eur'),
-                    aWeight,
-                    aDescription,
-                    GetXmlAttrValue(nl[j].Parent, 'image_link')]);
-              trnWrite.DefaultDatabase.QueryValue(
-                'update articlecodes set color = :color where article_sign = :article_sign',
-                0, [aColor, aArticleSign], trnWrite);
-
-              if (aArticleSign = nArticleSign) and (aDimension = nDimension) then
+            if handle > 0 then
+            try
+              @PluginExec := GetProcAddress(handle,'Execute');
+              XmlText:= ndOrderItem.WriteToString;
+              WXml:= XmlText;
+              PluginExec(url, 'ArticleSign', WXml);
+              if WXml <> '' then
               begin
-                SetXmlAttr(ndOrderItem, 'ARTICLE_ID', ArticleId);
-                if GetXmlAttrValue(nl[j], 'price_eur') <> GetXmlAttrValue(ndOrderItem, 'PRICE_EUR') then
-                  SetXmlAttr(ndOrderItem, 'STATUS_ID', dmOtto.GetStatusBySign(ndOrderItem, 'WRONGPRICE'));
+                xmlArticle.ReadFromString(WXml);
+                xmlArticle.XmlFormat:= xfReadable;
+                ForceDirectories(Path['Articles']);
+                xmlArticle.SaveToFile(GetXmlAttr(ndOrderItem, 'ARTICLE_CODE', Path['Articles'], '.xml'));
               end;
+            finally
+              FreeLibrary(handle);
+            end;
+            nl:= TXmlNodeList.Create;
+            try
+              xmlArticle.Root.FindNodes('Article', nl);
+              For j:= 0 to nl.Count-1 do
+              begin
+                aArticleSign:= dmOtto.GetArticleSign(GetXmlAttrValue(nl[j], 'article_code'),
+                  GetXmlAttrValue(ndOrderItem, 'MAGAZINE_ID'));
+                aDimension:= CopyFront4(GetXmlAttrValue(nl[j], 'dimension', '0'), '(');
+                aWeight:= trnRead.DefaultDatabase.QueryValue(
+                  'select max(weight) from v_articles where article_sign = :article_sign and dimension = :dimension',
+                  0, [aArticleSign, aDimension]);
+                aColor:= dmOtto.Recode('ARTICLECODE', 'DIMENSION', GetXmlAttrValue(nl[j].Parent, 'DIMENSION'));
+                aDescription:= dmOtto.Recode('ARTICLECODE', 'NAME', GetXmlAttrValue(nl[j].Parent, 'name'));
+                ArticleId:= trnWrite.DefaultDatabase.QueryValue(
+                  'select o_article_id from article_goc(:magazine_id,:article_code, :color, :dimension, :price_eur, :weight, :description, :image)',
+                  0, [GetXmlAttrValue(ndOrderItem, 'MAGAZINE_ID'),
+                      GetXmlAttrValue(nl[j], 'article_code'),
+                      aColor,
+                      aDimension,
+                      GetXmlAttrValue(nl[j], 'price_eur'),
+                      aWeight,
+                      aDescription,
+                      GetXmlAttrValue(nl[j].Parent, 'image_link')]);
+                trnWrite.DefaultDatabase.QueryValue(
+                  'update articlecodes set color = :color where article_sign = :article_sign',
+                  0, [aColor, aArticleSign], trnWrite);
+
+                if (aArticleSign = nArticleSign) and (aDimension = nDimension) then
+                begin
+                  SetXmlAttr(ndOrderItem, 'ARTICLE_ID', ArticleId);
+                  if GetXmlAttrAsMoney(nl[j], 'price_eur') <> GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') then
+                    SetXmlAttr(ndOrderItem, 'STATUS_ID', dmOtto.GetStatusBySign(ndOrderItem, 'WRONGPRICE'));
+                end;
+              end;
+            finally
+              nl.Free;
             end;
           finally
-            nl.Free;
+            xmlArticle.Free;
           end;
-        finally
-          xmlArticle.Free;
+        except
         end;
       end;
 

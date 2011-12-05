@@ -28,7 +28,7 @@ function GetXmlAttrValue(aNode: TXmlNode; aAttributeName: string;
 function GetXmlAttrValue(aNode: TXmlNode; aAttributeName: string): variant; overload;
 
 function GetXmlAttrAsMoney(aNode: TXmlNode; aAttributeName: string;
-  aDefaultValue: string = '0.00'): variant;
+  aDefaultValue: string = '0.00'): string;
 
 function XmlAttrIn(aNode: TXmlNode; aAttributeName, Values: string): Boolean;
 
@@ -235,19 +235,17 @@ begin
 end;
 
 function GetXmlAttrAsMoney(aNode: TXmlNode; aAttributeName: string;
-  aDefaultValue: string = '0.00'): variant;
+  aDefaultValue: string = '0.00'): string;
 var
-  AttrValue: string;
+  AttrValue: String;
 begin
   if AttrExists(aNode, aAttributeName) then
   begin
-    Result:= aNode.ReadAttributeString(aAttributeName, aDefaultValue)
+    AttrValue:= aNode.ReadAttributeString(aAttributeName, aDefaultValue);
+    Result:= Format('%4.2f', [StrToFloat(AttrValue)]);
   end
   else
-  if aDefaultValue <> '' then
     Result:= aDefaultValue
-  else
-    result:= null;
 end;
 
 function XmlAttrIn(aNode: TXmlNode; aAttributeName, Values: string): Boolean;

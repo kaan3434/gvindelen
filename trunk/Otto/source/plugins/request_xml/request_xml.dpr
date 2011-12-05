@@ -14,7 +14,10 @@ uses
   FastMM4,
   GvStr,
   IdHTTP,
-  NativeXml;
+  GvFile,
+  NativeXml,
+  SysUtils,
+  Classes;
 
 {$R *.res}
 {$E plg}
@@ -33,6 +36,23 @@ begin
     Result:= ReplaceAll(Result, '['+aNode.AttributeName[i]+']', aNode.AttributeValue[i]);
 end;
 
+procedure FillProxy(HTTP: TIdHttp);
+var
+  sl: TStringList;
+begin
+  Sl:= TStringList.Create;
+  try
+    try
+      sl.Text:= ReadIniSection(ProjectIniFileName, 'Proxy');
+      HTTP.ProxyParams.ProxyServer:= Sl.Values['Host'];
+      HTTP.ProxyParams.ProxyPort:= StrToInt(sl.Values['Port']);
+    except
+    end;
+  finally
+    sl.Free;
+  end;
+end;
+
 function HttpRequest(URL, RootNodeName: string): WideString;
 var
   Http: TIdHTTP;
@@ -40,6 +60,7 @@ var
 begin
   Http:= TIdHTTP.Create;
   try
+    FillProxy(Http);
     Html:= Http.Get(Url);
   finally
     Http.Free;

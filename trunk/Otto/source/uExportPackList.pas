@@ -168,7 +168,7 @@ begin
     begin
       ndOrderItem:= ndOrderItems[i];
       if XmlAttrIn(ndOrderItem, 'STATUS_SIGN', 'PACKED') then
-        OrderItemsCostEur:= OrderItemsCostEur + GetXmlAttrAsMoney(ndOrderItem, 'COST_EUR');
+        OrderItemsCostEur:= OrderItemsCostEur + StrToFloat(GetXmlAttrAsMoney(ndOrderItem, 'COST_EUR'));
     end;
     SetXmlAttr(ndOrder, 'ITEMSCOST_EUR', OrderItemsCostEur);
     SetXmlAttr(ndOrder, 'BAR_CODE', GetBarCode(ndOrder));
