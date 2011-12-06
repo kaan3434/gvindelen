@@ -20,6 +20,8 @@ type
     dsAccountMovements: TDataSource;
     qryClientOrders: TpFIBDataSet;
     dsClientOrders: TDataSource;
+    actAccountDebit: TAction;
+    actAccountCredit: TAction;
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }

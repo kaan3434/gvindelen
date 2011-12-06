@@ -259,6 +259,14 @@ inherited FormTableClients: TFormTableClients
     Transaction = trnNSI
     UpdateTransaction = trnNSI
   end
+  inherited actListMain: TActionList
+    object actAccountDebit: TAction
+      Caption = #1047#1072#1095#1080#1089#1090
+    end
+    object actAccountCredit: TAction
+      Caption = 'actAccountCredit'
+    end
+  end
   inherited trnNSI: TpFIBTransaction
     Active = True
   end

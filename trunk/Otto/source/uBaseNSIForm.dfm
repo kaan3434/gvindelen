@@ -1,6 +1,6 @@
 object BaseNSIForm: TBaseNSIForm
-  Left = 239
-  Top = 107
+  Left = 284
+  Top = 227
   Width = 1024
   Height = 555
   Caption = 'BaseNSIForm'
@@ -28,13 +28,19 @@ object BaseNSIForm: TBaseNSIForm
     Left = 0
     Top = 0
     Width = 1016
-    Height = 9
+    Height = 26
+    object tlBarNsiActions: TTBXToolbar
+      Left = 0
+      Top = 0
+      Caption = 'tlBarNsiActions'
+      TabOrder = 0
+    end
   end
   object pnlMain: TJvPanel
     Left = 0
-    Top = 9
+    Top = 26
     Width = 1016
-    Height = 493
+    Height = 476
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
@@ -42,12 +48,12 @@ object BaseNSIForm: TBaseNSIForm
     HotTrackFont.Style = []
     Align = alClient
     BorderWidth = 4
-    TabOrder = 2
+    TabOrder = 1
     object grBoxMain: TJvGroupBox
       Left = 5
       Top = 5
       Width = 1006
-      Height = 483
+      Height = 466
       Align = alClient
       Caption = 'grBoxMain'
       TabOrder = 0
@@ -55,7 +61,7 @@ object BaseNSIForm: TBaseNSIForm
         Left = 2
         Top = 15
         Width = 1002
-        Height = 466
+        Height = 449
         Align = alClient
         AutoFitColWidths = True
         DataGrouping.GroupLevels = <>

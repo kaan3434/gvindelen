@@ -25,6 +25,7 @@ type
     actRollback: TAction;
     actWizard: TAction;
     trnNSI: TpFIBTransaction;
+    tlBarNsiActions: TTBXToolbar;
     procedure actEditExecute(Sender: TObject);
     procedure actListMainUpdate(Action: TBasicAction;
       var Handled: Boolean);
