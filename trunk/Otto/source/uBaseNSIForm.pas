@@ -26,6 +26,7 @@ type
     actWizard: TAction;
     trnNSI: TpFIBTransaction;
     tlBarNsiActions: TTBXToolbar;
+    trnWrite: TpFIBTransaction;
     procedure actEditExecute(Sender: TObject);
     procedure actListMainUpdate(Action: TBasicAction;
       var Handled: Boolean);

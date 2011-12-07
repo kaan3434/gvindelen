@@ -33,6 +33,10 @@ type
     grdAccountMovements: TDBGridEh;
     qryAccountMovements: TpFIBDataSet;
     dsAccountMovements: TDataSource;
+    tsHistory: TTabSheet;
+    grdHistory: TDBGridEh;
+    qryHistory: TpFIBDataSet;
+    dsHistory: TDataSource;
     procedure actSendOrdersExecute(Sender: TObject);
     procedure actFilterApprovedExecute(Sender: TObject);
     procedure actFilterAcceptRequestExecute(Sender: TObject);
@@ -283,6 +287,7 @@ begin
   qryOrderTaxs.Open;
   qryStatuses.Open;
   qryAccountMovements.Open;
+  qryHistory.Open;
 end;
 
 procedure TFormTableOrders.grdMainDblClick(Sender: TObject);
