@@ -5,6 +5,15 @@ inherited FormTableOrders: TFormTableOrders
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
+  inherited dckTop: TTBXDock
+    inherited tlBarNsiActions: TTBXToolbar
+      Images = imgListMain
+      object btnMakeInvoice: TTBXItem
+        Action = actMakeInvoice
+        DisplayMode = nbdmImageAndText
+      end
+    end
+  end
   inherited pnlMain: TJvPanel
     inherited grBoxMain: TJvGroupBox
       inherited grdMain: TDBGridEh
@@ -118,14 +127,19 @@ inherited FormTableOrders: TFormTableOrders
             Footers = <>
             Title.Alignment = taCenter
             Title.Caption = #1057#1090#1086#1080#1084#1086#1089#1090#1100', BYR'
+          end
+          item
+            EditButtons = <>
+            FieldName = 'INVOICE_ID'
+            Footers = <>
           end>
         inherited RowDetailData: TRowDetailPanelControlEh
           object pcDetailInfo: TPageControl
             Left = 0
             Top = 0
-            Width = 606
+            Width = 671
             Height = 198
-            ActivePage = ts1
+            ActivePage = tsOrderAttrs
             Align = alClient
             TabOrder = 0
             object tsOrderAttrs: TTabSheet
@@ -133,7 +147,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdOrderProperties: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 598
+                Width = 663
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -186,7 +200,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdOrderItems: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 598
+                Width = 663
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -364,7 +378,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdAccountMovements: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 598
+                Width = 663
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -533,7 +547,8 @@ inherited FormTableOrders: TFormTableOrders
       '    statuses.STATUS_SIGN,'
       '    orders.STATUS_DTM,'
       '    v_order_summary.cost_eur,'
-      '    v_order_summary.cost_byr'
+      '    v_order_summary.cost_byr,'
+      '    invoices.invoice_id'
       'FROM ORDERS '
       
         '  inner join v_clients_fio on (v_clients_fio.client_id = orders.' +
@@ -542,6 +557,7 @@ inherited FormTableOrders: TFormTableOrders
       
         '  inner join v_order_summary on (v_order_summary.order_id = orde' +
         'rs.order_id)'
+      '  inner join invoices on (invoices.order_id = orders.order_id)'
       'where '
       '/*FILTER*/ 1=1'
       'order by Create_dtm')
@@ -563,6 +579,44 @@ inherited FormTableOrders: TFormTableOrders
       Caption = #1054#1090#1087#1088#1072#1074#1083#1077#1085#1085#1099#1077
       OnExecute = actFilterAcceptRequestExecute
     end
+    object actMakeInvoice: TAction
+      Caption = #1048#1079#1074#1077#1097#1077#1085#1080#1077
+      ImageIndex = 0
+      OnExecute = actMakeInvoiceExecute
+    end
+  end
+  inherited imgListMain: TPngImageList
+    PngImages = <
+      item
+        PngImage.Data = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          610000001974455874536F6674776172650041646F626520496D616765526561
+          647971C9653C000002944944415478DAA5537B48D351183DD76D3E92A6ABCD99
+          B95E826F33B30729521039D1944CAC54D41C86583EC92C2DDC56584186121911
+          382B35302BCB3052FF290A835227A52804495B94D3A9A9CDDAE67EEB0EDC0F34
+          08AC03877BBFFB7DE770F8E012ABD58AFF01912707C5D3D3EB1FF55FC9B9A4C0
+          5CE59D17372C8C79594A8E030FF2CC3DC749D901FF13F2DB5DD7DB9A9B966590
+          70380DCAA3FBF2C8A978DF7C457DC7B521F53B083C3CD881719D0E9A9111F0F9
+          7CF8F8F9C181C3617B5363630808DB0E4596B48014C7FA1429EA9F570FAB7BB0
+          2928881DAAABAD85C4DB1B128904038383484E4F677B9F68ED1FB68D1AC41493
+          FCE80D2715AA6755C3FDBD70178BD1DBFD06E111BBD0FEA81511F4B4A19BBEC5
+          1D4C647BDF693AFF2DE150C8624B48EE5EC96985AAFDF250DFE2042D8D8D08A1
+          B546A38146AB45765EDEA204015B690259DC1992BDDBAB5CA97A5A39ACEE83BB
+          48C40E31160B463FDC035FE00C9ECB2A10BA75CCCFC091CC40AF27089696422E
+          8B3F4B3223C515E7556DCACE278FE16AECC11A891016E282398311A6898F483C
+          560093C18051ED1078D64908855CB43D7C8F9D29B5A89025C8495298FBC59AFB
+          9D6566B3195FDEDE44648C941518267598E779C0683461EC9B164E5C60B5900F
+          8688E0199A86A243D19748F85A5E899B33596F8B1DB88E094D2F2C8DB25818FC
+          989E84582840F08E903F12545FB8DBDFD5EBF07AFA97F533A13A574A09A5634E
+          14A9BCD1D2B0DF2ED08EE8E024D808BB218758E0BA828716D5ADAAAB1D4C1DD5
+          68897D695E6EC0664F141C4991E670B89C59323FA7EF7BF572E24A5343C6D204
+          E585F50D9A29643C505BC11A2CC0995260FB64B622DA1759A9A9D2540E974B0D
+          0D7A8B69D685618CA2E6D601D5B80135B00FFE052B17B81453943F6D97DF60F1
+          10F1CA2AAE1F0000000049454E44AE426082}
+        Name = 'PngImage0'
+        Background = clWindow
+      end>
+    Bitmap = {}
   end
   object qryOrderAttrs: TpFIBDataSet
     SelectSQL.Strings = (

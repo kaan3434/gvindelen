@@ -44,8 +44,11 @@ begin
   try
     try
       sl.Text:= ReadIniSection(ProjectIniFileName, 'Proxy');
-      HTTP.ProxyParams.ProxyServer:= Sl.Values['Host'];
-      HTTP.ProxyParams.ProxyPort:= StrToInt(sl.Values['Port']);
+      if sl.Text <> '' then
+      begin
+        HTTP.ProxyParams.ProxyServer:= Sl.Values['Host'];
+        HTTP.ProxyParams.ProxyPort:= StrToInt(sl.Values['Port']);
+      end;
     except
     end;
   finally

@@ -103,9 +103,6 @@ type
     actPaymentAssign: TAction;
     btn9: TTBXItem;
     tmrImportMessages: TTimer;
-    btnOrderCreate2: TTBXItem;
-    ProgressMakeInvoices: TJvProgressComponent;
-    ProgressPrintInvoices: TJvProgressComponent;
     frxReportOnePage: TfrxReport;
     actInstallPatch: TAction;
     scrptUpdate: TpFIBScripter;
@@ -128,7 +125,6 @@ type
     btn15: TTBXItem;
     actBackup: TAction;
     actRestore: TAction;
-    TBXSubmenuItem1: TTBXSubmenuItem;
     subMenuSystem: TTBXSubmenuItem;
     btnBackup: TTBXItem;
     btnRestore: TTBXItem;
@@ -156,8 +152,6 @@ type
       var Connected: Boolean);
     procedure actImportPaymentsExecute(Sender: TObject);
     procedure tmrImportMessagesTimer(Sender: TObject);
-    procedure ProgressMakeInvoicesShow(Sender: TObject);
-    procedure ProgressPrintInvoicesShow(Sender: TObject);
     procedure actExportOrdersExecute(Sender: TObject);
     procedure actSetByr2EurExecute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -178,6 +172,7 @@ type
     { Private declarations }
   public
     { Public declarations }
+    procedure PrintInvoice(aTransaction: TpFIBTransaction; OrderId: Integer);
   end;
 
 var
@@ -303,10 +298,59 @@ begin
   //  until MessageId = 0;
 end;
 
-procedure TMainForm.actPrintInvoicesExecute(Sender: TObject);
+
+procedure TMainForm.PrintInvoice(aTransaction: TpFIBTransaction; OrderId: Integer);
+var
+  InvoiceId: Variant;
+  InvFileName: string;
+  OrderCode: Variant;
 begin
-  ProgressMakeInvoices.Execute;
-  ProgressPrintInvoices.Execute;
+  InvoiceId:= aTransaction.DefaultDatabase.QueryValue(
+    'select invoice_id from invoices where order_id = :order_id',
+    0, [OrderId], aTransaction);
+  if InvoiceId <> null then
+  begin
+    OrderCode:= aTransaction.DefaultDatabase.QueryValue(
+      'select order_code from orders where order_id = :order_id',
+      0, [OrderId], aTransaction);
+    InvFileName:= Format('inv_%s.pdf', [OrderCode]);
+    frxReportOnePage.FileName:= Path['Invoices']+invFileName;
+    frxReportOnePage.LoadFromFile(Path['FastReport'] + 'invoice.fr3');
+    frxReportOnePage.Variables.Variables['InvoiceId']:= Format('''%u''', [InvoiceId]);
+    frxReportOnePage.PrepareReport(true);
+    frxReportOnePage.Export(frxPDFExport);
+
+    dmOtto.ActionExecute(trnWrite, 'INVOICE', 'INVOICE_PRINT',
+       Value2Vars(InvFileName, 'FILENAME'),
+       0, InvoiceId);
+  end;
+end;
+
+
+procedure TMainForm.actPrintInvoicesExecute(Sender: TObject);
+var
+  OrderIdArr: array of variant;
+  i: Integer;
+begin
+  trnWrite.StartTransaction;
+  with dmOtto.qryTempRead do
+  begin
+    Transaction := trnWrite;
+    SQL.Text := 'select order_id from v_order_invoiceable order by order_id';
+    ExecQuery;
+    try
+      while not Eof do
+      begin
+        dmOtto.ActionExecute(trnWrite, 'ORDER', 'ORDER_INVOICE', '', 0,
+          Fields[0].AsInteger);
+        PrintInvoice(trnWrite, Fields[0].AsInteger);
+        Next;
+      end;
+    finally
+      Close;
+    end;
+    trnWrite.Commit;
+  end;
 end;
 
 procedure TMainForm.frxReportBeforeConnect(Sender: TfrxCustomDatabase;
@@ -427,103 +471,6 @@ begin
   finally
     sl.Free;
   end
-end;
-
-procedure TMainForm.ProgressMakeInvoicesShow(Sender: TObject);
-var
-  OrderIdArr: array of variant;
-  i: Integer;
-begin
-  ProgressMakeInvoices.ProgressPosition := 0;
-  ProgressMakeInvoices.ProgressMax := trnRead.DefaultDatabase.QueryValue(
-    'select count(order_id) from v_order_invoiceable', 0, trnRead);
-  trnWrite.StartTransaction;
-  with dmOtto.qryTempRead do
-  begin
-    Transaction := trnWrite;
-    SQL.Text := 'select order_id from v_order_invoiceable order by order_id';
-    ExecQuery;
-    try
-      while not Eof do
-      begin
-        dmOtto.ActionExecute(trnWrite, 'ORDER', 'ORDER_INVOICE', '', 0,
-          Fields[0].AsInteger);
-        ProgressMakeInvoices.ProgressStepIt;
-        Next;
-      end;
-    finally
-      Close;
-    end;
-    trnWrite.Commit;
-  end;
-end;
-
-procedure TMainForm.ProgressPrintInvoicesShow(Sender: TObject);
-var
-  InvFileName: string;
-  InvoiceId, Portion: Integer;
-begin
-  ProgressMakeInvoices.ProgressPosition := 0;
-  ProgressPrintInvoices.ProgressMax := trnRead.DefaultDatabase.QueryValue(
-    'select count(invoice_id) from invoices i ' +
-    ' inner join statuses s on (s.status_id = i.status_id)' +
-    ' where s.status_sign = ''NEW''', 0, trnRead);
-  frxReport.LoadFromFile(Path['FastReport'] + 'invoice.fr3');
-  frxReportOnePage.LoadFromFile(Path['FastReport'] + 'invoice.fr3');
-
-  Portion := 1;
-  InvFileName := Format('inv_%s_%u.pdf', [FormatDateTime('YYYY_MM_DD', Date),
-    Portion]);
-  while FileExists(Path['Invoices'] + InvFileName) do
-  begin
-    Portion := Succ(Portion);
-    InvFileName := Format('inv_%s_%u.pdf', [FormatDateTime('YYYY_MM_DD', Date),
-      Portion]);
-  end;
-
-  trnWrite.StartTransaction;
-  with dmOtto.qryTempRead do
-  begin
-    Transaction := trnRead;
-
-    SQL.Text := 'select i.invoice_id, i.invoice_code from invoices i ' +
-      ' inner join statuses s on (s.status_id = i.status_id)' +
-      ' where s.status_sign = ''NEW''' +
-      ' order by i.invoice_id';
-    ExecQuery;
-    try
-      while (not Eof) or ProgressPrintInvoices.Cancel do
-      begin
-        frxPDFExport.FileName := Path['Invoices'] + Format('inv_%s.pdf',
-          [Fields[1].AsString]);
-        InvoiceId := Fields[0].AsInteger;
-        frxReport.Variables.Variables['InvoiceId'] := #39 + IntToStr(InvoiceId)
-          + #39;
-        frxReport.PrepareReport(false);
-        frxReportOnePage.Variables.Variables['InvoiceId'] := #39 +
-          IntToStr(InvoiceId) + #39;
-        frxReportOnePage.PrepareReport(true);
-        frxReportOnePage.Export(frxPDFExport);
-
-        dmOtto.ActionExecute(trnWrite, 'INVOICE', 'INVOICE_PRINT',
-          Value2Vars(InvFileName, 'FILENAME'),
-          0, InvoiceId);
-        ProgressPrintInvoices.ProgressStepIt;
-        Next;
-      end;
-    finally
-      Close;
-    end;
-  end;
-  if ProgressPrintInvoices.Cancel then
-    trnWrite.Rollback
-  else
-  begin
-    trnWrite.Commit;
-    frxPDFExport.FileName := Path['Invoices'] + InvFileName;
-    frxReport.Export(frxPDFExport);
-    frxReport.ShowPreparedReport;
-  end;
 end;
 
 procedure TMainForm.actExportOrdersExecute(Sender: TObject);
@@ -705,7 +652,7 @@ begin
       try
         FileName := GetNextFileName(Format('%sSMSReject_%s_%%u.txt',
           [Path['SMSReject'], FormatDateTime('YYYYMMDD', Date)]), 1);
-        while (OrderList <> '') or ProgressPrintInvoices.Cancel do
+        while (OrderList <> '') or ProgressMakeSMSRejected.Cancel do
         begin
           OrderId := TakeFront5(orderList, ',');
           MakeSmsRejectNotify(OrderId, Lines, trnWrite);

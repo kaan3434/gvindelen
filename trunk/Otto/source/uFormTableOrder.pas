@@ -37,11 +37,14 @@ type
     grdHistory: TDBGridEh;
     qryHistory: TpFIBDataSet;
     dsHistory: TDataSource;
+    actMakeInvoice: TAction;
+    btnMakeInvoice: TTBXItem;
     procedure actSendOrdersExecute(Sender: TObject);
     procedure actFilterApprovedExecute(Sender: TObject);
     procedure actFilterAcceptRequestExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure grdMainDblClick(Sender: TObject);
+    procedure actMakeInvoiceExecute(Sender: TObject);
   private
     procedure ApplyFilter(aStatusSign: string);
     { Private declarations }
@@ -55,7 +58,7 @@ var
 implementation
 
 uses
-  udmOtto, GvStr, uFormWizardOrder;
+  udmOtto, GvStr, uFormWizardOrder, uMain;
 
 {$R *.dfm}
 
@@ -293,6 +296,15 @@ end;
 procedure TFormTableOrders.grdMainDblClick(Sender: TObject);
 begin
   TFormWizardOrder.CreateDB(Self, qryMain['order_id']).Show;
+end;
+
+procedure TFormTableOrders.actMakeInvoiceExecute(Sender: TObject);
+begin
+  if qryMain['INVOICE_ID'] = null then
+    dmOtto.ActionExecute(trnWrite, 'ORDER', 'ORDER_INVOICE', '', 0,
+      qryMain.FieldByName('ORDER_ID').AsInteger);
+  MainForm.PrintInvoice(trnWrite, qryMain['ORDER_ID']);
+
 end;
 
 end.

@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 408
-  Top = 156
+  Left = 244
+  Top = 140
   Width = 1058
   Height = 512
   Caption = 'PPZ2'
@@ -140,18 +140,12 @@ object MainForm: TMainForm
         DisplayMode = nbdmImageAndText
         Layout = tbxlGlyphTop
       end
-      object sMenu1: TTBXSubmenuItem
-        Caption = #1054#1082#1085#1072
-      end
-      object btnOrderCreate2: TTBXItem
-        ImageIndex = 5
-      end
       object subMenuSystem: TTBXSubmenuItem
         Caption = #1059#1090#1080#1083#1080#1090#1099
         DisplayMode = nbdmImageAndText
-        DropdownCombo = True
         ImageIndex = 13
         Layout = tbxlGlyphTop
+        Options = [tboDropdownArrow]
         object btnRestore: TTBXItem
           Action = actBackup
         end
@@ -167,7 +161,8 @@ object MainForm: TMainForm
         DisplayMode = nbdmImageAndText
         Layout = tbxlGlyphTop
       end
-      object TBXSubmenuItem1: TTBXSubmenuItem
+      object sMenu1: TTBXSubmenuItem
+        Caption = #1054#1082#1085#1072
       end
     end
   end
@@ -1298,6 +1293,7 @@ object MainForm: TMainForm
       'nowait'
       'rec_version'
       'read_committed')
+    MDTTransactionRole = mtrAutoDefine
     TPBMode = tpbDefault
     Left = 192
     Top = 96
@@ -1310,6 +1306,7 @@ object MainForm: TMainForm
       'nowait'
       'rec_version'
       'read_committed')
+    MDTTransactionRole = mtrAutoDefine
     TPBMode = tpbDefault
     Left = 272
     Top = 96
@@ -1361,20 +1358,6 @@ object MainForm: TMainForm
     OnTimer = tmrImportMessagesTimer
     Left = 512
     Top = 72
-  end
-  object ProgressMakeInvoices: TJvProgressComponent
-    Caption = #1048#1079#1074#1077#1097#1077#1085#1080#1103
-    InfoLabel = #1056#1077#1075#1080#1089#1090#1088#1072#1094#1080#1103' '#1080#1079#1074#1077#1097#1077#1085#1080#1081
-    OnShow = ProgressMakeInvoicesShow
-    Left = 648
-    Top = 80
-  end
-  object ProgressPrintInvoices: TJvProgressComponent
-    Caption = #1048#1079#1074#1077#1097#1077#1085#1080#1103
-    InfoLabel = #1060#1086#1088#1084#1080#1088#1086#1074#1072#1085#1080#1077' PDF '#1076#1083#1103' '#1089#1072#1081#1090#1072
-    OnShow = ProgressPrintInvoicesShow
-    Left = 648
-    Top = 144
   end
   object frxReportOnePage: TfrxReport
     Version = '4.9.64'
