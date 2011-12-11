@@ -96,6 +96,9 @@ ALTER TABLE VENDORS ADD CONSTRAINT PK_VENDORS PRIMARY KEY (VENDOR_ID);
 
 ALTER TABLE ACCOPERS ADD CONSTRAINT FK_ACCOPERS_ACCOUNT FOREIGN KEY (ACCOUNT_ID) REFERENCES ACCOUNTS (ACCOUNT_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE ACCOPERS ADD CONSTRAINT FK_ACCOPERS_ACTION FOREIGN KEY (ACTION_ID) REFERENCES ACTIONS (ACTION_ID) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE ACCOPERS ADD CONSTRAINT FK_ACCOPERS_ORDER FOREIGN KEY (ORDER_ID) REFERENCES ORDERS (ORDER_ID) ON UPDATE CASCADE;
+ALTER TABLE ACCOPERS ADD CONSTRAINT FK_ACCOPERS_ORDERITEM FOREIGN KEY (ORDERITEM_ID) REFERENCES ORDERITEMS (ORDERITEM_ID) ON UPDATE CASCADE;
+ALTER TABLE ACCOPERS ADD CONSTRAINT FK_ACCOPERS_ORDERTAX FOREIGN KEY (ORDERTAX_ID) REFERENCES ORDERTAXS (ORDERTAX_ID) ON UPDATE CASCADE;
 ALTER TABLE ACCOUNTS ADD CONSTRAINT FK_ACCOUNTS_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE ACTIONCODES ADD CONSTRAINT FK_ACTIONCODES_OBJECT FOREIGN KEY (OBJECT_SIGN) REFERENCES OBJECTS (OBJECT_SIGN) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE ACTIONCODE_CRITERIAS ADD CONSTRAINT FK_ACTIONCODE_CRITERIAS_ACTION FOREIGN KEY (ACTIONCODE_SIGN) REFERENCES ACTIONCODES (ACTION_SIGN) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -161,6 +164,9 @@ ALTER TABLE MESSAGE_ATTRS ADD CONSTRAINT FK_MESSAGE_ATTRS_ATTR FOREIGN KEY (ATTR
 ALTER TABLE MESSAGE_ATTRS ADD CONSTRAINT FK_MESSAGE_ATTRS_MESSAGE FOREIGN KEY (OBJECT_ID) REFERENCES MESSAGES (MESSAGE_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE NOTIFIES ADD CONSTRAINT FK_NOTIFIES_MESSAGE FOREIGN KEY (MESSAGE_ID) REFERENCES MESSAGES (MESSAGE_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE NOTIFIES ADD CONSTRAINT FK_NOTIFIES_PARAM FOREIGN KEY (PARAM_ID) REFERENCES PARAMHEADS (PARAM_ID) ON UPDATE CASCADE;
+ALTER TABLE ORDERHISTORY ADD CONSTRAINT FK_ORDERHISTORY_ORDER FOREIGN KEY (ORDER_ID) REFERENCES ORDERS (ORDER_ID) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE ORDERHISTORY ADD CONSTRAINT FK_ORDERHISTORY_STATE FOREIGN KEY (STATE_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
+ALTER TABLE ORDERHISTORY ADD CONSTRAINT FK_ORDERHISTORY_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE ORDERITEMS ADD CONSTRAINT FK_ORDERITEMS_ARTICLE FOREIGN KEY (ARTICLE_ID) REFERENCES ARTICLES (ARTICLE_ID) ON UPDATE CASCADE;
 ALTER TABLE ORDERITEMS ADD CONSTRAINT FK_ORDERITEMS_INVOICE FOREIGN KEY (INVOICE_ID) REFERENCES INVOICES (INVOICE_ID) ON DELETE SET NULL ON UPDATE CASCADE;
 ALTER TABLE ORDERITEMS ADD CONSTRAINT FK_ORDERITEMS_ORDER FOREIGN KEY (ORDER_ID) REFERENCES ORDERS (ORDER_ID) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -645,6 +651,16 @@ begin
     if (not exists (select * from rdb$Relations r where r.rdb$relation_name = new.attr_table_name)) then
       exception ex_unknown_tablename 'Unknown table name '||new.attr_table_name;
 
+end
+^
+
+/* Trigger: ORDERHISTORY_BI0 */
+CREATE OR ALTER TRIGGER ORDERHISTORY_BI0 FOR ORDERHISTORY
+ACTIVE BEFORE INSERT POSITION 0
+AS
+begin
+  new.action_dtm = current_timestamp;
+  new.user_sign = user;
 end
 ^
 
@@ -1499,7 +1515,7 @@ end^
 
 
 CREATE OR ALTER PROCEDURE ACT_ORDER_STORE (
-    I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
+    I_PARAM_ID TYPE OF ID_PARAM,
     I_OBJECT_ID TYPE OF ID_OBJECT,
     I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ORDER')
 AS
@@ -1542,6 +1558,7 @@ begin
     execute procedure param_set(:i_param_id, 'STATUS_ID', :v_new_status_id);
     execute procedure object_put(:i_param_id);
 
+    execute procedure orderhistory_update(:i_object_id, :v_new_status_id, null);
   end
 end^
 
@@ -2649,26 +2666,6 @@ begin
 end^
 
 
-CREATE OR ALTER PROCEDURE MESSAGE_2_GET_FILENAME (
-    I_PARTNER_NUMBER TYPE OF VALUE_INTEGER NOT NULL,
-    I_PORTION_NO TYPE OF VALUE_INTEGER NOT NULL)
-RETURNS (
-    O_FILENAME TYPE OF NAME_FILE)
-AS
-declare variable V_DAY_OF_YEAR type of VALUE_INTEGER;
-begin
-  -- select day_of_year
-  v_day_of_year = extract(yearday from current_date)+1;
-  o_filename = 'A'||i_partner_number||'_'||lpad(i_portion_no, 2, '0')||'.'||v_day_of_year;
-  while (exists(select * from messages m where m.file_name = :o_filename)) do
-  begin
-    i_portion_no = i_portion_no + 1;
-    o_filename = 'A'||i_partner_number||'_'||lpad(i_portion_no, 2, '0')||'.'||v_day_of_year;
-  end
-  suspend;
-end^
-
-
 CREATE OR ALTER PROCEDURE MESSAGE_BUSY (
     I_TEMPLATE_ID TYPE OF ID_TEMPLATE)
 RETURNS (
@@ -2770,6 +2767,7 @@ begin
     select o_param_id from param_create('NOTIFY', :i_message_id) into :v_param_id;
     execute procedure param_unparse(:v_param_id, :i_params);
   end
+
   insert into notifies(message_id, param_id, notify_text, notify_class)
     values(:i_message_id, :v_param_id, :i_notify_text, upper(:i_state))
     returning notify_id
@@ -3089,6 +3087,27 @@ begin
     into :v_unpaid_invoice_count;
   execute procedure param_set(:i_dest_param_id, :i_param_name,
     :v_unpaid_invoice_count);
+end^
+
+
+CREATE OR ALTER PROCEDURE ORDERHISTORY_UPDATE (
+    I_ORDER_ID TYPE OF ID_ORDER,
+    I_STATUS_ID TYPE OF ID_STATUS,
+    I_STATE_ID TYPE OF ID_STATE)
+AS
+declare variable V_STATUS_ID type of ID_STATUS;
+declare variable V_STATE_ID type of ID_STATE;
+begin
+  select coalesce(oh.status_id, 0), coalesce(oh.state_id, 0)
+    from orderhistory oh
+    where oh.order_id = :i_order_id
+    order by oh.action_dtm desc
+    into :v_status_id, :v_state_id;
+  if ((:i_status_id <> :v_status_id) or (coalesce(:i_state_id, 0) <> :v_state_id)) then
+  begin
+    insert into orderhistory(order_id, status_id, state_id)
+      values (:i_order_id, :i_status_id, :i_state_id);
+  end
 end^
 
 
@@ -3937,6 +3956,36 @@ begin
   execute procedure param_set(:i_param_id, 'PRICE_EUR', :v_price_eur);
   execute procedure param_set(:i_param_id, 'AMOUNT', 1);
   o_cost_eur = v_price_eur;
+  suspend;
+end^
+
+
+CREATE OR ALTER PROCEDURE TAX_USE_REST (
+    I_TAXRATE_ID TYPE OF ID_TAX,
+    I_PARAM_ID TYPE OF ID_PARAM)
+RETURNS (
+    O_COST_EUR TYPE OF MONEY_EUR)
+AS
+declare variable V_AMOUNT type of VALUE_INTEGER;
+declare variable V_ORDER_ID type of ID_ORDER;
+declare variable V_PRICE_AMOUNT type of VALUE_INTEGER;
+declare variable V_PRICE_EUR type of MONEY_EUR;
+declare variable V_TAX_AMOUNT type of VALUE_INTEGER;
+declare variable V_FREE_AMOUNT type of VALUE_INTEGER;
+begin
+  select o_value from param_get(:i_param_id, 'ORDER_ID') into :v_order_id;
+
+  select a.rest_eur
+    from accounts a
+      inner join clients c on (c.account_id = a.account_id)
+      inner join orders o on (o.client_id = c.client_id)
+    where o.order_id = :v_order_id
+    into :o_cost_eur;
+--  if (o_cost_eur) then
+
+  execute procedure param_set(:i_param_id, 'PRICE_EUR', :v_price_eur);
+  execute procedure param_set(:i_param_id, 'AMOUNT', :v_tax_amount);
+  o_cost_eur = :v_price_eur*:v_tax_amount;
   suspend;
 end^
 

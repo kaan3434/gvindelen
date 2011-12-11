@@ -314,11 +314,13 @@ begin
       'select order_code from orders where order_id = :order_id',
       0, [OrderId], aTransaction);
     InvFileName:= Format('inv_%s.pdf', [OrderCode]);
+    ForceDirectories(Path['Invoices']);
     frxReportOnePage.FileName:= Path['Invoices']+invFileName;
     frxReportOnePage.LoadFromFile(Path['FastReport'] + 'invoice.fr3');
-    frxReportOnePage.Variables.Variables['InvoiceId']:= Format('''%u''', [InvoiceId]);
+    frxReportOnePage.Variables.Variables['InvoiceId']:= Format('''%u''', [Integer(InvoiceId)]);
     frxReportOnePage.PrepareReport(true);
     frxReportOnePage.Export(frxPDFExport);
+    frxReportOnePage.ShowPreparedReport;
 
     dmOtto.ActionExecute(trnWrite, 'INVOICE', 'INVOICE_PRINT',
        Value2Vars(InvFileName, 'FILENAME'),

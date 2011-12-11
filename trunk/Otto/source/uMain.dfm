@@ -22,8 +22,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 1050
-    Height = 47
+    Width = 1042
+    Height = 49
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -168,17 +168,17 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 436
-    Width = 1050
+    Top = 432
+    Width = 1042
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object mdckRight: TTBXMultiDock
-    Left = 852
-    Top = 47
+    Left = 844
+    Top = 49
     Width = 198
-    Height = 389
+    Height = 383
     Position = dpRight
     object pnl1: TTBXDockablePanel
       Left = 0
