@@ -93,7 +93,7 @@ ExeDescription=
 OutputDir=
 UnitOutputDir=$(DELPHI)\Lib
 PackageDLLOutputDir=
-PackageDCPOutputDir=
+PackageDCPOutputDir=$(DELPHI)\Lib
 SearchPath=..\Source
 Packages=
 Conditionals=
@@ -105,10 +105,6 @@ HostApplication=
 Launcher=
 UseLauncher=0
 DebugCWD=
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
@@ -144,3 +140,6 @@ Item0=..\Source
 Count=2
 Item0=$(DELPHI)\Lib
 Item1=D:\dcu70
+[HistoryLists\hlDCPOutput]
+Count=1
+Item0=$(DELPHI)\Lib
