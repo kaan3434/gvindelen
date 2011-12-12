@@ -57,6 +57,7 @@ type
     btn3: TTBXItem;
     actApprove: TAction;
     btn4: TTBXItem;
+    fldOrderItems_ORDERITEM_INDEX: TIntegerField;
     procedure ProgressCheckAvailShow(Sender: TObject);
     procedure actCheckAvailableExecute(Sender: TObject);
     procedure grdOrderItemsColEnter(Sender: TObject);
@@ -82,6 +83,7 @@ type
     procedure actDublicateExecute(Sender: TObject);
     procedure actApproveExecute(Sender: TObject);
     procedure actApproveUpdate(Sender: TObject);
+    procedure mtblOrderItemsAfterInsert(DataSet: TDataSet);
   private
     { Private declarations }
     FQryStatuses: Pointer;
@@ -147,6 +149,7 @@ begin
         'PRICE_EUR;COST_EUR;NAME_RUS;STATUS_ID', true);
       BatchMoveFields2(ndOrderItem, mtblOrderItems,
         'ARTICLE_ID;PAGE_NO;POSITION_SIGN;STATUS_SIGN;KIND_RUS;STATE_ID;WEIGHT', false);
+      BatchMoveFields2(ndOrderItem, ndOrder, 'ORDER_ID=ID');
       dmOtto.ActionExecute(trnWrite, ndOrderItem);
       dmOtto.ObjectGet(ndOrderItem, OrderItemId, trnWrite);
       mtblOrderItems.Next;
@@ -185,7 +188,7 @@ begin
   for i:= 0 to ndOrderItems.NodeCount - 1 do
   begin
     ndOrderItem:= ndOrderItems[i];
-    if Pos(',DELETEABLE,', dmOtto.GetFlagListById(GetXmlAttrValue(ndOrderItem, 'STATUS_ID'))) > 0 then
+    if XmlAttrIn(ndOrderItem, 'STATUS_FLAG_LIST', 'DELETABLE') then
     begin
       nDimension:= GetXmlAttrValue(ndOrderItem, 'DIMENSION');
       nArticleSign:= dmOtto.GetArticleSign(GetXmlAttrValue(ndOrderItem, 'ARTICLE_CODE'),
@@ -216,14 +219,17 @@ begin
           begin
             Case GetXmlAttrValue(ndOrderItem, 'AVAILABLE') of
              0: begin
-                  SetXmlAttr(ndOrderItem, 'STATE_ID', dmOtto.GetStatusBySign(ndOrderItem, 'UNAVAILABLE'));
-                  SetXmlAttr(ndOrderItem, 'STATUS_ID', dmOtto.GetStatusBySign(ndOrderItem, 'SOLD'));
+                  SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'UNAVAILABLE');
+                  SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'SOLD');
                 end;
-             1: SetXmlAttr(ndOrderItem, 'STATE_ID', dmOtto.GetStatusBySign(ndOrderItem, 'AVAILABLE'));
-             2: SetXmlAttr(ndOrderItem, 'STATE_ID', dmOtto.GetStatusBySign(ndOrderItem, 'DELAY3WEEK'));
-             21: SetXmlAttr(ndOrderItem, 'STATE_ID', dmOtto.GetStatusBySign(ndOrderItem, 'DELAY3WEEK'));
+             1: SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'AVAILABLE');
+             2: SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'DELAY3WEEK');
+             21: SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'DELAY3WEEK');
             end;
           end;
+          xmlAvail.XmlFormat:= xfReadable;
+          ForceDirectories(Path['Articles']);
+          xmlAvail.SaveToFile(GetXmlAttr(ndOrderItem, 'ARTICLE_CODE', Path['Articles'], '_avail.xml'));
         finally
           xmlAvail.Free;
         end;
@@ -286,7 +292,7 @@ begin
                 begin
                   SetXmlAttr(ndOrderItem, 'ARTICLE_ID', ArticleId);
                   if GetXmlAttrAsMoney(nl[j], 'price_eur') <> GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') then
-                    SetXmlAttr(ndOrderItem, 'STATUS_ID', dmOtto.GetStatusBySign(ndOrderItem, 'WRONGPRICE'));
+                    SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', GetXmlAttrAsMoney(nl[j], 'price_eur'));
                 end;
               end;
             finally
@@ -304,14 +310,7 @@ begin
         0, [nArticleSign, nDimension], trnWrite);
       if aWeight <> null then
         SetXmlAttr(ndOrderItem, 'WEIGHT', aWeight);
-      if mtblOrderItems.Locate('ORDERITEM_ID', GetXmlAttrValue(ndOrderItem, 'ID'), []) then
-      begin
-        if mtblOrderItems.State = dsBrowse then
-            mtblOrderItems.Edit;
-        BatchMoveFields2(mtblOrderItems, ndOrderItem,
-          'ARTICLE_ID;STATUS_ID;STATE_ID;WEIGHT');
-        mtblOrderItems.Post;
-      end;
+      dmOtto.ActionExecute(trnWrite, ndOrderItem);
     end
   end;
 end;
@@ -405,16 +404,13 @@ end;
 
 procedure TFrameOrderItems.mtblOrderItemsBeforeEdit(DataSet: TDataSet);
 begin
-  if Pos(',EDITABLE,', DataSet['FLAG_SIGN_LIST']) = 0 then
+  if not FlagPresent('EDITABLE', ndOrderItem, 'STATUS_FLAG_LIST') then
     Abort;
 end;
 
 procedure TFrameOrderItems.mtblOrderItemsBeforeInsert(DataSet: TDataSet);
-var
-  FlagList: string;
 begin
-  FlagList:= dmOtto.GetFlagListById(GetXmlAttrValue(ndOrder, 'STATUS_ID'));
-  if Pos(',APPENDABLE,', FlagList) = 0 then
+  if not FlagPresent('APPENDABLE', ndOrder, 'STATUS_FLAG_LIST') then
     Abort;
 end;
 
@@ -425,11 +421,10 @@ begin
   if DataSet['STATUS_ID'] = null then
     DataSet['STATUS_ID']:= dmOtto.GetDefaultStatusId('ORDERITEM');
 
-  FlagSignList:= dmOtto.GetFlagListById(DataSet['STATUS_ID']);
-  if Pos(',DEBIT,', FlagSignList) > 0 then
+  if FlagPresent('DEBIT', ndOrderItem, 'STATUS_FLAG_LIST') then
     DataSet['AMOUNT']:= 0
   else
-  if Pos(',CREDIT,', FlagSignList) > 0 then
+  if FlagPresent('CREDIT', ndOrderItem, 'STATUS_FLAG_LIST') then
     DataSet['AMOUNT']:= 1;
   DataSet['COST_EUR']:= DataSet['PRICE_EUR']*DataSet['AMOUNT'];
 end;
@@ -443,10 +438,6 @@ end;
 
 procedure TFrameOrderItems.mtblOrderItemsBeforePost(DataSet: TDataSet);
 begin
-  inherited;
-  if DataSet['ORDERITEM_ID'] = null then
-    DataSet['ORDERITEM_ID']:= dmOtto.GetNewObjectId('ORDERITEM');
-  DataSet['ORDER_ID']:= OrderId;
   if DataSet['ARTICLE_CODE']=null then
     abort;
 end;
@@ -546,6 +537,16 @@ end;
 procedure TFrameOrderItems.actApproveUpdate(Sender: TObject);
 begin
   actApprove.Enabled:= mtblOrderItems['STATUS_SIGN'] = 'NEW';
+end;
+
+procedure TFrameOrderItems.mtblOrderItemsAfterInsert(DataSet: TDataSet);
+var
+  OrderItemId: Integer;
+begin
+  ndOrderItem:= ndOrderItems.NodeNew('ORDERITEM');
+  OrderItemId:= dmOtto.GetNewObjectId(ndOrderItem.Name);
+  SetXmlAttr(ndOrderItem, 'ID', OrderItemId);
+  DataSet['ORDERITEM_ID']:= OrderItemId;
 end;
 
 end.

@@ -204,6 +204,13 @@ inherited FrameOrderItems: TFrameOrderItems
             Title.Alignment = taCenter
             Title.Caption = #1054#1073#1085#1086#1074#1083#1077#1085
             Visible = False
+          end
+          item
+            AutoFitColWidth = False
+            EditButtons = <>
+            FieldName = 'ORDERITEM_INDEX'
+            Footers = <>
+            Width = 30
           end>
         object RowDetailData: TRowDetailPanelControlEh
           object grdArticles: TDBGridEh
@@ -575,11 +582,16 @@ inherited FrameOrderItems: TFrameOrderItems
         Name = 'ARTICLE_SIGN'
         DataType = ftString
         Size = 50
+      end
+      item
+        Name = 'ORDERITEM_INDEX'
+        DataType = ftInteger
       end>
     IndexDefs = <>
     Params = <>
     StoreDefs = True
     BeforeInsert = mtblOrderItemsBeforeInsert
+    AfterInsert = mtblOrderItemsAfterInsert
     BeforeEdit = mtblOrderItemsBeforeEdit
     BeforePost = mtblOrderItemsBeforePost
     OnCalcFields = mtblOrderItemsCalcFields
@@ -718,6 +730,9 @@ inherited FrameOrderItems: TFrameOrderItems
     object fldOrderItems_ARTICLE_SIGN: TStringField
       FieldName = 'ARTICLE_SIGN'
       Size = 50
+    end
+    object fldOrderItems_ORDERITEM_INDEX: TIntegerField
+      FieldName = 'ORDERITEM_INDEX'
     end
     object MemTableData: TMemTableDataEh
       object DataStruct: TMTDataStructEh
@@ -870,6 +885,16 @@ inherited FrameOrderItems: TFrameOrderItems
           Visible = False
           Size = 50
           Transliterate = False
+        end
+        object ORDERITEM_INDEX: TMTNumericDataFieldEh
+          FieldName = 'ORDERITEM_INDEX'
+          NumericDataType = fdtIntegerEh
+          Alignment = taLeftJustify
+          DisplayWidth = 0
+          Required = False
+          Visible = False
+          currency = False
+          Precision = 0
         end
       end
       object RecordsList: TRecordsListEh

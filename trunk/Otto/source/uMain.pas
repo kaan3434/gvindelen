@@ -148,8 +148,6 @@ type
     procedure actPrintInvoicesExecute(Sender: TObject);
     procedure actExportSMSRejectedExecute(Sender: TObject);
     procedure actExportCancellationExecute(Sender: TObject);
-    procedure frxReportBeforeConnect(Sender: TfrxCustomDatabase;
-      var Connected: Boolean);
     procedure actImportPaymentsExecute(Sender: TObject);
     procedure tmrImportMessagesTimer(Sender: TObject);
     procedure actExportOrdersExecute(Sender: TObject);
@@ -353,12 +351,6 @@ begin
     end;
     trnWrite.Commit;
   end;
-end;
-
-procedure TMainForm.frxReportBeforeConnect(Sender: TfrxCustomDatabase;
-  var Connected: Boolean);
-begin
-  //  TfrxFIBDatabase(Sender).DatabaseName:= dmOtto.dbOtto.DBFileName;
 end;
 
 procedure TMainForm.actImportPaymentsExecute(Sender: TObject);

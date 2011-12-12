@@ -30,6 +30,7 @@ function GetXmlAttrValue(aNode: TXmlNode; aAttributeName: string): variant; over
 function GetXmlAttrAsMoney(aNode: TXmlNode; aAttributeName: string;
   aDefaultValue: string = '0.00'): string;
 
+function FlagPresent(Flag: string; aNode: TXmlNode; aAttributeName: string): Boolean;
 function XmlAttrIn(aNode: TXmlNode; aAttributeName, Values: string): Boolean;
 
 function ToFloat(aStr: string): Double;
@@ -246,6 +247,11 @@ begin
   end
   else
     Result:= aDefaultValue
+end;
+
+function FlagPresent(Flag: string; aNode: TXmlNode; aAttributeName: string): Boolean;
+begin
+  Result:= Pos(','+Flag+',', ','+GetXmlAttr(aNode, aAttributeName)+',') > 0;
 end;
 
 function XmlAttrIn(aNode: TXmlNode; aAttributeName, Values: string): Boolean;
