@@ -132,29 +132,46 @@ end;
 
 procedure TFrameOrderItems.Write;
 var
-  OrderItemId: Integer;
-  
+  OrderItemId, i: Integer;
 begin
-  with mtblOrderItems do
+  if mtblOrderItems.State <> dsBrowse then
+    mtblOrderItems.Post;
+  For i:= 0 to ndOrderItems.NodeCount - 1 do
   begin
-    First;
-    while not Eof do
-    begin
-      OrderItemId:= mtblOrderItems['ORDERITEM_ID'];
-      ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM', 'ID', mtblOrderItems['ORDERITEM_ID']);
-      if ndOrderItem = nil then
-        ndOrderItem:= ndOrderItems.NodeNew('ORDERITEM');
-      BatchMoveFields2(ndOrderItem, mtblOrderItems,
-        'ID=ORDERITEM_ID;ORDER_ID;MAGAZINE_ID;ARTICLE_CODE;DIMENSION;'+
-        'PRICE_EUR;COST_EUR;NAME_RUS;STATUS_ID', true);
-      BatchMoveFields2(ndOrderItem, mtblOrderItems,
-        'ARTICLE_ID;PAGE_NO;POSITION_SIGN;STATUS_SIGN;KIND_RUS;STATE_ID;WEIGHT', false);
-      BatchMoveFields2(ndOrderItem, ndOrder, 'ORDER_ID=ID');
-      dmOtto.ActionExecute(trnWrite, ndOrderItem);
-      dmOtto.ObjectGet(ndOrderItem, OrderItemId, trnWrite);
-      mtblOrderItems.Next;
-    end;
+    ndOrderItem:= ndOrderItems[i];
+    OrderItemId:= GetXmlAttrValue(ndOrderItem, 'ID');
+    mtblOrderItems.Locate('ORDERITEM_ID', OrderItemId, []);
+    BatchMoveFields2(ndOrderItem, mtblOrderItems,
+      'MAGAZINE_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR;NAME_RUS;STATUS_ID', true);
+    BatchMoveFields2(ndOrderItem, mtblOrderItems,
+      'ARTICLE_ID;PAGE_NO;POSITION_SIGN;KIND_RUS;STATE_ID;WEIGHT', false);
+    dmOtto.ActionExecute(trnWrite, ndOrderItem);
+    ndOrder.Document.XmlFormat:= xfReadable;
+    ndOrder.Document.SaveToFile('Order.xml');
+    dmOtto.ObjectGet(ndOrderItem, OrderItemId, trnWrite);
+    ndOrder.Document.XmlFormat:= xfReadable;
+    ndOrder.Document.SaveToFile('Order.xml');
   end;
+//  with mtblOrderItems do
+//  begin
+//    First;
+//    while not Eof do
+//    begin
+//      OrderItemId:= mtblOrderItems['ORDERITEM_ID'];
+//      ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM', 'ID', mtblOrderItems['ORDERITEM_ID']);
+//      if ndOrderItem = nil then
+//        ndOrderItem:= ndOrderItems.NodeNew('ORDERITEM');
+//      BatchMoveFields2(ndOrderItem, mtblOrderItems,
+//        'ID=ORDERITEM_ID;ORDER_ID;MAGAZINE_ID;ARTICLE_CODE;DIMENSION;'+
+//        'PRICE_EUR;COST_EUR;NAME_RUS;STATUS_ID', true);
+//      BatchMoveFields2(ndOrderItem, mtblOrderItems,
+//        'ARTICLE_ID;PAGE_NO;POSITION_SIGN;STATUS_SIGN;KIND_RUS;STATE_ID;WEIGHT', false);
+//      BatchMoveFields2(ndOrderItem, ndOrder, 'ORDER_ID=ID');
+//      dmOtto.ActionExecute(trnWrite, ndOrderItem);
+//      dmOtto.ObjectGet(ndOrderItem, OrderItemId, trnWrite);
+//      mtblOrderItems.Next;
+//    end;
+//  end;
 end;
 
 procedure TFrameOrderItems.Read;
@@ -184,11 +201,13 @@ var
 begin
   ProgressCheckAvail.ProgressMax:= ndOrderItems.NodeCount;
   ProgressCheckAvail.ProgressPosition:= 0;
-
+  
+  ndOrder.Document.XmlFormat:= xfReadable;
+  ndOrder.Document.SaveToFile('Order.xml');
   for i:= 0 to ndOrderItems.NodeCount - 1 do
   begin
     ndOrderItem:= ndOrderItems[i];
-    if XmlAttrIn(ndOrderItem, 'STATUS_FLAG_LIST', 'DELETABLE') then
+    if FlagPresent('DELETEABLE', ndOrderItem, 'STATUS_FLAG_LIST') then
     begin
       nDimension:= GetXmlAttrValue(ndOrderItem, 'DIMENSION');
       nArticleSign:= dmOtto.GetArticleSign(GetXmlAttrValue(ndOrderItem, 'ARTICLE_CODE'),
@@ -421,12 +440,27 @@ begin
   if DataSet['STATUS_ID'] = null then
     DataSet['STATUS_ID']:= dmOtto.GetDefaultStatusId('ORDERITEM');
 
-  if FlagPresent('DEBIT', ndOrderItem, 'STATUS_FLAG_LIST') then
+  if DataSet['ORDERITEM_ID'] = null then
+    DataSet['ORDERITEM_ID']:= GetXmlAttrValue(ndOrderItem, 'ID');
+
+  if DataSet['STATUS_ID'] = null then
+    DataSet['STATUS_ID']:= dmOtto.GetDefaultStatusId('ORDERITEM');
+
+  if (DataSet['PRICE_EUR'] = null) and (DataSet['DIMENSION'] <> null) and
+     (DataSet['ARTICLE_CODE'] <> null) then
+  begin
+    DataSet['PRICE_EUR']:= dmOtto.GetMinPrice(dmOtto.GetArticleSign(DataSet['ARTICLE_CODE'], DataSet['MAGAZINE_ID']),
+      DataSet['DIMENSION'], trnWrite);
+  end;
+
+  FlagSignList:= dmOtto.GetFlagListById(DataSet['STATUS_ID']);
+  if Pos(',DEBIT,', FlagSignList) > 0 then
     DataSet['AMOUNT']:= 0
   else
-  if FlagPresent('CREDIT', ndOrderItem, 'STATUS_FLAG_LIST') then
+  if Pos(',CREDIT,', FlagSignList) > 0 then
     DataSet['AMOUNT']:= 1;
   DataSet['COST_EUR']:= DataSet['PRICE_EUR']*DataSet['AMOUNT'];
+
 end;
 
 procedure TFrameOrderItems.OpenTables;
@@ -437,9 +471,21 @@ begin
 end;
 
 procedure TFrameOrderItems.mtblOrderItemsBeforePost(DataSet: TDataSet);
+var
+  Weight: variant;
 begin
+  ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM', 'ID', DataSet['ORDERITEM_ID']);
   if DataSet['ARTICLE_CODE']=null then
     abort;
+
+  SetXmlAttr(ndOrderItem, 'ORDER_ID', OrderId);
+
+  if DataSet['WEIGHT'] = null then
+  begin
+    DataSet['WEIGHT']:= dmOtto.GetWeight(dmOtto.GetArticleSign(DataSet['ARTICLE_CODE'], DataSet['MAGAZINE_ID']),
+      DataSet['DIMENSION'], trnWrite);
+    SetXmlAttr(ndOrderItem, 'WEIGHT', DataSet['WEIGHT']);
+  end;
 end;
 
 procedure TFrameOrderItems.actCancelRequestExecute(Sender: TObject);
@@ -540,13 +586,9 @@ begin
 end;
 
 procedure TFrameOrderItems.mtblOrderItemsAfterInsert(DataSet: TDataSet);
-var
-  OrderItemId: Integer;
 begin
   ndOrderItem:= ndOrderItems.NodeNew('ORDERITEM');
-  OrderItemId:= dmOtto.GetNewObjectId(ndOrderItem.Name);
-  SetXmlAttr(ndOrderItem, 'ID', OrderItemId);
-  DataSet['ORDERITEM_ID']:= OrderItemId;
+  SetXmlAttr(ndOrderItem, 'ID', dmOtto.GetNewObjectId(ndOrderItem.Name));
 end;
 
 end.

@@ -97,6 +97,8 @@ type
     procedure GetInvoices(aInvoicesNode: TXmlNode; aOrderId: Integer; aTransaction: TpFIBTransaction);
     procedure CreateAlert(aHeaderText, aMessageText: string;
       DlgType: TMsgDlgType; Duration: Integer=0);
+    function GetWeight(aArticleSign, aAtricleSize: String; aTransaction: TpFIBTransaction): variant;
+    function GetMinPrice(aArticleSign, aAtricleSize: String; aTransaction: TpFIBTransaction): variant;
   end;
 
 var
@@ -826,6 +828,24 @@ begin
   Sleep(100);
   for i := 0 to 100 do
     Application.ProcessMessages;
+end;
+
+function TdmOtto.GetWeight(aArticleSign, aAtricleSize: String;
+  aTransaction: TpFIBTransaction): variant;
+begin
+  Result:= aTransaction.DefaultDatabase.QueryValue(
+    'select a.weight from v_articles a '+
+    'where a.article_sign = :article_sign and trim(a.dimension) = trim(:article_size)',
+    0, [aArticleSign, aAtricleSize], aTransaction);
+end;
+
+function TdmOtto.GetMinPrice(aArticleSign, aAtricleSize: String;
+  aTransaction: TpFIBTransaction): variant;
+begin
+  Result:= aTransaction.DefaultDatabase.QueryValue(
+    'select min(a.price_eur) from v_articles a '+
+    'where a.article_sign = :article_sign and trim(a.dimension) = trim(:article_size)',
+    0, [aArticleSign, aAtricleSize], aTransaction);
 end;
 
 initialization

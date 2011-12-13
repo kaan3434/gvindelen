@@ -7,7 +7,7 @@ object dmOtto: TdmOtto
   Height = 405
   Width = 624
   object dbOtto: TpFIBDatabase
-    DBName = 'D:\Otto\Data\otto_ppz.fdb'
+    DBName = 'D:\otto\Data\otto_ppz.fdb'
     DBParams.Strings = (
       'lc_ctype=CYRL'
       'password=masterkey'
@@ -19,6 +19,7 @@ object dmOtto: TdmOtto
     DesignDBOptions = [ddoIsDefaultDatabase, ddoStoreConnected]
     UseRepositories = []
     LibraryName = 'fbclient.dll'
+    GeneratorsCache.GeneratorList = <>
     AliasName = 'Otto'
     WaitForRestoreConnect = 0
     AfterConnect = dbOttoAfterConnect
@@ -114,6 +115,7 @@ object dmOtto: TdmOtto
       'write'
       'nowait'
       'concurrency')
+    MDTTransactionRole = mtrAutoDefine
     TPBMode = tpbDefault
     Left = 232
     Top = 16
