@@ -1,17 +1,17 @@
 <div class="homenav" id="pagenavigation">
 <style type="text/css">
 #pagenavigation.homenav a {
-  color:#F59C00;
+  color:#008000;
 }
 #pagenavigation.homenav #square {
-  background-color:#F59C00 !important;
+  background-color:#008000 !important;
 }
 #pagenavigation.homenav .block .headline {
-  color:#F59C00;
+  color:#008000;
 }
 </style>
 
-	<h1 id="square"><span class="text">Осень с ОТТО</span></h1>
+	<h1 id="square"><span class="text">Зима с ОТТО</span></h1>
 
   <div class="block dotline" id="meinotto">
     <div class="headline">Мой OTTO</div>

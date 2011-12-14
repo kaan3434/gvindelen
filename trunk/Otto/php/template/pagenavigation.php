@@ -1,12 +1,12 @@
 <style type="text/css">
 #pagenavigation.homenav a {
-  color:#F59C00;
+  color:#008000;
 }
 #pagenavigation.homenav #square {
-  background-color:#F59C00 !important;
+  background-color:#008000 !important;
 }
 #pagenavigation.homenav .block .headline {
-  color:#F59C00;
+  color:#008000;
 }
 </style>
 
