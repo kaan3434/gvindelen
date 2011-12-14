@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 244
-  Top = 140
+  Left = 419
+  Top = 184
   Width = 1058
   Height = 512
   Caption = 'PPZ2'
@@ -22,8 +22,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 1042
-    Height = 49
+    Width = 1050
+    Height = 47
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -171,17 +171,17 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 432
-    Width = 1042
+    Top = 436
+    Width = 1050
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object mdckRight: TTBXMultiDock
-    Left = 844
-    Top = 49
+    Left = 852
+    Top = 47
     Width = 198
-    Height = 383
+    Height = 389
     Position = dpRight
     object pnl1: TTBXDockablePanel
       Left = 0
@@ -1363,7 +1363,7 @@ object MainForm: TMainForm
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 40875.549125891200000000
+    ReportOptions.LastChange = 40889.006620057900000000
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
     Left = 352

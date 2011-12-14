@@ -29,6 +29,7 @@ inherited FormWizardOrder: TFormWizardOrder
       Header.Subtitle.Font.Name = 'MS Sans Serif'
       Header.Subtitle.Font.Style = []
       Panel.Visible = True
+      VisibleButtons = [bkNext, bkCancel]
       DesignSize = (
         1016
         479)

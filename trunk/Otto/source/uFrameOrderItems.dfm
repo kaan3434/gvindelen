@@ -15,6 +15,7 @@ inherited FrameOrderItems: TFrameOrderItems
       end
       object btn2: TTBXItem
         Action = actCancelRequest
+        Caption = #1059#1076#1072#1083#1080#1090#1100'/A'#1085#1091#1083#1080#1088#1086#1074#1072#1090#1100
         DisplayMode = nbdmImageAndText
       end
       object btn1: TTBXItem
@@ -24,6 +25,9 @@ inherited FrameOrderItems: TFrameOrderItems
       object btn4: TTBXItem
         Action = actApprove
         DisplayMode = nbdmImageAndText
+      end
+      object subSetStatuses: TTBXSubmenuItem
+        Caption = #1059#1089#1090#1072#1085#1086#1074#1080#1090#1100' '#1089#1090#1072#1090#1091#1089
       end
     end
   end
@@ -58,7 +62,7 @@ inherited FrameOrderItems: TFrameOrderItems
         FooterFont.Charset = DEFAULT_CHARSET
         FooterFont.Color = clWindowText
         FooterFont.Height = -11
-        FooterFont.Name = 'Tahoma'
+        FooterFont.Name = 'MS Sans Serif'
         FooterFont.Style = []
         FooterRowCount = 1
         Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
@@ -74,10 +78,11 @@ inherited FrameOrderItems: TFrameOrderItems
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clWindowText
         TitleFont.Height = -11
-        TitleFont.Name = 'Tahoma'
+        TitleFont.Name = 'MS Sans Serif'
         TitleFont.Style = []
         OnColEnter = grdOrderItemsColEnter
         OnEnter = grdOrderItemsEnter
+        OnGetCellParams = grdOrderItemsGetCellParams
         OnRowDetailPanelHide = grdOrderItemsRowDetailPanelHide
         OnRowDetailPanelShow = grdOrderItemsRowDetailPanelShow
         Columns = <
@@ -148,6 +153,7 @@ inherited FrameOrderItems: TFrameOrderItems
             Footer.FieldName = 'WEIGHT'
             Footer.ValueType = fvtSum
             Footers = <>
+            ReadOnly = True
             Title.Alignment = taCenter
             Title.Caption = #1042#1077#1089', '#1075
             Width = 50
@@ -210,13 +216,19 @@ inherited FrameOrderItems: TFrameOrderItems
             EditButtons = <>
             FieldName = 'ORDERITEM_INDEX'
             Footers = <>
+            ReadOnly = True
             Width = 30
+          end
+          item
+            EditButtons = <>
+            FieldName = 'ORDERITEM_ID'
+            Footers = <>
           end>
         object RowDetailData: TRowDetailPanelControlEh
           object grdArticles: TDBGridEh
             Left = 0
             Top = 0
-            Width = 1035
+            Width = 1080
             Height = 198
             Align = alClient
             AutoFitColWidths = True
@@ -227,7 +239,7 @@ inherited FrameOrderItems: TFrameOrderItems
             FooterFont.Charset = DEFAULT_CHARSET
             FooterFont.Color = clWindowText
             FooterFont.Height = -11
-            FooterFont.Name = 'Tahoma'
+            FooterFont.Name = 'MS Sans Serif'
             FooterFont.Style = []
             Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
             OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghPreferIncSearch, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
@@ -242,7 +254,7 @@ inherited FrameOrderItems: TFrameOrderItems
             TitleFont.Charset = DEFAULT_CHARSET
             TitleFont.Color = clWindowText
             TitleFont.Height = -11
-            TitleFont.Name = 'Tahoma'
+            TitleFont.Name = 'MS Sans Serif'
             TitleFont.Style = []
             OnDblClick = grdArticlesDblClick
             OnKeyDown = grdArticlesKeyDown
@@ -368,6 +380,10 @@ inherited FrameOrderItems: TFrameOrderItems
       ImageIndex = 4
       OnExecute = actApproveExecute
       OnUpdate = actApproveUpdate
+    end
+    object actSetStatus: TAction
+      Caption = #1059#1089#1090#1072#1085#1086#1074#1080#1090#1100' '#1089#1090#1072#1090#1091#1089
+      OnExecute = actSetStatusExecute
     end
   end
   inherited imgList: TPngImageList
@@ -591,9 +607,9 @@ inherited FrameOrderItems: TFrameOrderItems
     Params = <>
     StoreDefs = True
     BeforeInsert = mtblOrderItemsBeforeInsert
-    AfterInsert = mtblOrderItemsAfterInsert
     BeforeEdit = mtblOrderItemsBeforeEdit
     BeforePost = mtblOrderItemsBeforePost
+    AfterScroll = mtblOrderItemsAfterScroll
     OnCalcFields = mtblOrderItemsCalcFields
     OnSetFieldValue = mtblOrderItemsSetFieldValue
     Left = 33
@@ -962,5 +978,17 @@ inherited FrameOrderItems: TFrameOrderItems
     OnShow = ProgressCheckAvailShow
     Left = 480
     Top = 16
+  end
+  object qryNextStatus: TpFIBDataSet
+    SelectSQL.Strings = (
+      'select s.status_id, s.status_name, s.status_sign'
+      'from status_rules sr'
+      '  inner join statuses s on (s.status_id = sr.new_status_id)'
+      'where sr.old_status_id = :status_id')
+    Transaction = trnWrite
+    Database = dmOtto.dbOtto
+    DataSource = dsOrderItems
+    Left = 272
+    Top = 288
   end
 end

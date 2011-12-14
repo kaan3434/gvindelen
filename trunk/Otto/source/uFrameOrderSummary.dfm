@@ -155,7 +155,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
             Font.Name = 'MS Sans Serif'
             Font.Style = [fsBold]
             ParentFont = False
-            TabOrder = 1
+            TabOrder = 4
           end
           object txtClientPhoneOnFinal: TStaticText
             Left = 72
@@ -170,7 +170,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
             Font.Name = 'MS Sans Serif'
             Font.Style = [fsBold]
             ParentFont = False
-            TabOrder = 2
+            TabOrder = 1
           end
           object txtClientGsmOnFinal: TStaticText
             Left = 72
@@ -185,7 +185,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
             Font.Name = 'MS Sans Serif'
             Font.Style = [fsBold]
             ParentFont = False
-            TabOrder = 3
+            TabOrder = 2
           end
           object txtClientEmailOnFinal: TStaticText
             Left = 72
@@ -200,7 +200,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
             Font.Name = 'MS Sans Serif'
             Font.Style = [fsBold]
             ParentFont = False
-            TabOrder = 4
+            TabOrder = 3
           end
           object txtAccountRest: TStaticText
             Left = 72
@@ -258,7 +258,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
             Width = 183
             Height = 17
             Caption = #1048#1089#1087#1086#1083#1100#1079#1086#1074#1072#1090#1100' '#1086#1089#1090#1072#1090#1086#1082' '#1085#1072' '#1089#1095#1077#1090#1077
-            TabOrder = 0
+            TabOrder = 1
             LinkedControls = <>
             HotTrackFont.Charset = DEFAULT_CHARSET
             HotTrackFont.Color = clWindowText
@@ -279,7 +279,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
             Font.Name = 'MS Sans Serif'
             Font.Style = [fsBold]
             ParentFont = False
-            TabOrder = 1
+            TabOrder = 0
           end
         end
       end

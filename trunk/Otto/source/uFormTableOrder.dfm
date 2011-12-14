@@ -557,7 +557,7 @@ inherited FormTableOrders: TFormTableOrders
       
         '  inner join v_order_summary on (v_order_summary.order_id = orde' +
         'rs.order_id)'
-      '  inner join invoices on (invoices.order_id = orders.order_id)'
+      '  left join invoices on (invoices.order_id = orders.order_id)'
       'where '
       '/*FILTER*/ 1=1'
       'order by Create_dtm')
