@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 419
-  Top = 184
+  Left = 199
+  Top = 161
   Width = 1058
   Height = 512
   Caption = 'PPZ2'
@@ -22,8 +22,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 1050
-    Height = 47
+    Width = 1042
+    Height = 49
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -171,17 +171,17 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 436
-    Width = 1050
+    Top = 432
+    Width = 1042
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object mdckRight: TTBXMultiDock
-    Left = 852
-    Top = 47
+    Left = 844
+    Top = 49
     Width = 198
-    Height = 389
+    Height = 383
     Position = dpRight
     object pnl1: TTBXDockablePanel
       Left = 0
@@ -1350,32 +1350,13 @@ object MainForm: TMainForm
     Left = 272
     Top = 96
   end
-  object frxReport: TfrxReport
-    Version = '4.9.64'
-    DotMatrixReport = False
-    IniFile = '\Software\Fast Reports'
-    PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
-    PreviewOptions.MDIChild = True
-    PreviewOptions.Modal = False
-    PreviewOptions.ShowCaptions = True
-    PreviewOptions.Zoom = 1.000000000000000000
-    PreviewOptions.ZoomMode = zmManyPages
-    PrintOptions.Printer = 'Default'
-    PrintOptions.PrintOnSheet = 0
-    ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 40889.006620057900000000
-    ScriptLanguage = 'PascalScript'
-    StoreInDFM = False
-    Left = 352
-    Top = 96
-  end
   object frxPDFExport: TfrxPDFExport
     ShowDialog = False
     UseFileCache = True
     ShowProgress = False
     OverwritePrompt = False
     EmbeddedFonts = True
-    PrintOptimized = False
+    PrintOptimized = True
     Outline = False
     Background = False
     HTMLTags = True
@@ -1414,7 +1395,7 @@ object MainForm: TMainForm
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
     Left = 352
-    Top = 144
+    Top = 96
   end
   object scrptUpdate: TpFIBScripter
     Database = dmOtto.dbOtto
@@ -1711,5 +1692,18 @@ object MainForm: TMainForm
     Title = #1060#1072#1081#1083' '#1089' '#1088#1077#1079#1077#1088#1074#1085#1086#1081' '#1082#1086#1087#1080#1077#1081' '#1041#1044
     Left = 648
     Top = 256
+  end
+  object frxmlxprt1: TfrxXMLExport
+    UseFileCache = True
+    ShowProgress = True
+    OverwritePrompt = False
+    Background = True
+    Creator = 'FastReport'
+    EmptyLines = True
+    SuppressPageHeadersFooters = False
+    RowsCount = 0
+    Split = ssNotSplit
+    Left = 416
+    Top = 144
   end
 end

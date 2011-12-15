@@ -11,7 +11,8 @@ uses
   frxFIBComponents, ExtCtrls, DBGridEhGrouping, GridsEh, DBGridEh,
   JvEmbeddedForms, JvExControls, JvProgressComponent, frxRich, pFIBScripter,
   JvDialogs, JvBaseDlg, IB_Services, pngimage,
-  gsFileVersionInfo, JvLogFile, JvThread, JvProgressDialog, dbf;
+  gsFileVersionInfo, JvLogFile, JvThread, JvProgressDialog, dbf,
+  frxExportXML;
 
 type
   TMainForm = class(TForm)
@@ -96,7 +97,6 @@ type
     actPrintInvoices: TAction;
     btn3: TTBXItem;
     trnRead: TpFIBTransaction;
-    frxReport: TfrxReport;
     frxPDFExport: TfrxPDFExport;
     actImportPayments: TAction;
     btn8: TTBXItem;
@@ -134,6 +134,7 @@ type
     btn2: TTBXItem;
     btnCancellation: TTBXItem;
     actProcessCancellation: TAction;
+    frxmlxprt1: TfrxXMLExport;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -313,7 +314,7 @@ begin
       0, [OrderId], aTransaction);
     InvFileName:= Format('inv_%s.pdf', [OrderCode]);
     ForceDirectories(Path['Invoices']);
-    frxReportOnePage.FileName:= Path['Invoices']+invFileName;
+    frxPDFExport.FileName:= Path['Invoices']+invFileName;
     frxReportOnePage.LoadFromFile(Path['FastReport'] + 'invoice.fr3');
     frxReportOnePage.Variables.Variables['InvoiceId']:= Format('''%u''', [Integer(InvoiceId)]);
     frxReportOnePage.PrepareReport(true);

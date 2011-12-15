@@ -39,7 +39,8 @@ uses
   uExportInvoices in 'uExportInvoices.pas',
   uExportPackList in 'uExportPackList.pas',
   uParseArtN in 'uParseArtN.pas',
-  uParseLiefer in 'uParseLiefer.pas';
+  uParseLiefer in 'uParseLiefer.pas',
+  GvVariant in '..\..\4Delphi\Gvindln\Source\GvVariant.pas';
 
 {$R *.res}
 

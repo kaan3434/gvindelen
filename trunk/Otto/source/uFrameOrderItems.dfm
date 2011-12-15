@@ -62,7 +62,7 @@ inherited FrameOrderItems: TFrameOrderItems
         FooterFont.Charset = DEFAULT_CHARSET
         FooterFont.Color = clWindowText
         FooterFont.Height = -11
-        FooterFont.Name = 'MS Sans Serif'
+        FooterFont.Name = 'Tahoma'
         FooterFont.Style = []
         FooterRowCount = 1
         Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
@@ -78,7 +78,7 @@ inherited FrameOrderItems: TFrameOrderItems
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clWindowText
         TitleFont.Height = -11
-        TitleFont.Name = 'MS Sans Serif'
+        TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
         OnColEnter = grdOrderItemsColEnter
         OnEnter = grdOrderItemsEnter
@@ -223,6 +223,7 @@ inherited FrameOrderItems: TFrameOrderItems
             EditButtons = <>
             FieldName = 'ORDERITEM_ID'
             Footers = <>
+            ReadOnly = True
           end>
         object RowDetailData: TRowDetailPanelControlEh
           object grdArticles: TDBGridEh
@@ -239,7 +240,7 @@ inherited FrameOrderItems: TFrameOrderItems
             FooterFont.Charset = DEFAULT_CHARSET
             FooterFont.Color = clWindowText
             FooterFont.Height = -11
-            FooterFont.Name = 'MS Sans Serif'
+            FooterFont.Name = 'Tahoma'
             FooterFont.Style = []
             Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
             OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghPreferIncSearch, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
@@ -254,7 +255,7 @@ inherited FrameOrderItems: TFrameOrderItems
             TitleFont.Charset = DEFAULT_CHARSET
             TitleFont.Color = clWindowText
             TitleFont.Height = -11
-            TitleFont.Name = 'MS Sans Serif'
+            TitleFont.Name = 'Tahoma'
             TitleFont.Style = []
             OnDblClick = grdArticlesDblClick
             OnKeyDown = grdArticlesKeyDown
@@ -602,6 +603,19 @@ inherited FrameOrderItems: TFrameOrderItems
       item
         Name = 'ORDERITEM_INDEX'
         DataType = ftInteger
+      end
+      item
+        Name = 'AMOUNT'
+        DataType = ftInteger
+      end
+      item
+        Name = 'COST_EUR'
+        DataType = ftFloat
+      end
+      item
+        Name = 'FLAG_SIGN_LIST'
+        DataType = ftString
+        Size = 1000
       end>
     IndexDefs = <>
     Params = <>
@@ -610,7 +624,6 @@ inherited FrameOrderItems: TFrameOrderItems
     BeforeEdit = mtblOrderItemsBeforeEdit
     BeforePost = mtblOrderItemsBeforePost
     AfterScroll = mtblOrderItemsAfterScroll
-    OnCalcFields = mtblOrderItemsCalcFields
     OnSetFieldValue = mtblOrderItemsSetFieldValue
     Left = 33
     Top = 286
@@ -663,11 +676,6 @@ inherited FrameOrderItems: TFrameOrderItems
     object fldOrderItems_WEIGHT: TIntegerField
       FieldName = 'WEIGHT'
     end
-    object fldOrderItems_COST_EUR: TFloatField
-      FieldKind = fkCalculated
-      FieldName = 'COST_EUR'
-      Calculated = True
-    end
     object fldOrderItems_NAME_RUS: TStringField
       DisplayLabel = #1053#1072#1080#1084#1077#1085#1086#1074#1072#1085#1080#1077
       FieldName = 'NAME_RUS'
@@ -707,26 +715,6 @@ inherited FrameOrderItems: TFrameOrderItems
       Size = 30
       Lookup = True
     end
-    object fldOrderItems_FLAG_SIGN_LIST: TStringField
-      FieldKind = fkLookup
-      FieldName = 'FLAG_SIGN_LIST'
-      LookupDataSet = qryStatuses
-      LookupKeyFields = 'STATUS_ID'
-      LookupResultField = 'FLAG_SIGN_LIST'
-      KeyFields = 'STATUS_ID'
-      Size = 255
-      Lookup = True
-    end
-    object fldOrderItems_AMOUNT: TSmallintField
-      FieldKind = fkCalculated
-      FieldName = 'AMOUNT'
-      Calculated = True
-    end
-    object fldOrderItems_STATUS_DTM: TDateTimeField
-      FieldKind = fkCalculated
-      FieldName = 'STATUS_DTM'
-      Calculated = True
-    end
     object fldOrderItems_STATE_ID: TIntegerField
       FieldName = 'STATE_ID'
     end
@@ -749,6 +737,16 @@ inherited FrameOrderItems: TFrameOrderItems
     end
     object fldOrderItems_ORDERITEM_INDEX: TIntegerField
       FieldName = 'ORDERITEM_INDEX'
+    end
+    object fldOrderItems_AMOUNT: TIntegerField
+      FieldName = 'AMOUNT'
+    end
+    object fldOrderItems_COST_EUR: TFloatField
+      FieldName = 'COST_EUR'
+    end
+    object fldOrderItemsFLAG_SIGN_LIST: TStringField
+      FieldName = 'FLAG_SIGN_LIST'
+      Size = 1000
     end
     object MemTableData: TMemTableDataEh
       object DataStruct: TMTDataStructEh
@@ -911,6 +909,36 @@ inherited FrameOrderItems: TFrameOrderItems
           Visible = False
           currency = False
           Precision = 0
+        end
+        object AMOUNT: TMTNumericDataFieldEh
+          FieldName = 'AMOUNT'
+          NumericDataType = fdtIntegerEh
+          Alignment = taLeftJustify
+          DisplayWidth = 0
+          Required = False
+          Visible = False
+          currency = False
+          Precision = 0
+        end
+        object COST_EUR: TMTNumericDataFieldEh
+          FieldName = 'COST_EUR'
+          NumericDataType = fdtFloatEh
+          Alignment = taLeftJustify
+          DisplayWidth = 0
+          Required = False
+          Visible = False
+          currency = False
+          Precision = 0
+        end
+        object FLAG_SIGN_LIST: TMTStringDataFieldEh
+          FieldName = 'FLAG_SIGN_LIST'
+          StringDataType = fdtStringEh
+          Alignment = taLeftJustify
+          DisplayWidth = 0
+          Required = False
+          Visible = False
+          Size = 1000
+          Transliterate = False
         end
       end
       object RecordsList: TRecordsListEh

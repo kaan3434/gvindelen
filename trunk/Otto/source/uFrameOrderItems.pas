@@ -24,16 +24,12 @@ type
     fldOrderItems_DIMENSION: TStringField;
     fldOrderItems_PRICE_EUR: TFloatField;
     fldOrderItems_WEIGHT: TIntegerField;
-    fldOrderItems_COST_EUR: TFloatField;
     fldOrderItems_NAME_RUS: TStringField;
     fldOrderItems_KIND_RUS: TStringField;
     fldOrderItems_STATUS_ID: TIntegerField;
     fldOrderItems_STATUS_NAME: TStringField;
     fldOrderItems_COUNT_WEIGHT: TIntegerField;
     fldOrderItems_STATUS_SIGN: TStringField;
-    fldOrderItems_FLAG_SIGN_LIST: TStringField;
-    fldOrderItems_AMOUNT: TSmallintField;
-    fldOrderItems_STATUS_DTM: TDateTimeField;
     fldOrderItems_STATE_ID: TIntegerField;
     fldOrderItems_STATE_NAME: TStringField;
     dsOrderItems: TDataSource;
@@ -61,6 +57,9 @@ type
     actSetStatus: TAction;
     subSetStatuses: TTBXSubmenuItem;
     qryNextStatus: TpFIBDataSet;
+    fldOrderItems_AMOUNT: TIntegerField;
+    fldOrderItems_COST_EUR: TFloatField;
+    fldOrderItemsFLAG_SIGN_LIST: TStringField;
     procedure ProgressCheckAvailShow(Sender: TObject);
     procedure actCheckAvailableExecute(Sender: TObject);
     procedure grdOrderItemsColEnter(Sender: TObject);
@@ -75,7 +74,6 @@ type
       Field: TField; var Value: Variant);
     procedure mtblOrderItemsBeforeEdit(DataSet: TDataSet);
     procedure mtblOrderItemsBeforeInsert(DataSet: TDataSet);
-    procedure mtblOrderItemsCalcFields(DataSet: TDataSet);
     procedure mtblOrderItemsBeforePost(DataSet: TDataSet);
     procedure actCancelRequestExecute(Sender: TObject);
     procedure actCancelRequestUpdate(Sender: TObject);
@@ -117,7 +115,7 @@ implementation
 {$R *.dfm}
 
 Uses
-  GvNativeXml, udmOtto, GvStr, GvColor;
+  GvNativeXml, udmOtto, GvStr, GvColor, GvVariant;
 { TFrameOrderItems }
 
 procedure TFrameOrderItems.FreeData;
@@ -188,7 +186,8 @@ begin
   try
     BatchMoveXMLNodes2Dataset(mtblOrderItems, ndOrderItems,
       'ORDERITEM_ID=ID;ORDER_ID;MAGAZINE_ID;PAGE_NO;POSITION_SIGN;ARTICLE_ID;ARTICLE_CODE;'+
-      'DIMENSION;PRICE_EUR;WEIGHT;NAME_RUS;KIND_RUS;STATUS_ID;STATE_ID', cmReplace);
+      'DIMENSION;PRICE_EUR;WEIGHT;NAME_RUS;KIND_RUS;STATUS_ID;STATE_ID;FLAG_SIGN_LIST=STATUS_FLAG_LIST',
+      cmReplace);
     if mtblOrderItems.State <> dsBrowse then
       mtblOrderItems.Post;
   finally
@@ -421,23 +420,53 @@ end;
 procedure TFrameOrderItems.mtblOrderItemsSetFieldValue(
   MemTable: TCustomMemTableEh; Field: TField; var Value: Variant);
 var
-  ArticleSign: Variant;
+  FlagSignList: Variant;
 begin
-  inherited;
-  if Field.FieldName = 'ARTICLE_CODE' then
-  begin
-    ArticleSign:= trnWrite.DefaultDatabase.QueryValue(
-      'select o_article_sign from articlesign_detect(:article_code, :magazine_id)',
-      0, [Value, mtblOrderItems['MAGAZINE_ID']],
-      trnWrite);
-    MemTable['ARTICLE_SIGN']:= ArticleSign;
-    if (ArticleSign <> null) and (MemTable['NAME_RUS'] = null) then
+  if MemTable.Tag = 1 then Exit;
+  MemTable.Tag := 1;
+  try
+    if IsNull(MemTable['ORDERITEM_ID']) then
+      MemTable['ORDERITEM_ID']:= dmOtto.GetNewObjectId('ORDERITEM');
+
+    if IsNull(MemTable['STATUS_ID']) or (Field.FieldName = 'STATUS_ID') then
     begin
-      MemTable['NAME_RUS']:= trnWrite.DefaultDatabase.QueryValue(
-        'select first 1 ac.description from articlecodes ac where ac.article_sign = :article_sign',
-        0, [ArticleSign], trnWrite);
+      MemTable['STATUS_ID']:= dmOtto.GetDefaultStatusId('ORDERITEM');
+      MemTable['FLAG_SIGN_LIST']:= dmOtto.GetFlagListById(MemTable['STATUS_ID']);
     end;
-  end
+    
+    FlagSignList:= MemTable['FLAG_SIGN_LIST'];
+    if IsNotNull(FlagSignList) then
+    begin
+      if Pos(',DEBIT,', FlagSignList) > 0 then
+        MemTable['AMOUNT']:= 0
+      else
+      if Pos(',CREDIT,', FlagSignList) > 0 then
+        MemTable['AMOUNT']:= 1;
+      MemTable['COST_EUR']:= MemTable['PRICE_EUR']*MemTable['AMOUNT'];
+      MemTable['WEIGHT']:= MemTable['WEIGHT']*MemTable['AMOUNT'];
+    end;
+
+    if (Field.FieldName = 'DIMENSION') and IsNotNull(Value) then
+    begin
+      if IsNull(MemTable['PRICE_EUR']) and
+         IsNotNull(MemTable['ARTICLE_SIGN'])then
+        MemTable['PRICE_EUR']:= dmOtto.GetMinPrice(MemTable['ARTICLE_SIGN'], Value, trnWrite);
+    end;
+
+    if IsNull(MemTable['ARTICLE_SIGN']) and
+       IsNotNull(MemTable['ARTICLE_CODE']) and
+       IsNotNull(MemTable['MAGAZINE_ID']) then
+    begin
+      MemTable['ARTICLE_SIGN']:= dmOtto.GetArticleSign(MemTable['ARTICLE_CODE'], MemTable['MAGAZINE_ID']);
+      if IsNull(MemTable['NAME_RUS']) and
+         IsNotNull(MemTable['ARTICLE_SIGN']) then
+        MemTable['NAME_RUS']:= trnWrite.DefaultDatabase.QueryValue(
+          'select first 1 ac.description from articlecodes ac where ac.article_sign = :article_sign',
+          0, [MemTable['ARTICLE_SIGN']], trnWrite);
+    end;
+  finally
+    MemTable.Tag:= 0;
+  end;
 end;
 
 procedure TFrameOrderItems.mtblOrderItemsBeforeEdit(DataSet: TDataSet);
@@ -450,35 +479,6 @@ procedure TFrameOrderItems.mtblOrderItemsBeforeInsert(DataSet: TDataSet);
 begin
   if not FlagPresent('APPENDABLE', ndOrder, 'STATUS_FLAG_LIST') then
     Abort;
-end;
-
-procedure TFrameOrderItems.mtblOrderItemsCalcFields(DataSet: TDataSet);
-var
-  FlagSignList: string;
-begin
-  if DataSet['ARTICLE_CODE'] <> null then
-  begin
-    if DataSet['STATUS_ID'] = null then
-      DataSet['STATUS_ID']:= dmOtto.GetDefaultStatusId('ORDERITEM');
-
-    if DataSet['ORDERITEM_ID'] = null then
-      DataSet['ORDERITEM_ID']:= dmOtto.GetNewObjectId('ORDERITEM');
-
-    if (DataSet['PRICE_EUR'] = null) and (DataSet['DIMENSION'] <> null) and
-       (DataSet['ARTICLE_CODE'] <> null) then
-    begin
-      DataSet['PRICE_EUR']:= dmOtto.GetMinPrice(dmOtto.GetArticleSign(DataSet['ARTICLE_CODE'], DataSet['MAGAZINE_ID']),
-        DataSet['DIMENSION'], trnWrite);
-    end;
-
-    FlagSignList:= dmOtto.GetFlagListById(DataSet['STATUS_ID']);
-    if Pos(',DEBIT,', FlagSignList) > 0 then
-      DataSet['AMOUNT']:= 0
-    else
-    if Pos(',CREDIT,', FlagSignList) > 0 then
-      DataSet['AMOUNT']:= 1;
-    DataSet['COST_EUR']:= DataSet['PRICE_EUR']*DataSet['AMOUNT'];
-  end;
 end;
 
 procedure TFrameOrderItems.OpenTables;
