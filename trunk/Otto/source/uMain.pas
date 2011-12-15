@@ -12,7 +12,7 @@ uses
   JvEmbeddedForms, JvExControls, JvProgressComponent, frxRich, pFIBScripter,
   JvDialogs, JvBaseDlg, IB_Services, pngimage,
   gsFileVersionInfo, JvLogFile, JvThread, JvProgressDialog, dbf,
-  frxExportXML;
+  frxExportXML, frxExportHTML, frxExportXLS;
 
 type
   TMainForm = class(TForm)
@@ -134,7 +134,6 @@ type
     btn2: TTBXItem;
     btnCancellation: TTBXItem;
     actProcessCancellation: TAction;
-    frxmlxprt1: TfrxXMLExport;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);

@@ -22,8 +22,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 1042
-    Height = 49
+    Width = 1050
+    Height = 47
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -91,6 +91,7 @@ object MainForm: TMainForm
         Caption = #1048#1079' '#1080#1085#1090#1077#1088#1085#1077#1090#1072
         DisplayMode = nbdmImageAndText
         Layout = tbxlGlyphTop
+        Visible = False
       end
       object btnImportMagazine: TTBXItem
         Action = actImportArticles
@@ -103,6 +104,7 @@ object MainForm: TMainForm
         Caption = #1048#1079#1074#1077#1097#1077#1085#1080#1103
         DisplayMode = nbdmImageAndText
         Layout = tbxlGlyphTop
+        Visible = False
       end
       object tbSubMenuNSI: TTBXSubmenuItem
         Caption = #1057#1087#1088#1072#1074#1086#1095#1085#1080#1082#1080
@@ -171,17 +173,17 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 432
-    Width = 1042
+    Top = 436
+    Width = 1050
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object mdckRight: TTBXMultiDock
-    Left = 844
-    Top = 49
+    Left = 852
+    Top = 47
     Width = 198
-    Height = 383
+    Height = 389
     Position = dpRight
     object pnl1: TTBXDockablePanel
       Left = 0
@@ -1692,18 +1694,5 @@ object MainForm: TMainForm
     Title = #1060#1072#1081#1083' '#1089' '#1088#1077#1079#1077#1088#1074#1085#1086#1081' '#1082#1086#1087#1080#1077#1081' '#1041#1044
     Left = 648
     Top = 256
-  end
-  object frxmlxprt1: TfrxXMLExport
-    UseFileCache = True
-    ShowProgress = True
-    OverwritePrompt = False
-    Background = True
-    Creator = 'FastReport'
-    EmptyLines = True
-    SuppressPageHeadersFooters = False
-    RowsCount = 0
-    Split = ssNotSplit
-    Left = 416
-    Top = 144
   end
 end
