@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, uFrameBase0, ImgList, PngImageList, ActnList, FIBDatabase,
+  Dialogs, uFrameBase1, ImgList, PngImageList, ActnList, FIBDatabase,
   pFIBDatabase, ExtCtrls, JvExExtCtrls, JvExtComponent, JvPanel,
   TBXStatusBars, TB2Dock, TB2Toolbar, TBX, DBGridEhGrouping, DB,
   FIBDataSet, pFIBDataSet, StdCtrls, DBCtrlsEh, Mask, JvExMask, JvToolEdit,
@@ -12,7 +12,7 @@ uses
   JvNetscapeSplitter, NativeXml;
 
 type
-  TFrameClient = class(TFrameBase0)
+  TFrameClient = class(TFrameBase1)
     pnlCenterOnClient: TPanel;
     splitClient: TJvNetscapeSplitter;
     grdClient: TDBGridEh;

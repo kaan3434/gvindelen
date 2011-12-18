@@ -1,20 +1,22 @@
 inherited FrameOrder: TFrameOrder
   Width = 699
   Height = 423
+  PixelsPerInch = 96
+  TextHeight = 13
   inherited dckTop: TTBXDock
-    Width = 699
+    Width = 683
   end
   inherited sb: TTBXStatusBar
-    Top = 401
-    Width = 699
+    Top = 363
+    Width = 683
   end
-  inherited pnl1: TJvPanel
-    Width = 699
-    Height = 375
+  inherited pnl1: TPanel
+    Width = 683
+    Height = 337
     object split1: TJvNetscapeSplitter
       Left = 365
       Top = 4
-      Height = 367
+      Height = 329
       Align = alLeft
       Maximized = False
       Minimized = False
@@ -24,7 +26,7 @@ inherited FrameOrder: TFrameOrder
       Left = 4
       Top = 4
       Width = 361
-      Height = 367
+      Height = 329
       Align = alLeft
       Caption = 'grBoxOrder'
       TabOrder = 0
@@ -124,16 +126,16 @@ inherited FrameOrder: TFrameOrder
     object grBox1: TJvGroupBox
       Left = 375
       Top = 4
-      Width = 320
-      Height = 367
+      Width = 304
+      Height = 329
       Align = alClient
       Caption = #1048#1089#1090#1086#1088#1080#1103' '#1076#1074#1080#1078#1077#1085#1080#1103' '#1079#1072#1103#1074#1082#1080
       TabOrder = 1
       object grd1: TDBGridEh
         Left = 2
         Top = 15
-        Width = 316
-        Height = 350
+        Width = 300
+        Height = 312
         Align = alClient
         AutoFitColWidths = True
         DataGrouping.GroupLevels = <>

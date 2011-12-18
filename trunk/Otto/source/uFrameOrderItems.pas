@@ -9,10 +9,10 @@ uses
   MemTableDataEh, Db, FIBDataSet, pFIBDataSet, MemTableEh, ExtCtrls,
   JvExExtCtrls, JvImage, GridsEh, DBGridEh, NativeXml, JvComponentBase,
   JvProgressComponent, TB2Item, StdCtrls, JvExStdCtrls, JvGroupBox,
-  JvEmbeddedForms, JvFormAutoSize, JvExtComponent, JvPanel;
+  JvEmbeddedForms, JvFormAutoSize, JvExtComponent, uFrameBase1;
 
 type
-  TFrameOrderItems = class(TFrameBase0)
+  TFrameOrderItems = class(TFrameBase1)
     mtblOrderItems: TMemTableEh;
     fldOrderItems_ORDERITEM_ID: TIntegerField;
     fldOrderItems_MAGAZINE_ID: TIntegerField;

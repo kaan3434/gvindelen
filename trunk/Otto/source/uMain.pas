@@ -12,7 +12,7 @@ uses
   JvEmbeddedForms, JvExControls, JvProgressComponent, frxRich, pFIBScripter,
   JvDialogs, JvBaseDlg, IB_Services, pngimage,
   gsFileVersionInfo, JvLogFile, JvThread, JvProgressDialog, dbf,
-  frxExportXML, frxExportHTML, frxExportXLS;
+  frxExportXML, frxExportHTML, frxExportXLS, uFrameBase1, uFrameOrderItems;
 
 type
   TMainForm = class(TForm)
@@ -166,6 +166,7 @@ type
     procedure actRestoreExecute(Sender: TObject);
     procedure actProcessArtNExecute(Sender: TObject);
     procedure actProcessCancellationExecute(Sender: TObject);
+    procedure btn16Click(Sender: TObject);
   private
     { Private declarations }
   public

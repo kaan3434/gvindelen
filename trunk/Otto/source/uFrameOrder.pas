@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, uFrameBase0, ImgList, PngImageList, ActnList, FIBDatabase,
+  Dialogs, uFrameBase1, ImgList, PngImageList, ActnList, FIBDatabase,
   pFIBDatabase, TBXStatusBars, TB2Dock, TB2Toolbar, TBX, DBGridEh,
   DBGridEhGrouping, DB, FIBDataSet, pFIBDataSet, GridsEh, ExtCtrls,
   JvExExtCtrls, JvNetscapeSplitter, JvExStdCtrls, JvEdit, JvValidateEdit,
@@ -12,7 +12,7 @@ uses
   JvComponentBase, JvEmbeddedForms, JvExtComponent, JvPanel;
 
 type
-  TFrameOrder = class(TFrameBase0)
+  TFrameOrder = class(TFrameBase1)
     grBoxOrder: TJvGroupBox;
     lblOrderProduct: TLabel;
     lbl3: TLabel;

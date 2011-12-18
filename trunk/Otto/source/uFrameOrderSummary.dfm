@@ -1,9 +1,11 @@
 inherited FrameOrderSummary: TFrameOrderSummary
   Width = 896
   Height = 495
+  PixelsPerInch = 96
+  TextHeight = 13
   inherited dckTop: TTBXDock
-    Width = 896
-    Height = 23
+    Width = 880
+    Height = 25
     inherited tlBarTop: TTBXToolbar
       object btn2: TTBXItem
         Action = actSetStateDraft
@@ -17,17 +19,17 @@ inherited FrameOrderSummary: TFrameOrderSummary
     end
   end
   inherited sb: TTBXStatusBar
-    Top = 473
-    Width = 896
+    Top = 435
+    Width = 880
   end
-  inherited pnl1: TJvPanel
-    Top = 23
-    Width = 896
-    Height = 450
+  inherited pnl1: TPanel
+    Top = 25
+    Width = 880
+    Height = 410
     object pnlTopOnFinal: TJvPanel
       Left = 4
       Top = 4
-      Width = 888
+      Width = 872
       Height = 131
       HotTrackFont.Charset = DEFAULT_CHARSET
       HotTrackFont.Color = clWindowText
@@ -40,7 +42,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
       object pnlClientOnFinal: TJvPanel
         Left = 0
         Top = 0
-        Width = 376
+        Width = 360
         Height = 131
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
@@ -53,13 +55,13 @@ inherited FrameOrderSummary: TFrameOrderSummary
         object grBoxClientOfFinal: TJvGroupBox
           Left = 5
           Top = 5
-          Width = 366
+          Width = 350
           Height = 121
           Align = alClient
           Caption = #1050#1083#1080#1077#1085#1090
           TabOrder = 0
           DesignSize = (
-            366
+            350
             121)
           object lblClientFIO: TLabel
             Left = 8
@@ -220,7 +222,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
         end
       end
       object pnlOrderOnFinal: TJvPanel
-        Left = 376
+        Left = 360
         Top = 0
         Width = 512
         Height = 131
@@ -287,16 +289,16 @@ inherited FrameOrderSummary: TFrameOrderSummary
     object grBoxSummaryOrderItems: TJvGroupBox
       Left = 4
       Top = 135
-      Width = 888
-      Height = 311
+      Width = 872
+      Height = 271
       Align = alClient
       Caption = 'grBoxSummaryOrderItems'
       TabOrder = 1
       object grdOrderFullSpecification: TDBGridEh
         Left = 2
         Top = 15
-        Width = 884
-        Height = 294
+        Width = 868
+        Height = 254
         Align = alClient
         AutoFitColWidths = True
         DataGrouping.GroupLevels = <>

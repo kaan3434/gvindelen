@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ImgList, PngImageList, ActnList, FIBDatabase, pFIBDatabase,
-  TBXStatusBars, TB2Dock, TB2Toolbar, TBX, JvComponentBase, JvEmbeddedForms;
+  TBXStatusBars, TB2Dock, TB2Toolbar, TBX,
+  ExtCtrls, NativeXml;
 
 type
   TFrameBase1 = class(TForm)
@@ -14,8 +15,11 @@ type
     sb: TTBXStatusBar;
     trnRead: TpFIBTransaction;
     trnWrite: TpFIBTransaction;
-    actlstList: TActionList;
+    actList: TActionList;
     imgList: TPngImageList;
+    pnl1: TPanel;
+    procedure FormActivate(Sender: TObject);
+    procedure FormDeactivate(Sender: TObject);
   private
     { Private declarations }
     FTrnRead: Pointer;
@@ -23,15 +27,18 @@ type
   protected
     function StoreComponent(Component: TComponent; var StoredComponent: Pointer): Pointer;
     function RestoreComponent(Component: TComponent; var StoredComponent: Pointer): Pointer;
+    function DetectCaption(aNode: TXmlNode; aCaption: String): string;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure InitData; virtual;
     procedure FreeData; virtual;
+    procedure OpenTables; virtual;
     function isValid: Boolean; virtual;
-    procedure Read; virtual; abstract;
+    procedure Read; virtual;
     procedure Write; virtual; abstract;
+    procedure UpdateCaptions; virtual;
   end;
 
 var
@@ -40,7 +47,8 @@ var
 implementation
 
 {$R *.dfm}
-
+uses
+  udmOtto;
 { TForm2 }
 
 constructor TFrameBase1.Create(AOwner: TComponent);
@@ -77,6 +85,11 @@ begin
   end
 end;
 
+procedure TFrameBase1.OpenTables;
+begin
+
+end;
+
 function TFrameBase1.RestoreComponent(Component: TComponent;
   var StoredComponent: Pointer): Pointer;
 begin
@@ -102,6 +115,35 @@ begin
     Result:= p;
     StoredComponent:= Component;
   end;
+end;
+
+procedure TFrameBase1.FormActivate(Sender: TObject);
+begin
+  OpenTables;
+  Read;
+  UpdateCaptions;
+end;
+
+procedure TFrameBase1.FormDeactivate(Sender: TObject);
+begin
+  Write;
+  UpdateCaptions;
+end;
+
+function TFrameBase1.DetectCaption(aNode: TXmlNode;
+  aCaption: String): string;
+begin
+  Result:= aCaption + ' ['+aNode.ReadAttributeString('ID', 'Новый')+']';
+end;
+
+procedure TFrameBase1.Read;
+begin
+  UpdateCaptions;
+end;
+
+procedure TFrameBase1.UpdateCaptions;
+begin
+
 end;
 
 end.

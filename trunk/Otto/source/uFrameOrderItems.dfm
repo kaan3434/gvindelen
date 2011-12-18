@@ -1,8 +1,12 @@
 inherited FrameOrderItems: TFrameOrderItems
+  Left = 188
+  Top = 161
   Width = 1125
   Height = 462
+  PixelsPerInch = 96
+  TextHeight = 13
   inherited dckTop: TTBXDock
-    Width = 1125
+    Width = 1109
     inherited tlBarTop: TTBXToolbar
       object btnCheckAvailable: TTBXItem
         Action = actCheckAvailable
@@ -32,25 +36,25 @@ inherited FrameOrderItems: TFrameOrderItems
     end
   end
   inherited sb: TTBXStatusBar
-    Top = 440
-    Width = 1125
+    Top = 402
+    Width = 1109
   end
-  inherited pnl1: TJvPanel
-    Width = 1125
-    Height = 414
+  inherited pnl1: TPanel
+    Width = 1109
+    Height = 376
     object grBoxOrderItems: TJvGroupBox
       Left = 4
       Top = 4
-      Width = 1117
-      Height = 406
+      Width = 1101
+      Height = 368
       Align = alClient
       Caption = #1040#1088#1090#1080#1082#1091#1083#1099' '#1079#1072#1103#1074#1082#1080
       TabOrder = 0
       object grdOrderItems: TDBGridEh
         Left = 2
         Top = 15
-        Width = 1113
-        Height = 389
+        Width = 1097
+        Height = 351
         Align = alClient
         AllowedOperations = [alopInsertEh, alopUpdateEh, alopAppendEh]
         AutoFitColWidths = True
@@ -62,7 +66,7 @@ inherited FrameOrderItems: TFrameOrderItems
         FooterFont.Charset = DEFAULT_CHARSET
         FooterFont.Color = clWindowText
         FooterFont.Height = -11
-        FooterFont.Name = 'Tahoma'
+        FooterFont.Name = 'MS Sans Serif'
         FooterFont.Style = []
         FooterRowCount = 1
         Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
@@ -78,7 +82,7 @@ inherited FrameOrderItems: TFrameOrderItems
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clWindowText
         TitleFont.Height = -11
-        TitleFont.Name = 'Tahoma'
+        TitleFont.Name = 'MS Sans Serif'
         TitleFont.Style = []
         OnColEnter = grdOrderItemsColEnter
         OnEnter = grdOrderItemsEnter
@@ -229,7 +233,7 @@ inherited FrameOrderItems: TFrameOrderItems
           object grdArticles: TDBGridEh
             Left = 0
             Top = 0
-            Width = 1080
+            Width = 1064
             Height = 198
             Align = alClient
             AutoFitColWidths = True
@@ -240,7 +244,7 @@ inherited FrameOrderItems: TFrameOrderItems
             FooterFont.Charset = DEFAULT_CHARSET
             FooterFont.Color = clWindowText
             FooterFont.Height = -11
-            FooterFont.Name = 'Tahoma'
+            FooterFont.Name = 'MS Sans Serif'
             FooterFont.Style = []
             Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
             OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghPreferIncSearch, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
@@ -255,7 +259,7 @@ inherited FrameOrderItems: TFrameOrderItems
             TitleFont.Charset = DEFAULT_CHARSET
             TitleFont.Color = clWindowText
             TitleFont.Height = -11
-            TitleFont.Name = 'Tahoma'
+            TitleFont.Name = 'MS Sans Serif'
             TitleFont.Style = []
             OnDblClick = grdArticlesDblClick
             OnKeyDown = grdArticlesKeyDown
