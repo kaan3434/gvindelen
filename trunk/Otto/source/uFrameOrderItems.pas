@@ -57,9 +57,9 @@ type
     actSetStatus: TAction;
     subSetStatuses: TTBXSubmenuItem;
     qryNextStatus: TpFIBDataSet;
-    fldOrderItems_AMOUNT: TIntegerField;
-    fldOrderItems_COST_EUR: TFloatField;
     fldOrderItemsFLAG_SIGN_LIST: TStringField;
+    fldOrderItems_COST_EUR: TFloatField;
+    fldOrderItems_AMOUNT: TIntegerField;
     procedure ProgressCheckAvailShow(Sender: TObject);
     procedure actCheckAvailableExecute(Sender: TObject);
     procedure grdOrderItemsColEnter(Sender: TObject);
@@ -89,6 +89,7 @@ type
       State: TGridDrawState);
     procedure actSetStatusExecute(Sender: TObject);
     procedure mtblOrderItemsAfterScroll(DataSet: TDataSet);
+    procedure mtblOrderItemsCalcFields(DataSet: TDataSet);
   private
     { Private declarations }
     FQryStatuses: Pointer;
@@ -442,7 +443,7 @@ begin
       else
       if Pos(',CREDIT,', FlagSignList) > 0 then
         MemTable['AMOUNT']:= 1;
-      MemTable['COST_EUR']:= MemTable['PRICE_EUR']*MemTable['AMOUNT'];
+//      MemTable['COST_EUR']:= MemTable['PRICE_EUR']*MemTable['AMOUNT'];
       MemTable['WEIGHT']:= MemTable['WEIGHT']*MemTable['AMOUNT'];
     end;
 
@@ -683,6 +684,22 @@ begin
     else
       btnSetStatus.Visible:= True;
     qryNextStatus.Next;
+  end;
+end;
+
+procedure TFrameOrderItems.mtblOrderItemsCalcFields(DataSet: TDataSet);
+var
+  FlagSignList: variant;
+begin
+  FlagSignList:= DataSet['FLAG_SIGN_LIST'];
+  if IsNotNull(FlagSignList) then
+  begin
+    if Pos(',DEBIT,', FlagSignList) > 0 then
+      DataSet['AMOUNT']:= 0
+    else
+    if Pos(',CREDIT,', FlagSignList) > 0 then
+      DataSet['AMOUNT']:= 1;
+    DataSet['COST_EUR']:= DataSet['PRICE_EUR']*DataSet['AMOUNT'];
   end;
 end;
 

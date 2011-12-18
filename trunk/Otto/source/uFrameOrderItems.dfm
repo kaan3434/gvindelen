@@ -605,14 +605,6 @@ inherited FrameOrderItems: TFrameOrderItems
         DataType = ftInteger
       end
       item
-        Name = 'AMOUNT'
-        DataType = ftInteger
-      end
-      item
-        Name = 'COST_EUR'
-        DataType = ftFloat
-      end
-      item
         Name = 'FLAG_SIGN_LIST'
         DataType = ftString
         Size = 1000
@@ -624,6 +616,7 @@ inherited FrameOrderItems: TFrameOrderItems
     BeforeEdit = mtblOrderItemsBeforeEdit
     BeforePost = mtblOrderItemsBeforePost
     AfterScroll = mtblOrderItemsAfterScroll
+    OnCalcFields = mtblOrderItemsCalcFields
     OnSetFieldValue = mtblOrderItemsSetFieldValue
     Left = 33
     Top = 286
@@ -738,15 +731,19 @@ inherited FrameOrderItems: TFrameOrderItems
     object fldOrderItems_ORDERITEM_INDEX: TIntegerField
       FieldName = 'ORDERITEM_INDEX'
     end
-    object fldOrderItems_AMOUNT: TIntegerField
-      FieldName = 'AMOUNT'
-    end
-    object fldOrderItems_COST_EUR: TFloatField
-      FieldName = 'COST_EUR'
-    end
     object fldOrderItemsFLAG_SIGN_LIST: TStringField
       FieldName = 'FLAG_SIGN_LIST'
       Size = 1000
+    end
+    object fldOrderItems_COST_EUR: TFloatField
+      FieldKind = fkCalculated
+      FieldName = 'COST_EUR'
+      Calculated = True
+    end
+    object fldOrderItems_AMOUNT: TIntegerField
+      FieldKind = fkCalculated
+      FieldName = 'AMOUNT'
+      Calculated = True
     end
     object MemTableData: TMemTableDataEh
       object DataStruct: TMTDataStructEh
@@ -903,26 +900,6 @@ inherited FrameOrderItems: TFrameOrderItems
         object ORDERITEM_INDEX: TMTNumericDataFieldEh
           FieldName = 'ORDERITEM_INDEX'
           NumericDataType = fdtIntegerEh
-          Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
-          Visible = False
-          currency = False
-          Precision = 0
-        end
-        object AMOUNT: TMTNumericDataFieldEh
-          FieldName = 'AMOUNT'
-          NumericDataType = fdtIntegerEh
-          Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
-          Visible = False
-          currency = False
-          Precision = 0
-        end
-        object COST_EUR: TMTNumericDataFieldEh
-          FieldName = 'COST_EUR'
-          NumericDataType = fdtFloatEh
           Alignment = taLeftJustify
           DisplayWidth = 0
           Required = False
