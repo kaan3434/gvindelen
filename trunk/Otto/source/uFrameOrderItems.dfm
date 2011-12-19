@@ -39,312 +39,308 @@ inherited FrameOrderItems: TFrameOrderItems
     Top = 402
     Width = 1109
   end
-  inherited pnl1: TPanel
+  object grBoxOrderItems: TJvGroupBox [2]
+    Left = 0
+    Top = 26
     Width = 1109
     Height = 376
-    object grBoxOrderItems: TJvGroupBox
-      Left = 4
-      Top = 4
-      Width = 1101
-      Height = 368
+    Align = alClient
+    Caption = #1040#1088#1090#1080#1082#1091#1083#1099' '#1079#1072#1103#1074#1082#1080
+    TabOrder = 0
+    object grdOrderItems: TDBGridEh
+      Left = 2
+      Top = 15
+      Width = 1105
+      Height = 359
       Align = alClient
-      Caption = #1040#1088#1090#1080#1082#1091#1083#1099' '#1079#1072#1103#1074#1082#1080
+      AllowedOperations = [alopInsertEh, alopUpdateEh, alopAppendEh]
+      AutoFitColWidths = True
+      BorderStyle = bsNone
+      DataGrouping.GroupLevels = <>
+      DataSource = dsOrderItems
+      Flat = True
+      FooterColor = clWindow
+      FooterFont.Charset = DEFAULT_CHARSET
+      FooterFont.Color = clWindowText
+      FooterFont.Height = -11
+      FooterFont.Name = 'MS Sans Serif'
+      FooterFont.Style = []
+      FooterRowCount = 1
+      Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+      OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghEnterAsTab, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
+      RowDetailPanel.Active = True
+      RowDetailPanel.Height = 200
+      RowDetailPanel.Color = clBtnFace
+      STFilter.InstantApply = False
+      SumList.Active = True
+      SumList.ExternalRecalc = True
+      SumList.VirtualRecords = True
       TabOrder = 0
-      object grdOrderItems: TDBGridEh
-        Left = 2
-        Top = 15
-        Width = 1097
-        Height = 351
-        Align = alClient
-        AllowedOperations = [alopInsertEh, alopUpdateEh, alopAppendEh]
-        AutoFitColWidths = True
-        BorderStyle = bsNone
-        DataGrouping.GroupLevels = <>
-        DataSource = dsOrderItems
-        Flat = True
-        FooterColor = clWindow
-        FooterFont.Charset = DEFAULT_CHARSET
-        FooterFont.Color = clWindowText
-        FooterFont.Height = -11
-        FooterFont.Name = 'MS Sans Serif'
-        FooterFont.Style = []
-        FooterRowCount = 1
-        Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
-        OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghEnterAsTab, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
-        RowDetailPanel.Active = True
-        RowDetailPanel.Height = 200
-        RowDetailPanel.Color = clBtnFace
-        STFilter.InstantApply = False
-        SumList.Active = True
-        SumList.ExternalRecalc = True
-        SumList.VirtualRecords = True
-        TabOrder = 0
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -11
-        TitleFont.Name = 'MS Sans Serif'
-        TitleFont.Style = []
-        OnColEnter = grdOrderItemsColEnter
-        OnEnter = grdOrderItemsEnter
-        OnGetCellParams = grdOrderItemsGetCellParams
-        OnRowDetailPanelHide = grdOrderItemsRowDetailPanelHide
-        OnRowDetailPanelShow = grdOrderItemsRowDetailPanelShow
-        Columns = <
-          item
-            AutoFitColWidth = False
-            EditButtons = <>
-            FieldName = 'ARTICLE_CODE'
-            Footers = <>
-            Tag = 1
-            Title.Alignment = taCenter
-            Width = 102
-          end
-          item
-            AutoDropDown = True
-            AutoFitColWidth = False
-            EditButtons = <>
-            FieldName = 'MAGAZINE_NAME'
-            Footer.Alignment = taRightJustify
-            Footer.Value = #1048#1090#1086#1075#1086':'
-            Footer.ValueType = fvtStaticText
-            Footers = <>
-            Title.Alignment = taCenter
-            Title.Caption = #1050#1072#1090#1072#1083#1086#1075
-            Width = 270
-          end
-          item
-            EditButtons = <>
-            FieldName = 'PAGE_NO'
-            Footers = <>
-            MinWidth = 22
-            Title.Alignment = taCenter
-            Title.Caption = #1057#1090#1088
-            Width = 27
-          end
-          item
-            EditButtons = <>
-            FieldName = 'POSITION_SIGN'
-            Footers = <>
-            MinWidth = 16
-            Title.Alignment = taCenter
-            Title.Caption = #1055#1086#1079
-            Width = 21
-          end
-          item
-            AutoFitColWidth = False
-            EditButtons = <>
-            FieldName = 'DIMENSION'
-            Footers = <>
-            Tag = 1
-            Title.Alignment = taCenter
-            Width = 50
-          end
-          item
-            AutoFitColWidth = False
-            EditButtons = <>
-            FieldName = 'PRICE_EUR'
-            Footer.DisplayFormat = '#0 '#1096#1090'.'
-            Footer.FieldName = 'AMOUNT'
-            Footer.ValueType = fvtSum
-            Footers = <>
-            Title.Alignment = taCenter
-          end
-          item
-            AutoFitColWidth = False
-            EditButtons = <>
-            FieldName = 'WEIGHT'
-            Footer.DisplayFormat = '# ##0 '#1075
-            Footer.FieldName = 'WEIGHT'
-            Footer.ValueType = fvtSum
-            Footers = <>
-            ReadOnly = True
-            Title.Alignment = taCenter
-            Title.Caption = #1042#1077#1089', '#1075
-            Width = 50
-          end
-          item
-            AutoFitColWidth = False
-            EditButtons = <>
-            FieldName = 'COST_EUR'
-            Footer.DisplayFormat = '0.## EUR'
-            Footer.FieldName = 'COST_EUR'
-            Footer.ValueType = fvtSum
-            Footers = <>
-            ReadOnly = True
-            Title.Alignment = taCenter
-            Title.Caption = #1057#1090#1086#1080#1084#1086#1089#1090#1100
-          end
-          item
-            EditButtons = <>
-            FieldName = 'NAME_RUS'
-            Footers = <>
-            Tag = 4
-            Title.Alignment = taCenter
-          end
-          item
-            EditButtons = <>
-            FieldName = 'KIND_RUS'
-            Footers = <>
-            Tag = 4
-            Title.Alignment = taCenter
-          end
-          item
-            EditButtons = <>
-            FieldName = 'STATE_NAME'
-            Footers = <>
-            ReadOnly = True
-            Title.Alignment = taCenter
-            Title.Caption = #1044#1086#1089#1090#1091#1087#1085#1086#1089#1090#1100
-            Width = 150
-          end
-          item
-            AutoDropDown = True
-            EditButtons = <>
-            FieldName = 'STATUS_NAME'
-            Footers = <>
-            ReadOnly = True
-            Title.Alignment = taCenter
-            Title.Caption = #1057#1086#1089#1090#1086#1103#1085#1080#1077
-            Width = 100
-          end
-          item
-            EditButtons = <>
-            FieldName = 'STATUS_DTM'
-            Footers = <>
-            Title.Alignment = taCenter
-            Title.Caption = #1054#1073#1085#1086#1074#1083#1077#1085
-            Visible = False
-          end
-          item
-            AutoFitColWidth = False
-            EditButtons = <>
-            FieldName = 'ORDERITEM_INDEX'
-            Footers = <>
-            ReadOnly = True
-            Width = 30
-          end
-          item
-            EditButtons = <>
-            FieldName = 'ORDERITEM_ID'
-            Footers = <>
-            ReadOnly = True
-          end>
-        object RowDetailData: TRowDetailPanelControlEh
-          object grdArticles: TDBGridEh
-            Left = 0
-            Top = 0
-            Width = 1064
-            Height = 198
-            Align = alClient
-            AutoFitColWidths = True
-            DataGrouping.GroupLevels = <>
-            DataSource = dsArticles
-            Flat = True
-            FooterColor = clWindow
-            FooterFont.Charset = DEFAULT_CHARSET
-            FooterFont.Color = clWindowText
-            FooterFont.Height = -11
-            FooterFont.Name = 'MS Sans Serif'
-            FooterFont.Style = []
-            Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
-            OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghPreferIncSearch, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
-            ReadOnly = True
-            RowDetailPanel.Color = clBtnFace
-            SortLocal = True
-            STFilter.InstantApply = True
-            STFilter.Local = True
-            STFilter.Location = stflInTitleFilterEh
-            STFilter.Visible = True
-            TabOrder = 0
-            TitleFont.Charset = DEFAULT_CHARSET
-            TitleFont.Color = clWindowText
-            TitleFont.Height = -11
-            TitleFont.Name = 'MS Sans Serif'
-            TitleFont.Style = []
-            OnDblClick = grdArticlesDblClick
-            OnKeyDown = grdArticlesKeyDown
-            Columns = <
-              item
-                AutoFitColWidth = False
-                EditButtons = <>
-                FieldName = 'ARTICLE_CODE'
-                Footers = <>
-                Title.Alignment = taCenter
-                Title.Caption = #1040#1088#1090#1080#1082#1091#1083
-                Width = 70
-              end
-              item
-                AutoFitColWidth = False
-                EditButtons = <>
-                FieldName = 'MAGAZINE_NAME'
-                Footers = <>
-                Title.Alignment = taCenter
-                Title.Caption = #1050#1072#1090#1072#1083#1086#1075
-                Width = 320
-              end
-              item
-                AutoFitColWidth = False
-                EditButtons = <>
-                FieldName = 'DIMENSION'
-                Footers = <>
-                Title.Alignment = taCenter
-                Title.Caption = #1056#1072#1079#1084#1077#1088
-                Width = 50
-              end
-              item
-                AutoFitColWidth = False
-                EditButtons = <>
-                FieldName = 'PRICE_EUR'
-                Footers = <>
-                Title.Alignment = taCenter
-                Title.Caption = #1062#1077#1085#1072', EUR'
-              end
-              item
-                AutoFitColWidth = False
-                EditButtons = <>
-                FieldName = 'WEIGHT'
-                Footers = <>
-                Title.Alignment = taCenter
-                Title.Caption = #1042#1077#1089', '#1075
-                Width = 50
-              end
-              item
-                EditButtons = <>
-                FieldName = 'AVAILABILITY_TEXT'
-                Footers = <>
-                Title.Alignment = taCenter
-                Visible = False
-                Width = 150
-              end
-              item
-                EditButtons = <>
-                FieldName = 'COLOR'
-                Footers = <>
-                Width = 100
-              end
-              item
-                EditButtons = <>
-                FieldName = 'DESCRIPTION'
-                Footers = <>
-                Width = 200
-              end
-              item
-                EditButtons = <>
-                FieldName = 'STATUS_NAME'
-                Footers = <>
-                Title.Alignment = taCenter
-                Title.Caption = #1057#1086#1089#1090#1086#1103#1085#1080#1077
-                Width = 150
-              end
-              item
-                EditButtons = <>
-                FieldName = 'STATUS_DTM'
-                Footers = <>
-                Title.Alignment = taCenter
-                Title.Caption = #1054#1073#1085#1086#1074#1083#1077#1085
-              end>
-            object RowDetailData: TRowDetailPanelControlEh
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'MS Sans Serif'
+      TitleFont.Style = []
+      OnColEnter = grdOrderItemsColEnter
+      OnEnter = grdOrderItemsEnter
+      OnGetCellParams = grdOrderItemsGetCellParams
+      OnRowDetailPanelHide = grdOrderItemsRowDetailPanelHide
+      OnRowDetailPanelShow = grdOrderItemsRowDetailPanelShow
+      Columns = <
+        item
+          AutoFitColWidth = False
+          EditButtons = <>
+          FieldName = 'ARTICLE_CODE'
+          Footers = <>
+          Tag = 1
+          Title.Alignment = taCenter
+          Width = 102
+        end
+        item
+          AutoDropDown = True
+          AutoFitColWidth = False
+          EditButtons = <>
+          FieldName = 'MAGAZINE_NAME'
+          Footer.Alignment = taRightJustify
+          Footer.Value = #1048#1090#1086#1075#1086':'
+          Footer.ValueType = fvtStaticText
+          Footers = <>
+          Title.Alignment = taCenter
+          Title.Caption = #1050#1072#1090#1072#1083#1086#1075
+          Width = 270
+        end
+        item
+          EditButtons = <>
+          FieldName = 'PAGE_NO'
+          Footers = <>
+          MinWidth = 22
+          Title.Alignment = taCenter
+          Title.Caption = #1057#1090#1088
+          Width = 27
+        end
+        item
+          EditButtons = <>
+          FieldName = 'POSITION_SIGN'
+          Footers = <>
+          MinWidth = 16
+          Title.Alignment = taCenter
+          Title.Caption = #1055#1086#1079
+          Width = 21
+        end
+        item
+          AutoFitColWidth = False
+          EditButtons = <>
+          FieldName = 'DIMENSION'
+          Footers = <>
+          Tag = 1
+          Title.Alignment = taCenter
+          Width = 50
+        end
+        item
+          AutoFitColWidth = False
+          EditButtons = <>
+          FieldName = 'PRICE_EUR'
+          Footer.DisplayFormat = '#0 '#1096#1090'.'
+          Footer.FieldName = 'AMOUNT'
+          Footer.ValueType = fvtSum
+          Footers = <>
+          Title.Alignment = taCenter
+        end
+        item
+          AutoFitColWidth = False
+          EditButtons = <>
+          FieldName = 'WEIGHT'
+          Footer.DisplayFormat = '# ##0 '#1075
+          Footer.FieldName = 'WEIGHT'
+          Footer.ValueType = fvtSum
+          Footers = <>
+          ReadOnly = True
+          Title.Alignment = taCenter
+          Title.Caption = #1042#1077#1089', '#1075
+          Width = 50
+        end
+        item
+          AutoFitColWidth = False
+          EditButtons = <>
+          FieldName = 'COST_EUR'
+          Footer.DisplayFormat = '0.## EUR'
+          Footer.FieldName = 'COST_EUR'
+          Footer.ValueType = fvtSum
+          Footers = <>
+          ReadOnly = True
+          Title.Alignment = taCenter
+          Title.Caption = #1057#1090#1086#1080#1084#1086#1089#1090#1100
+        end
+        item
+          EditButtons = <>
+          FieldName = 'NAME_RUS'
+          Footers = <>
+          Tag = 4
+          Title.Alignment = taCenter
+        end
+        item
+          EditButtons = <>
+          FieldName = 'KIND_RUS'
+          Footers = <>
+          Tag = 4
+          Title.Alignment = taCenter
+        end
+        item
+          EditButtons = <>
+          FieldName = 'STATE_NAME'
+          Footers = <>
+          ReadOnly = True
+          Title.Alignment = taCenter
+          Title.Caption = #1044#1086#1089#1090#1091#1087#1085#1086#1089#1090#1100
+          Width = 150
+        end
+        item
+          AutoDropDown = True
+          EditButtons = <>
+          FieldName = 'STATUS_NAME'
+          Footers = <>
+          ReadOnly = True
+          Title.Alignment = taCenter
+          Title.Caption = #1057#1086#1089#1090#1086#1103#1085#1080#1077
+          Width = 100
+        end
+        item
+          EditButtons = <>
+          FieldName = 'STATUS_DTM'
+          Footers = <>
+          Title.Alignment = taCenter
+          Title.Caption = #1054#1073#1085#1086#1074#1083#1077#1085
+          Visible = False
+        end
+        item
+          AutoFitColWidth = False
+          EditButtons = <>
+          FieldName = 'ORDERITEM_INDEX'
+          Footers = <>
+          ReadOnly = True
+          Width = 30
+        end
+        item
+          EditButtons = <>
+          FieldName = 'ORDERITEM_ID'
+          Footers = <>
+          ReadOnly = True
+        end>
+      object RowDetailData: TRowDetailPanelControlEh
+        object grdArticles: TDBGridEh
+          Left = 0
+          Top = 0
+          Width = 1072
+          Height = 198
+          Align = alClient
+          AutoFitColWidths = True
+          DataGrouping.GroupLevels = <>
+          DataSource = dsArticles
+          Flat = True
+          FooterColor = clWindow
+          FooterFont.Charset = DEFAULT_CHARSET
+          FooterFont.Color = clWindowText
+          FooterFont.Height = -11
+          FooterFont.Name = 'MS Sans Serif'
+          FooterFont.Style = []
+          Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
+          OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghPreferIncSearch, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
+          ReadOnly = True
+          RowDetailPanel.Color = clBtnFace
+          SortLocal = True
+          STFilter.InstantApply = True
+          STFilter.Local = True
+          STFilter.Location = stflInTitleFilterEh
+          STFilter.Visible = True
+          TabOrder = 0
+          TitleFont.Charset = DEFAULT_CHARSET
+          TitleFont.Color = clWindowText
+          TitleFont.Height = -11
+          TitleFont.Name = 'MS Sans Serif'
+          TitleFont.Style = []
+          OnDblClick = grdArticlesDblClick
+          OnKeyDown = grdArticlesKeyDown
+          Columns = <
+            item
+              AutoFitColWidth = False
+              EditButtons = <>
+              FieldName = 'ARTICLE_CODE'
+              Footers = <>
+              Title.Alignment = taCenter
+              Title.Caption = #1040#1088#1090#1080#1082#1091#1083
+              Width = 70
             end
+            item
+              AutoFitColWidth = False
+              EditButtons = <>
+              FieldName = 'MAGAZINE_NAME'
+              Footers = <>
+              Title.Alignment = taCenter
+              Title.Caption = #1050#1072#1090#1072#1083#1086#1075
+              Width = 320
+            end
+            item
+              AutoFitColWidth = False
+              EditButtons = <>
+              FieldName = 'DIMENSION'
+              Footers = <>
+              Title.Alignment = taCenter
+              Title.Caption = #1056#1072#1079#1084#1077#1088
+              Width = 50
+            end
+            item
+              AutoFitColWidth = False
+              EditButtons = <>
+              FieldName = 'PRICE_EUR'
+              Footers = <>
+              Title.Alignment = taCenter
+              Title.Caption = #1062#1077#1085#1072', EUR'
+            end
+            item
+              AutoFitColWidth = False
+              EditButtons = <>
+              FieldName = 'WEIGHT'
+              Footers = <>
+              Title.Alignment = taCenter
+              Title.Caption = #1042#1077#1089', '#1075
+              Width = 50
+            end
+            item
+              EditButtons = <>
+              FieldName = 'AVAILABILITY_TEXT'
+              Footers = <>
+              Title.Alignment = taCenter
+              Visible = False
+              Width = 150
+            end
+            item
+              EditButtons = <>
+              FieldName = 'COLOR'
+              Footers = <>
+              Width = 100
+            end
+            item
+              EditButtons = <>
+              FieldName = 'DESCRIPTION'
+              Footers = <>
+              Width = 200
+            end
+            item
+              EditButtons = <>
+              FieldName = 'STATUS_NAME'
+              Footers = <>
+              Title.Alignment = taCenter
+              Title.Caption = #1057#1086#1089#1090#1086#1103#1085#1080#1077
+              Width = 150
+            end
+            item
+              EditButtons = <>
+              FieldName = 'STATUS_DTM'
+              Footers = <>
+              Title.Alignment = taCenter
+              Title.Caption = #1054#1073#1085#1086#1074#1083#1077#1085
+            end>
+          object RowDetailData: TRowDetailPanelControlEh
           end
         end
       end
@@ -612,15 +608,23 @@ inherited FrameOrderItems: TFrameOrderItems
         Name = 'FLAG_SIGN_LIST'
         DataType = ftString
         Size = 1000
+      end
+      item
+        Name = 'COST_EUR'
+        DataType = ftFloat
+      end
+      item
+        Name = 'AMOUNT'
+        DataType = ftInteger
       end>
     IndexDefs = <>
     Params = <>
     StoreDefs = True
     BeforeInsert = mtblOrderItemsBeforeInsert
+    AfterInsert = mtblOrderItemsAfterInsert
     BeforeEdit = mtblOrderItemsBeforeEdit
     BeforePost = mtblOrderItemsBeforePost
     AfterScroll = mtblOrderItemsAfterScroll
-    OnCalcFields = mtblOrderItemsCalcFields
     OnSetFieldValue = mtblOrderItemsSetFieldValue
     Left = 33
     Top = 286
@@ -740,14 +744,10 @@ inherited FrameOrderItems: TFrameOrderItems
       Size = 1000
     end
     object fldOrderItems_COST_EUR: TFloatField
-      FieldKind = fkCalculated
       FieldName = 'COST_EUR'
-      Calculated = True
     end
     object fldOrderItems_AMOUNT: TIntegerField
-      FieldKind = fkCalculated
       FieldName = 'AMOUNT'
-      Calculated = True
     end
     object MemTableData: TMemTableDataEh
       object DataStruct: TMTDataStructEh
@@ -920,6 +920,26 @@ inherited FrameOrderItems: TFrameOrderItems
           Visible = False
           Size = 1000
           Transliterate = False
+        end
+        object COST_EUR: TMTNumericDataFieldEh
+          FieldName = 'COST_EUR'
+          NumericDataType = fdtFloatEh
+          Alignment = taLeftJustify
+          DisplayWidth = 0
+          Required = False
+          Visible = False
+          currency = False
+          Precision = 0
+        end
+        object AMOUNT: TMTNumericDataFieldEh
+          FieldName = 'AMOUNT'
+          NumericDataType = fdtIntegerEh
+          Alignment = taLeftJustify
+          DisplayWidth = 0
+          Required = False
+          Visible = False
+          currency = False
+          Precision = 0
         end
       end
       object RecordsList: TRecordsListEh

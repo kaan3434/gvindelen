@@ -9,10 +9,10 @@ uses
   TBXStatusBars, TB2Dock, TB2Toolbar, TBX, DBGridEhGrouping, DB,
   FIBDataSet, pFIBDataSet, GridsEh, DBGridEh, JvNetscapeSplitter, StdCtrls,
   DBCtrlsEh, Mask, JvExMask, JvToolEdit, JvMaskEdit, JvExStdCtrls,
-  JvGroupBox, NativeXml;
+  JvGroupBox, NativeXml, uFrameBase1;
 
 type
-  TFrameAdress = class(TFrameBase0)
+  TFrameAdress = class(TFrameBase1)
     pnlRightOnAdress: TJvPanel;
     grBoxAdress: TJvGroupBox;
     lblPostIndex: TLabel;

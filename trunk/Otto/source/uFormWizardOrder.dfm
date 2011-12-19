@@ -1,17 +1,18 @@
 inherited FormWizardOrder: TFormWizardOrder
   Left = 182
   Top = 76
-  ActiveControl = btnClientPageFirst
+  ActiveControl = wzIPageOrderSummary
   Caption = 'FormWizardOrder'
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   inherited wzForm: TJvWizard
-    ActivePage = wzWPage
+    ActivePage = wzIPageOrderSummary
     DefaultButtons = False
     OnActivePageChanging = wzFormActivePageChanging
     object wzWPage: TJvWizardWelcomePage
+      Header.ParentFont = False
       Header.Title.Color = clNone
       Header.Title.Text = 'Welcome'
       Header.Title.Anchors = [akLeft, akTop, akRight]
@@ -31,8 +32,8 @@ inherited FormWizardOrder: TFormWizardOrder
       Panel.Visible = True
       VisibleButtons = [bkNext, bkCancel]
       DesignSize = (
-        1016
-        479)
+        1008
+        475)
       object btnClientPageFirst: TButton
         Left = 192
         Top = 104
@@ -45,6 +46,7 @@ inherited FormWizardOrder: TFormWizardOrder
     end
     object wzIPageOrderItems: TJvWizardInteriorPage
       Header.Height = 30
+      Header.ParentFont = False
       Header.Title.Color = clNone
       Header.Title.Text = #1040#1088#1090#1080#1082#1091#1083#1099
       Header.Title.Anchors = [akLeft, akTop, akRight]
@@ -64,9 +66,12 @@ inherited FormWizardOrder: TFormWizardOrder
       Header.Subtitle.Font.Style = []
       Panel.Visible = True
       Color = clWindow
+      OnEnterPage = wzIPageOrderItemsEnterPage
+      OnExitPage = wzIPageOrderItemsExitPage
     end
     object wzIPageOrder: TJvWizardInteriorPage
       Header.Height = 30
+      Header.ParentFont = False
       Header.Title.Color = clNone
       Header.Title.Text = #1047#1072#1103#1074#1082#1072
       Header.Title.Anchors = [akLeft, akTop, akRight]
@@ -86,9 +91,12 @@ inherited FormWizardOrder: TFormWizardOrder
       Header.Subtitle.Font.Style = []
       Panel.Visible = True
       Color = clWindow
+      OnEnterPage = wzIPageOrderEnterPage
+      OnExitPage = wzIPageOrderExitPage
     end
     object wzIPageClient: TJvWizardInteriorPage
       Header.Height = 30
+      Header.ParentFont = False
       Header.Title.Color = clNone
       Header.Title.Text = #1050#1083#1080#1077#1085#1090
       Header.Title.Anchors = [akLeft, akTop, akRight]
@@ -108,9 +116,12 @@ inherited FormWizardOrder: TFormWizardOrder
       Header.Subtitle.Font.Style = []
       Panel.Visible = True
       Color = clWindow
+      OnEnterPage = wzIPageClientEnterPage
+      OnExitPage = wzIPageClientExitPage
     end
     object wzIPageAdress: TJvWizardInteriorPage
       Header.Height = 30
+      Header.ParentFont = False
       Header.Title.Color = clNone
       Header.Title.Text = #1040#1076#1088#1077#1089
       Header.Title.Anchors = [akLeft, akTop, akRight]
@@ -131,9 +142,12 @@ inherited FormWizardOrder: TFormWizardOrder
       Panel.Visible = True
       Color = clWindow
       Caption = 'wzIPageAdress'
+      OnEnterPage = wzIPageAdressEnterPage
+      OnExitPage = wzIPageAdressExitPage
     end
     object wzIPageOrderSummary: TJvWizardInteriorPage
       Header.Height = 30
+      Header.ParentFont = False
       Header.Title.Color = clNone
       Header.Title.Text = #1047#1072#1103#1074#1082#1072
       Header.Title.Anchors = [akLeft, akTop, akRight]
@@ -155,6 +169,8 @@ inherited FormWizardOrder: TFormWizardOrder
       VisibleButtons = [bkBack, bkCancel]
       Color = clWindow
       Caption = 'wzIPageOrderSummary'
+      OnEnterPage = wzIPageOrderSummaryEnterPage
+      OnExitPage = wzIPageOrderSummaryExitPage
     end
   end
   inherited actListWzrdBtn: TActionList

@@ -89,7 +89,7 @@ type
       State: TGridDrawState);
     procedure actSetStatusExecute(Sender: TObject);
     procedure mtblOrderItemsAfterScroll(DataSet: TDataSet);
-    procedure mtblOrderItemsCalcFields(DataSet: TDataSet);
+    procedure mtblOrderItemsAfterInsert(DataSet: TDataSet);
   private
     { Private declarations }
     FQryStatuses: Pointer;
@@ -187,15 +187,16 @@ begin
   try
     BatchMoveXMLNodes2Dataset(mtblOrderItems, ndOrderItems,
       'ORDERITEM_ID=ID;ORDER_ID;MAGAZINE_ID;PAGE_NO;POSITION_SIGN;ARTICLE_ID;ARTICLE_CODE;'+
-      'DIMENSION;PRICE_EUR;WEIGHT;NAME_RUS;KIND_RUS;STATUS_ID;STATE_ID;FLAG_SIGN_LIST=STATUS_FLAG_LIST',
+      'DIMENSION;PRICE_EUR;WEIGHT;NAME_RUS;KIND_RUS;STATUS_ID;STATE_ID;FLAG_SIGN_LIST=STATUS_FLAG_LIST;'+
+      'AMOUNT;COST_EUR',
       cmReplace);
     if mtblOrderItems.State <> dsBrowse then
       mtblOrderItems.Post;
   finally
     mtblOrderItems.Tag:= 0;
   end;
-  ndOrder.Document.XmlFormat:= xfReadable;
-  ndOrder.Document.SaveToFile('Order.xml');
+//  ndOrder.Document.XmlFormat:= xfReadable;
+//  ndOrder.Document.SaveToFile('Order.xml');
 end;
 
 procedure TFrameOrderItems.ProgressCheckAvailShow(Sender: TObject);
@@ -418,57 +419,6 @@ begin
   qryArticles.Close;
 end;
 
-procedure TFrameOrderItems.mtblOrderItemsSetFieldValue(
-  MemTable: TCustomMemTableEh; Field: TField; var Value: Variant);
-var
-  FlagSignList: Variant;
-begin
-  if MemTable.Tag = 1 then Exit;
-  MemTable.Tag := 1;
-  try
-    if IsNull(MemTable['ORDERITEM_ID']) then
-      MemTable['ORDERITEM_ID']:= dmOtto.GetNewObjectId('ORDERITEM');
-
-    if IsNull(MemTable['STATUS_ID']) or (Field.FieldName = 'STATUS_ID') then
-    begin
-      MemTable['STATUS_ID']:= dmOtto.GetDefaultStatusId('ORDERITEM');
-      MemTable['FLAG_SIGN_LIST']:= dmOtto.GetFlagListById(MemTable['STATUS_ID']);
-    end;
-    
-    FlagSignList:= MemTable['FLAG_SIGN_LIST'];
-    if IsNotNull(FlagSignList) then
-    begin
-      if Pos(',DEBIT,', FlagSignList) > 0 then
-        MemTable['AMOUNT']:= 0
-      else
-      if Pos(',CREDIT,', FlagSignList) > 0 then
-        MemTable['AMOUNT']:= 1;
-//      MemTable['COST_EUR']:= MemTable['PRICE_EUR']*MemTable['AMOUNT'];
-      MemTable['WEIGHT']:= MemTable['WEIGHT']*MemTable['AMOUNT'];
-    end;
-
-    if (Field.FieldName = 'DIMENSION') and IsNotNull(Value) then
-    begin
-      if IsNull(MemTable['PRICE_EUR']) and
-         IsNotNull(MemTable['ARTICLE_SIGN'])then
-        MemTable['PRICE_EUR']:= dmOtto.GetMinPrice(MemTable['ARTICLE_SIGN'], Value, trnWrite);
-    end;
-
-    if IsNull(MemTable['ARTICLE_SIGN']) and
-       IsNotNull(MemTable['ARTICLE_CODE']) and
-       IsNotNull(MemTable['MAGAZINE_ID']) then
-    begin
-      MemTable['ARTICLE_SIGN']:= dmOtto.GetArticleSign(MemTable['ARTICLE_CODE'], MemTable['MAGAZINE_ID']);
-      if IsNull(MemTable['NAME_RUS']) and
-         IsNotNull(MemTable['ARTICLE_SIGN']) then
-        MemTable['NAME_RUS']:= trnWrite.DefaultDatabase.QueryValue(
-          'select first 1 ac.description from articlecodes ac where ac.article_sign = :article_sign',
-          0, [MemTable['ARTICLE_SIGN']], trnWrite);
-    end;
-  finally
-    MemTable.Tag:= 0;
-  end;
-end;
 
 procedure TFrameOrderItems.mtblOrderItemsBeforeEdit(DataSet: TDataSet);
 begin
@@ -511,8 +461,6 @@ begin
 
   if DataSet['WEIGHT'] = null then
   try
-    DataSet['WEIGHT']:= dmOtto.GetWeight(dmOtto.GetArticleSign(DataSet['ARTICLE_CODE'], DataSet['MAGAZINE_ID']),
-      DataSet['DIMENSION'], trnWrite);
     SetXmlAttr(ndOrderItem, 'WEIGHT', DataSet['WEIGHT']);
   except
   end;
@@ -687,20 +635,59 @@ begin
   end;
 end;
 
-procedure TFrameOrderItems.mtblOrderItemsCalcFields(DataSet: TDataSet);
+procedure TFrameOrderItems.mtblOrderItemsSetFieldValue(
+  MemTable: TCustomMemTableEh; Field: TField; var Value: Variant);
 var
-  FlagSignList: variant;
+  FlagSignList: Variant;
 begin
-  FlagSignList:= DataSet['FLAG_SIGN_LIST'];
-  if IsNotNull(FlagSignList) then
+  if MemTable.Tag = 1 then Exit;
+  if (Field.FieldName = 'DIMENSION') and IsNotNull(Value) then
   begin
-    if Pos(',DEBIT,', FlagSignList) > 0 then
-      DataSet['AMOUNT']:= 0
+    if IsNotNull(MemTable['ARTICLE_SIGN']) and
+       (MemTable['PRICE_EUR'] <> Value)  then
+    begin
+      MemTable['PRICE_EUR']:= dmOtto.GetMinPrice(MemTable['ARTICLE_SIGN'], Value, trnWrite);
+      MemTable['WEIGHT']:= dmOtto.GetWeight(MemTable['ARTICLE_SIGN'], Value, trnWrite);
+    end;
+  end
+  else
+  if (Field.FieldName = 'PRICE_EUR') and IsNotNull(Value) then
+  begin
+    MemTable['COST_EUR']:= MemTable['AMOUNT']*Value;
+  end
+  else
+  if Field.FieldName = 'AMOUNT' then
+  begin
+    if (Value = 1) and IsNotNull(MemTable['ARTICLE_SIGN']) and IsNotNull(MemTable['DIMENSION']) then
+      MemTable['WEIGHT']:= dmOtto.GetWeight(MemTable['ARTICLE_SIGN'], MemTable['DIMENSION'], trnWrite)
     else
-    if Pos(',CREDIT,', FlagSignList) > 0 then
-      DataSet['AMOUNT']:= 1;
-    DataSet['COST_EUR']:= DataSet['PRICE_EUR']*DataSet['AMOUNT'];
+      MemTable['WEIGHT']:= null;
+    if (Value = 1) and IsNotNull(MemTable['PRICE_EUR']) then
+      MemTable['COST_EUR']:= MemTable['PRICE_EUR']*Value
+    else
+      MemTable['COST_EUR']:= null;
+  end
+  else
+  if Field.FieldName = 'ARTICLE_CODE' then
+  begin
+    MemTable['ARTICLE_SIGN']:= dmOtto.GetArticleSign(Value, nvl(MemTable['MAGAZINE_ID'], 1));
+  end
+  else
+  if Field.FieldName = 'ARTICLE_SIGN' then
+  begin
+    MemTable['NAME_RUS']:= trnWrite.DefaultDatabase.QueryValue(
+      'select first 1 ac.description from articlecodes ac where ac.article_sign = :article_sign',
+      0, [Value], trnWrite);
   end;
+end;
+
+procedure TFrameOrderItems.mtblOrderItemsAfterInsert(DataSet: TDataSet);
+begin
+  if DataSet.Tag = 1 then Exit;
+  DataSet['ORDERITEM_ID']:= dmOtto.GetNewObjectId('ORDERITEM');
+  DataSet['STATUS_ID']:= dmOtto.GetDefaultStatusId('ORDERITEM');
+  DataSet['FLAG_SIGN_LIST']:= dmOtto.GetFlagListById(DataSet['STATUS_ID']);
+  DataSet['AMOUNT']:= 1;
 end;
 
 end.

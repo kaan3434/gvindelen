@@ -12,8 +12,8 @@ object FrameBase1: TFrameBase1
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  OnActivate = FormActivate
-  OnDeactivate = FormDeactivate
+  OnHide = FormHide
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object dckTop: TTBXDock
@@ -36,17 +36,6 @@ object FrameBase1: TFrameBase1
     Width = 514
     Panels = <>
     UseSystemFont = False
-  end
-  object pnl1: TPanel
-    Left = 0
-    Top = 26
-    Width = 514
-    Height = 327
-    Align = alClient
-    BevelOuter = bvNone
-    BorderWidth = 4
-    Caption = 'pnlContainer'
-    TabOrder = 2
   end
   object trnRead: TpFIBTransaction
     DefaultDatabase = dmOtto.dbOtto

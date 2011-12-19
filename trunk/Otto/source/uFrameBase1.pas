@@ -17,9 +17,8 @@ type
     trnWrite: TpFIBTransaction;
     actList: TActionList;
     imgList: TPngImageList;
-    pnl1: TPanel;
-    procedure FormActivate(Sender: TObject);
-    procedure FormDeactivate(Sender: TObject);
+    procedure FormHide(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
     FTrnRead: Pointer;
@@ -117,19 +116,6 @@ begin
   end;
 end;
 
-procedure TFrameBase1.FormActivate(Sender: TObject);
-begin
-  OpenTables;
-  Read;
-  UpdateCaptions;
-end;
-
-procedure TFrameBase1.FormDeactivate(Sender: TObject);
-begin
-  Write;
-  UpdateCaptions;
-end;
-
 function TFrameBase1.DetectCaption(aNode: TXmlNode;
   aCaption: String): string;
 begin
@@ -144,6 +130,19 @@ end;
 procedure TFrameBase1.UpdateCaptions;
 begin
 
+end;
+
+procedure TFrameBase1.FormHide(Sender: TObject);
+begin
+  Write;
+  UpdateCaptions;
+end;
+
+procedure TFrameBase1.FormShow(Sender: TObject);
+begin
+  OpenTables;
+  Read;
+  UpdateCaptions;
 end;
 
 end.

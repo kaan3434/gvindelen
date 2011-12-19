@@ -166,7 +166,6 @@ type
     procedure actRestoreExecute(Sender: TObject);
     procedure actProcessArtNExecute(Sender: TObject);
     procedure actProcessCancellationExecute(Sender: TObject);
-    procedure btn16Click(Sender: TObject);
   private
     { Private declarations }
   public

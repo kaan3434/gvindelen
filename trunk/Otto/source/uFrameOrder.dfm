@@ -3,6 +3,15 @@ inherited FrameOrder: TFrameOrder
   Height = 423
   PixelsPerInch = 96
   TextHeight = 13
+  object split1: TJvNetscapeSplitter [0]
+    Left = 361
+    Top = 26
+    Height = 337
+    Align = alLeft
+    Maximized = False
+    Minimized = False
+    ButtonCursor = crDefault
+  end
   inherited dckTop: TTBXDock
     Width = 683
   end
@@ -10,171 +19,158 @@ inherited FrameOrder: TFrameOrder
     Top = 363
     Width = 683
   end
-  inherited pnl1: TPanel
-    Width = 683
+  object grBoxOrder: TJvGroupBox [3]
+    Left = 0
+    Top = 26
+    Width = 361
     Height = 337
-    object split1: TJvNetscapeSplitter
-      Left = 365
-      Top = 4
-      Height = 329
-      Align = alLeft
-      Maximized = False
-      Minimized = False
-      ButtonCursor = crDefault
+    Align = alLeft
+    Caption = 'grBoxOrder'
+    TabOrder = 0
+    object lblOrderProduct: TLabel
+      Left = 8
+      Top = 48
+      Width = 89
+      Height = 19
+      AutoSize = False
+      Caption = #1042#1080#1076' '#1087#1088#1086#1076#1091#1082#1090#1072
+      Layout = tlCenter
     end
-    object grBoxOrder: TJvGroupBox
-      Left = 4
-      Top = 4
-      Width = 361
-      Height = 329
-      Align = alLeft
-      Caption = 'grBoxOrder'
+    object lbl3: TLabel
+      Left = 8
+      Top = 72
+      Width = 89
+      Height = 19
+      AutoSize = False
+      Caption = #1058#1072#1088#1080#1092#1085#1099#1081' '#1055#1083#1072#1085
+      Layout = tlCenter
+    end
+    object lblExchEUR: TLabel
+      Left = 8
+      Top = 120
+      Width = 89
+      Height = 19
+      AutoSize = False
+      Caption = #1050#1091#1088#1089' EUR'
+      FocusControl = edtBYR2EUR
+      Layout = tlCenter
+    end
+    object lbl4: TLabel
+      Left = 8
+      Top = 176
+      Width = 89
+      Height = 19
+      AutoSize = False
+      Caption = #1042#1077#1089' '#1087#1086#1089#1099#1083#1082#1080
+      FocusControl = edtOrderWeight
+      Layout = tlCenter
+      Visible = False
+    end
+    object lcbProduct: TDBLookupComboboxEh
+      Left = 104
+      Top = 48
+      Width = 241
+      Height = 19
+      EditButtons = <>
+      Flat = True
+      KeyField = 'PRODUCT_ID'
+      ListField = 'PRODUCT_NAME'
+      ListSource = dsProducts
       TabOrder = 0
-      object lblOrderProduct: TLabel
-        Left = 8
-        Top = 48
-        Width = 89
-        Height = 19
-        AutoSize = False
-        Caption = #1042#1080#1076' '#1087#1088#1086#1076#1091#1082#1090#1072
-        Layout = tlCenter
-      end
-      object lbl3: TLabel
-        Left = 8
-        Top = 72
-        Width = 89
-        Height = 19
-        AutoSize = False
-        Caption = #1058#1072#1088#1080#1092#1085#1099#1081' '#1055#1083#1072#1085
-        Layout = tlCenter
-      end
-      object lblExchEUR: TLabel
-        Left = 8
-        Top = 120
-        Width = 89
-        Height = 19
-        AutoSize = False
-        Caption = #1050#1091#1088#1089' EUR'
-        FocusControl = edtBYR2EUR
-        Layout = tlCenter
-      end
-      object lbl4: TLabel
-        Left = 8
-        Top = 176
-        Width = 89
-        Height = 19
-        AutoSize = False
-        Caption = #1042#1077#1089' '#1087#1086#1089#1099#1083#1082#1080
-        FocusControl = edtOrderWeight
-        Layout = tlCenter
-        Visible = False
-      end
-      object lcbProduct: TDBLookupComboboxEh
-        Left = 104
-        Top = 48
-        Width = 241
-        Height = 19
-        EditButtons = <>
-        Flat = True
-        KeyField = 'PRODUCT_ID'
-        ListField = 'PRODUCT_NAME'
-        ListSource = dsProducts
-        TabOrder = 0
-        Visible = True
-      end
-      object lcbTaxPlan: TDBLookupComboboxEh
-        Left = 104
-        Top = 72
-        Width = 242
-        Height = 19
-        EditButtons = <>
-        Flat = True
-        KeyField = 'TAXPLAN_ID'
-        ListField = 'TAXPLAN_NAME'
-        ListSource = dsTaxPlans
-        TabOrder = 1
-        Visible = True
-      end
-      object edtBYR2EUR: TJvValidateEdit
-        Left = 104
-        Top = 120
-        Width = 121
-        Height = 21
-        CriticalPoints.MaxValueIncluded = False
-        CriticalPoints.MinValueIncluded = False
-        DisplaySuffix = ' BYR'
-        ParentColor = True
-        ReadOnly = True
-        TabOrder = 2
-      end
-      object edtOrderWeight: TJvValidateEdit
-        Left = 104
-        Top = 176
-        Width = 121
-        Height = 21
-        Color = clBtnFace
-        CriticalPoints.MaxValueIncluded = False
-        CriticalPoints.MinValueIncluded = False
-        DisplayFormat = dfDecimal
-        DisplaySuffix = ' '#1082#1075
-        EditText = '0'
-        ReadOnly = True
-        TabOrder = 3
-        Visible = False
-      end
+      Visible = True
     end
-    object grBox1: TJvGroupBox
-      Left = 375
-      Top = 4
-      Width = 304
-      Height = 329
-      Align = alClient
-      Caption = #1048#1089#1090#1086#1088#1080#1103' '#1076#1074#1080#1078#1077#1085#1080#1103' '#1079#1072#1103#1074#1082#1080
+    object lcbTaxPlan: TDBLookupComboboxEh
+      Left = 104
+      Top = 72
+      Width = 242
+      Height = 19
+      EditButtons = <>
+      Flat = True
+      KeyField = 'TAXPLAN_ID'
+      ListField = 'TAXPLAN_NAME'
+      ListSource = dsTaxPlans
       TabOrder = 1
-      object grd1: TDBGridEh
-        Left = 2
-        Top = 15
-        Width = 300
-        Height = 312
-        Align = alClient
-        AutoFitColWidths = True
-        DataGrouping.GroupLevels = <>
-        DataSource = dsOrderDates
-        Flat = True
-        FooterColor = clWindow
-        FooterFont.Charset = DEFAULT_CHARSET
-        FooterFont.Color = clWindowText
-        FooterFont.Height = -11
-        FooterFont.Name = 'MS Sans Serif'
-        FooterFont.Style = []
-        RowDetailPanel.Color = clBtnFace
-        TabOrder = 0
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -11
-        TitleFont.Name = 'MS Sans Serif'
-        TitleFont.Style = []
-        Columns = <
-          item
-            EditButtons = <>
-            FieldName = 'ATTR_NAME'
-            Footers = <>
-            Title.Alignment = taCenter
-            Title.Caption = #1044#1077#1081#1089#1090#1074#1080#1077
-            Width = 200
-          end
-          item
-            Alignment = taCenter
-            AutoFitColWidth = False
-            EditButtons = <>
-            FieldName = 'EVENT_DTM'
-            Footers = <>
-            Title.Alignment = taCenter
-            Title.Caption = #1044#1072#1090#1072
-            Width = 100
-          end>
-        object RowDetailData: TRowDetailPanelControlEh
+      Visible = True
+    end
+    object edtBYR2EUR: TJvValidateEdit
+      Left = 104
+      Top = 120
+      Width = 121
+      Height = 21
+      CriticalPoints.MaxValueIncluded = False
+      CriticalPoints.MinValueIncluded = False
+      DisplaySuffix = ' BYR'
+      ParentColor = True
+      ReadOnly = True
+      TabOrder = 2
+    end
+    object edtOrderWeight: TJvValidateEdit
+      Left = 104
+      Top = 176
+      Width = 121
+      Height = 21
+      Color = clBtnFace
+      CriticalPoints.MaxValueIncluded = False
+      CriticalPoints.MinValueIncluded = False
+      DisplayFormat = dfDecimal
+      DisplaySuffix = ' '#1082#1075
+      EditText = '0'
+      ReadOnly = True
+      TabOrder = 3
+      Visible = False
+    end
+  end
+  object grBox1: TJvGroupBox [4]
+    Left = 371
+    Top = 26
+    Width = 312
+    Height = 337
+    Align = alClient
+    Caption = #1048#1089#1090#1086#1088#1080#1103' '#1076#1074#1080#1078#1077#1085#1080#1103' '#1079#1072#1103#1074#1082#1080
+    TabOrder = 1
+    object grd1: TDBGridEh
+      Left = 2
+      Top = 15
+      Width = 308
+      Height = 320
+      Align = alClient
+      AutoFitColWidths = True
+      DataGrouping.GroupLevels = <>
+      DataSource = dsOrderDates
+      Flat = True
+      FooterColor = clWindow
+      FooterFont.Charset = DEFAULT_CHARSET
+      FooterFont.Color = clWindowText
+      FooterFont.Height = -11
+      FooterFont.Name = 'MS Sans Serif'
+      FooterFont.Style = []
+      RowDetailPanel.Color = clBtnFace
+      TabOrder = 0
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'MS Sans Serif'
+      TitleFont.Style = []
+      Columns = <
+        item
+          EditButtons = <>
+          FieldName = 'ATTR_NAME'
+          Footers = <>
+          Title.Alignment = taCenter
+          Title.Caption = #1044#1077#1081#1089#1090#1074#1080#1077
+          Width = 200
         end
+        item
+          Alignment = taCenter
+          AutoFitColWidth = False
+          EditButtons = <>
+          FieldName = 'EVENT_DTM'
+          Footers = <>
+          Title.Alignment = taCenter
+          Title.Caption = #1044#1072#1090#1072
+          Width = 100
+        end>
+      object RowDetailData: TRowDetailPanelControlEh
       end
     end
   end
