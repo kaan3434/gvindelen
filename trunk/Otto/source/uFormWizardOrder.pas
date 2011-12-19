@@ -26,26 +26,6 @@ type
     procedure wzFormActivePageChanging(Sender: TObject;
       var ToPage: TJvWizardCustomPage);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure wzIPageOrderItemsEnterPage(Sender: TObject;
-      const FromPage: TJvWizardCustomPage);
-    procedure wzIPageOrderItemsExitPage(Sender: TObject;
-      const FromPage: TJvWizardCustomPage);
-    procedure wzIPageOrderEnterPage(Sender: TObject;
-      const FromPage: TJvWizardCustomPage);
-    procedure wzIPageOrderExitPage(Sender: TObject;
-      const FromPage: TJvWizardCustomPage);
-    procedure wzIPageClientEnterPage(Sender: TObject;
-      const FromPage: TJvWizardCustomPage);
-    procedure wzIPageClientExitPage(Sender: TObject;
-      const FromPage: TJvWizardCustomPage);
-    procedure wzIPageAdressEnterPage(Sender: TObject;
-      const FromPage: TJvWizardCustomPage);
-    procedure wzIPageAdressExitPage(Sender: TObject;
-      const FromPage: TJvWizardCustomPage);
-    procedure wzIPageOrderSummaryEnterPage(Sender: TObject;
-      const FromPage: TJvWizardCustomPage);
-    procedure wzIPageOrderSummaryExitPage(Sender: TObject;
-      const FromPage: TJvWizardCustomPage);
   private
     { Private declarations }
     ndOrder: TXmlNode;
@@ -146,7 +126,8 @@ procedure TFormWizardOrder.FormCreate(Sender: TObject);
 begin
   inherited;
 
-  // FrameOrderItems
+
+
   frmOrderItems:= TFrameOrderItems.Create(self);
   frmOrderItems.ndOrder:= ndOrder;
   frmOrderItems.ndOrderItems:= ndOrderItems;
@@ -179,10 +160,10 @@ begin
   frmOrderSummary.ndAccount:= ndAccount;
   IncludeForm(wzIPageOrderSummary, frmOrderSummary);
 
-  if SourceFlag = sfDataBase then
-    wzForm.ActivePage:= wzIPageOrderItems
-  else
-    wzForm.ActivePage:= wzWPage;
+//  if SourceFlag = sfDataBase then
+//    wzForm.ActivePage:= wzIPageOrderItems
+//  else
+  wzForm.ActivePageIndex:= 0;
 end;
 
 function TFormWizardOrder.GetObjectId: integer;
@@ -269,69 +250,8 @@ begin
           else
             trnWrite.Rollback;
         end
-    end; 
+    end;
   end;
-end;
-
-procedure TFormWizardOrder.wzIPageOrderItemsEnterPage(Sender: TObject;
-  const FromPage: TJvWizardCustomPage);
-begin
-//  if not frmOrderItems.Visible then
-//    frmOrderItems.Show;
-end;
-
-procedure TFormWizardOrder.wzIPageOrderItemsExitPage(Sender: TObject;
-  const FromPage: TJvWizardCustomPage);
-begin
-//  frmOrderItems.Hide;
-end;
-
-procedure TFormWizardOrder.wzIPageOrderEnterPage(Sender: TObject;
-  const FromPage: TJvWizardCustomPage);
-begin
-//  frmOrder.Show;
-end;
-
-procedure TFormWizardOrder.wzIPageOrderExitPage(Sender: TObject;
-  const FromPage: TJvWizardCustomPage);
-begin
-//  frmOrder.Hide;
-end;
-
-procedure TFormWizardOrder.wzIPageClientEnterPage(Sender: TObject;
-  const FromPage: TJvWizardCustomPage);
-begin
-//  frmClient.Show;
-end;
-
-procedure TFormWizardOrder.wzIPageClientExitPage(Sender: TObject;
-  const FromPage: TJvWizardCustomPage);
-begin
-//  frmClient.Hide;
-end;
-
-procedure TFormWizardOrder.wzIPageAdressEnterPage(Sender: TObject;
-  const FromPage: TJvWizardCustomPage);
-begin
-//  frmAdress.Show;
-end;
-
-procedure TFormWizardOrder.wzIPageAdressExitPage(Sender: TObject;
-  const FromPage: TJvWizardCustomPage);
-begin
-//  frmAdress.Hide;
-end;
-
-procedure TFormWizardOrder.wzIPageOrderSummaryEnterPage(Sender: TObject;
-  const FromPage: TJvWizardCustomPage);
-begin
-//  frmOrderSummary.Show;
-end;
-
-procedure TFormWizardOrder.wzIPageOrderSummaryExitPage(Sender: TObject;
-  const FromPage: TJvWizardCustomPage);
-begin
-//  frmOrderSummary.Hide;
 end;
 
 end.

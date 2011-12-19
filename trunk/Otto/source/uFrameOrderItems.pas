@@ -159,26 +159,6 @@ begin
   finally
     mtblOrderItems.Tag:= 0;
   end;
-//  with mtblOrderItems do
-//  begin
-//    First;
-//    while not Eof do
-//    begin
-//      OrderItemId:= mtblOrderItems['ORDERITEM_ID'];
-//      ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM', 'ID', mtblOrderItems['ORDERITEM_ID']);
-//      if ndOrderItem = nil then
-//        ndOrderItem:= ndOrderItems.NodeNew('ORDERITEM');
-//      BatchMoveFields2(ndOrderItem, mtblOrderItems,
-//        'ID=ORDERITEM_ID;ORDER_ID;MAGAZINE_ID;ARTICLE_CODE;DIMENSION;'+
-//        'PRICE_EUR;COST_EUR;NAME_RUS;STATUS_ID', true);
-//      BatchMoveFields2(ndOrderItem, mtblOrderItems,
-//        'ARTICLE_ID;PAGE_NO;POSITION_SIGN;STATUS_SIGN;KIND_RUS;STATE_ID;WEIGHT', false);
-//      BatchMoveFields2(ndOrderItem, ndOrder, 'ORDER_ID=ID');
-//      dmOtto.ActionExecute(trnWrite, ndOrderItem);
-//      dmOtto.ObjectGet(ndOrderItem, OrderItemId, trnWrite);
-//      mtblOrderItems.Next;
-//    end;
-//  end;
 end;
 
 procedure TFrameOrderItems.Read;
@@ -195,8 +175,6 @@ begin
   finally
     mtblOrderItems.Tag:= 0;
   end;
-//  ndOrder.Document.XmlFormat:= xfReadable;
-//  ndOrder.Document.SaveToFile('Order.xml');
 end;
 
 procedure TFrameOrderItems.ProgressCheckAvailShow(Sender: TObject);

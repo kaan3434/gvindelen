@@ -1,14 +1,14 @@
 inherited FormWizardOrder: TFormWizardOrder
   Left = 182
   Top = 76
-  ActiveControl = wzIPageOrderSummary
+  ActiveControl = btnClientPageFirst
   Caption = 'FormWizardOrder'
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   inherited wzForm: TJvWizard
-    ActivePage = wzIPageOrderSummary
+    ActivePage = wzWPage
     DefaultButtons = False
     OnActivePageChanging = wzFormActivePageChanging
     object wzWPage: TJvWizardWelcomePage
@@ -66,8 +66,6 @@ inherited FormWizardOrder: TFormWizardOrder
       Header.Subtitle.Font.Style = []
       Panel.Visible = True
       Color = clWindow
-      OnEnterPage = wzIPageOrderItemsEnterPage
-      OnExitPage = wzIPageOrderItemsExitPage
     end
     object wzIPageOrder: TJvWizardInteriorPage
       Header.Height = 30
@@ -91,8 +89,6 @@ inherited FormWizardOrder: TFormWizardOrder
       Header.Subtitle.Font.Style = []
       Panel.Visible = True
       Color = clWindow
-      OnEnterPage = wzIPageOrderEnterPage
-      OnExitPage = wzIPageOrderExitPage
     end
     object wzIPageClient: TJvWizardInteriorPage
       Header.Height = 30
@@ -116,8 +112,6 @@ inherited FormWizardOrder: TFormWizardOrder
       Header.Subtitle.Font.Style = []
       Panel.Visible = True
       Color = clWindow
-      OnEnterPage = wzIPageClientEnterPage
-      OnExitPage = wzIPageClientExitPage
     end
     object wzIPageAdress: TJvWizardInteriorPage
       Header.Height = 30
@@ -142,8 +136,6 @@ inherited FormWizardOrder: TFormWizardOrder
       Panel.Visible = True
       Color = clWindow
       Caption = 'wzIPageAdress'
-      OnEnterPage = wzIPageAdressEnterPage
-      OnExitPage = wzIPageAdressExitPage
     end
     object wzIPageOrderSummary: TJvWizardInteriorPage
       Header.Height = 30
@@ -169,8 +161,6 @@ inherited FormWizardOrder: TFormWizardOrder
       VisibleButtons = [bkBack, bkCancel]
       Color = clWindow
       Caption = 'wzIPageOrderSummary'
-      OnEnterPage = wzIPageOrderSummaryEnterPage
-      OnExitPage = wzIPageOrderSummaryExitPage
     end
   end
   inherited actListWzrdBtn: TActionList
