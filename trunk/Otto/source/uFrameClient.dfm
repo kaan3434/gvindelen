@@ -6,24 +6,24 @@ inherited FrameClient: TFrameClient
   PixelsPerInch = 96
   TextHeight = 13
   inherited dckTop: TTBXDock
-    Width = 1150
+    Width = 1158
   end
   inherited sb: TTBXStatusBar
-    Top = 347
-    Width = 1150
+    Top = 351
+    Width = 1158
   end
   object pnlCenterOnClient: TPanel [2]
     Left = 0
     Top = 26
-    Width = 860
-    Height = 321
+    Width = 868
+    Height = 325
     Align = alClient
     BorderWidth = 4
-    TabOrder = 0
+    TabOrder = 1
     object splitClient: TJvNetscapeSplitter
       Left = 5
-      Top = 161
-      Width = 850
+      Top = 165
+      Width = 858
       Height = 10
       Cursor = crVSplit
       Align = alBottom
@@ -34,8 +34,8 @@ inherited FrameClient: TFrameClient
     object grdClient: TDBGridEh
       Left = 5
       Top = 5
-      Width = 850
-      Height = 156
+      Width = 858
+      Height = 160
       Align = alClient
       AutoFitColWidths = True
       DataGrouping.GroupLevels = <>
@@ -125,8 +125,8 @@ inherited FrameClient: TFrameClient
     end
     object grdClientOrders: TDBGridEh
       Left = 5
-      Top = 171
-      Width = 850
+      Top = 175
+      Width = 858
       Height = 145
       Align = alBottom
       AutoFitColWidths = True
@@ -329,15 +329,15 @@ inherited FrameClient: TFrameClient
     end
   end
   object pnlRightOnClient: TPanel [3]
-    Left = 860
+    Left = 868
     Top = 26
     Width = 290
-    Height = 321
+    Height = 325
     Align = alRight
     BorderWidth = 4
     Constraints.MaxWidth = 290
     Constraints.MinWidth = 290
-    TabOrder = 1
+    TabOrder = 2
     object grBoxClient: TJvGroupBox
       Left = 5
       Top = 5
@@ -491,7 +491,7 @@ inherited FrameClient: TFrameClient
       Left = 5
       Top = 189
       Width = 280
-      Height = 127
+      Height = 131
       Align = alClient
       Caption = 'grBoxAdress'
       TabOrder = 1
@@ -499,7 +499,7 @@ inherited FrameClient: TFrameClient
         Left = 2
         Top = 15
         Width = 276
-        Height = 110
+        Height = 114
         Align = alClient
         AutoSize = False
         BorderStyle = sbsSunken

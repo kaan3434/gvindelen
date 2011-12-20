@@ -126,7 +126,7 @@ procedure TFormWizardOrder.FormCreate(Sender: TObject);
 begin
   inherited;
 
-
+  Tag:= 1;
 
   frmOrderItems:= TFrameOrderItems.Create(self);
   frmOrderItems.ndOrder:= ndOrder;
@@ -164,6 +164,7 @@ begin
 //    wzForm.ActivePage:= wzIPageOrderItems
 //  else
   wzForm.ActivePageIndex:= 0;
+  Tag:= 0;
 end;
 
 function TFormWizardOrder.GetObjectId: integer;
@@ -207,11 +208,18 @@ procedure TFormWizardOrder.wzFormActivePageChanging(Sender: TObject;
   var ToPage: TJvWizardCustomPage);
 begin
   inherited;
-  if XmlData <> nil then
-  begin
-    XmlData.XmlFormat:= xfReadable;
-    XmlData.SaveToFile('Order.xml');
-  end;
+  if Tag = 1 then Exit;
+  if wzForm.ActivePage = wzIPageOrderItems then
+    frmOrderItems.Write
+  else
+  if wzForm.ActivePage = wzIPageOrder then
+    frmOrder.Write
+  else
+  if wzForm.ActivePage = wzIPageClient then
+    frmClient.Write
+  else
+  if wzForm.ActivePage = wzIPageAdress then
+    frmAdress.Write;
 end;
 
 procedure TFormWizardOrder.FormCloseQuery(Sender: TObject;

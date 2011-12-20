@@ -17,7 +17,6 @@ type
     trnWrite: TpFIBTransaction;
     actList: TActionList;
     imgList: TPngImageList;
-    procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
     { Private declarations }
@@ -130,12 +129,6 @@ end;
 procedure TFrameBase1.UpdateCaptions;
 begin
 
-end;
-
-procedure TFrameBase1.FormHide(Sender: TObject);
-begin
-  Write;
-  UpdateCaptions;
 end;
 
 procedure TFrameBase1.FormShow(Sender: TObject);

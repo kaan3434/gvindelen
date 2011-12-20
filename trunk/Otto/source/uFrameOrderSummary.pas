@@ -144,6 +144,7 @@ const
   StatusSignNew = 'APPROVED';
 var
   OrderCode: string;
+  ndOrderMoney: TXmlNode;
 begin
   SetXmlAttr(ndOrder, 'BYR2EUR', dmOtto.SettingGet(trnRead, 'BYR2EUR'));
   if not AttrExists(ndOrder, 'ORDER_CODE') then
@@ -153,6 +154,16 @@ begin
   end;
   Caption:= txtOrderCode.Caption;
 
+  if chkUseRest.Checked then
+  begin
+    ndOrderMoney:= ndOrder.NodeNew('ORDERMONEY');
+    SetXmlAttr(ndOrderMoney, 'ID', dmOtto.GetNewObjectId('ORDERMONEY'));
+    BatchMoveFields2(ndOrderMoney, ndOrder,
+      'ORDER_ID=ID');
+    BatchMoveFields2(ndOrderMoney, ndAccount,
+      'ACCOUNT_ID=ID;AMOUNT_EUR=REST_EUR');
+    dmOtto.ActionExecute(trnWrite, ndOrderMoney);
+  end;
   trnWrite.SetSavePoint('OnSetStatus'+StatusSignNew);
   try
     SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', StatusSignNew);

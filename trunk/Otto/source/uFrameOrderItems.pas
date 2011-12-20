@@ -593,23 +593,26 @@ var
 begin
   for i:= 0 to subSetStatuses.Count - 1 do
     subSetStatuses.Items[i].Visible:= False;
-  qryNextStatus.First;
-  while not qryNextStatus.Eof do
+  if qryNextStatus.Active then
   begin
-    CompName:= Format('btnSetStatus_%s', [qryNextStatus['STATUS_SIGN']]);
-    btnSetStatus:= TTBXItem(subSetStatuses.FindComponent(CompName));
-    if btnSetStatus = nil then
+    qryNextStatus.First;
+    while not qryNextStatus.Eof do
     begin
-      btnSetStatus:= TTBXItem.Create(subSetStatuses);
-      btnSetStatus.Action:= actSetStatus;
-      btnSetStatus.Name:= CompName;
-      btnSetStatus.Tag:= qryNextStatus['STATUS_ID'];
-      btnSetStatus.Caption:= qryNextStatus['STATUS_NAME'];
-      subSetStatuses.Add(btnSetStatus);
-    end
-    else
-      btnSetStatus.Visible:= True;
-    qryNextStatus.Next;
+      CompName:= Format('btnSetStatus_%s', [qryNextStatus['STATUS_SIGN']]);
+      btnSetStatus:= TTBXItem(subSetStatuses.FindComponent(CompName));
+      if btnSetStatus = nil then
+      begin
+        btnSetStatus:= TTBXItem.Create(subSetStatuses);
+        btnSetStatus.Action:= actSetStatus;
+        btnSetStatus.Name:= CompName;
+        btnSetStatus.Tag:= qryNextStatus['STATUS_ID'];
+        btnSetStatus.Caption:= qryNextStatus['STATUS_NAME'];
+        subSetStatuses.Add(btnSetStatus);
+      end
+      else
+        btnSetStatus.Visible:= True;
+      qryNextStatus.Next;
+    end;
   end;
 end;
 

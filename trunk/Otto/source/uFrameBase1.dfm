@@ -12,14 +12,13 @@ object FrameBase1: TFrameBase1
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  OnHide = FormHide
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 514
+    Width = 522
     Height = 26
     object tlBarTop: TTBXToolbar
       Left = 0
@@ -32,8 +31,8 @@ object FrameBase1: TFrameBase1
   end
   object sb: TTBXStatusBar
     Left = 0
-    Top = 353
-    Width = 514
+    Top = 357
+    Width = 522
     Panels = <>
     UseSystemFont = False
   end

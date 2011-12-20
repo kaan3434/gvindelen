@@ -1,14 +1,14 @@
 inherited FormWizardOrder: TFormWizardOrder
   Left = 182
   Top = 76
-  ActiveControl = btnClientPageFirst
+  ActiveControl = wzIPageOrderSummary
   Caption = 'FormWizardOrder'
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   inherited wzForm: TJvWizard
-    ActivePage = wzWPage
+    ActivePage = wzIPageOrderSummary
     DefaultButtons = False
     OnActivePageChanging = wzFormActivePageChanging
     object wzWPage: TJvWizardWelcomePage
@@ -32,8 +32,8 @@ inherited FormWizardOrder: TFormWizardOrder
       Panel.Visible = True
       VisibleButtons = [bkNext, bkCancel]
       DesignSize = (
-        1008
-        475)
+        1016
+        479)
       object btnClientPageFirst: TButton
         Left = 192
         Top = 104
