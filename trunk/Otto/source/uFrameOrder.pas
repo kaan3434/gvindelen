@@ -77,6 +77,7 @@ end;
 
 procedure TFrameOrder.Write;
 begin
+  inherited;
   SetXmlAttr(ndOrder, 'PRODUCT_ID', lcbProduct.Value);
   SetXmlAttr(ndOrder, 'TAXPLAN_ID', lcbTaxPlan.Value);
   dmOtto.ActionExecute(trnWrite, ndOrder);

@@ -150,6 +150,7 @@ end;
 
 procedure TFrameAdress.Write;
 begin
+  inherited;
   Combo2XmlAttr(cbPlaceType, ndPlace, 'PLACETYPE_CODE', 'PLACETYPE_SIGN');
   SetXmlAttr(ndPlace, 'PLACE_NAME', dedPlaceName.Text);
   Combo2XmlAttr(cbAreaName, ndPlace, 'AREA_ID', 'AREA_NAME');

@@ -140,6 +140,7 @@ procedure TFrameOrderItems.Write;
 var
   OrderItemId, i: Integer;
 begin
+  inherited;
   if mtblOrderItems.State <> dsBrowse then
     mtblOrderItems.Post;
   mtblOrderItems.Tag:= 1;

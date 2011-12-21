@@ -140,6 +140,7 @@ end;
 
 procedure TFrameClient.Write;
 begin
+  inherited;
   SetXmlAttr(ndClient, 'LAST_NAME', dedLastName.Text);
   SetXmlAttr(ndClient, 'FIRST_NAME', dedFirstName.Text);
   SetXmlAttr(ndClient, 'MID_NAME', dedMidName.Text);

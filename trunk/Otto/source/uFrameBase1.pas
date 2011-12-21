@@ -35,7 +35,7 @@ type
     procedure OpenTables; virtual;
     function isValid: Boolean; virtual;
     procedure Read; virtual;
-    procedure Write; virtual; abstract;
+    procedure Write; virtual; 
     procedure UpdateCaptions; virtual;
   end;
 
@@ -136,6 +136,12 @@ begin
   OpenTables;
   Read;
   UpdateCaptions;
+end;
+
+procedure TFrameBase1.Write;
+begin
+  if not trnWrite.Active then
+    trnWrite.StartTransaction;
 end;
 
 end.

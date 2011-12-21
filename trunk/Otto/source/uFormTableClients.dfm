@@ -1,6 +1,6 @@
 inherited FormTableClients: TFormTableClients
-  Left = 481
-  Top = 196
+  Left = 250
+  Top = 133
   Caption = 'FormTableClients'
   OnCreate = FormCreate
   PixelsPerInch = 96
@@ -21,9 +21,12 @@ inherited FormTableClients: TFormTableClients
   inherited pnlMain: TJvPanel
     inherited grBoxMain: TJvGroupBox
       inherited grdMain: TDBGridEh
+        OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghIncSearch, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
         RowDetailPanel.Active = True
         RowDetailPanel.Height = 200
         RowDetailPanel.BevelEdges = [beLeft, beTop, beBottom]
+        STFilter.InstantApply = True
+        STFilter.Visible = True
         Columns = <
           item
             EditButtons = <>
