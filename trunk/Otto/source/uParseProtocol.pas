@@ -73,6 +73,14 @@ begin
       SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', sl[8]);
       SetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX', sl[4]);
 
+      // если ауфтрак еще не присвоен, сохраняем его на заявке
+      if GetXmlAttrValue(ndOrder, 'AUFTRACK_ID') <> sl[3] then
+      begin
+        SetXmlAttr(ndOrder, 'AUFTRACK_ID', sl[3]);
+        dmOtto.ActionExecute(aTransaction, ndOrder);
+        dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
+      end;
+
       if GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') <> GetXmlAttrAsMoney(ndOrderItem, 'COST_EUR') then
       begin
         dmOtto.Notify(aMessageId,
@@ -81,6 +89,7 @@ begin
           XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR',
           XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
           Value2Vars(LineNo, 'LINE_NO'))));
+        SetXmlAttrAsMoney(ndOrderItem, 'COST_EUR', GetXmlAttrValue(ndOrderItem, 'PRICE_EUR')*getXmlAttrValue(ndOrderItem, 'AMOUNT'));
       end;
 
       StateSign:= dmOtto.Recode('ORDERITEM', 'DELIVERY_CODE_TIME', sl[9]+sl[10]);
@@ -112,7 +121,7 @@ begin
           'select status_name from statuses where object_sign=''ORDERITEM'' and status_sign = :status_sign',
           0, [GetXmlAttrValue(ndOrderItem, 'NEW.STATUS_SIGN')]);
         ndOrderItem.ValueAsBool:= True;
-        dmOtto.ActionExecute(aTransaction, ndOrderItem, DealId);
+        dmOtto.ActionExecute(aTransaction, ndOrderItem);
         dmOtto.Notify(aMessageId,
           '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [NEW.STATUS_NAME].',
           'I',
@@ -197,7 +206,7 @@ begin
     begin
       ndOrder:= ndOrders[n];
       if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'ACCEPTREQUEST') then
-        dmOtto.ActionExecute(aTransaction, ndOrder, 0, 'ACCEPTED');
+        dmOtto.ActionExecute(aTransaction, ndOrder, 'ACCEPTED');
     end;
   finally
     Lines.Free;

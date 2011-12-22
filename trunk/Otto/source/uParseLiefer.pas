@@ -13,7 +13,7 @@ uses
   Classes, SysUtils, GvStr, udmOtto, pFIBStoredProc, Variants, GvNativeXml,
   Dialogs, Controls, StrUtils;
 
-procedure ParseLieferLine(aMessageId, LineNo, DealId: Integer; aLine: string; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseLieferLine(aMessageId, LineNo: Integer; aLine: string; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
   OrderId: variant;
   sl: TStringList;
@@ -82,7 +82,7 @@ begin
           0, [GetXmlAttrValue(ndOrderItem, 'STATUS_SIGN')]);
         try
           ndOrderItem.ValueAsBool:= True;
-          dmOtto.ActionExecute(aTransaction, ndOrderItem, DealId);
+          dmOtto.ActionExecute(aTransaction, ndOrderItem);
           dmOtto.Notify(aMessageId,
             '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [STATUS_NAME]',
             MessageClass,
@@ -140,7 +140,7 @@ begin
   try
     Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
     For LineNo:= 0 to Lines.Count - 1 do
-      ParseLieferLine(aMessageId, LineNo, DealId, Lines[LineNo], ndOrders, aTransaction);
+      ParseLieferLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
   finally
     Lines.Free;
   end;

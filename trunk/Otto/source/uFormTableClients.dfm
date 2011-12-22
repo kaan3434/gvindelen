@@ -357,7 +357,6 @@ inherited FormTableClients: TFormTableClients
       'where aos.account_id = :account_id'
       'order by d.deal_date desc'
       '')
-    Active = True
     Transaction = trnNSI
     Database = dmOtto.dbOtto
     DataSource = dsMain

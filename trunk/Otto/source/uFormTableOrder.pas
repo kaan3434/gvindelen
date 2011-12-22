@@ -201,7 +201,7 @@ var
   ndProduct, ndOrders, ndOrder, ndOrderItems, ndOrderItem: TXmlNode;
   st: string;
   slHead, slItems, Line: TStringList;
-  i, j, DealId: Integer;
+  i, j: Integer;
   FileName: string;
 begin
   if MessageDlg('—формировать файл с за€вками?', mtConfirmation, mbOkCancel, 0) = mrOk then
@@ -238,12 +238,11 @@ begin
           'select o_filename from message_2_get_filename(:partnet_number, :portion_no)',
           0, [GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'), 1], trnNSI);
         slHead.SaveToFile(Path['Messages.Out']+FileName);
-        DealId:= dmOtto.CreateDeal(trnNSI);
         try
           for i:= 0 to ndOrders.NodeCount - 1 do
           begin
             ndOrder:= ndOrders[i];
-            dmOtto.ActionExecute(trnNSI, ndOrder, DealId, 'ACCEPTREQUEST');
+            dmOtto.ActionExecute(trnNSI, ndOrder, 'ACCEPTREQUEST');
           end;
           trnNSI.Commit;
         except
@@ -302,7 +301,7 @@ procedure TFormTableOrders.actMakeInvoiceExecute(Sender: TObject);
 begin
   if qryMain['INVOICE_ID'] = null then
   begin
-    dmOtto.ActionExecute(trnWrite, 'ORDER', 'ORDER_INVOICE', '', 0,
+    dmOtto.ActionExecute(trnWrite, 'ORDER', 'ORDER_INVOICE', '', 
       qryMain.FieldByName('ORDER_ID').AsInteger);
     trnWrite.Commit;
     trnWrite.StartTransaction;

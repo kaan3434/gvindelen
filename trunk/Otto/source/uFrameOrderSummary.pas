@@ -101,6 +101,8 @@ begin
 end;
 
 procedure TFrameOrderSummary.Read;
+var
+  RestEur: Variant;
 begin
   txtClientFioOnFinal.Caption:= GetXmlAttr(ndClient, 'LAST_NAME')+
     GetXmlAttr(ndClient, 'FIRST_NAME', ' ')+
@@ -110,6 +112,9 @@ begin
   txtClientGsmOnFinal.Caption:= GetXmlAttr(ndClient, 'MOBILE_PHONE');
   txtClientEmailOnFinal.Caption:= GetXmlAttr(ndClient, 'EMAIL');
   txtAdressOnFinal.Caption:= FullAdress;
+  RestEur:= GetXmlAttrAsMoney(ndAccount, 'REST_EUR');
+  chkUseRest.Enabled:= RestEur <> 0;
+  chkUseRest.Checked:= RestEur < 0;
   txtAccountRest.Caption:= GetXmlAttr(ndAccount, 'REST_EUR', '', ' EUR');
   txtOrderCode.Caption:= GetXmlAttr(ndOrder, 'ORDER_CODE');
   qryOrderFullSpecification.OpenWP([OrderId]);

@@ -181,7 +181,7 @@ implementation
 {$R *.dfm}
 uses
   GvFile, IniFiles, GvStr, udmOtto, FIBQuery, uParseOrder,
-  uOttoArticleUpdate, uWzOrderOtto, DateUtils, uWzrdArticles, uBaseNSIForm,
+  uOttoArticleUpdate, DateUtils, uWzrdArticles, uBaseNSIForm,
   uFormTableOrder, uFormTableClients, uParseProtocol, uParseLiefer,
   uParseConsignment, uFormProtocol, GvNativeXml, pFIBQuery, uParsePayments,
   uFormWizardOrder, uExportOrders, uSetByr2Eur, uExportSMSReject,
@@ -322,7 +322,7 @@ begin
 
     dmOtto.ActionExecute(trnWrite, 'INVOICE', 'INVOICE_PRINT',
        Value2Vars(InvFileName, 'FILENAME'),
-       0, InvoiceId);
+       InvoiceId);
   end;
 end;
 
@@ -341,8 +341,7 @@ begin
     try
       while not Eof do
       begin
-        dmOtto.ActionExecute(trnWrite, 'ORDER', 'ORDER_INVOICE', '', 0,
-          Fields[0].AsInteger);
+        dmOtto.ActionExecute(trnWrite, 'ORDER', 'ORDER_INVOICE', '', Fields[0].AsInteger);
         PrintInvoice(trnWrite, Fields[0].AsInteger);
         Next;
       end;

@@ -46,12 +46,11 @@ type
     procedure BackupDatabase(aFileName: string);
     procedure RestoreDatabase(aFileName: string);
     procedure ActionExecute(aTransaction: TpFIBTransaction;
-      aObjectSign, aActionSign, aParams: string; aDealId: Integer;
-      aObjectId: Integer = 0); overload;
+      aObjectSign, aActionSign, aParams: string; aObjectId: Integer = 0); overload;
     procedure ActionExecute(aTransaction: TpFIBTransaction; aNode: TXmlNode;
-      aDealId: Integer = 0; aStatusSign: string = ''); overload;
+      aStatusSign: string = ''); overload;
     procedure ActionExecute(aTransaction: TpFIBTransaction; aActionSign: string;
-      aNode: TXmlNode; aDealId: Integer = 0); overload;
+      aNode: TXmlNode); overload;
     procedure ParamsGet(ParamId: int64; Vars: TVarList);
     function ParamsCreate(aObjectSign: string; aObjectId: Integer=0): Int64; overload;
     function ParamsCreate(aObjectSign: string; aParams: TVarList): Int64; overload;
@@ -112,8 +111,7 @@ uses
   GvStr, GvFile, GvNativeXml, GvKbd, Windows, GvMath, Forms, uMain;
 
 procedure TdmOtto.ActionExecute(aTransaction: TpFIBTransaction;
-  aObjectSign, aActionSign, aParams: string; aDealId: Integer;
-  aObjectId: Integer = 0);
+  aObjectSign, aActionSign, aParams: string; aObjectId: Integer = 0);
 var
   stBlob: TStringStream;
 begin
@@ -127,10 +125,9 @@ begin
       ParamByName('I_OBJECT_SIGN').AsString:= aObjectSign;
       ParamByName('I_ACTION_SIGN').Value:= IfThen(aActionSign = '', null, aActionSign);
       ParamByName('I_OBJECT_ID').Value:= IfThen(aObjectId=0, null, aObjectId);
-      ParamByName('I_DEAL_ID').Value:= IfThen(aDealId = 0, null, aDealId);
       stBlob:= TStringStream.Create(aParams);
       try
-        ParamByName('I_PARAMS').LoadFromStream(stBlob);   
+        ParamByName('I_PARAMS').LoadFromStream(stBlob);
         SaveStringAsFile(aParams, 'params.txt');
       finally
         stBlob.Free;
@@ -144,20 +141,20 @@ begin
 end;
 
 procedure TdmOtto.ActionExecute(aTransaction: TpFIBTransaction; aNode: TXmlNode;
-  aDealId: Integer = 0; aStatusSign: string = '');
+  aStatusSign: string = '');
 begin
   if aStatusSign <> '' then
     aNode.WriteAttributeString('NEW.STATUS_SIGN', aStatusSign);
   if aNode.ValueAsString<>'' then
-    ActionExecute(aTransaction, aNode.Name, '', AttrsAsString(aNode), aDealId, GetXmlAttrValue(aNode, 'ID'));
+    ActionExecute(aTransaction, aNode.Name, '', AttrsAsString(aNode), GetXmlAttrValue(aNode, 'ID'));
   aNode.ValueAsString:= '';
 end;
 
 procedure TdmOtto.ActionExecute(aTransaction: TpFIBTransaction;
-  aActionSign: string; aNode: TXmlNode; aDealId: Integer = 0);
+  aActionSign: string; aNode: TXmlNode);
 begin
   if aNode.ValueAsString <> '' then
-    ActionExecute(aTransaction, aNode.Name, aActionSign, AttrsAsString(aNode), aDealId, GetXmlAttrValue(aNode, 'ID', '0'));
+    ActionExecute(aTransaction, aNode.Name, aActionSign, AttrsAsString(aNode), GetXmlAttrValue(aNode, 'ID', '0'));
   aNode.ValueAsString:= '';
 end;
 
@@ -307,7 +304,7 @@ end;
 
 procedure TdmOtto.MessageError(aTransaction: TpFIBTransaction; aMessageId: Integer);
 begin
-  ActionExecute(aTransaction, 'MESSAGE', 'MESSAGE_ERROR',  '', 0, aMessageId);
+  ActionExecute(aTransaction, 'MESSAGE', 'MESSAGE_ERROR',  '', aMessageId);
   aTransaction.Commit;
 end;
 
@@ -315,7 +312,7 @@ procedure TdmOtto.MessageSuccess(aTransaction: TpFIBTransaction; aMessageId: Int
 var
   PathDest, FileName: string;
 begin
-  ActionExecute(aTransaction, 'MESSAGE', 'MESSAGE_SUCCESS', '', 0, aMessageId);
+  ActionExecute(aTransaction, 'MESSAGE', 'MESSAGE_SUCCESS', '', aMessageId);
   FileName:= aTransaction.DefaultDatabase.QueryValue(
     'select file_name from messages m where m.message_id = :message_id',
     0, [aMessageId], aTransaction);

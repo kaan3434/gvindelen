@@ -7,6 +7,7 @@ object dmOtto: TdmOtto
   Height = 405
   Width = 624
   object dbOtto: TpFIBDatabase
+    Connected = True
     DBName = 'D:\otto\Data\otto_ppz.fdb'
     DBParams.Strings = (
       'lc_ctype=CYRL'
@@ -109,6 +110,7 @@ object dmOtto: TdmOtto
     Top = 176
   end
   object trnAutonomouse: TpFIBTransaction
+    Active = True
     DefaultDatabase = dbOtto
     TimeoutAction = TARollback
     TRParams.Strings = (
@@ -130,7 +132,7 @@ object dmOtto: TdmOtto
     SQL.Strings = (
       
         'EXECUTE PROCEDURE ACTION_EXECUTE (?I_OBJECT_SIGN, ?I_PARAMS, ?I_' +
-        'ACTION_SIGN, ?I_DEAL_ID, ?I_OBJECT_ID)')
+        'ACTION_SIGN, ?I_OBJECT_ID)')
     StoredProcName = 'ACTION_EXECUTE'
     Left = 360
     Top = 176

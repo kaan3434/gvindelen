@@ -73,7 +73,7 @@ begin
     Line.Add(IfThen(XmlAttrIn(ndClient, 'STATUS_SIGN', 'APPROVED'), 'N', 'U'));
     Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
     if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'APPROVED') then
-      dmOtto.ActionExecute(aTransaction, ndOrder, 0, 'ACCEPTREQUEST');
+      dmOtto.ActionExecute(aTransaction, ndOrder, 'ACCEPTREQUEST');
   finally
     Line.Free;
     ndOrder.Clear;
@@ -105,7 +105,7 @@ begin
     Line.Add('0');
     Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
     if not XmlAttrIn(ndOrder, 'STATUS_SIGN', 'APPROVED') then
-      dmOtto.ActionExecute(aTransaction, ndOrderItem, 0, 'ACCEPTREQUEST');
+      dmOtto.ActionExecute(aTransaction, ndOrderItem, 'ACCEPTREQUEST');
   finally
     Line.Free;
     ndOrderItem.Clear;

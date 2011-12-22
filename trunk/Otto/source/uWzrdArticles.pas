@@ -186,7 +186,7 @@ begin
     begin
       ParseArticles(trnWrite, slArticles, ndMagazine);
       trnWrite.ExecSQLImmediate('execute procedure articles_pump');
-      dmOtto.ActionExecute(trnWrite, ndMagazine, 0, 'LOADED');
+      dmOtto.ActionExecute(trnWrite, ndMagazine, 'LOADED');
     end;
     trnWrite.Commit;
     ShowMessage(Format('Каталог "%s" успещно загружен.',

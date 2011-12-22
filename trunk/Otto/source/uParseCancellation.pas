@@ -13,7 +13,7 @@ uses
   Classes, SysUtils, GvStr, udmOtto, pFIBStoredProc, Variants, GvNativeXml,
   Dialogs, Controls, StrUtils;
 
-procedure ParseCancelLine(aMessageId, LineNo, DealId: Integer; aLine: string; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseCancelLine(aMessageId, LineNo: Integer; aLine: string; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
   OrderId: variant;
   sl: TStringList;
@@ -59,7 +59,7 @@ begin
           'select status_name from statuses where object_sign=''ORDERITEM'' and status_sign = :status_sign',
           0, [GetXmlAttrValue(ndOrderItem, 'NEW.STATUS_SIGN')]);
         try
-          dmOtto.ActionExecute(aTransaction, ndOrderItem, DealId);
+          dmOtto.ActionExecute(aTransaction, ndOrderItem);
           dmOtto.Notify(aMessageId,
             '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [STATUS_NAME]',
             MessageClass,
@@ -117,7 +117,7 @@ begin
   try
     Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
     For LineNo:= 0 to Lines.Count - 1 do
-      ParseCancelLine(aMessageId, LineNo, DealId, Lines[LineNo], ndOrders, aTransaction);
+      ParseCancelLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
   finally
     Lines.Free;
   end;

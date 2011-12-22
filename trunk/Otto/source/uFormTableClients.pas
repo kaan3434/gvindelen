@@ -70,14 +70,14 @@ begin
         begin
           // Создаем счет
           AccountId:= dmOtto.GetNewObjectId('ACCOUNT');
-          dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_CREATE', '', 0, AccountId);
+          dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_CREATE', '', AccountId);
           SetXmlAttr(ndClient, 'ACCOUNT_ID', AccountId);
           dmOtto.ActionExecute(trnWrite, ndClient);
         end
         else
           AccountId:= qryMain['ACCOUNT_ID'];
         dmOtto.ActionExecute(trnWrite, 'ACCOUNT','ACCOUNT_USERDEBIT',
-          Value2Vars(Amount_EUR, 'AMOUNT_EUR'), 0, AccountId);
+          Value2Vars(Amount_EUR, 'AMOUNT_EUR'), AccountId);
         trnWrite.Commit;
       except
         on E:Exception do

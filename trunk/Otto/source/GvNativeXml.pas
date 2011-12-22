@@ -40,7 +40,8 @@ procedure BatchMoveFields2(aDestDataSet, aSrcDataSet: TDataSet; aMapping: string
 procedure BatchMoveFields2(aDestNode: TXmlNode; aSrcDataSet: TDataSet; aMapping: string;
   aMandatory: Boolean = false); overload;
 procedure BatchMoveFields2(aDestDataSet: TDataSet; aSrcNode: TXmlNode; aMapping: string); overload;
-procedure BatchMoveFields2(aDestNode, aSrcNode: TXmlNode; aMapping: string); overload;
+procedure BatchMoveFields2(aDestNode, aSrcNode: TXmlNode; aMapping: string;
+  aMandatory: Boolean = false); overload;
 
 procedure BatchMoveXMLNodes2Dataset(aDestDataSet: TDataSet; aSrcListNode: TXmlNode;
   aMapping: string; aMode:TCopyMode; aShowProgress: Boolean = false);
@@ -348,7 +349,8 @@ begin
   end;
 end;
 
-procedure BatchMoveFields2(aDestNode, aSrcNode: TXmlNode; aMapping: string); overload;
+procedure BatchMoveFields2(aDestNode, aSrcNode: TXmlNode; aMapping: string;
+  aMandatory: Boolean = false); overload;
 var
   FldSrc, FldDest: string;
   DestIdx: Integer;
@@ -362,7 +364,7 @@ begin
       SetXmlAttr(aDestNode, FldDest, CopyBetween(FldSrc, '"', '"'))
     else
     if AttrExists(aSrcNode, FldSrc) then
-      SetXmlAttr(aDestNode, FldDest, aSrcNode.ReadAttributeString(FldSrc))
+      SetXmlAttr(aDestNode, FldDest, aSrcNode.ReadAttributeString(FldSrc), aMandatory)
     else
       DelXmlAttr(aDestNode, FldDest);
   end;

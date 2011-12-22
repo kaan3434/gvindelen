@@ -1,4 +1,6 @@
 inherited FrameAdress: TFrameAdress
+  Left = 247
+  Top = 160
   Width = 920
   Height = 450
   Constraints.MinHeight = 450

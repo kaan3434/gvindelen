@@ -18,7 +18,7 @@ object FrameBase1: TFrameBase1
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 522
+    Width = 514
     Height = 26
     object tlBarTop: TTBXToolbar
       Left = 0
@@ -31,8 +31,8 @@ object FrameBase1: TFrameBase1
   end
   object sb: TTBXStatusBar
     Left = 0
-    Top = 357
-    Width = 522
+    Top = 353
+    Width = 514
     Panels = <>
     UseSystemFont = False
   end

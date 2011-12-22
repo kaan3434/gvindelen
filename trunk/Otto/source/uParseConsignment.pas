@@ -13,7 +13,7 @@ uses
   Classes, SysUtils, GvStr, udmOtto, pFIBStoredProc, Variants, GvNativeXml,
   Dialogs, Controls, StrUtils;
 
-procedure ParseConsignmentLine100(aMessageId, LineNo, DealId: Integer;
+procedure ParseConsignmentLine100(aMessageId, LineNo: Integer;
   sl: TStringList; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 begin
   SetXmlAttr(ndOrders, 'PACKLIST_NO', sl[1]);
@@ -21,7 +21,7 @@ begin
   SetXmlAttr(ndOrders, 'PACKLIST_DT', sl[4]);
 end;
 
-procedure ParseConsignmentLine200(aMessageId, LineNo, DealId: Integer;
+procedure ParseConsignmentLine200(aMessageId, LineNo: Integer;
   sl: TStringList; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
   OrderCode: WideString;
@@ -56,7 +56,7 @@ begin
         'select status_name from statuses where object_sign=''ORDERITEM'' and status_sign = :status_sign',
         0, ['PACKED']);
       try
-        dmOtto.ActionExecute(aTransaction, ndOrderItem, DealId);
+        dmOtto.ActionExecute(aTransaction, ndOrderItem);
         dmOtto.Notify(aMessageId,
           '[LINE_NO]. Заявка [ORDER_CODE], Артикул [ARTICLE_CODE], Размер [DIMENSION]. [STATUS_NAME]',
           'I',
@@ -90,7 +90,7 @@ begin
       Value2Vars(LineNo, 'LINE_NO')));
 end;
 
-procedure ParseConsignmentLine300(aMessageId, LineNo, DealId: Integer;
+procedure ParseConsignmentLine300(aMessageId, LineNo: Integer;
   sl: TStringList; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
   OrderCode: string;
@@ -110,7 +110,7 @@ begin
   end;
 end;
 
-procedure ParseConsignmentLine400(aMessageId, LineNo, DealId: Integer;
+procedure ParseConsignmentLine400(aMessageId, LineNo: Integer;
   sl: TStringList; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 begin
 
@@ -125,16 +125,16 @@ begin
     sl.Delimiter:= ';';
     sl.DelimitedText:= '"'+ReplaceAll(aLine, ';', '";"')+'"';
     if sl[0] = '100' then
-      ParseConsignmentLine100(aMessageId, LineNo, DealId, sl, ndOrders, aTransaction)
+      ParseConsignmentLine100(aMessageId, LineNo, sl, ndOrders, aTransaction)
     else
     if sl[0] = '200' then
-      ParseConsignmentLine200(aMessageId, LineNo, DealId, sl, ndOrders, aTransaction)
+      ParseConsignmentLine200(aMessageId, LineNo, sl, ndOrders, aTransaction)
     else
     if sl[0] = '300' then
-      ParseConsignmentLine300(aMessageId, LineNo, DealId, sl, ndOrders, aTransaction)
+      ParseConsignmentLine300(aMessageId, LineNo, sl, ndOrders, aTransaction)
     else
     if sl[0] = '400' then
-      ParseConsignmentLine400(aMessageId, LineNo, DealId, sl, ndOrders, aTransaction);
+      ParseConsignmentLine400(aMessageId, LineNo, sl, ndOrders, aTransaction);
   finally
     sl.Free;
   end;

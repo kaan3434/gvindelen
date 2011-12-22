@@ -140,8 +140,7 @@ end;
 
 procedure TFrameBase1.Write;
 begin
-  if not trnWrite.Active then
-    trnWrite.StartTransaction;
+//  if not trnWrite.Active then trnWrite.StartTransaction;
 end;
 
 end.

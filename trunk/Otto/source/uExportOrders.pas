@@ -197,14 +197,14 @@ begin
     begin
       ndOrder:= ndOrders[i];
       if GetXmlAttrValue(ndOrder, 'STATUS_SIGN') = 'APPROVED' then
-        dmOtto.ActionExecute(aTransaction, ndOrder, 0, 'ACCEPTREQUEST')
+        dmOtto.ActionExecute(aTransaction, ndOrder, 'ACCEPTREQUEST')
       else
       begin
         ndOrderItems:= ndOrder.NodeByName('ORDERITEMS');
         for oi:= 0 to ndOrderItems.NodeCount-1 do
         begin
           ndOrderItem:= ndOrderItems[oi];
-          dmOtto.ActionExecute(aTransaction, ndOrderItem, 0, 'ACCEPTREQUEST');
+          dmOtto.ActionExecute(aTransaction, ndOrderItem, 'ACCEPTREQUEST');
         end;
       end;
     end;

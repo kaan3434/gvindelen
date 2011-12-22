@@ -9,7 +9,6 @@ uses
   uParseCancellation in 'uParseCancellation.pas',
   uFormWizardBase in 'uFormWizardBase.pas' {FormWizardBase},
   uOttoArticleUpdate in 'uOttoArticleUpdate.pas',
-  uWzOrderOtto in 'uWzOrderOtto.pas' {WzOrderOtto},
   GvNativeXml in 'GvNativeXml.pas',
   uWzrdArticles in 'uWzrdArticles.pas' {WzArticlesOtto},
   uParseMagazine in 'uParseMagazine.pas',

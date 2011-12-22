@@ -490,7 +490,7 @@ procedure TFrameOrderItems.actReturnRequestExecute(Sender: TObject);
 begin
   ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM','ID', mtblOrderItems['ORDERITEM_ID']);
   if ndOrderItem <> nil then
-    dmOtto.ActionExecute(trnWrite, ndOrderItem, 0, 'RETURNING');
+    dmOtto.ActionExecute(trnWrite, ndOrderItem, 'RETURNING');
 end;
 
 procedure TFrameOrderItems.actReturnRequestUpdate(Sender: TObject);

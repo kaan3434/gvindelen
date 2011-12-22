@@ -1,17 +1,18 @@
 inherited WzArticlesOtto: TWzArticlesOtto
   Left = 261
   Top = 151
-  ActiveControl = edtFileName
+  ActiveControl = wzWPage1
   Caption = #1040#1088#1090#1080#1082#1091#1083#1099' OTTO'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   inherited wzForm: TJvWizard
-    ActivePage = wzIPageImport
+    ActivePage = wzWPage1
     ButtonFinish.ModalResult = 6
     OnFinishButtonClick = wzFormFinishButtonClick
     object wzWPage1: TJvWizardWelcomePage
+      Header.ParentFont = False
       Header.Title.Color = clNone
       Header.Title.Text = 'Welcome'
       Header.Title.Anchors = [akLeft, akTop, akRight]
@@ -34,6 +35,7 @@ inherited WzArticlesOtto: TWzArticlesOtto
       Caption = 'wzWPage1'
     end
     object wzIPageMagazines: TJvWizardInteriorPage
+      Header.ParentFont = False
       Header.Title.Color = clNone
       Header.Title.Text = 'Title'
       Header.Title.Anchors = [akLeft, akTop, akRight]
@@ -56,8 +58,8 @@ inherited WzArticlesOtto: TWzArticlesOtto
       object pnlCenterOnMagazines: TJvPanel
         Left = 0
         Top = 70
-        Width = 616
-        Height = 409
+        Width = 608
+        Height = 405
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
         HotTrackFont.Height = -11
@@ -125,10 +127,10 @@ inherited WzArticlesOtto: TWzArticlesOtto
         end
       end
       object pnlLeftOnMagazines: TJvPanel
-        Left = 616
+        Left = 608
         Top = 70
         Width = 400
-        Height = 409
+        Height = 405
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
         HotTrackFont.Height = -11
@@ -143,7 +145,7 @@ inherited WzArticlesOtto: TWzArticlesOtto
           Left = 5
           Top = 5
           Width = 390
-          Height = 399
+          Height = 395
           Align = alClient
           Caption = 'grBoxMagazineOnMagazines'
           TabOrder = 0
@@ -207,6 +209,7 @@ inherited WzArticlesOtto: TWzArticlesOtto
       end
     end
     object wzIPageImport: TJvWizardInteriorPage
+      Header.ParentFont = False
       Header.Title.Color = clNone
       Header.Title.Text = 'Title'
       Header.Title.Anchors = [akLeft, akTop, akRight]
@@ -267,6 +270,7 @@ inherited WzArticlesOtto: TWzArticlesOtto
       end
     end
     object wzIPageFinal: TJvWizardInteriorPage
+      Header.ParentFont = False
       Header.Title.Color = clNone
       Header.Title.Text = 'Title'
       Header.Title.Anchors = [akLeft, akTop, akRight]
@@ -289,7 +293,7 @@ inherited WzArticlesOtto: TWzArticlesOtto
       object pnl1: TJvPanel
         Left = 0
         Top = 70
-        Width = 1016
+        Width = 1008
         Height = 187
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
@@ -303,7 +307,7 @@ inherited WzArticlesOtto: TWzArticlesOtto
         object grBoxMagazineOnFinal: TJvGroupBox
           Left = 5
           Top = 5
-          Width = 1006
+          Width = 998
           Height = 177
           Align = alClient
           Caption = 'grBoxMagazineOnFinal'

@@ -50,7 +50,7 @@ begin
       dmOtto.ObjectGet(ndInvoice, InvoiceId, aTransaction);
       SetXmlAttr(ndPayment, 'INVOICE_ID', InvoiceId);
       try
-        dmOtto.ActionExecute(aTransaction, ndPayment, 0, 'ASSIGNED');
+        dmOtto.ActionExecute(aTransaction, ndPayment, 'ASSIGNED');
         dmOtto.Notify(aMessageId,
           '[LINE_NO]. Извещение [INVOICE_CODE]. Сумма [AMOUNT_BYR]. Заявка [ORDER_CODE]. Ok',
           'I',

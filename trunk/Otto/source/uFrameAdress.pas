@@ -195,7 +195,7 @@ begin
     end
     else
       SetXmlAttr(ndAdress, 'ID', dmOtto.GetNewObjectId('ADRESS'));
-    BatchMoveFields2(ndAdress, ndClient, 'CLIENT_ID=ID');
+    BatchMoveFields2(ndAdress, ndOrder, 'CLIENT_ID');
     dmOtto.ActionExecute(trnWrite, 'ADRESS_CREATE', ndAdress);
   end
   else
@@ -213,7 +213,6 @@ var
 begin
   NeedArea:= StrToInt(cbPlaceType.KeyItems[cbPlaceType.ItemIndex]) > 4;
   cbAreaName.Visible:= NeedArea;
-//  vldRequiredAreaName.Enabled:= NeedArea;
 end;
 
 procedure TFrameAdress.grdAdressesDblClick(Sender: TObject);

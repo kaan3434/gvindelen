@@ -155,21 +155,18 @@ begin
     begin
       SetXmlAttr(ndClient, 'ID', dmOtto.GetNewObjectId('CLIENT'));
       SetXmlAttr(ndAccount, 'ID', dmOtto.GetNewObjectId('ACCOUNT'));
-      SetXmlAttr(ndOrder, 'CLIENT_ID', ClientId);
       SetXmlAttr(ndAdress, 'CLIENT_ID', ClientId);
       BatchMoveFields2(ndClient, ndAccount, 'ACCOUNT_ID=ID');
       dmOtto.ActionExecute(trnWrite, 'ACCOUNT_CREATE', ndAccount);
       dmOtto.ActionExecute(trnWrite, 'CLIENT_CREATE', ndClient);
-      dmOtto.ActionExecute(trnWrite, ndOrder);
     end
     else
       Exit;
   end
   else
-  begin
     dmOtto.ActionExecute(trnWrite, ndClient);
-    dmOtto.ActionExecute(trnWrite, ndOrder);
-  end;
+  BatchMoveFields2(ndOrder, ndClient, 'CLIENT_ID=ID;ACCOUNT_ID', true);
+  dmOtto.ActionExecute(trnWrite, ndOrder);
   dmOtto.ObjectGet(ndAccount, AccountId, trnWrite);
   dmOtto.ObjectGet(ndClient, ClientId, trnWrite);
 
