@@ -113,7 +113,6 @@ type
     verInfo: TgsFileVersionInfo;
     log1: TJvLogFile;
     imgListAlerts: TPngImageList;
-    tmr1: TTimer;
     actExportSMSRejected: TAction;
     ProgressMakeSMSRejected: TJvProgressComponent;
     btn12: TTBXItem;
@@ -299,31 +298,20 @@ end;
 
 procedure TMainForm.PrintInvoice(aTransaction: TpFIBTransaction; OrderId: Integer);
 var
-  InvoiceId: Variant;
   InvFileName: string;
   OrderCode: Variant;
 begin
-  InvoiceId:= aTransaction.DefaultDatabase.QueryValue(
-    'select invoice_id from invoices where order_id = :order_id',
+  OrderCode:= aTransaction.DefaultDatabase.QueryValue(
+    'select order_code from orders where order_id = :order_id',
     0, [OrderId], aTransaction);
-  if InvoiceId <> null then
-  begin
-    OrderCode:= aTransaction.DefaultDatabase.QueryValue(
-      'select order_code from orders where order_id = :order_id',
-      0, [OrderId], aTransaction);
-    InvFileName:= Format('inv_%s.pdf', [OrderCode]);
-    ForceDirectories(Path['Invoices']);
-    frxPDFExport.FileName:= Path['Invoices']+invFileName;
-    frxReportOnePage.LoadFromFile(Path['FastReport'] + 'invoice.fr3');
-    frxReportOnePage.Variables.Variables['InvoiceId']:= Format('''%u''', [Integer(InvoiceId)]);
-    frxReportOnePage.PrepareReport(true);
-    frxReportOnePage.Export(frxPDFExport);
-    frxReportOnePage.ShowPreparedReport;
-
-    dmOtto.ActionExecute(trnWrite, 'INVOICE', 'INVOICE_PRINT',
-       Value2Vars(InvFileName, 'FILENAME'),
-       InvoiceId);
-  end;
+  InvFileName:= Format('inv_%s.pdf', [OrderCode]);
+  ForceDirectories(Path['Invoices']);
+  frxPDFExport.FileName:= Path['Invoices']+invFileName;
+  frxReportOnePage.LoadFromFile(Path['FastReport'] + 'invoice.fr3');
+  frxReportOnePage.Variables.Variables['OrderId']:= Format('''%u''', [OrderId]);
+  frxReportOnePage.PrepareReport(true);
+  frxReportOnePage.Export(frxPDFExport);
+  frxReportOnePage.ShowPreparedReport;
 end;
 
 

@@ -39,7 +39,8 @@ uses
   uExportPackList in 'uExportPackList.pas',
   uParseArtN in 'uParseArtN.pas',
   uParseLiefer in 'uParseLiefer.pas',
-  GvVariant in '..\..\4Delphi\Gvindln\Source\GvVariant.pas';
+  GvVariant in '..\..\4Delphi\Gvindln\Source\GvVariant.pas',
+  uDlgPayment in 'uDlgPayment.pas' {DlgManualPayment};
 
 {$R *.res}
 
@@ -50,5 +51,6 @@ begin
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TdmOtto, dmOtto);
+  Application.CreateForm(TDlgManualPayment, DlgManualPayment);
   Application.Run;
 end.

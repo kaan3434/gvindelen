@@ -118,6 +118,7 @@ begin
   if not aTransaction.Active then
     aTransaction.StartTransaction;
   try
+    aTransaction.SetSavePoint('OnExecuteAction');
     with spActionExecute do
     begin
       Params.ClearValues;
@@ -128,15 +129,18 @@ begin
       stBlob:= TStringStream.Create(aParams);
       try
         ParamByName('I_PARAMS').LoadFromStream(stBlob);
-        SaveStringAsFile(aParams, 'params.txt');
+//        SaveStringAsFile(aParams, 'params.txt');
       finally
         stBlob.Free;
       end;
       ExecProc;
     end;
   except
-    aTransaction.Rollback;
-    raise;
+    on E:Exception do
+    begin
+      aTransaction.RollBackToSavePoint('OnExecuteAction');
+      ShowMessage(E.Message);
+    end;
   end;
 end;
 

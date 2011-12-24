@@ -110,24 +110,6 @@ inherited FrameOrderItems: TFrameOrderItems
           Width = 270
         end
         item
-          EditButtons = <>
-          FieldName = 'PAGE_NO'
-          Footers = <>
-          MinWidth = 22
-          Title.Alignment = taCenter
-          Title.Caption = #1057#1090#1088
-          Width = 27
-        end
-        item
-          EditButtons = <>
-          FieldName = 'POSITION_SIGN'
-          Footers = <>
-          MinWidth = 16
-          Title.Alignment = taCenter
-          Title.Caption = #1055#1086#1079
-          Width = 21
-        end
-        item
           AutoFitColWidth = False
           EditButtons = <>
           FieldName = 'DIMENSION'
@@ -138,6 +120,7 @@ inherited FrameOrderItems: TFrameOrderItems
         end
         item
           AutoFitColWidth = False
+          DisplayFormat = '### ##0.00'
           EditButtons = <>
           FieldName = 'PRICE_EUR'
           Footer.DisplayFormat = '#0 '#1096#1090'.'
@@ -161,6 +144,7 @@ inherited FrameOrderItems: TFrameOrderItems
         end
         item
           AutoFitColWidth = False
+          DisplayFormat = '### ##0.00'
           EditButtons = <>
           FieldName = 'COST_EUR'
           Footer.DisplayFormat = '0.## EUR'
@@ -277,7 +261,7 @@ inherited FrameOrderItems: TFrameOrderItems
               Footers = <>
               Title.Alignment = taCenter
               Title.Caption = #1050#1072#1090#1072#1083#1086#1075
-              Width = 320
+              Width = 270
             end
             item
               AutoFitColWidth = False
@@ -543,15 +527,6 @@ inherited FrameOrderItems: TFrameOrderItems
         DataType = ftInteger
       end
       item
-        Name = 'PAGE_NO'
-        DataType = ftInteger
-      end
-      item
-        Name = 'POSITION_SIGN'
-        DataType = ftString
-        Size = 2
-      end
-      item
         Name = 'ARTICLE_ID'
         DataType = ftInteger
       end
@@ -646,14 +621,6 @@ inherited FrameOrderItems: TFrameOrderItems
       KeyFields = 'MAGAZINE_ID'
       Size = 50
       Lookup = True
-    end
-    object fldOrderItems_PAGE_NO: TIntegerField
-      DisplayWidth = 3
-      FieldName = 'PAGE_NO'
-    end
-    object fldOrderItems_POSITION_SIGN: TStringField
-      FieldName = 'POSITION_SIGN'
-      Size = 2
     end
     object fldOrderItems_ARTICLE_ID: TIntegerField
       FieldName = 'ARTICLE_ID'
@@ -770,26 +737,6 @@ inherited FrameOrderItems: TFrameOrderItems
           Visible = False
           currency = False
           Precision = 0
-        end
-        object PAGE_NO: TMTNumericDataFieldEh
-          FieldName = 'PAGE_NO'
-          NumericDataType = fdtIntegerEh
-          Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
-          Visible = False
-          currency = False
-          Precision = 0
-        end
-        object POSITION_SIGN: TMTStringDataFieldEh
-          FieldName = 'POSITION_SIGN'
-          StringDataType = fdtStringEh
-          Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
-          Visible = False
-          Size = 2
-          Transliterate = False
         end
         object ARTICLE_ID: TMTNumericDataFieldEh
           FieldName = 'ARTICLE_ID'

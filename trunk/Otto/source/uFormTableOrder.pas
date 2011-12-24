@@ -299,13 +299,6 @@ end;
 
 procedure TFormTableOrders.actMakeInvoiceExecute(Sender: TObject);
 begin
-  if qryMain['INVOICE_ID'] = null then
-  begin
-    dmOtto.ActionExecute(trnWrite, 'ORDER', 'ORDER_INVOICE', '', 
-      qryMain.FieldByName('ORDER_ID').AsInteger);
-    trnWrite.Commit;
-    trnWrite.StartTransaction;
-  end;
   MainForm.PrintInvoice(trnWrite, qryMain['ORDER_ID']);
 end;
 

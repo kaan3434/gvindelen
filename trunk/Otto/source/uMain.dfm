@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 199
-  Top = 161
+  Left = 243
+  Top = 179
   Width = 1058
   Height = 512
   Caption = 'PPZ2'
@@ -1393,7 +1393,7 @@ object MainForm: TMainForm
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 40787.578750451390000000
+    ReportOptions.LastChange = 40901.050944363430000000
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
     Left = 352
@@ -1674,11 +1674,6 @@ object MainForm: TMainForm
     Left = 288
     Top = 256
     Bitmap = {}
-  end
-  object tmr1: TTimer
-    Interval = 10
-    Left = 432
-    Top = 192
   end
   object ProgressMakeSMSRejected: TJvProgressComponent
     Caption = 'SMS '#1086#1073' '#1086#1090#1082#1072#1079#1072#1093

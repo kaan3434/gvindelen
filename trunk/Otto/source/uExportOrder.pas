@@ -99,8 +99,8 @@ begin
     Line.Add(dmOtto.Recode('ARTICLE', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION')));
     Line.Add('1');
     Line.Add(GetXmlAttr(ndOrderItem, 'COST_EUR'));
-    Line.Add(GetXmlAttr(ndOrderItem, 'PAGE_NO'));
-    Line.Add(GetXmlAttr(ndOrderItem, 'POSITION_SIGN'));
+    Line.Add('');
+    Line.Add('');
     Line.Add('');
     Line.Add('0');
     Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;

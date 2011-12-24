@@ -18,8 +18,9 @@ inherited FormTableOrders: TFormTableOrders
     inherited grBoxMain: TJvGroupBox
       inherited grdMain: TDBGridEh
         AllowedOperations = [alopDeleteEh]
-        Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
-        OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghMultiSortMarking, dghEnterAsTab, dghIncSearch, dghPreferIncSearch, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
+        Options = [dgTitles, dgIndicator, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+        OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghMultiSortMarking, dghEnterAsTab, dghIncSearch, dghRowHighlight, dghColumnResize, dghHotTrack, dghExtendVertLines]
+        ReadOnly = True
         RowDetailPanel.Active = True
         RowDetailPanel.Height = 200
         STFilter.InstantApply = True
@@ -127,19 +128,14 @@ inherited FormTableOrders: TFormTableOrders
             Footers = <>
             Title.Alignment = taCenter
             Title.Caption = #1057#1090#1086#1080#1084#1086#1089#1090#1100', BYR'
-          end
-          item
-            EditButtons = <>
-            FieldName = 'INVOICE_ID'
-            Footers = <>
           end>
         inherited RowDetailData: TRowDetailPanelControlEh
           object pcDetailInfo: TPageControl
             Left = 0
             Top = 0
-            Width = 671
+            Width = 606
             Height = 198
-            ActivePage = tsOrderAttrs
+            ActivePage = ts1
             Align = alClient
             TabOrder = 0
             object tsOrderAttrs: TTabSheet
@@ -147,7 +143,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdOrderProperties: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 663
+                Width = 598
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -373,12 +369,12 @@ inherited FormTableOrders: TFormTableOrders
               end
             end
             object ts1: TTabSheet
-              Caption = #1041#1072#1083#1072#1085#1089' '#1089#1095#1077#1090#1072
+              Caption = #1044#1074#1080#1078#1077#1085#1080#1077' '#1089#1088#1077#1076#1089#1090#1074
               ImageIndex = 3
               object grdAccountMovements: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 663
+                Width = 598
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -400,53 +396,36 @@ inherited FormTableOrders: TFormTableOrders
                 TitleFont.Style = []
                 Columns = <
                   item
-                    EditButtons = <>
-                    FieldName = 'ACCOUNT_ID'
-                    Footers = <>
-                    Visible = False
-                  end
-                  item
-                    Alignment = taCenter
                     AutoFitColWidth = False
                     EditButtons = <>
-                    FieldName = 'DEAL_DATE'
+                    FieldName = 'ACCOPER_DTM'
                     Footers = <>
                     Title.Alignment = taCenter
                     Title.Caption = #1044#1072#1090#1072
-                    Width = 100
                   end
                   item
                     AutoFitColWidth = False
-                    DisplayFormat = '# ##0.## EUR'
                     EditButtons = <>
                     FieldName = 'AMOUNT_EUR'
                     Footers = <>
                     Title.Alignment = taCenter
-                    Title.Caption = #1057#1091#1084#1084#1072
-                    Width = 80
-                  end
-                  item
-                    EditButtons = <>
-                    FieldName = 'BALANCE_EUR'
-                    Footers = <>
-                    Title.Alignment = taCenter
-                    Title.Caption = #1041#1072#1083#1072#1085#1089
+                    Title.Caption = #1057#1091#1084#1084#1072', EUR'
+                    Width = 70
                   end
                   item
                     AutoFitColWidth = False
                     EditButtons = <>
-                    FieldName = 'ORDER_CODE'
+                    FieldName = 'BYR2EUR'
                     Footers = <>
                     Title.Alignment = taCenter
-                    Title.Caption = #1047#1072#1103#1074#1082#1072
-                    Width = 80
+                    Title.Caption = #1050#1091#1088#1089
                   end
                   item
                     EditButtons = <>
-                    FieldName = 'ACTION_NAME'
+                    FieldName = 'NOTES'
                     Footers = <>
                     Title.Alignment = taCenter
-                    Title.Caption = #1053#1072#1080#1084#1077#1085#1086#1074#1072#1085#1080#1077' '#1076#1077#1081#1089#1090#1074#1080#1103
+                    Title.Caption = #1054#1087#1080#1089#1072#1085#1080#1077
                     Width = 300
                   end>
                 object RowDetailData: TRowDetailPanelControlEh
@@ -547,8 +526,7 @@ inherited FormTableOrders: TFormTableOrders
       '    statuses.STATUS_SIGN,'
       '    orders.STATUS_DTM,'
       '    v_order_summary.cost_eur,'
-      '    v_order_summary.cost_byr,'
-      '    invoices.invoice_id'
+      '    v_order_summary.cost_byr'
       'FROM ORDERS '
       
         '  inner join v_clients_fio on (v_clients_fio.client_id = orders.' +
@@ -557,7 +535,6 @@ inherited FormTableOrders: TFormTableOrders
       
         '  inner join v_order_summary on (v_order_summary.order_id = orde' +
         'rs.order_id)'
-      '  left join invoices on (invoices.order_id = orders.order_id)'
       'where '
       '/*FILTER*/ 1=1'
       'order by Create_dtm')
@@ -617,6 +594,9 @@ inherited FormTableOrders: TFormTableOrders
         Background = clWindow
       end>
     Bitmap = {}
+  end
+  inherited trnNSI: TpFIBTransaction
+    Active = True
   end
   object qryOrderAttrs: TpFIBDataSet
     SelectSQL.Strings = (
@@ -721,24 +701,14 @@ inherited FormTableOrders: TFormTableOrders
   end
   object qryAccountMovements: TpFIBDataSet
     SelectSQL.Strings = (
-      'select '
-      '  aos.account_id,'
-      '  d.deal_date,'
-      '  aos.amount_eur,'
-      '  ac.action_name,'
-      '  o.order_code,'
-      '  ao.balance_eur'
-      'from v_accoper_summary aos'
-      '  inner join deals d on (d.deal_id = aos.deal_id)'
-      
-        '  inner join actioncodes ac on (ac.action_sign = aos.action_sign' +
-        ')'
-      '  left join orders o on (o.order_id = d.order_id)'
-      '  inner join clients cl on (cl.account_id = aos.account_id)'
-      '  inner join accopers ao on (ao.accoper_id = aos.accoper_id)'
-      'where cl.client_id = :client_id'
-      'order by d.deal_date desc'
-      '')
+      'SELECT'
+      '    ACCOPER_DTM,'
+      '    -AMOUNT_EUR amount_eur,'
+      '    BYR2EUR,'
+      '    NOTES'
+      'FROM accopers ao'
+      'where ao.order_id = :order_id'
+      'order by ao.accoper_dtm')
     Transaction = trnNSI
     Database = dmOtto.dbOtto
     DataSource = dsMain

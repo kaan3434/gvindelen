@@ -167,7 +167,15 @@ begin
       'ORDER_ID=ID');
     BatchMoveFields2(ndOrderMoney, ndAccount,
       'ACCOUNT_ID=ID;AMOUNT_EUR=REST_EUR');
-    dmOtto.ActionExecute(trnWrite, ndOrderMoney);
+    if GetXmlAttrValue(ndAccount, 'REST_EUR', 0) < 0 then
+      dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_DEBITORDER',
+        XmlAttrs2Vars(ndAccount, 'ID;AMOUNT_EUR=REST_EUR',
+        XmlAttrs2Vars(ndOrder, 'ORDER_ID=ID')))
+    else
+    if GetXmlAttrValue(ndAccount, 'REST_EUR', 0) > 0 then
+      dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_CREDITORDER',
+        XmlAttrs2Vars(ndAccount, 'ID;AMOUNT_EUR=REST_EUR',
+        XmlAttrs2Vars(ndOrder, 'ORDER_ID=ID')))
   end;
   trnWrite.SetSavePoint('OnSetStatus'+StatusSignNew);
   try

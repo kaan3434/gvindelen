@@ -9,11 +9,11 @@ inherited FormTableClients: TFormTableClients
     inherited tlBarNsiActions: TTBXToolbar
       Images = imgListMain
       object btnAccountUserCredit: TTBXItem
-        Action = actAccountUserDebit
+        Action = actAccountManualDebit
         DisplayMode = nbdmImageAndText
       end
       object btnAccountUserDebit: TTBXItem
-        Action = actAccountUserCredit
+        Action = actAccountManualCredit
         DisplayMode = nbdmImageAndText
       end
     end
@@ -21,12 +21,11 @@ inherited FormTableClients: TFormTableClients
   inherited pnlMain: TJvPanel
     inherited grBoxMain: TJvGroupBox
       inherited grdMain: TDBGridEh
-        OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghIncSearch, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
+        OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghIncSearch, dghPreferIncSearch, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
+        ReadOnly = True
         RowDetailPanel.Active = True
         RowDetailPanel.Height = 200
         RowDetailPanel.BevelEdges = [beLeft, beTop, beBottom]
-        STFilter.InstantApply = True
-        STFilter.Visible = True
         Columns = <
           item
             EditButtons = <>
@@ -196,30 +195,30 @@ inherited FormTableClients: TFormTableClients
                 TitleFont.Style = []
                 Columns = <
                   item
-                    EditButtons = <>
-                    FieldName = 'ACCOUNT_ID'
-                    Footers = <>
-                    Visible = False
-                  end
-                  item
-                    Alignment = taCenter
                     AutoFitColWidth = False
                     EditButtons = <>
-                    FieldName = 'DEAL_DATE'
+                    FieldName = 'ACCOPER_DTM'
                     Footers = <>
                     Title.Alignment = taCenter
                     Title.Caption = #1044#1072#1090#1072
-                    Width = 100
                   end
                   item
                     AutoFitColWidth = False
-                    DisplayFormat = '# ##0.## EUR'
                     EditButtons = <>
                     FieldName = 'AMOUNT_EUR'
                     Footers = <>
                     Title.Alignment = taCenter
-                    Title.Caption = #1057#1091#1084#1084#1072
+                    Title.Caption = #1057#1091#1084#1084#1072', EUR'
                     Width = 80
+                  end
+                  item
+                    AutoFitColWidth = False
+                    EditButtons = <>
+                    FieldName = 'BYR2EUR'
+                    Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = #1050#1091#1088#1089' BYR->EUR'
+                    Width = 100
                   end
                   item
                     AutoFitColWidth = False
@@ -228,14 +227,13 @@ inherited FormTableClients: TFormTableClients
                     Footers = <>
                     Title.Alignment = taCenter
                     Title.Caption = #1047#1072#1103#1074#1082#1072
-                    Width = 80
                   end
                   item
                     EditButtons = <>
-                    FieldName = 'ACTION_NAME'
+                    FieldName = 'NOTES'
                     Footers = <>
                     Title.Alignment = taCenter
-                    Title.Caption = #1053#1072#1080#1084#1077#1085#1086#1074#1072#1085#1080#1077' '#1076#1077#1081#1089#1090#1074#1080#1103
+                    Title.Caption = #1054#1087#1080#1089#1072#1085#1080#1077
                     Width = 300
                   end>
                 object RowDetailData: TRowDetailPanelControlEh
@@ -276,14 +274,15 @@ inherited FormTableClients: TFormTableClients
     UpdateTransaction = trnNSI
   end
   inherited actListMain: TActionList
-    object actAccountUserDebit: TAction
+    object actAccountManualDebit: TAction
       Caption = #1047#1072#1095#1080#1089#1083#1080#1090#1100' '#1085#1072' '#1089#1095#1077#1090
       ImageIndex = 0
-      OnExecute = actAccountUserDebitExecute
+      OnExecute = actAccountManualDebitExecute
     end
-    object actAccountUserCredit: TAction
+    object actAccountManualCredit: TAction
       Caption = #1057#1087#1080#1089#1072#1090#1100' '#1089#1086' '#1089#1095#1077#1090#1072
       ImageIndex = 1
+      OnExecute = actAccountManualCreditExecute
     end
   end
   inherited imgListMain: TPngImageList
@@ -342,21 +341,18 @@ inherited FormTableClients: TFormTableClients
   end
   object qryAccountMovements: TpFIBDataSet [8]
     SelectSQL.Strings = (
-      'select '
-      '  aos.account_id,'
-      '  d.deal_date,'
-      '  aos.amount_eur,'
-      '  ac.action_name,'
-      '  o.order_code'
-      'from v_accoper_summary aos'
-      '  inner join deals d on (d.deal_id = aos.deal_id)'
-      
-        '  inner join actioncodes ac on (ac.action_sign = aos.action_sign' +
-        ')'
-      '  left join orders o on (o.order_id = d.order_id)'
-      'where aos.account_id = :account_id'
-      'order by d.deal_date desc'
-      '')
+      'SELECT'
+      '    ao.ACCOPER_DTM,'
+      '    ao.AMOUNT_EUR,'
+      '    ao.BYR2EUR,'
+      '    o.ORDER_CODE,'
+      '    ao.NOTES'
+      'from accopers ao'
+      '  left join orders o on (o.order_id = ao.order_id)'
+      'where ao.account_id = :account_id'
+      '  '
+      'order by accoper_dtm desc')
+    Active = True
     Transaction = trnNSI
     Database = dmOtto.dbOtto
     DataSource = dsMain

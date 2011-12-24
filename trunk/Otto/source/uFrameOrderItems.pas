@@ -17,8 +17,6 @@ type
     fldOrderItems_ORDERITEM_ID: TIntegerField;
     fldOrderItems_MAGAZINE_ID: TIntegerField;
     fldOrderItems_MAGAZINE_NAME: TStringField;
-    fldOrderItems_PAGE_NO: TIntegerField;
-    fldOrderItems_POSITION_SIGN: TStringField;
     fldOrderItems_ARTICLE_ID: TIntegerField;
     fldOrderItems_ARTICLE_CODE: TStringField;
     fldOrderItems_DIMENSION: TStringField;
@@ -153,7 +151,7 @@ begin
       BatchMoveFields2(ndOrderItem, mtblOrderItems,
         'MAGAZINE_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR;NAME_RUS;STATUS_ID', true);
       BatchMoveFields2(ndOrderItem, mtblOrderItems,
-        'ARTICLE_ID;PAGE_NO;POSITION_SIGN;KIND_RUS;STATE_ID;WEIGHT', false);
+        'ARTICLE_ID;KIND_RUS;STATE_ID;WEIGHT', false);
       dmOtto.ActionExecute(trnWrite, ndOrderItem);
       dmOtto.ObjectGet(ndOrderItem, OrderItemId, trnWrite);
     end;
@@ -167,8 +165,8 @@ begin
   mtblOrderItems.Tag:= 1;
   try
     BatchMoveXMLNodes2Dataset(mtblOrderItems, ndOrderItems,
-      'ORDERITEM_ID=ID;ORDER_ID;MAGAZINE_ID;PAGE_NO;POSITION_SIGN;ARTICLE_ID;ARTICLE_CODE;'+
-      'DIMENSION;PRICE_EUR;WEIGHT;NAME_RUS;KIND_RUS;STATUS_ID;STATE_ID;FLAG_SIGN_LIST=STATUS_FLAG_LIST;'+
+      'ORDERITEM_ID=ID;ORDER_ID;MAGAZINE_ID;ARTICLE_ID;ARTICLE_CODE;DIMENSION;'+
+      'PRICE_EUR;WEIGHT;NAME_RUS;KIND_RUS;STATUS_ID;STATE_ID;FLAG_SIGN_LIST=STATUS_FLAG_LIST;'+
       'AMOUNT;COST_EUR',
       cmReplace);
     if mtblOrderItems.State <> dsBrowse then
@@ -434,7 +432,7 @@ begin
       'ID=ORDERITEM_ID;MAGAZINE_ID;ARTICLE_CODE;DIMENSION;'+
       'PRICE_EUR;COST_EUR;NAME_RUS;STATUS_ID', true);
     BatchMoveFields2(ndOrderItem, DataSet,
-      'ARTICLE_ID;PAGE_NO;POSITION_SIGN;STATUS_SIGN;KIND_RUS;STATE_ID;WEIGHT', false);
+      'ARTICLE_ID;STATUS_SIGN;KIND_RUS;STATE_ID;WEIGHT', false);
   end;
   SetXmlAttr(ndOrderItem, 'ORDER_ID', OrderId);
 
@@ -517,11 +515,11 @@ begin
   SetXmlAttr(ndOrderItem, 'ID', dmOtto.GetNewObjectId('ORDERITEM'));
   BatchMoveFields2(ndOrderItem, mtblOrderItems,
     'ORDER_ID;MAGAZINE_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR;NAME_RUS;'+
-    'ARTICLE_ID;PAGE_NO;POSITION_SIGN;STATUS_SIGN;KIND_RUS;WEIGHT');
+    'ARTICLE_ID;STATUS_SIGN;KIND_RUS;WEIGHT');
   mtblOrderItems.Append;
   BatchMoveFields2(mtblOrderItems, ndOrderItem,
     'ORDERITEM_ID=ID;ORDER_ID;MAGAZINE_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR;NAME_RUS;'+
-    'ARTICLE_ID;PAGE_NO;POSITION_SIGN;STATUS_SIGN;KIND_RUS;WEIGHT');
+    'ARTICLE_ID;STATUS_SIGN;KIND_RUS;WEIGHT');
   mtblOrderItems.Post;
   Write;
   Read;

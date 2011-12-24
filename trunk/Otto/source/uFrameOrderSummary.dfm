@@ -451,6 +451,9 @@ inherited FrameOrderSummary: TFrameOrderSummary
       end
     end
   end
+  inherited trnWrite: TpFIBTransaction
+    Active = True
+  end
   inherited actList: TActionList
     Top = 184
     object actSetStateDraft: TAction
