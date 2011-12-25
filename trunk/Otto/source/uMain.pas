@@ -43,8 +43,6 @@ type
     actTableClients: TAction;
     actTableOrders: TAction;
     btn1: TTBXItem;
-    mdckRight: TTBXMultiDock;
-    pnl1: TTBXDockablePanel;
     sMenu1: TTBXSubmenuItem;
     mm1: TMainMenu;
     File1: TMenuItem;

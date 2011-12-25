@@ -84,6 +84,7 @@ inherited FrameOrderItems: TFrameOrderItems
       OnColEnter = grdOrderItemsColEnter
       OnEnter = grdOrderItemsEnter
       OnGetCellParams = grdOrderItemsGetCellParams
+      OnKeyPress = grdOrderItemsKeyPress
       OnRowDetailPanelHide = grdOrderItemsRowDetailPanelHide
       OnRowDetailPanelShow = grdOrderItemsRowDetailPanelShow
       Columns = <

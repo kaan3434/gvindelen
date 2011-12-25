@@ -1,6 +1,6 @@
 object BaseNSIForm: TBaseNSIForm
-  Left = 284
-  Top = 227
+  Left = 298
+  Top = 29
   Width = 1024
   Height = 555
   Caption = 'BaseNSIForm'
@@ -14,20 +14,21 @@ object BaseNSIForm: TBaseNSIForm
   OldCreateOrder = False
   Position = poScreenCenter
   Visible = True
+  WindowState = wsMaximized
   OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13
   object StatusBar: TStatusBar
     Left = 0
-    Top = 502
-    Width = 1016
+    Top = 498
+    Width = 1008
     Height = 19
     Panels = <>
   end
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 1016
+    Width = 1008
     Height = 26
     object tlBarNsiActions: TTBXToolbar
       Left = 0
@@ -39,8 +40,8 @@ object BaseNSIForm: TBaseNSIForm
   object pnlMain: TJvPanel
     Left = 0
     Top = 26
-    Width = 1016
-    Height = 476
+    Width = 1008
+    Height = 472
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
@@ -52,16 +53,16 @@ object BaseNSIForm: TBaseNSIForm
     object grBoxMain: TJvGroupBox
       Left = 5
       Top = 5
-      Width = 1006
-      Height = 466
+      Width = 998
+      Height = 462
       Align = alClient
       Caption = 'grBoxMain'
       TabOrder = 0
       object grdMain: TDBGridEh
         Left = 2
         Top = 15
-        Width = 1002
-        Height = 449
+        Width = 994
+        Height = 445
         Align = alClient
         AutoFitColWidths = True
         DataGrouping.GroupLevels = <>
@@ -131,6 +132,7 @@ object BaseNSIForm: TBaseNSIForm
   object trnNSI: TpFIBTransaction
     DefaultDatabase = dmOtto.dbOtto
     TimeoutAction = TARollback
+    MDTTransactionRole = mtrAutoDefine
     Left = 688
     Top = 16
   end
@@ -142,6 +144,7 @@ object BaseNSIForm: TBaseNSIForm
       'nowait'
       'rec_version'
       'read_committed')
+    MDTTransactionRole = mtrAutoDefine
     TPBMode = tpbDefault
     Left = 637
     Top = 63

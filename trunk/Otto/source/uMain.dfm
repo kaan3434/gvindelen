@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 243
-  Top = 179
-  Width = 1058
+  Left = 333
+  Top = 143
+  Width = 845
   Height = 512
   Caption = 'PPZ2'
   Color = clBtnFace
@@ -22,7 +22,7 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 1042
+    Width = 829
     Height = 49
     object tbrMain: TTBXToolbar
       Left = 0
@@ -174,30 +174,10 @@ object MainForm: TMainForm
   object sbMain: TTBXStatusBar
     Left = 0
     Top = 432
-    Width = 1042
+    Width = 829
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
-  end
-  object mdckRight: TTBXMultiDock
-    Left = 844
-    Top = 49
-    Width = 198
-    Height = 383
-    Position = dpRight
-    object pnl1: TTBXDockablePanel
-      Left = 0
-      Top = 0
-      Caption = #1057#1090#1072#1090#1080#1089#1090#1080#1082#1072
-      CloseButton = False
-      CloseButtonWhenDocked = False
-      DefaultDock = mdckRight
-      DockedWidth = 194
-      DockPos = 0
-      SupportedDocks = [dkStandardDock, dkMultiDock]
-      TabOrder = 0
-      Visible = False
-    end
   end
   object alMain: TActionList
     Images = imgListMainMenu

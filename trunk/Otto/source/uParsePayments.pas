@@ -13,7 +13,7 @@ uses
   Classes, SysUtils, GvStr, udmOtto, pFIBStoredProc, Variants, GvNativeXml,
   Dialogs, Controls, StrUtils, GvDtTm;
 
-procedure ParsePaymentLine(aMessageId, LineNo, DealId: Integer; aLine: string; aTransaction: TpFIBTransaction);
+procedure ParsePaymentLine(aMessageId, LineNo: Integer; aLine: string; aTransaction: TpFIBTransaction);
 var
   sl: TStringList;
   PayDate: TDateTime;
@@ -74,7 +74,7 @@ end;
 
 procedure ParsePayment(aMessageId: Integer; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
-  LineNo, DealId: Integer;
+  LineNo: Integer;
   Lines: TStringList;
   MessageFileName: variant;
   ndOrder, ndOrderItems: TXmlNode;
@@ -90,12 +90,11 @@ begin
   if not aTransaction.Active then
     aTransaction.StartTransaction;
   try
-    DealId:= dmOtto.CreateDeal(aTransaction);
     Lines:= TStringList.Create;
     try
       Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
       For LineNo:= 0 to Lines.Count - 1 do
-        ParsePaymentLine(aMessageId, LineNo, DealId, Lines[LineNo], aTransaction);
+        ParsePaymentLine(aMessageId, LineNo, Lines[LineNo], aTransaction);
     finally
       Lines.Free;
     end;

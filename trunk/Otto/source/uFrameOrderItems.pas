@@ -88,6 +88,7 @@ type
     procedure actSetStatusExecute(Sender: TObject);
     procedure mtblOrderItemsAfterScroll(DataSet: TDataSet);
     procedure mtblOrderItemsAfterInsert(DataSet: TDataSet);
+    procedure grdOrderItemsKeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
     FQryStatuses: Pointer;
@@ -668,6 +669,17 @@ begin
   DataSet['STATUS_ID']:= dmOtto.GetDefaultStatusId('ORDERITEM');
   DataSet['FLAG_SIGN_LIST']:= dmOtto.GetFlagListById(DataSet['STATUS_ID']);
   DataSet['AMOUNT']:= 1;
+end;
+
+procedure TFrameOrderItems.grdOrderItemsKeyPress(Sender: TObject;
+  var Key: Char);
+begin
+  inherited;
+  with grdOrderItems do
+  begin
+    if Columns[Col].FieldName = 'DIMENSION' then
+      if not (Key in ['0'..'9', 'A'..'Z']) then Key:= #0;
+  end;
 end;
 
 end.

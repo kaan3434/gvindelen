@@ -122,7 +122,7 @@ end;
 
 procedure ParseLiefer(aMessageId: Integer; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
-  LineNo, DealId: Integer;
+  LineNo: Integer;
   Lines: TStringList;
   MessageFileName: variant;
   ndOrder, ndOrderItems: TXmlNode;
@@ -135,7 +135,6 @@ begin
     'Начало обработки файла: [FILE_NAME]', 'I',
     Value2Vars(MessageFileName, 'FILE_NAME'));
   // загружаем файл
-  DealId:= dmOtto.CreateDeal(aTransaction);
   Lines:= TStringList.Create;
   try
     Lines.LoadFromFile(Path['Messages.In']+MessageFileName);

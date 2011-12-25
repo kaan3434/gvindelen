@@ -10,6 +10,22 @@ SET AUTODDL ON;
 
 RECONNECT;
 
+ALTER TABLE INVOICE_ATTRS DROP CONSTRAINT FK_INVOICE_ATTRS_INVOICE;
+
+ALTER TABLE ORDERITEMS DROP CONSTRAINT FK_ORDERITEMS_INVOICE;
+
+ALTER TABLE ORDERTAXS DROP CONSTRAINT FK_ORDERTAXS_INVOICE;
+
+ALTER TABLE PAYMENTS DROP CONSTRAINT FK_PAYMENTS_INVOICE;
+
+ALTER TABLE INVOICES DROP CONSTRAINT PK_INVOICES;
+
+RECONNECT;
+
+ALTER TABLE INVOICE_ATTRS DROP CONSTRAINT PK_INVOICE_ATTRS;
+
+RECONNECT;
+
 ALTER TABLE DEALACTIONS DROP CONSTRAINT FK_DEALACTIONS_DEAL;
 
 ALTER TABLE DEALS DROP CONSTRAINT PK_DEALS;
@@ -18,7 +34,13 @@ RECONNECT;
 
 ALTER TABLE DEALACTIONS DROP CONSTRAINT PK_DEALACTIONS;
 
-ALTER TABLE ORDERTAXS DROP CONSTRAINT FK_ORDERTAXS_INVOICE;
+ALTER TABLE INVOICES DROP CONSTRAINT FK_INVOICES_STATUS;
+
+ALTER TABLE INVOICES DROP CONSTRAINT FK_INVOICES_ORDER;
+
+ALTER TABLE INVOICES DROP CONSTRAINT FK_INVOICES_ACCOUNT;
+
+ALTER TABLE INVOICE_ATTRS DROP CONSTRAINT FK_INVOICE_ATTRS_ATTR;
 
 ALTER TABLE DEALS DROP CONSTRAINT FK_DEALS_ORDER;
 
@@ -33,11 +55,33 @@ ALTER TABLE ACCOPERS DROP CONSTRAINT FK_ACCOPERS_ACTION;
 /* Alter Procedure (Before Drop)... */
 SET TERM ^ ;
 
+ALTER PROCEDURE ACT_INVOICE_STORE(I_PARAM_ID /* TYPE OF ID_PARAM */ BIGINT,
+I_OBJECT_ID /* TYPE OF ID_OBJECT */ INTEGER,
+I_OBJECT_SIGN /* TYPE OF SIGN_OBJECT */ VARCHAR(30) = 'INVOICE')
+ AS
+ BEGIN EXIT; END
+^
+
 ALTER PROCEDURE ACT_ORDERITEM_PAY(I_PARAM_ID /* TYPE OF ID_PARAM */ BIGINT,
 I_OBJECT_ID /* TYPE OF ID_OBJECT */ INTEGER,
 I_OBJECT_SIGN /* TYPE OF SIGN_OBJECT */ VARCHAR(30) = 'ORDERITEM')
  AS
  BEGIN EXIT; END
+^
+
+ALTER PROCEDURE INVOICE_DETECT(I_PAY_DT /* TYPE OF DT_INVOICE */ DATE NOT NULL,
+I_AMOUNT_BYR /* TYPE OF MONEY_BYR */ INTEGER NOT NULL,
+I_INVOICE_CODE /* TYPE OF CODE_ORDER */ VARCHAR(10))
+ RETURNS(O_INVOICE_ID /* TYPE OF ID_INVOICE */ INTEGER)
+ AS
+ BEGIN SUSPEND; END
+^
+
+ALTER PROCEDURE INVOICE_GET_UNPAYED(I_AMOUNT_BYR /* TYPE OF MONEY_BYR */ INTEGER,
+I_ORDER_CODE /* TYPE OF CODE_ORDER */ VARCHAR(10))
+ RETURNS(O_INVOICE_ID /* TYPE OF ID_INVOICE */ INTEGER)
+ AS
+ BEGIN SUSPEND; END
 ^
 
 ALTER PROCEDURE ORDER_X_UNPAID(I_DEST_PARAM_ID /* TYPE OF ID_PARAM */ BIGINT NOT NULL,
@@ -49,9 +93,25 @@ I_SRC_PARAM_ID /* TYPE OF ID_PARAM */ BIGINT NOT NULL)
 
 
 /* Drop Procedure... */
+ALTER PROCEDURE ACTION_RUN(I_OBJECT_SIGN /* TYPE OF SIGN_OBJECT */ VARCHAR(30),
+I_ACTION_SIGN /* TYPE OF SIGN_ACTION */ VARCHAR(30),
+I_PARAM_ID /* TYPE OF ID_PARAM */ BIGINT,
+I_DEAL_ID /* TYPE OF ID_DEAL */ INTEGER,
+I_OBJECT_ID /* TYPE OF ID_OBJECT */ INTEGER)
+ RETURNS(O_ACTION_ID /* TYPE OF ID_ACTION */ INTEGER)
+ AS
+ BEGIN SUSPEND; END
+^
+
 SET TERM ; ^
 
+DROP PROCEDURE ACT_INVOICE_STORE;
+
 DROP PROCEDURE ACT_ORDERITEM_PAY;
+
+DROP PROCEDURE INVOICE_DETECT;
+
+DROP PROCEDURE INVOICE_GET_UNPAYED;
 
 DROP PROCEDURE ORDER_X_UNPAID;
 
@@ -59,14 +119,44 @@ DROP PROCEDURE ORDER_X_UNPAID;
 /* Dropping trigger... */
 DROP TRIGGER DEALS_BI0;
 
+DROP TRIGGER INVOICES_AI0;
+
+DROP TRIGGER INVOICES_AU0;
+
+DROP TRIGGER INVOICES_BI0;
+
 
 /* Drop View... */
 DROP VIEW V_ACCOPER_SUMMARY;
+
+SET TERM ^ ;
+
+ALTER PROCEDURE ORDERITEM_READ(I_OBJECT_ID /* TYPE OF ID_OBJECT */ INTEGER)
+ RETURNS(O_PARAM_NAME /* TYPE OF SIGN_OBJECT */ VARCHAR(30),
+O_PARAM_VALUE /* TYPE OF VALUE_ATTR */ VARCHAR(4000))
+ AS
+ BEGIN SUSPEND; END
+^
+
+ALTER PROCEDURE ORDERTAX_READ(I_OBJECT_ID /* TYPE OF ID_OBJECT */ INTEGER)
+ RETURNS(O_PARAM_NAME /* TYPE OF SIGN_OBJECT */ VARCHAR(30),
+O_PARAM_VALUE /* TYPE OF VALUE_ATTR */ VARCHAR(4000))
+ AS
+ BEGIN SUSPEND; END
+^
+
+SET TERM ; ^
+
+DROP VIEW V_INVOICE_ATTRS;
 
 
 ALTER TABLE ACCOPERS ADD ACCOPER_DTM DTM_CREATE;
 
 ALTER TABLE ACCOPERS ADD BYR2EUR MONEY_BYR;
+
+ALTER TABLE ACCOPERS ADD ORDERMONEY_ID ID_TAX;
+
+ALTER TABLE ORDERMONEYS ADD CREATED_DTM DTM_ACTION;
 
 ALTER TABLE ORDERMONEYS ADD BYR2EUR MONEY_BYR;
 
@@ -124,25 +214,9 @@ ALTER TABLE ACCOPERS DROP ORDERITEM_ID;
 
 ALTER TABLE ACCOPERS DROP ORDERTAX_ID;
 
-DROP VIEW V_ORDER_SUMMARY;
-
-DROP VIEW V_ORDER_FULL_SPECIFICATION;
-
-DROP VIEW V_ORDER_INVOICEABLE;
-
-ALTER TABLE ORDERITEMS DROP PAID_EUR;
-
-/* Empty ACT_INVOICE_STORE for drop ORDERTAXS(INVOICE_ID) */
+/* Empty ORDER_X_UNINVOICED for drop ORDERITEMS(INVOICE_ID) */
 SET TERM ^ ;
 
-ALTER PROCEDURE ACT_INVOICE_STORE(I_PARAM_ID /* TYPE OF ID_PARAM */ BIGINT,
-I_OBJECT_ID /* TYPE OF ID_OBJECT */ INTEGER,
-I_OBJECT_SIGN /* TYPE OF SIGN_OBJECT */ VARCHAR(30) = 'INVOICE')
- AS
- BEGIN EXIT; END
-^
-
-/* Empty ORDER_X_UNINVOICED for drop ORDERTAXS(INVOICE_ID) */
 ALTER PROCEDURE ORDER_X_UNINVOICED(I_DEST_PARAM_ID /* TYPE OF ID_PARAM */ BIGINT,
 I_PARAM_NAME /* TYPE OF SIGN_ATTR */ VARCHAR(30),
 I_SRC_PARAM_ID /* TYPE OF ID_PARAM */ BIGINT)
@@ -150,38 +224,28 @@ I_SRC_PARAM_ID /* TYPE OF ID_PARAM */ BIGINT)
  BEGIN EXIT; END
 ^
 
-/* Empty ORDERTAX_READ for drop ORDERTAXS(INVOICE_ID) */
-ALTER PROCEDURE ORDERTAX_READ(I_OBJECT_ID /* TYPE OF ID_OBJECT */ INTEGER)
- RETURNS(O_PARAM_NAME /* TYPE OF SIGN_OBJECT */ VARCHAR(30),
-O_PARAM_VALUE /* TYPE OF VALUE_ATTR */ VARCHAR(4000))
- AS
- BEGIN SUSPEND; END
-^
-
 SET TERM ; ^
+
+DROP VIEW V_ORDER_SUMMARY;
+
+DROP VIEW V_ORDER_FULL_SPECIFICATION;
+
+DROP VIEW V_ORDER_INVOICEABLE;
+
+ALTER TABLE ORDERITEMS DROP INVOICE_ID;
+
+ALTER TABLE ORDERITEMS DROP PAID_EUR;
 
 ALTER TABLE ORDERTAXS DROP INVOICE_ID;
 
 ALTER TABLE ORDERTAXS DROP PAID_EUR;
 
+ALTER TABLE PAYMENTS DROP INVOICE_ID;
+
 
 RECONNECT;
 
 /* Drop tables... */
-SET TERM ^ ;
-
-ALTER PROCEDURE ACTION_RUN(I_OBJECT_SIGN /* TYPE OF SIGN_OBJECT */ VARCHAR(30),
-I_ACTION_SIGN /* TYPE OF SIGN_ACTION */ VARCHAR(30),
-I_PARAM_ID /* TYPE OF ID_PARAM */ BIGINT,
-I_DEAL_ID /* TYPE OF ID_DEAL */ INTEGER,
-I_OBJECT_ID /* TYPE OF ID_OBJECT */ INTEGER)
- RETURNS(O_ACTION_ID /* TYPE OF ID_ACTION */ INTEGER)
- AS
- BEGIN SUSPEND; END
-^
-
-SET TERM ; ^
-
 DROP TABLE DEALACTIONS;
 
 SET TERM ^ ;
@@ -199,6 +263,10 @@ I_OBJECT_ID /* TYPE OF ID_OBJECT */ INTEGER)
 SET TERM ; ^
 
 DROP TABLE DEALS;
+
+DROP TABLE INVOICE_ATTRS;
+
+DROP TABLE INVOICES;
 
 
 /* Create Procedure... */
@@ -308,6 +376,14 @@ from ordertaxs ot
   inner join taxservs ts on (ts.taxserv_id = tr.taxserv_id)
   left join  orders o2 on (o2.order_id = ot.order_id)
   inner join statuses s2 on (s2.status_id = ot.status_id)
+union
+select om.order_id, 3, om.ordermoney_id, 'Предоплата', null,
+  null, om.amount_eur, 1, om.amount_eur,
+  null, null, null, s3.status_name, 0,
+  round(o3.byr2eur * om.amount_eur, -1)
+from ordermoneys om
+  left join  orders o3 on (o3.order_id = om.order_id)
+  inner join statuses s3 on (s3.status_id = om.status_id)
 ;
 
 /* Create view: V_ORDER_INVOICEABLE */
@@ -348,6 +424,8 @@ ALTER TABLE USERS ADD CONSTRAINT PK_USERS PRIMARY KEY (USER_SIGN);
 
 /* Create Foreign Key... */
 RECONNECT;
+
+ALTER TABLE ACCOPERS ADD CONSTRAINT FK_ACCOPERS_ORDERMONEY FOREIGN KEY (ORDERMONEY_ID) REFERENCES ORDERMONEYS (ORDERMONEY_ID) ON UPDATE CASCADE;
 
 ALTER TABLE ORDERS ADD CONSTRAINT FK_ORDERS_ACCOUNT FOREIGN KEY (ACCOUNT_ID) REFERENCES ACCOUNTS (ACCOUNT_ID) ON UPDATE CASCADE;
 
@@ -398,14 +476,6 @@ I_FILE_DTM /* TYPE OF DTM_FILE */ TIMESTAMP)
  BEGIN SUSPEND; END
 ^
 
-/* Alter empty procedure ACT_INVOICE_STORE with new param-list */
-ALTER PROCEDURE ACT_INVOICE_STORE(I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
-I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL,
-I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'INVOICE')
- AS
- BEGIN EXIT; END
-^
-
 /* Alter empty procedure ACTION_EXECUTE with new param-list */
 ALTER PROCEDURE ACTION_EXECUTE(I_OBJECT_SIGN TYPE OF SIGN_OBJECT,
 I_PARAMS TYPE OF VALUE_BLOB,
@@ -438,9 +508,6 @@ begin
 
   delete from payments;
   v_object_id = gen_id(seq_payment_id, -(gen_id(seq_payment_id, 0)));
-
-  delete from invoices;
-  v_object_id = gen_id(seq_invoice_id, -(gen_id(seq_invoice_id, 0)));
 
   delete from orders;
   v_object_id = gen_id(seq_order_id, -(gen_id(seq_order_id, 0)));
@@ -534,86 +601,6 @@ begin
 end
 ^
 
-/* Alter (ACT_INVOICE_STORE) */
-ALTER PROCEDURE ACT_INVOICE_STORE(I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
-I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL,
-I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'INVOICE')
- AS
-declare variable V_NOW_STATUS_ID type of ID_STATUS;
-declare variable V_NEW_STATUS_ID type of ID_STATUS;
-declare variable V_ORDER_ID type of ID_ORDER;
-declare variable V_UPDATEABLE type of VALUE_BOOLEAN;
-declare variable V_AMOUNT_EUR type of MONEY_EUR;
-declare variable V_AMOUNT_BYR type of MONEY_BYR;
-declare variable V_BYR2EUR type of VALUE_INTEGER;
-declare variable V_ORDER_CODE type of CODE_ORDER;
-declare variable V_INVOICE_CNT type of VALUE_INTEGER;
-declare variable V_INVOICE_CODE type of CODE_ORDER;
-begin
-  if (coalesce(i_object_id, 0) = 0) then i_object_id = gen_id(seq_invoice_id, 1);
-
-  update paramheads set object_id = :i_object_id where param_id = :i_param_id;
-
-  execute procedure param_set(:i_param_id, 'ID', :i_object_id);
-
-  select status_id from invoices where invoice_id = :i_object_id into :v_now_status_id;
-
-  if (:v_now_status_id is null) then
-  begin
-    select o_value from param_get(:i_param_id, 'STATUS_ID') into :v_new_status_id;
-    if (:v_new_status_id is null) then
-       select s.status_id
-         from param_get(:i_param_id, 'NEW.STATUS_SIGN') p
-           inner join statuses s on (s.object_sign = :i_object_sign and s.status_sign = p.o_value)
-       into :v_new_status_id;
-
-    select o_value from param_get(:i_param_id, 'ORDER_ID') into :v_order_id;
-    select cast(o_value as money_eur) from param_get(:i_param_id, 'AMOUNT_EUR') into :v_amount_eur;
-    select o_value from param_get(:i_param_id, 'BYR2EUR') into :v_byr2eur;
-    select sum(cost_byr)
-    from (
-      select round(oi.cost_eur*:v_byr2eur, -1) cost_byr
-        from orderitems oi
-        where oi.order_id = :v_order_id
-      union all
-      select round(ot.cost_eur*:v_byr2eur, -1)
-        from ordertaxs ot
-        where ot.order_id = :v_order_id)
-      into :v_amount_byr;
-    select order_code from orders where order_id = :v_order_id into :v_order_code;
-    select count(*) from invoices i where i.order_id = :v_order_id into :v_invoice_cnt;
-    if (v_invoice_cnt = 0) then
-      v_invoice_code = v_order_code;
-    else
-      v_invoice_code = v_order_code||'-'||cast(v_invoice_cnt+1 as varchar(2));
-
-    insert into invoices(invoice_id, invoice_code, create_dtm, order_id,
-      amount_eur, byr2eur, amount_byr, status_id)
-      values(:i_object_id, :v_invoice_code, current_timestamp, :v_order_id,
-      :v_amount_eur, :v_byr2eur, :v_amount_byr, :v_new_status_id)
-      returning status_id
-      into :v_new_status_id;
-    v_updateable = 1;
-  end
-  else
-  begin
-    select o_updateable, o_new_status_id
-      from object_updateable(:i_param_id, :v_now_status_id, :i_object_sign)
-      into :v_updateable, :v_new_status_id;
-
-    select i.order_id
-      from invoices i
-      where i.invoice_id = :i_object_id
-      into :v_order_id;
-  end
-  if (v_updateable = 1) then
-  begin
-    execute procedure param_set(:i_param_id, 'STATUS_ID', :v_new_status_id);
-    execute procedure object_put(:i_param_id);
-  end
-end
-^
-
 ALTER PROCEDURE ACTION_RUN(I_OBJECT_SIGN TYPE OF SIGN_OBJECT,
 I_ACTION_SIGN TYPE OF SIGN_ACTION,
 I_PARAM_ID TYPE OF ID_PARAM,
@@ -694,9 +681,6 @@ begin
   begin
     if (v_procedure_name = 'PAYMENT_STORE') then
       execute procedure act_payment_store(:i_param_id, :i_object_id);
-    else
-    if (v_procedure_name = 'INVOICE_STORE') then
-      execute procedure act_invoice_store(:i_param_id, :i_object_id);
     else
     if (v_procedure_name = 'ACCOUNT_STORE') then
       execute procedure act_account_store(:i_param_id, :i_object_id);
@@ -1544,11 +1528,34 @@ end
 
 
 /* Altering existing trigger... */
+ALTER TRIGGER ACCOPERS_BI
+as
+begin
+  if (new.accoper_id is null) then
+    new.accoper_id = gen_id(seq_accoper_id,1);
+  new.accoper_dtm = current_timestamp;
+end
+^
+
+/* Altering existing trigger... */
 ALTER TRIGGER ORDERHISTORY_BI0
 AS
 begin
   new.action_dtm = current_timestamp;
   new.user_sign = user;
+end
+^
+
+/* Altering existing trigger... */
+ALTER TRIGGER ORDERMONEYS_BI0
+AS
+begin
+  if (new.ordermoney_id is null) then
+    new.ordermoney_id = gen_id(seq_ordermoney_id, 1);
+  if (new.status_id is null) then
+    select o_status_id from status_get_default('ORDERMONEY') into new.status_id;
+  new.status_dtm = current_timestamp;
+  new.created_dtm = current_timestamp;
 end
 ^
 
@@ -1572,6 +1579,9 @@ end
 SET TERM ; ^
 
 REVOKE ALL ON V_ACCOPER_SUMMARY FROM SYSDBA;
+
+/* DROP: -- GRANT ALL ON V_INVOICE_ATTRS TO SYSDBA WITH GRANT OPTION */
+REVOKE ALL ON V_INVOICE_ATTRS FROM SYSDBA;
 
 /* Create(Add) Crant */
 GRANT ALL ON V_ORDER_FULL_SPECIFICATION TO SYSDBA WITH GRANT OPTION;

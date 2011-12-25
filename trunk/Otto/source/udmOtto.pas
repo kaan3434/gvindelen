@@ -89,7 +89,6 @@ type
     procedure SetKeyLayout(aTag: Integer);
     function Recode(aObjectSign, aAttrSign, aValue: String): String;
     function GetNextCounterValue(aObjectSign, aCounterSign: string; aObjectId: Integer): WideString;
-    function CreateDeal(aTransaction: TpFIBTransaction): Integer;
     function GetArticleSign(aArticleCode: string; aMagazineId: Integer): string;
     procedure ClearNotify(aMessageId: integer);
     procedure Notify(aMessageId: integer; aNotifyText: string; aNotifyClass: string = 'I'; aParams: string = '');
@@ -633,13 +632,6 @@ begin
   Result:= dbOtto.QueryValue(
     'select o_nextval from counter_nextval(:object_sign, :counter_sign, :object_id)',
     0, [aObjectSign, aCounterSign, aObjectId]);
-end;
-
-function TdmOtto.CreateDeal(aTransaction: TpFIBTransaction): Integer;
-begin
-  Result:= dbOtto.QueryValue(
-    'insert into deals(deal_date) values(current_timestamp) returning deal_id',
-    0, aTransaction);
 end;
 
 function TdmOtto.GetArticleSign(aArticleCode: string;

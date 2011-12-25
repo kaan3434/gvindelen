@@ -195,7 +195,6 @@ begin
   dmOtto.Notify(aMessageId, 'Начало обработки файла: [FILE_NAME]', 'I',
     Value2Vars(MessageFileName, 'FILE_NAME'));
   // загружаем файл
-  DealId:= dmOtto.CreateDeal(aTransaction);
   Lines:= TStringList.Create;
   try
     Lines.LoadFromFile(Path['Messages.In']+MessageFileName);

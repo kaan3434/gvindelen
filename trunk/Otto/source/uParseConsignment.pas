@@ -116,7 +116,7 @@ begin
 
 end;
 
-procedure ParseConsignmentLine(aMessageId, LineNo, DealId: Integer; aLine: string; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseConsignmentLine(aMessageId, LineNo: Integer; aLine: string; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
   sl: TStringList;
 begin
@@ -142,7 +142,7 @@ end;
 
 procedure ParseConsignment(aMessageId: Integer; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
-  LineNo, DealId: Integer;
+  LineNo: Integer;
   Lines: TStringList;
   MessageFileName: variant;
   ndOrder, ndOrderItems: TXmlNode;
@@ -158,12 +158,11 @@ begin
   if not aTransaction.Active then
     aTransaction.StartTransaction;
   try
-    DealId:= dmOtto.CreateDeal(aTransaction);
     Lines:= TStringList.Create;
     try
       Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
       For LineNo:= 0 to Lines.Count - 1 do
-        ParseConsignmentLine(aMessageId, LineNo, DealId, Lines[LineNo], ndOrders, aTransaction);
+        ParseConsignmentLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
     finally
       Lines.Free;
     end;
@@ -173,7 +172,7 @@ begin
     try
       dmOtto.ActionExecute(aTransaction, 'EVENT', '',
         Value2Vars('FORM_PROTOCOL', 'EVENT_SIGN',
-        Value2Vars(aMessageId, 'OBJECT_ID')), DealId);
+        Value2Vars(aMessageId, 'OBJECT_ID')));
     except
       on E: Exception do
         dmOtto.Notify(aMessageId,
