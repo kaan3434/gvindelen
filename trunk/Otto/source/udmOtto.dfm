@@ -7,7 +7,6 @@ object dmOtto: TdmOtto
   Height = 405
   Width = 624
   object dbOtto: TpFIBDatabase
-    Connected = True
     DBName = 'D:\otto\Data\otto_ppz.fdb'
     DBParams.Strings = (
       'lc_ctype=CYRL'
@@ -110,7 +109,6 @@ object dmOtto: TdmOtto
     Top = 176
   end
   object trnAutonomouse: TpFIBTransaction
-    Active = True
     DefaultDatabase = dbOtto
     TimeoutAction = TARollback
     TRParams.Strings = (

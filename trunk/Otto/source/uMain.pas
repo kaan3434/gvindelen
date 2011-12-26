@@ -152,7 +152,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure actInstallPatchExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure actInstallPatchUpdate(Sender: TObject);
     procedure scrptUpdateExecuteError(Sender: TObject; StatementNo,
       Line: Integer; Statement: TStrings; SQLCode: Integer;
       const Msg: string; var doRollBack, Stop: Boolean);
@@ -163,6 +162,7 @@ type
     procedure actRestoreExecute(Sender: TObject);
     procedure actProcessArtNExecute(Sender: TObject);
     procedure actProcessCancellationExecute(Sender: TObject);
+    procedure alMainUpdate(Action: TBasicAction; var Handled: Boolean);
   private
     { Private declarations }
   public
@@ -418,7 +418,7 @@ begin
             ' where m.message_id = :message_id',
             0, [MessageId], trnWrite);
           if StatusSign = 'SUCCESS' then
-            DeleteFile(sl[i]);
+            GvFile.MoveFile(sl[i], Path['Messages.Processed'] + FormatDateTime('YYYY.MM.DD\', Date));
         end
         else
         begin
@@ -591,15 +591,6 @@ begin
   verInfo.Filename := ParamStr(0);
 end;
 
-procedure TMainForm.actInstallPatchUpdate(Sender: TObject);
-begin
-  actInstallPatch.Enabled := verInfo.GetBuildOnly > dmOtto.Build;
-  if actInstallPatch.Enabled then
-    subMenuSystem.Action:= actInstallPatch
-  else
-    subMenuSystem.Action:= nil;
-end;
-
 procedure TMainForm.scrptUpdateExecuteError(Sender: TObject; StatementNo,
   Line: Integer; Statement: TStrings; SQLCode: Integer; const Msg: string;
   var doRollBack, Stop: Boolean);
@@ -736,6 +727,14 @@ begin
       mtInformation, 10000);
     Exit;
   end;
+end;
+
+procedure TMainForm.alMainUpdate(Action: TBasicAction;
+  var Handled: Boolean);
+begin
+  actInstallPatch.Enabled := verInfo.GetBuildOnly > dmOtto.Build;
+  if actInstallPatch.Enabled then
+    subMenuSystem.ImageIndex:= actInstallPatch.ImageIndex;
 end;
 
 end.

@@ -43,8 +43,6 @@ ALTER TABLE EVENTCODES ADD CONSTRAINT PK_EVENTCODES PRIMARY KEY (EVENT_SIGN);
 ALTER TABLE EVENTS ADD CONSTRAINT PK_EVENTS PRIMARY KEY (EVENT_ID);
 ALTER TABLE FLAGS ADD CONSTRAINT PK_FLAGS PRIMARY KEY (FLAG_SIGN);
 ALTER TABLE FLAGS2STATUSES ADD CONSTRAINT PK_FLAGS2STATUSES PRIMARY KEY (STATUS_ID, FLAG_SIGN);
-ALTER TABLE INVOICES ADD CONSTRAINT PK_INVOICES PRIMARY KEY (INVOICE_ID);
-ALTER TABLE INVOICE_ATTRS ADD CONSTRAINT PK_INVOICE_ATTRS PRIMARY KEY (OBJECT_ID, ATTR_ID);
 ALTER TABLE LOGS ADD CONSTRAINT PK_LOGS PRIMARY KEY (LOG_ID);
 ALTER TABLE MAGAZINES ADD CONSTRAINT PK_MAGAZINES PRIMARY KEY (MAGAZINE_ID);
 ALTER TABLE MESSAGES ADD CONSTRAINT PK_MESSAGES PRIMARY KEY (MESSAGE_ID);
@@ -95,6 +93,7 @@ ALTER TABLE VENDORS ADD CONSTRAINT PK_VENDORS PRIMARY KEY (VENDOR_ID);
 
 ALTER TABLE ACCOPERS ADD CONSTRAINT FK_ACCOPERS_ACCOUNT FOREIGN KEY (ACCOUNT_ID) REFERENCES ACCOUNTS (ACCOUNT_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE ACCOPERS ADD CONSTRAINT FK_ACCOPERS_ORDER FOREIGN KEY (ORDER_ID) REFERENCES ORDERS (ORDER_ID) ON UPDATE CASCADE;
+ALTER TABLE ACCOPERS ADD CONSTRAINT FK_ACCOPERS_ORDERMONEY FOREIGN KEY (ORDERMONEY_ID) REFERENCES ORDERMONEYS (ORDERMONEY_ID) ON UPDATE CASCADE;
 ALTER TABLE ACCOUNTS ADD CONSTRAINT FK_ACCOUNTS_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE ACTIONCODES ADD CONSTRAINT FK_ACTIONCODES_OBJECT FOREIGN KEY (OBJECT_SIGN) REFERENCES OBJECTS (OBJECT_SIGN) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE ACTIONCODE_CRITERIAS ADD CONSTRAINT FK_ACTIONCODE_CRITERIAS_ACTION FOREIGN KEY (ACTIONCODE_SIGN) REFERENCES ACTIONCODES (ACTION_SIGN) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -143,11 +142,6 @@ ALTER TABLE EVENTS ADD CONSTRAINT FK_EVENTS_EVENT FOREIGN KEY (EVENT_SIGN) REFER
 ALTER TABLE EVENTS ADD CONSTRAINT FK_EVENTS_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE FLAGS2STATUSES ADD CONSTRAINT FK_FLAGS2STATUSES_FLAG FOREIGN KEY (FLAG_SIGN) REFERENCES FLAGS (FLAG_SIGN) ON UPDATE CASCADE;
 ALTER TABLE FLAGS2STATUSES ADD CONSTRAINT FK_FLAGS2STATUSES_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE INVOICES ADD CONSTRAINT FK_INVOICES_ACCOUNT FOREIGN KEY (ACCOUNT_ID) REFERENCES ACCOUNTS (ACCOUNT_ID) ON UPDATE CASCADE;
-ALTER TABLE INVOICES ADD CONSTRAINT FK_INVOICES_ORDER FOREIGN KEY (ORDER_ID) REFERENCES ORDERS (ORDER_ID) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE INVOICES ADD CONSTRAINT FK_INVOICES_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
-ALTER TABLE INVOICE_ATTRS ADD CONSTRAINT FK_INVOICE_ATTRS_ATTR FOREIGN KEY (ATTR_ID) REFERENCES ATTRS (ATTR_ID) ON UPDATE CASCADE;
-ALTER TABLE INVOICE_ATTRS ADD CONSTRAINT FK_INVOICE_ATTRS_INVOICE FOREIGN KEY (OBJECT_ID) REFERENCES INVOICES (INVOICE_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE MAGAZINES ADD CONSTRAINT FK_MAGAZINES_CATALOG FOREIGN KEY (CATALOG_ID) REFERENCES CATALOGS (CATALOG_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE MESSAGES ADD CONSTRAINT FK_MESSAGES_PORT FOREIGN KEY (PORT_ID) REFERENCES PORTS (PORT_ID) ON UPDATE CASCADE;
 ALTER TABLE MESSAGES ADD CONSTRAINT FK_MESSAGES_SESSION FOREIGN KEY (BUSY_ID) REFERENCES SESSIONS (SESSION_ID) ON UPDATE CASCADE;
@@ -161,7 +155,6 @@ ALTER TABLE ORDERHISTORY ADD CONSTRAINT FK_ORDERHISTORY_ORDER FOREIGN KEY (ORDER
 ALTER TABLE ORDERHISTORY ADD CONSTRAINT FK_ORDERHISTORY_STATE FOREIGN KEY (STATE_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE ORDERHISTORY ADD CONSTRAINT FK_ORDERHISTORY_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE ORDERITEMS ADD CONSTRAINT FK_ORDERITEMS_ARTICLE FOREIGN KEY (ARTICLE_ID) REFERENCES ARTICLES (ARTICLE_ID) ON UPDATE CASCADE;
-ALTER TABLE ORDERITEMS ADD CONSTRAINT FK_ORDERITEMS_INVOICE FOREIGN KEY (INVOICE_ID) REFERENCES INVOICES (INVOICE_ID) ON DELETE SET NULL ON UPDATE CASCADE;
 ALTER TABLE ORDERITEMS ADD CONSTRAINT FK_ORDERITEMS_ORDER FOREIGN KEY (ORDER_ID) REFERENCES ORDERS (ORDER_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE ORDERITEMS ADD CONSTRAINT FK_ORDERITEMS_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE ORDERITEM_ATTRS ADD CONSTRAINT FK_ORDERITEM_ATTRS_ATTR FOREIGN KEY (ATTR_ID) REFERENCES ATTRS (ATTR_ID) ON UPDATE CASCADE;
@@ -175,7 +168,6 @@ ALTER TABLE ORDERS ADD CONSTRAINT FK_ORDERS_CLIENT FOREIGN KEY (CLIENT_ID) REFER
 ALTER TABLE ORDERS ADD CONSTRAINT FK_ORDERS_PRODUCT FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCTS (PRODUCT_ID) ON UPDATE CASCADE;
 ALTER TABLE ORDERS ADD CONSTRAINT FK_ORDERS_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE ORDERS ADD CONSTRAINT FK_ORDERS_TAXPLAN FOREIGN KEY (TAXPLAN_ID) REFERENCES TAXPLANS (TAXPLAN_ID) ON UPDATE CASCADE;
-ALTER TABLE ORDERTAXS ADD CONSTRAINT FK_ORDERTAXS_INVOICE FOREIGN KEY (INVOICE_ID) REFERENCES INVOICES (INVOICE_ID) ON DELETE SET NULL ON UPDATE CASCADE;
 ALTER TABLE ORDERTAXS ADD CONSTRAINT FK_ORDERTAXS_ORDER FOREIGN KEY (ORDER_ID) REFERENCES ORDERS (ORDER_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE ORDERTAXS ADD CONSTRAINT FK_ORDERTAXS_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE ORDERTAXS ADD CONSTRAINT FK_ORDERTAXS_TAXRATE FOREIGN KEY (TAXRATE_ID) REFERENCES TAXRATES (TAXRATE_ID) ON UPDATE CASCADE;
@@ -184,7 +176,6 @@ ALTER TABLE ORDER_ATTRS ADD CONSTRAINT FK_ORDER_ATTRS_OBJECT FOREIGN KEY (OBJECT
 ALTER TABLE PARAMHEADS ADD CONSTRAINT FK_PARAMHEADS_ACTION FOREIGN KEY (ACTION_ID) REFERENCES ACTIONS (ACTION_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE PARAMHEADS ADD CONSTRAINT FK_PARAMHEADS_OBJECT FOREIGN KEY (OBJECT_SIGN) REFERENCES OBJECTS (OBJECT_SIGN) ON UPDATE CASCADE;
 ALTER TABLE PARAMS ADD CONSTRAINT FK_PARAMS_PARAM FOREIGN KEY (PARAM_ID) REFERENCES PARAMHEADS (PARAM_ID) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE PAYMENTS ADD CONSTRAINT FK_PAYMENTS_INVOICE FOREIGN KEY (INVOICE_ID) REFERENCES INVOICES (INVOICE_ID) ON UPDATE CASCADE;
 ALTER TABLE PAYMENTS ADD CONSTRAINT FK_PAYMENTS_MESSAGE FOREIGN KEY (MESSAGE_ID) REFERENCES MESSAGES (MESSAGE_ID) ON UPDATE CASCADE;
 ALTER TABLE PAYMENTS ADD CONSTRAINT FK_PAYMENTS_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE PHONEPREFIXES ADD CONSTRAINT FK_PHONEPREFIXES_PHONETYPE FOREIGN KEY (PHONETYPE_CODE) REFERENCES PHONETYPES (PHONETYPE_CODE) ON UPDATE CASCADE;
@@ -297,6 +288,7 @@ as
 begin
   if (new.accoper_id is null) then
     new.accoper_id = gen_id(seq_accoper_id,1);
+  new.accoper_dtm = current_timestamp;
 end
 ^
 
@@ -545,39 +537,6 @@ begin
 end
 ^
 
-/* Trigger: INVOICES_AI0 */
-CREATE OR ALTER TRIGGER INVOICES_AI0 FOR INVOICES
-ACTIVE AFTER INSERT POSITION 0
-AS
-begin
-  execute procedure status_store_date(NEW.invoice_id, new.status_id);
-end
-^
-
-/* Trigger: INVOICES_AU0 */
-CREATE OR ALTER TRIGGER INVOICES_AU0 FOR INVOICES
-ACTIVE AFTER UPDATE POSITION 0
-AS
-begin
-  if (new.status_id <> old.status_id) then
-    execute procedure status_store_date(NEW.invoice_id, new.status_id);
-end
-^
-
-/* Trigger: INVOICES_BI0 */
-CREATE OR ALTER TRIGGER INVOICES_BI0 FOR INVOICES
-ACTIVE BEFORE INSERT POSITION 0
-AS
-begin
-  if (new.invoice_id is null) then
-    new.invoice_id = gen_id(seq_invoice_id, 1);
-
-  if (new.status_id is null) then
-    select o_status_id from status_get_default('INVOICE') into new.status_id;
-  new.status_dtm = current_timestamp;
-end
-^
-
 /* Trigger: LOGS_BI0 */
 CREATE OR ALTER TRIGGER LOGS_BI0 FOR LOGS
 ACTIVE BEFORE INSERT POSITION 0
@@ -674,13 +633,8 @@ begin
     select o_status_id from status_get_default('ORDERITEM') into new.status_id;
   new.status_dtm = current_timestamp;
 
-  if (exists (select f2s.flag_sign
-                from flags2statuses f2s
-                where f2s.status_id = new.status_id
-                  and f2s.flag_sign in ('CREDIT', 'DEBIT'))) then
-    new.amount = 1;
-  else
-    new.amount = 0;
+  new.amount = 1;
+  new.cost_eur = new.price_eur;
 end
 ^
 
@@ -694,15 +648,14 @@ begin
   if (old.status_id <> new.status_id) then
   begin
     new.status_dtm = current_timestamp;
-    select s.flag_sign_list
-      from statuses s
-      where s.status_id = new.status_id
-      into :v_flaglist;
-    if (v_flaglist like '%,CREDIT,%') then
+    if (exists (select *
+                  from flags2statuses f2s
+                  where f2s.status_id = new.status_id
+                    and f2s.flag_sign = 'CREDIT')) then
       new.amount = 1;
     else
-    if (v_flaglist like '%,DEBIT,%') then
       new.amount = 0;
+    new.cost_eur = new.amount * new.price_eur;
   end
 end
 ^
@@ -717,7 +670,7 @@ begin
   if (new.status_id is null) then
     select o_status_id from status_get_default('ORDERMONEY') into new.status_id;
   new.status_dtm = current_timestamp;
-
+  new.created_dtm = current_timestamp;
 end
 ^
 
@@ -922,9 +875,6 @@ begin
   delete from payments;
   v_object_id = gen_id(seq_payment_id, -(gen_id(seq_payment_id, 0)));
 
-  delete from invoices;
-  v_object_id = gen_id(seq_invoice_id, -(gen_id(seq_invoice_id, 0)));
-
   delete from orders;
   v_object_id = gen_id(seq_order_id, -(gen_id(seq_order_id, 0)));
   v_object_id = gen_id(seq_orderitem_id, -(gen_id(seq_orderitem_id, 0)));
@@ -1011,8 +961,8 @@ end^
 
 
 CREATE OR ALTER PROCEDURE ACT_ACCOUNT_CREDIT (
-    I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
-    I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL,
+    I_PARAM_ID TYPE OF ID_PARAM,
+    I_OBJECT_ID TYPE OF ID_OBJECT,
     I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ACCOUNT')
 AS
 declare variable V_AMOUNT_EUR type of MONEY_EUR;
@@ -1037,8 +987,8 @@ end^
 
 
 CREATE OR ALTER PROCEDURE ACT_ACCOUNT_CREDITORDER (
-    I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
-    I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL,
+    I_PARAM_ID TYPE OF ID_PARAM,
+    I_OBJECT_ID TYPE OF ID_OBJECT,
     I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ACCOUNT')
 AS
 declare variable V_AMOUNT_EUR type of MONEY_EUR;
@@ -1079,14 +1029,15 @@ end^
 
 
 CREATE OR ALTER PROCEDURE ACT_ACCOUNT_DEBIT (
-    I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
-    I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL,
+    I_PARAM_ID TYPE OF ID_PARAM,
+    I_OBJECT_ID TYPE OF ID_OBJECT,
     I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ACCOUNT')
 AS
 declare variable V_AMOUNT_EUR type of MONEY_EUR;
 declare variable V_BYR2EUR type of MONEY_BYR;
 declare variable V_ORDER_ID type of ID_ORDER;
 declare variable V_NOTES type of VALUE_ATTR;
+declare variable V_AMOUNT_BYR type of MONEY_BYR;
 begin
 
   update paramheads set object_id = :i_object_id where param_id = :i_param_id;
@@ -1188,8 +1139,47 @@ begin
 end^
 
 
+CREATE OR ALTER PROCEDURE ACT_ACCOUNT_PAYMENTIN (
+    I_PARAM_ID TYPE OF ID_PARAM,
+    I_OBJECT_ID TYPE OF ID_OBJECT,
+    I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ACCOUNT')
+AS
+declare variable V_AMOUNT_EUR type of MONEY_EUR;
+declare variable V_BYR2EUR type of MONEY_BYR;
+declare variable V_ORDER_ID type of ID_ORDER;
+declare variable V_NOTES type of VALUE_ATTR;
+declare variable V_AMOUNT_BYR type of MONEY_BYR;
+declare variable V_ORDER_CODE type of CODE_ORDER;
+begin
+
+  update paramheads set object_id = :i_object_id where param_id = :i_param_id;
+
+  execute procedure param_set(:i_param_id, 'ID', :i_object_id);
+
+  select o_value from param_get(:i_param_id, 'AMOUNT_BYR') into :v_amount_byr;
+  select o_value from param_get(:i_param_id, 'ORDER_ID') into :v_order_id;
+  select o_value from param_get(:i_param_id, 'NOTES') into :v_notes;
+
+  select o.byr2eur, o.order_code
+    from orders o
+    where o.order_id = :v_order_id
+    into :v_byr2eur, :v_order_code;
+
+  v_amount_eur = v_amount_byr / v_byr2eur;
+
+  execute procedure param_set(:i_param_id, 'ORDER_CODE', :v_order_code);
+  execute procedure param_set(:i_param_id, 'BYR2EUR', :v_byr2eur);
+  execute procedure param_set(:i_param_id, 'AMOUNT_EUR', :v_amount_eur);
+
+  select o_pattern from param_fillpattern(:i_param_id, :v_notes) into :v_notes;
+
+  insert into accopers (account_id, amount_eur, byr2eur, order_id, notes)
+    values(:i_object_id, :v_amount_eur, :v_byr2eur, :v_order_id, :v_notes);
+end^
+
+
 CREATE OR ALTER PROCEDURE ACT_ACCOUNT_STORE (
-    I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
+    I_PARAM_ID TYPE OF ID_PARAM,
     I_OBJECT_ID TYPE OF ID_OBJECT,
     I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ACCOUNT')
 AS
@@ -1368,88 +1358,6 @@ begin
 end^
 
 
-CREATE OR ALTER PROCEDURE ACT_INVOICE_STORE (
-    I_PARAM_ID TYPE OF ID_PARAM,
-    I_OBJECT_ID TYPE OF ID_OBJECT,
-    I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'INVOICE')
-AS
-declare variable V_NOW_STATUS_ID type of ID_STATUS;
-declare variable V_NEW_STATUS_ID type of ID_STATUS;
-declare variable V_ORDER_ID type of ID_ORDER;
-declare variable V_UPDATEABLE type of VALUE_BOOLEAN;
-declare variable V_AMOUNT_EUR type of MONEY_EUR;
-declare variable V_AMOUNT_BYR type of MONEY_BYR;
-declare variable V_BYR2EUR type of VALUE_INTEGER;
-declare variable V_ORDER_CODE type of CODE_ORDER;
-declare variable V_INVOICE_CNT type of VALUE_INTEGER;
-declare variable V_INVOICE_CODE type of CODE_ORDER;
-begin
-  if (coalesce(i_object_id, 0) = 0) then i_object_id = gen_id(seq_invoice_id, 1);
-
-  update paramheads set object_id = :i_object_id where param_id = :i_param_id;
-
-  execute procedure param_set(:i_param_id, 'ID', :i_object_id);
-
-  select status_id from invoices where invoice_id = :i_object_id into :v_now_status_id;
-
-  if (:v_now_status_id is null) then
-  begin
-    select o_value from param_get(:i_param_id, 'STATUS_ID') into :v_new_status_id;
-    if (:v_new_status_id is null) then
-       select s.status_id
-         from param_get(:i_param_id, 'NEW.STATUS_SIGN') p
-           inner join statuses s on (s.object_sign = :i_object_sign and s.status_sign = p.o_value)
-       into :v_new_status_id;
-
-    select o_value from param_get(:i_param_id, 'ORDER_ID') into :v_order_id;
-    select cast(o_value as money_eur) from param_get(:i_param_id, 'AMOUNT_EUR') into :v_amount_eur;
-    select o_value from param_get(:i_param_id, 'BYR2EUR') into :v_byr2eur;
-    select sum(cost_byr)
-    from (
-      select round(oi.cost_eur*:v_byr2eur, -1) cost_byr
-        from orderitems oi
-        where oi.order_id = :v_order_id
-          and oi.invoice_id is null
-      union all
-      select round(ot.cost_eur*:v_byr2eur, -1)
-        from ordertaxs ot
-        where ot.order_id = :v_order_id
-          and ot.invoice_id is null)
-      into :v_amount_byr;
-    select order_code from orders where order_id = :v_order_id into :v_order_code;
-    select count(*) from invoices i where i.order_id = :v_order_id into :v_invoice_cnt;
-    if (v_invoice_cnt = 0) then
-      v_invoice_code = v_order_code;
-    else
-      v_invoice_code = v_order_code||'-'||cast(v_invoice_cnt+1 as varchar(2));
-
-    insert into invoices(invoice_id, invoice_code, create_dtm, order_id,
-      amount_eur, byr2eur, amount_byr, status_id)
-      values(:i_object_id, :v_invoice_code, current_timestamp, :v_order_id,
-      :v_amount_eur, :v_byr2eur, :v_amount_byr, :v_new_status_id)
-      returning status_id
-      into :v_new_status_id;
-    v_updateable = 1;
-  end
-  else
-  begin
-    select o_updateable, o_new_status_id
-      from object_updateable(:i_param_id, :v_now_status_id, :i_object_sign)
-      into :v_updateable, :v_new_status_id;
-
-    select i.order_id
-      from invoices i
-      where i.invoice_id = :i_object_id
-      into :v_order_id;
-  end
-  if (v_updateable = 1) then
-  begin
-    execute procedure param_set(:i_param_id, 'STATUS_ID', :v_new_status_id);
-    execute procedure object_put(:i_param_id);
-  end
-end^
-
-
 CREATE OR ALTER PROCEDURE ACT_MAGAZINE_STORE (
     I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
     I_OBJECT_ID TYPE OF ID_OBJECT,
@@ -1544,7 +1452,7 @@ end^
 CREATE OR ALTER PROCEDURE ACT_ORDER_DEBIT (
     I_PARAM_ID TYPE OF ID_PARAM,
     I_OBJECT_ID TYPE OF ID_OBJECT,
-    I_OBJECT_SIGN TYPE OF SIGN_OBJECT DEFAULT 'ORDERITEM')
+    I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ORDERITEM')
 AS
 declare variable V_PARAM_ID type of ID_PARAM;
 declare variable V_ACTION_SIGN type of SIGN_ACTION;
@@ -1843,7 +1751,7 @@ end^
 CREATE OR ALTER PROCEDURE ACT_ORDERMONEY_CREDIT (
     I_PARAM_ID TYPE OF ID_PARAM,
     I_OBJECT_ID TYPE OF ID_OBJECT,
-    I_OBJECT_SIGN TYPE OF SIGN_OBJECT DEFAULT 'ORDERMONEY')
+    I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ORDERMONEY')
 AS
 declare variable V_NOW_STATUS_ID type of ID_STATUS;
 declare variable V_ORDER_ID type of ID_ORDER;
@@ -1888,7 +1796,7 @@ end^
 CREATE OR ALTER PROCEDURE ACT_ORDERMONEY_DEBIT (
     I_PARAM_ID TYPE OF ID_PARAM,
     I_OBJECT_ID TYPE OF ID_OBJECT,
-    I_OBJECT_SIGN TYPE OF SIGN_OBJECT DEFAULT 'ORDERMONEY')
+    I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ORDERMONEY')
 AS
 declare variable V_NOW_STATUS_ID type of ID_STATUS;
 declare variable V_ORDER_ID type of ID_ORDER;
@@ -2361,9 +2269,6 @@ begin
   begin
     if (v_procedure_name = 'PAYMENT_STORE') then
       execute procedure act_payment_store(:i_param_id, :i_object_id);
-    else
-    if (v_procedure_name = 'INVOICE_STORE') then
-      execute procedure act_invoice_store(:i_param_id, :i_object_id);
     else
     if (v_procedure_name = 'ACCOUNT_STORE') then
       execute procedure act_account_store(:i_param_id, :i_object_id);
@@ -2856,56 +2761,6 @@ begin
 end^
 
 
-CREATE OR ALTER PROCEDURE INVOICE_DETECT (
-    I_PAY_DT TYPE OF DT_INVOICE NOT NULL,
-    I_AMOUNT_BYR TYPE OF MONEY_BYR NOT NULL,
-    I_INVOICE_CODE TYPE OF CODE_ORDER)
-RETURNS (
-    O_INVOICE_ID TYPE OF ID_INVOICE)
-AS
-begin
-  select i.invoice_id
-    from invoices i
-    where i.amount_byr = :i_amount_byr
---      and i.create_dtm <= :i_pay_dt
---      and i.invoice_code = :i_invoice_code
-    into :o_invoice_id;
-  suspend;
-when sqlcode -811 do
-  begin
-    o_invoice_id = null;
-    suspend;
-  end
-end^
-
-
-CREATE OR ALTER PROCEDURE INVOICE_GET_UNPAYED (
-    I_AMOUNT_BYR TYPE OF MONEY_BYR,
-    I_ORDER_CODE TYPE OF CODE_ORDER)
-RETURNS (
-    O_INVOICE_ID TYPE OF ID_INVOICE)
-AS
-begin
-  select i.invoice_id
-    from invoices i
-      inner join statuses s on (s.status_id = i.status_id)
-      inner join orders o on (o.order_id = i.order_id)
-    where i.amount_byr = :i_amount_byr
-      and s.status_sign = 'PRINTED'
-      and o.order_code like '%'||:i_order_code
-    into :o_invoice_id;
-  if (o_invoice_id is null) then
-    select i.invoice_id
-      from invoices i
-        inner join statuses s on (s.status_id = i.status_id)
-      where i.amount_byr = :i_amount_byr
-        and s.status_sign = 'PRINTED'
-      into :o_invoice_id;
-
-  suspend;
-end^
-
-
 CREATE OR ALTER PROCEDURE LOG_CREATE (
     I_ACTION_SIGN TYPE OF SIGN_ACTION NOT NULL,
     I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
@@ -3383,44 +3238,27 @@ AS
 declare variable V_OBJECT_ID type of ID_OBJECT;
 declare variable V_ORDERITEMS_COST_EUR type of MONEY_EUR;
 declare variable V_ORDERTAXS_COST_EUR type of MONEY_EUR;
+declare variable V_ORDERMONEYS_COST_EUR type of MONEY_EUR;
 begin
   select o_value from param_get(:i_src_param_id, 'ID') into :v_object_id;
 
   select sum(oi.cost_eur)
     from orderitems oi
-    where oi.invoice_id is null
-      and oi.order_id = :v_object_id
+    where oi.order_id = :v_object_id
     into :v_orderitems_cost_eur;
 
   select sum(ot.cost_eur)
     from ordertaxs ot
-    where ot.invoice_id is null
-      and ot.order_id = :v_object_id
+    where ot.order_id = :v_object_id
     into :v_ordertaxs_cost_eur;
 
+  select sum(om.amount_eur)
+    from ordermoneys om
+    where om.order_id = :v_object_id
+    into :v_ordermoneys_cost_eur;
+
   execute procedure param_set(:i_dest_param_id, :i_param_name,
-    :v_orderitems_cost_eur+:v_ordertaxs_cost_eur);
-end^
-
-
-CREATE OR ALTER PROCEDURE ORDER_X_UNPAID (
-    I_DEST_PARAM_ID TYPE OF ID_PARAM NOT NULL,
-    I_PARAM_NAME TYPE OF SIGN_ATTR NOT NULL,
-    I_SRC_PARAM_ID TYPE OF ID_PARAM NOT NULL)
-AS
-declare variable V_OBJECT_ID type of ID_OBJECT;
-declare variable V_UNPAID_INVOICE_COUNT type of VALUE_INTEGER;
-begin
-  select o_value from param_get(:i_src_param_id, 'ID') into :v_object_id;
-
-  select count(*)
-    from invoices i
-      inner join statuses s on (s.status_id = i.status_id)
-    where i.order_id = :v_object_id
-      and s.flag_sign_list not like '%,PAID,%'
-    into :v_unpaid_invoice_count;
-  execute procedure param_set(:i_dest_param_id, :i_param_name,
-    :v_unpaid_invoice_count);
+    :v_orderitems_cost_eur+:v_ordertaxs_cost_eur-:v_ordermoneys_cost_eur);
 end^
 
 
@@ -3502,15 +3340,6 @@ begin
     suspend;
   end
 
-  for select replace(ia.attr_sign, 'STATUS_DTM', 'INVOICE_DTM'), ia.attr_value
-    from orderitems oi
-      inner join v_invoice_attrs ia on (ia.object_id = oi.invoice_id and ia.attr_sign like 'STATUS_DTM.%')
-    where oi.orderitem_id = :i_object_id
-    into :o_param_name, :o_param_value
-  do suspend;
-
-
-
 end^
 
 
@@ -3562,14 +3391,6 @@ begin
   o_param_name = 'TAXSERV_NAME';
   o_param_value = :v_taxserv_name;
   suspend;
-
-  for select replace(ia.attr_sign, 'STATUS_DTM', 'INVOICE_DTM'), ia.attr_value
-    from ordertaxs ot
-      inner join v_invoice_attrs ia on (ia.object_id = ot.invoice_id and ia.attr_sign like 'STATUS_DTM.%')
-    where ot.ordertax_id = :i_object_id
-    into :o_param_name, :o_param_value
-  do suspend;
-
 end^
 
 
@@ -3801,7 +3622,7 @@ end^
 
 
 CREATE OR ALTER PROCEDURE PARAM_FILLPATTERN (
-    I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
+    I_PARAM_ID TYPE OF ID_PARAM,
     I_PATTERN TYPE OF VALUE_ATTR)
 RETURNS (
     O_PATTERN TYPE OF VALUE_ATTR)
@@ -3899,14 +3720,6 @@ begin
       values(:i_param_id, :v_param_sign, unescapestring(:v_param_value))
       matching (param_id, param_name);
   end
-end^
-
-
-CREATE OR ALTER PROCEDURE PAYMENT_ASSIGN
-AS
-begin
-
-  suspend;
 end^
 
 

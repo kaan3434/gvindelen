@@ -22,8 +22,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 829
-    Height = 49
+    Width = 837
+    Height = 47
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -173,14 +173,15 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 432
-    Width = 829
+    Top = 436
+    Width = 837
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object alMain: TActionList
     Images = imgListMainMenu
+    OnUpdate = alMainUpdate
     Left = 128
     Top = 96
     object actExportOrders: TAction
@@ -280,7 +281,6 @@ object MainForm: TMainForm
       Caption = #1042#1099#1083#1077#1095#1080#1090#1100
       ImageIndex = 11
       OnExecute = actInstallPatchExecute
-      OnUpdate = actInstallPatchUpdate
     end
     object actSetByr2Eur: TAction
       Caption = 'BYR->EUR'

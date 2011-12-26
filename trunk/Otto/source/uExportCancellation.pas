@@ -26,7 +26,7 @@ begin
     Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
     Line.Add(FilterString(GetXmlAttr(ndOrder, 'ORDER_CODE'), '0123456789'));
     Line.Add('900');
-    Line.Add(FilterString(GetXmlAttr(ndOrder, 'ORDER_CODE'), '0123456789'));
+    Line.Add(GetXmlAttr(ndOrder, 'AUFTRAG_ID'));
     Line.Add(GetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX'));
     Line.Add(GetXmlAttr(ndOrderItem, 'ARTICLE_CODE'));
     Line.Add(GetXmlAttr(ndOrderItem, 'DIMENSION'));

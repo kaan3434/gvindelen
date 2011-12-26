@@ -37,7 +37,7 @@ begin
       ndOrder:= ndOrders.NodeNew('ORDER');
       dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
       dmOtto.OrderItemsGet(ndOrder.NodeNew('ORDERITEMS'), OrderId, aTransaction);
-      ndOrderItem:= ndOrder.NodeByAttributeValue('ORDERITEM', 'ORDERITEM_INDEX', sl[4], true);
+      ndOrderItem:= ndOrder.NodeByAttributeValue('ORDERITEM', 'ORDERITEM_INDEX', SkipLeadingZero(sl[4]), true);
       if ndOrderItem <> nil then
       begin
         ndOrderItem.ValueAsBool:= true;
@@ -88,9 +88,9 @@ begin
     end
     else
       dmOtto.Notify(aMessageId,
-        '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестная заявка [OTTO_ORDER_CODE].',
+        '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестная заявка [ORDER_CODE].',
         'E',
-        Strings2Vars(sl, 'CLIENT_ID=1;ORDER_CODE=2;ORDERITEM_INDEX=4;ARTICLE_CODE=5;DIMENSION=6;OTTO_ORDER_CODE=2',
+        Strings2Vars(sl, 'ORDER_CODE=1;ORDERITEM_INDEX=4;ARTICLE_CODE=5;DIMENSION=6',
         Value2Vars(LineNo, 'LINE_NO')));
   finally
     sl.Free;
@@ -114,9 +114,16 @@ begin
   // загружаем файл
   Lines:= TStringList.Create;
   try
-    Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
-    For LineNo:= 0 to Lines.Count - 1 do
-      ParseCancelLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
+    if FileExists(Path['Messages.In']+MessageFileName) then
+    begin
+      Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
+      For LineNo:= 0 to Lines.Count - 1 do
+        ParseCancelLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
+    end
+    else
+      dmOtto.Notify(aMessageId,
+        'Файл [FILE_NAME] не найден.', 'E',
+        Value2Vars(MessageFileName, 'FILE_NAME'));
   finally
     Lines.Free;
   end;

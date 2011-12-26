@@ -17,14 +17,13 @@ procedure ParsePaymentLine(aMessageId, LineNo: Integer; aLine: string; aTransact
 var
   sl: TStringList;
   PayDate: TDateTime;
-  InvoiceId, PaymentId: Variant;
+  PaymentId, OrderId: Variant;
   Xml: TNativeXml;
-  ndOrder, ndInvoices, ndInvoice, ndPayment: TXmlNode;
+  ndOrder, ndPayment: TXmlNode;
 begin
   Xml:= TNativeXml.CreateName('PAYMENT');
   ndPayment:= Xml.Root;
   ndOrder:= ndPayment.NodeNew('ORDER');
-  ndInvoices:= ndPayment.NodeNew('INVOICES');
   sl:= TStringList.Create;
   try
     sl.Delimiter:= ';';
@@ -41,29 +40,41 @@ begin
     SetXmlAttr(ndPayment, 'ORDER_CODE', sl[3]);
     dmOtto.ActionExecute(aTransaction, ndPayment);
 
-    InvoiceId:= aTransaction.DefaultDatabase.QueryValue(
-      'select o_invoice_id from invoice_detect(:pay_dt, :amount_byr, :invoice_code)',
-      0, [PayDate, sl[1], sl[3]], aTransaction);
-    if InvoiceId <> null then
+    OrderId:= aTransaction.DefaultDatabase.QueryValue(
+      'select order_id from orders where order_code like ''_''||:order_code',
+      0, [FilterString(sl[3], '0123456789')], aTransaction);
+    if OrderId <> null then
     begin
-      ndInvoice:= ndInvoices.NodeNew('INVOICE');
-      dmOtto.ObjectGet(ndInvoice, InvoiceId, aTransaction);
-      SetXmlAttr(ndPayment, 'INVOICE_ID', InvoiceId);
+      dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
+
       try
+        dmOtto.ActionExecute(aTransaction, 'ACCOUNT', 'ACCOUNT_PAYMENTIN',
+          XmlAttrs2Vars(ndOrder, 'ORDER_ID=ID;ID=ACCOUNT_ID',
+          XmlAttrs2Vars(ndPayment, 'AMOUNT_BYR')));
+
         dmOtto.ActionExecute(aTransaction, ndPayment, 'ASSIGNED');
         dmOtto.Notify(aMessageId,
-          '[LINE_NO]. Извещение [INVOICE_CODE]. Сумма [AMOUNT_BYR]. Заявка [ORDER_CODE]. Ok',
+          '[LINE_NO]. Сумма [AMOUNT_BYR] BYR зачислена на заявку [ORDER_CODE]',
           'I',
-          Strings2Vars(sl, 'INVOICE_CODE=3;AMOUNT_BYR=1',
-          Value2Vars(LineNo, 'LINE_NO')));
+          XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
+          Strings2Vars(sl, 'AMOUNT_BYR=1',
+          Value2Vars(LineNo, 'LINE_NO'))));
       except
+        on E: Exception do
+          dmOtto.Notify(aMessageId,
+            '[LINE_NO]. Сумма [AMOUNT_BYR] BYR. Заявка [ORDER_CODE]. [ERROR_TEXT]',
+            'E',
+            XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
+            Strings2Vars(sl, 'AMOUNT_BYR=1',
+            Value2Vars(LineNo, 'LINE_NO',
+            Value2Vars(E.Message, 'ERROR_TEXT')))));
       end;
     end
     else
       dmOtto.Notify(aMessageId,
-        '[LINE_NO]. Заявка [INVOICE_CODE]. Сумма [AMOUNT_BYR].',
+        '[LINE_NO]. Сумма [AMOUNT_BYR] BYR. Неизвестная заявка [ORDER_CODE]',
         'E',
-        Strings2Vars(sl, 'INVOICE_CODE=3;AMOUNT_BYR=1',
+        Strings2Vars(sl, 'ORDER_CODE=3;AMOUNT_BYR=1',
         Value2Vars(LineNo, 'LINE_NO')));
 
   finally

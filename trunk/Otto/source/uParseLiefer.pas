@@ -36,6 +36,14 @@ begin
     begin
       ndOrder:= ndOrders.NodeNew('ORDER');
       dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
+      // если ауфтрак еще не присвоен, сохраняем его на заявке
+      if GetXmlAttrValue(ndOrder, 'AUFTRAG_ID') <> sl[3] then
+      begin
+        SetXmlAttr(ndOrder, 'AUFTRAG_ID', sl[3]);
+        dmOtto.ActionExecute(aTransaction, ndOrder);
+        dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
+      end;
+
       dmOtto.OrderItemsGet(ndOrder.NodeNew('ORDERITEMS'), OrderId, aTransaction);
       ndOrderItem:= ndOrder.NodeByAttributeValue('ORDERITEM', 'ORDERITEM_INDEX', sl[4], true);
       if ndOrderItem <> nil then
@@ -137,9 +145,16 @@ begin
   // загружаем файл
   Lines:= TStringList.Create;
   try
-    Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
-    For LineNo:= 0 to Lines.Count - 1 do
-      ParseLieferLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
+    if FileExists(Path['Messages.In']+MessageFileName) then
+    begin
+      Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
+      For LineNo:= 0 to Lines.Count - 1 do
+        ParseLieferLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
+    end
+    else
+      dmOtto.Notify(aMessageId,
+        'Файл [FILE_NAME] не найден.', 'E',
+        Value2Vars(MessageFileName, 'FILE_NAME'));
   finally
     Lines.Free;
   end;

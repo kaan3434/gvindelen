@@ -66,17 +66,21 @@ begin
 
     ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'), 'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
       [sl[5], Dimension, 'ACCEPTREQUEST']);
+    if ndOrderItem = nil then
+      ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'), 'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
+        [sl[5], sl[6], 'ACCEPTREQUEST']);
 
     if ndOrderItem <> nil then
     begin
+      SetXmlAttr(ndOrderItem, 'DIMENSION', Dimension);
       ndOrder.ValueAsBool:= True;
       SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', sl[8]);
       SetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX', sl[4]);
 
       // если ауфтрак еще не присвоен, сохраняем его на заявке
-      if GetXmlAttrValue(ndOrder, 'AUFTRACK_ID') <> sl[3] then
+      if GetXmlAttrValue(ndOrder, 'AUFTRAG_ID') <> sl[3] then
       begin
-        SetXmlAttr(ndOrder, 'AUFTRACK_ID', sl[3]);
+        SetXmlAttr(ndOrder, 'AUFTRAG_ID', sl[3]);
         dmOtto.ActionExecute(aTransaction, ndOrder);
         dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
       end;
