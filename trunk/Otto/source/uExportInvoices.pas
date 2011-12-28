@@ -22,19 +22,10 @@ begin
     dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
     result:= GetXmlAttr(ndProduct, 'PARTNER_NUMBER')+';'+
              FilterString(GetXmlAttr(ndorder, 'ORDER_CODE'), '0123456789')+';1'#13#10;
-    InvoiceList:= aTransaction.DefaultDatabase.QueryValue(
-      'select list(i.invoice_id) '+
-      'from invoices i '+
-      'where i.order_id = :order_id',
-      0, [aOrderId], aTransaction);
-    ndInvoice:= ndOrder.NodeNew('INVOICE');
-    while InvoiceList <> '' do
-    begin
-      InvoiceId:= TakeFront5(InvoiceList, ',');
-      dmOtto.ObjectGet(ndInvoice, InvoiceId, aTransaction);
-      SetXmlAttr(ndInvoice, 'NEW.STATUS_SIGN', 'PAYSENT');
-      dmOtto.ActionExecute(aTransaction, ndInvoice);
-    end;
+    if GetXmlAttr(ndOrder, 'STATUS_SIGN') <> 'PAID' then
+      SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'PAID');
+    SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'PAYSENT');
+    dmOtto.ActionExecute(aTransaction, ndOrder);
   finally
     ndOrder.Clear;
   end;
@@ -52,9 +43,9 @@ begin
     dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
     OrderList:= aTransaction.DefaultDatabase.QueryValue(
       'select list(distinct o.order_id) '+
-      'from invoices i '+
-      'inner join statuses s on (s.status_id = i.status_id and s.status_sign = ''PAID'') '+
-      'inner join orders o on (o.order_id = i.order_id)'+
+      'from orders o '+
+      '  inner join statuses s on (s.status_id = o.status_id and s.status_sign in (''ACCEPTED'',''PAID'')) '+
+      '  inner join v_order_paid op on (op.order_id = o.order_id) '+
       'where o.product_id = :product_id',
       0, [aProductId], aTransaction);
     while OrderList <> '' do
@@ -90,9 +81,9 @@ begin
       ndProducts:= Xml.Root;
       ProductList:= aTransaction.DefaultDatabase.QueryValue(
         'select list(distinct o.product_id) '+
-        'from invoices i '+
-        'inner join statuses s on (s.status_id = i.status_id and s.status_sign = ''PAID'') '+
-        'inner join orders o on (o.order_id = i.order_id)',
+        'from orders o '+
+        '  inner join statuses s on (s.status_id = o.status_id and s.status_sign in (''ACCEPTED'',''PAID'')) '+
+        '  inner join v_order_paid op on (op.order_id = o.order_id)',
         0, aTransaction);
       while ProductList <> '' do
       begin

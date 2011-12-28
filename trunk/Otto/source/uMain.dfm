@@ -22,8 +22,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 837
-    Height = 47
+    Width = 829
+    Height = 49
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -173,8 +173,8 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 436
-    Width = 837
+    Top = 432
+    Width = 829
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
@@ -1373,7 +1373,7 @@ object MainForm: TMainForm
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 40901.050944363430000000
+    ReportOptions.LastChange = 40905.142957326400000000
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
     Left = 352
@@ -1654,13 +1654,6 @@ object MainForm: TMainForm
     Left = 288
     Top = 256
     Bitmap = {}
-  end
-  object ProgressMakeSMSRejected: TJvProgressComponent
-    Caption = 'SMS '#1086#1073' '#1086#1090#1082#1072#1079#1072#1093
-    InfoLabel = #1043#1077#1085#1077#1088#1072#1094#1080#1103' SMS '#1086#1073' '#1086#1090#1082#1072#1079#1072#1093
-    OnShow = ProgressMakeSMSRejectedShow
-    Left = 648
-    Top = 200
   end
   object dlgOpenRestore: TOpenDialog
     DefaultExt = '*.fbk'

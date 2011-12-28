@@ -672,13 +672,13 @@ function TdmOtto.GetFlagListById(aStatusId: Integer): string;
 var
   SignList: Variant;
 begin
-  try
-    Result:= dbOtto.QueryValue(
-      'select s.flag_sign_list from statuses s where s.status_id = :status_id',
-      0, [aStatusId]);
-  except
-    ShowMessage(Format('Нет флагов для статусa %u ', [aStatusId]));
-  end;
+  SignList:= dbOtto.QueryValue(
+    'select s.flag_sign_list from statuses s where s.status_id = :status_id',
+    0, [aStatusId]);
+  if SignList = null then
+    Result:= ',,'
+  else
+    Result:= SignList;
 end;
 
 procedure TdmOtto.GetInvoices(aInvoicesNode: TXmlNode; aOrderId: Integer;

@@ -4,12 +4,11 @@ interface
 uses
   Classes, NativeXml, FIBDatabase, pFIBDatabase;
 
-procedure MakeSMSRejectNotify(OrderId: Integer; oMessageLines: TStringList;
-  aTransaction: TpFIBTransaction);
+procedure ExportSMSRejected(aTransaction: TpFIBTransaction);
 
 implementation
 uses
-  GvNativeXml, udmOtto, GvStr;
+  GvNativeXml, udmOtto, GvStr, SysUtils, GvFile;
 
 procedure MakeSMSRejectNotify(OrderId: Integer; oMessageLines: TStringList;
   aTransaction: TpFIBTransaction);
@@ -49,6 +48,44 @@ begin
     end;
   finally
     Xml.Free;
+  end;
+end;
+
+procedure ExportSMSRejected(aTransaction: TpFIBTransaction);
+var
+  OrderList, FileName: string;
+  OrderId: variant;
+  Lines: TStringList;
+begin
+  aTransaction.StartTransaction;
+  try
+    OrderList := aTransaction.DefaultDatabase.QueryValue(
+      'select list(distinct oi.order_id) '+
+      'from orderitems oi '+
+      'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''REJECTED'') '+
+      'left join statuses s2 on (s2.status_id = oi.state_id) '+
+      'where coalesce(s2.status_sign, '''')  <> ''SMSREJECTSENT''',
+      0, aTransaction);
+    if OrderList <> '' then
+    begin
+      Lines := TStringList.Create;
+      try
+        while OrderList <> '' do
+        begin
+          OrderId := TakeFront5(orderList, ',');
+          MakeSmsRejectNotify(OrderId, Lines, aTransaction);
+        end;
+        FileName := GetNextFileName(Format('%sSMSReject_%s_%%u.txt',
+          [Path['SMSReject'], FormatDateTime('YYYYMMDD', Date)]), 1);
+        ForceDirectories(ExtractFileDir(FileName));
+        Lines.SaveToFile(FileName);
+      finally
+        Lines.Free;
+      end;
+    end;
+    aTransaction.Commit;
+  except
+    aTransaction.Rollback;
   end;
 end;
 

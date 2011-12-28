@@ -113,12 +113,17 @@ begin
       NewDeliveryMessage:= dmOtto.Recode('ORDERITEM', 'DELIVERY_MESSAGE', sl[11]);
       if NewDeliveryMessage <> sl[11] then
         StateId:= dmOtto.GetStatusBySign('ORDERITEM', NewDeliveryMessage);
-      SetXmlAttr(ndOrderItem, 'STATE_ID', StateId);
 
       if Pos(',AVAILABLE,', dmOtto.GetFlagListById(StateId)) = 0 then
+      begin
+        SetXmlAttr(ndOrderItem, 'STATE_ID', null);
         SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'REJECTED')
+      end
       else
+      begin
         SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'ACCEPTED');
+        SetXmlAttr(ndOrderItem, 'STATE_ID', StateId);
+      end;
 
       try
         StatusName:= aTransaction.DefaultDatabase.QueryValue(

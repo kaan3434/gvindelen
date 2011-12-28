@@ -112,7 +112,6 @@ type
     log1: TJvLogFile;
     imgListAlerts: TPngImageList;
     actExportSMSRejected: TAction;
-    ProgressMakeSMSRejected: TJvProgressComponent;
     btn12: TTBXItem;
     actExportCancellation: TAction;
     btn13: TTBXItem;
@@ -155,7 +154,6 @@ type
     procedure scrptUpdateExecuteError(Sender: TObject; StatementNo,
       Line: Integer; Statement: TStrings; SQLCode: Integer;
       const Msg: string; var doRollBack, Stop: Boolean);
-    procedure ProgressMakeSMSRejectedShow(Sender: TObject);
     procedure actExportPaymentExecute(Sender: TObject);
     procedure actExportPackListExecute(Sender: TObject);
     procedure actBackupExecute(Sender: TObject);
@@ -600,50 +598,9 @@ begin
   log1.ShowLog('aaa');
 end;
 
-procedure TMainForm.ProgressMakeSMSRejectedShow(Sender: TObject);
-var
-  OrderList, FileName: string;
-  OrderId: variant;
-  Lines: TStringList;
-begin
-  ProgressMakeSMSRejected.ProgressPosition := 0;
-  OrderList := trnRead.DefaultDatabase.QueryValue(
-    'select list(distinct oi.order_id) ' +
-    'from orderitems oi ' +
-    'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''REJECTED'') ' +
-    'left join statuses s2 on (s2.status_id = oi.state_id and s2.status_sign <> ''SMSREJECTSENDED'')',
-    0, trnRead);
-  ProgressMakeSMSRejected.ProgressMax := WordCount(OrderList, ',');
-  if ProgressMakeSMSRejected.ProgressMax > 0 then
-  begin
-    trnWrite.StartTransaction;
-    Lines := TStringList.Create;
-    try
-      try
-        FileName := GetNextFileName(Format('%sSMSReject_%s_%%u.txt',
-          [Path['SMSReject'], FormatDateTime('YYYYMMDD', Date)]), 1);
-        while (OrderList <> '') or ProgressMakeSMSRejected.Cancel do
-        begin
-          OrderId := TakeFront5(orderList, ',');
-          MakeSmsRejectNotify(OrderId, Lines, trnWrite);
-          ProgressMakeSMSRejected.ProgressStepIt;
-          Application.ProcessMessages;
-        end;
-        ForceDirectories(ExtractFileDir(FileName));
-        Lines.SaveToFile(FileName);
-        trnWrite.Commit;
-      except
-        trnWrite.Rollback;
-      end;
-    finally
-      Lines.Free;
-    end;
-  end;
-end;
-
 procedure TMainForm.actExportSMSRejectedExecute(Sender: TObject);
 begin
-  ProgressMakeSMSRejected.Execute;
+  ExportSMSRejected(trnWrite);
 end;
 
 procedure TMainForm.actExportCancellationExecute(Sender: TObject);
