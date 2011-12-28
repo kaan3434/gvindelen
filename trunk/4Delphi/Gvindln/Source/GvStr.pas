@@ -9,6 +9,7 @@ uses Classes, Controls, Messages;
 // SkipFront(' 12234 ', ' 1') = '2234 '
 function SkipFront(St: String; KeyChar: String =' '): String; overload;
 function SkipFront(St: WideString; KeyChar: WideString =' '): WideString; overload;
+function SkipLeadingZero(St: string): string;
 
 // SkipBack ¬озвращает строку без концевых символов из списка KeyChar
 // аналогична RTrim, только можно пропускать любые символы
@@ -290,6 +291,16 @@ begin
   P:= 1;
   while (P<=LS) and (Pos(St[P], KeyChar)>0) do Inc(P);
   result:= Copy(St, P, LS-P+1);
+end;
+
+function SkipLeadingZero(St: string): string;
+begin
+  result:= SkipFront(St, '0');
+  if Result = '' then
+    Result:= '0'
+  else
+  if (Result[1] = '.') or (Result[1] =',') then
+    Result:= '0' + Result;
 end;
 
 function SkipBack(St: String; KeyChar: String): String;
