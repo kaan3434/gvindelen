@@ -168,7 +168,7 @@ begin
     BatchMoveXMLNodes2Dataset(mtblOrderItems, ndOrderItems,
       'ORDERITEM_ID=ID;ORDER_ID;MAGAZINE_ID;ARTICLE_ID;ARTICLE_CODE;DIMENSION;'+
       'PRICE_EUR;WEIGHT;NAME_RUS;KIND_RUS;STATUS_ID;STATE_ID;FLAG_SIGN_LIST=STATUS_FLAG_LIST;'+
-      'AMOUNT;COST_EUR',
+      'AMOUNT;COST_EUR;ORDERITEM_INDEX',
       cmReplace);
     if mtblOrderItems.State <> dsBrowse then
       mtblOrderItems.Post;

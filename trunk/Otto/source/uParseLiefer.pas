@@ -20,9 +20,8 @@ var
   ndOrder, ndOrderItem: TXmlNode;
   NewStatusSign: variant;
   StateSign: Variant;
-  StateId: Variant;
   StatusName, MessageClass: Variant;
-  NewDeliveryMessage: string;
+  NewDeliveryMessage, Dimension: string;
 begin
   sl:= TStringList.Create;
   try
@@ -44,28 +43,38 @@ begin
         dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
       end;
 
+      Dimension:= dmOtto.Recode('ARTICLE', 'DIMENSION', sl[6]);
+
       dmOtto.OrderItemsGet(ndOrder.NodeNew('ORDERITEMS'), OrderId, aTransaction);
-      ndOrderItem:= ndOrder.NodeByAttributeValue('ORDERITEM', 'ORDERITEM_INDEX', sl[4], true);
+      ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
+        'ARTICLE_CODE;DIMENSION;ORDERITEM_INDEX',
+        [sl[5], Dimension, sl[4]]);
+      if ndOrderItem = nil then
+        ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
+          'ARTICLE_CODE;DIMENSION;ORDERITEM_INDEX;STATUS_SIGN',
+          [sl[5], Dimension, '', 'ACCEPTED']);
       if ndOrderItem <> nil then
       begin
         ndOrderItem.ValueAsBool:= true;
+        if GetXmlAttrValue(ndOrderItem, 'ORDERITEM_INDEX') = null then
+          SetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX', sl[4]);
+
         SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', sl[9]);
 
         if GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') <> GetXmlAttrAsMoney(ndOrderItem, 'COST_EUR') then
         begin
           dmOtto.Notify(aMessageId,
             '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Измнена цена [COST_EUR] => [PRICE_EUR].',
-            IfThen(GetXmlAttrValue(ndOrderItem, 'MAGAZINE_ID') = 1, 'W', 'E'),
+            'W',
             XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR',
             XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
             Value2Vars(LineNo, 'LINE_NO'))));
+          SetXmlAttrAsMoney(ndOrderItem, 'COST_EUR', GetXmlAttrValue(ndOrderItem, 'PRICE_EUR')*getXmlAttrValue(ndOrderItem, 'AMOUNT'));
         end;
 
-        StateId:= null;
         StateSign:= dmOtto.Recode('ORDERITEM', 'DELIVERY_CODE_TIME', sl[10]);
         if StateSign = sl[10] then
         begin
-          StateId:= GetXmlAttrValue(ndOrderItem, 'STATE_ID');
           dmOtto.Notify(aMessageId,
             '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестный DeliveryCode = [DELIVERY_CODE]',
             'E',
@@ -75,8 +84,7 @@ begin
             Strings2Vars(sl, 'DELIVERY_CODE=10')))))
         end
         else
-          StateId:= dmOtto.GetStatusBySign(ndOrderItem.Name, StateSign);
-        SetXmlAttr(ndOrderItem, 'STATE_ID', StateId);
+          SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', StateSign);
 
         if sl[12] <> '00000000000000' then
         begin

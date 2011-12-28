@@ -166,6 +166,7 @@ ALTER TABLE ORDERS ADD CONSTRAINT FK_ORDERS_ACCOUNT FOREIGN KEY (ACCOUNT_ID) REF
 ALTER TABLE ORDERS ADD CONSTRAINT FK_ORDERS_ADRESS FOREIGN KEY (ADRESS_ID) REFERENCES ADRESSES (ADRESS_ID) ON UPDATE CASCADE;
 ALTER TABLE ORDERS ADD CONSTRAINT FK_ORDERS_CLIENT FOREIGN KEY (CLIENT_ID) REFERENCES CLIENTS (CLIENT_ID) ON UPDATE CASCADE;
 ALTER TABLE ORDERS ADD CONSTRAINT FK_ORDERS_PRODUCT FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCTS (PRODUCT_ID) ON UPDATE CASCADE;
+ALTER TABLE ORDERS ADD CONSTRAINT FK_ORDERS_STATE FOREIGN KEY (STATE_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE ORDERS ADD CONSTRAINT FK_ORDERS_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE ORDERS ADD CONSTRAINT FK_ORDERS_TAXPLAN FOREIGN KEY (TAXPLAN_ID) REFERENCES TAXPLANS (TAXPLAN_ID) ON UPDATE CASCADE;
 ALTER TABLE ORDERTAXS ADD CONSTRAINT FK_ORDERTAXS_ORDER FOREIGN KEY (ORDER_ID) REFERENCES ORDERS (ORDER_ID) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -645,18 +646,15 @@ AS
 declare variable v_flaglist list_signs;
 begin
   new.article_code = upper(new.article_code);
-  if (old.status_id <> new.status_id) then
-  begin
-    new.status_dtm = current_timestamp;
-    if (exists (select *
-                  from flags2statuses f2s
-                  where f2s.status_id = new.status_id
-                    and f2s.flag_sign = 'CREDIT')) then
-      new.amount = 1;
-    else
-      new.amount = 0;
-    new.cost_eur = new.amount * new.price_eur;
-  end
+  new.status_dtm = current_timestamp;
+  if (exists (select *
+                from flags2statuses f2s
+                where f2s.status_id = new.status_id
+                  and f2s.flag_sign = 'CREDIT')) then
+    new.amount = 1;
+  else
+    new.amount = 0;
+  new.cost_eur = new.amount * new.price_eur;
 end
 ^
 
@@ -1638,6 +1636,8 @@ declare variable V_NOW_STATUS_ID type of ID_STATUS;
 declare variable V_NEW_STATUS_ID type of ID_STATUS;
 declare variable V_UPDATEABLE type of VALUE_BOOLEAN;
 declare variable V_CALCPOINT_ID type of ID_CALCPOINT;
+declare variable V_NEW_STATE_SIGN type of SIGN_OBJECT;
+declare variable V_NEW_STATE_ID type of ID_STATUS;
 begin
   if (coalesce(i_object_id, 0) = 0) then i_object_id = gen_id(seq_order_id, 1);
 
@@ -1660,6 +1660,17 @@ begin
     select o_updateable, o_new_status_id
       from object_updateable(:i_param_id, :v_now_status_id, :i_object_sign)
       into :v_updateable, :v_new_status_id;
+  end
+
+  select o_value from param_get(:i_param_id,  'NEW.STATE_SIGN') into :v_new_state_sign;
+  if (:v_new_state_sign is not null) then
+  begin
+    select s.status_id 
+      from statuses s
+      where s.object_sign = :i_object_sign
+        and s.status_sign = :v_new_state_sign
+      into :v_new_state_id;
+    execute procedure param_set(:i_param_id, 'STATE_ID', :v_new_state_id);
   end
 
   if (v_updateable = 1) then
