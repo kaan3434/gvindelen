@@ -7,7 +7,8 @@ object dmOtto: TdmOtto
   Height = 405
   Width = 624
   object dbOtto: TpFIBDatabase
-    DBName = 'D:\Otto\Data\otto_ppz.fdb'
+    Connected = True
+    DBName = 'D:\otto\Data\otto_ppz.fdb'
     DBParams.Strings = (
       'lc_ctype=CYRL'
       'password=masterkey'

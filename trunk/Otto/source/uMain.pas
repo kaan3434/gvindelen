@@ -545,6 +545,8 @@ begin
           raise;
         end;
       end;
+      if trnWrite.Active = False then
+        trnWrite.StartTransaction;
       trnWrite.ExecSQLImmediate(Format(
         'insert into builds (build) values (%s)',
         [NewBuild]));

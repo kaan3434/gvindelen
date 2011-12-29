@@ -19,6 +19,8 @@ begin
   SetXmlAttr(ndOrders, 'PACKLIST_NO', sl[1]);
   SetXmlAttr(ndOrders, 'PALETTE_NO', sl[3]);
   SetXmlAttr(ndOrders, 'PACKLIST_DT', sl[4]);
+  ndOrders.Document.XmlFormat:= xfReadable;
+  ndOrders.Document.SaveToFile('order.xml');
 end;
 
 procedure ParseConsignmentLine200(aMessageId, LineNo: Integer;
@@ -42,11 +44,29 @@ begin
       ndOrder:= ndOrders.NodeNew('ORDER');
       dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
       dmOtto.OrderItemsGet(ndOrder.NodeNew('ORDERITEMS'), OrderId, aTransaction);
-      BatchMoveFields2(ndOrder, ndOrders, 'PACKLIST_NO;PACKLIST_DT;PALETTE_NO;PACKET_NO');
     end;
+
     Dimension:= dmOtto.Recode('ARTICLE', 'DIMENSION', sl[5]);
 
-    ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'), 'ARTICLE_CODE;DIMENSION;STATUS_SIGN', [sl[4], Dimension, 'BUNDLING']);
+    ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
+      'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
+      [sl[4], Dimension, 'BUNDLING']);
+    if ndOrderItem = nil then
+      ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
+        'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
+        [sl[4], Dimension, 'ACCEPTREQUEST']);
+    if ndOrderItem = nil then
+      ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
+        'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
+        [sl[4], Dimension, 'ACCEPTED']);
+    if ndOrderItem = nil then
+      ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
+        'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
+        [sl[4], sl[5], 'ACCEPTREQUEST']);
+    if ndOrderItem = nil then
+      ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
+        'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
+        [sl[4], sl[5], 'ACCEPTED']);
     if ndOrderItem <> nil then
     begin
       SetXmlAttr(ndOrderItem, 'DESCRIPTION', sl[6]);
@@ -58,12 +78,14 @@ begin
       try
         dmOtto.ActionExecute(aTransaction, ndOrderItem);
         dmOtto.Notify(aMessageId,
-          '[LINE_NO]. Заявка [ORDER_CODE], Артикул [ARTICLE_CODE], Размер [DIMENSION]. [STATUS_NAME]',
+          '[LINE_NO]. Заявка [ORDER_CODE], Артикул [ARTICLE_CODE], Размер [DIMENSION]. Палетта [PALETTE_NO]. Пакет [PACKET_NO]. [STATUS_NAME]',
           'I',
           XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
+          XmlAttrs2Vars(ndOrders,'PALETTE_NO',
           XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDER_ID;ARTICLE_CODE;DIMENSION',
+          Strings2Vars(sl, 'PACKET_NO=1',
           Value2Vars(LineNo, 'LINE_NO',
-          Value2Vars(StatusName, 'STATUS_NAME')))));
+          Value2Vars(StatusName, 'STATUS_NAME')))))));
       except
         on E: Exception do
           dmOtto.Notify(aMessageId,
@@ -104,9 +126,16 @@ begin
   if OrderId<>null then
   begin
     ndOrder:= ndOrders.NodeByAttributeValue('ORDER', 'ID', OrderId);
-    SetXmlAttr(ndOrder, 'WEIGHT', sl[6]);
-    SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'PACKED');
-    dmOtto.ActionExecute(aTransaction, ndOrder);
+    if ndOrder <> nil then
+    begin
+      SetXmlAttr(ndOrder, 'WEIGHT', sl[6]);
+      SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'PACKED');
+      BatchMoveFields2(ndOrder, ndOrders, 'PACKLIST_NO;PACKLIST_DT;PALETTE_NO');
+      SetXmlAttr(ndOrder, 'PACKET_NO', sl[1]);
+      ndOrder.Document.XmlFormat:= xfReadable;
+      ndOrder.Document.SaveToFile('order.xml');
+      dmOtto.ActionExecute(aTransaction, ndOrder);
+    end;
   end;
 end;
 
@@ -160,9 +189,16 @@ begin
   try
     Lines:= TStringList.Create;
     try
-      Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
-      For LineNo:= 0 to Lines.Count - 1 do
-        ParseConsignmentLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
+      if FileExists(Path['Messages.In']+MessageFileName) then
+      begin
+        Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
+        For LineNo:= 0 to Lines.Count - 1 do
+          ParseConsignmentLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
+      end
+      else
+        dmOtto.Notify(aMessageId,
+          'Файл [FILE_NAME] не найден.', 'E',
+          Value2Vars(MessageFileName, 'FILE_NAME'));
     finally
       Lines.Free;
     end;
@@ -180,6 +216,7 @@ begin
           'E',
           Value2Vars(E.Message, 'ERROR_TEXT'));
     end;
+    dmOtto.MessageRelease(aTransaction, aMessageId);
     dmOtto.MessageSuccess(aTransaction, aMessageId);
     aTransaction.Commit;
   except

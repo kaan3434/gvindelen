@@ -61,8 +61,8 @@ begin
     ndPlace:= ndAdress.NodeFindOrCreate('PLACE');
     dmOtto.ObjectGet(ndPlace, GetXmlAttrValue(ndAdress, 'PLACE_ID'), aTransaction);
 
-    st:= ndProduct.WriteToString;
-    SaveStringAsFile(St, 'order.xml');
+    ndProduct.Document.XmlFormat:= xfReadable;
+    ndProduct.Document.SaveToFile('order.xml');
     tblCons.Append;
     BatchMoveFields2(tblCons, ndProduct, 'KTPART=PARTNER_NUMBER');
     BatchMoveFields2(tblCons, ndOrder,
@@ -160,7 +160,6 @@ begin
   ndOrder:= ndProduct.NodeFindOrCreate('ORDERS').NodeFindOrCreate('ORDER');
   try
     dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
-    BatchMoveFields2(ndOrder, ndOrders, 'PACKLIST_NO;PACKLIST_DT;PALETTE_NO');
     ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
     dmOtto.OrderItemsGet(ndOrderItems, aOrderId, aTransaction);
     OrderItemsCostEur:= 0;
