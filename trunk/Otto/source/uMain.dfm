@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 333
-  Top = 143
+  Left = 310
+  Top = 177
   Width = 845
   Height = 512
   Caption = 'A'
@@ -22,8 +22,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 837
-    Height = 47
+    Width = 829
+    Height = 49
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -173,8 +173,8 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 436
-    Width = 837
+    Top = 432
+    Width = 829
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
@@ -1360,7 +1360,7 @@ object MainForm: TMainForm
     Left = 512
     Top = 72
   end
-  object frxReportOnePage: TfrxReport
+  object frxReport: TfrxReport
     Version = '4.9.64'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
@@ -1373,7 +1373,7 @@ object MainForm: TMainForm
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 40905.142957326400000000
+    ReportOptions.LastChange = 40907.117907800920000000
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
     Left = 352
@@ -1662,5 +1662,24 @@ object MainForm: TMainForm
     Title = #1060#1072#1081#1083' '#1089' '#1088#1077#1079#1077#1088#1074#1085#1086#1081' '#1082#1086#1087#1080#1077#1081' '#1041#1044
     Left = 648
     Top = 256
+  end
+  object frxFIBComponents1: TfrxFIBComponents
+    DefaultDatabase = dmOtto.dbOtto
+    Left = 512
+    Top = 144
+  end
+  object frxExportXLS: TfrxXMLExport
+    ShowDialog = False
+    UseFileCache = True
+    ShowProgress = True
+    OverwritePrompt = False
+    Background = True
+    Creator = 'FastReport'
+    EmptyLines = True
+    SuppressPageHeadersFooters = False
+    RowsCount = 0
+    Split = ssRPages
+    Left = 408
+    Top = 144
   end
 end

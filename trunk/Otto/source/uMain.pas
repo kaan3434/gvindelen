@@ -101,7 +101,7 @@ type
     actPaymentAssign: TAction;
     btn9: TTBXItem;
     tmrImportMessages: TTimer;
-    frxReportOnePage: TfrxReport;
+    frxReport: TfrxReport;
     actInstallPatch: TAction;
     scrptUpdate: TpFIBScripter;
     btn10: TTBXItem;
@@ -130,6 +130,8 @@ type
     btn2: TTBXItem;
     btnCancellation: TTBXItem;
     actProcessCancellation: TAction;
+    frxFIBComponents1: TfrxFIBComponents;
+    frxExportXLS: TfrxXMLExport;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -166,6 +168,8 @@ type
   public
     { Public declarations }
     procedure PrintInvoice(aTransaction: TpFIBTransaction; OrderId: Integer);
+    procedure PrintPackList(aTransaction: TpFIBTransaction; Packlist_No: Integer;
+      aFileName: String);
   end;
 
 var
@@ -303,11 +307,22 @@ begin
   InvFileName:= Format('inv_%s.pdf', [OrderCode]);
   ForceDirectories(Path['Invoices']);
   frxPDFExport.FileName:= Path['Invoices']+invFileName;
-  frxReportOnePage.LoadFromFile(Path['FastReport'] + 'invoice.fr3');
-  frxReportOnePage.Variables.Variables['OrderId']:= Format('''%u''', [OrderId]);
-  frxReportOnePage.PrepareReport(true);
-  frxReportOnePage.Export(frxPDFExport);
-  frxReportOnePage.ShowPreparedReport;
+  frxReport.LoadFromFile(Path['FastReport'] + 'invoice.fr3');
+  frxReport.Variables.Variables['OrderId']:= Format('''%u''', [OrderId]);
+  frxReport.PrepareReport(true);
+  frxReport.Export(frxPDFExport);
+  frxReport.ShowPreparedReport;
+end;
+
+procedure TMainForm.PrintPackList(aTransaction: TpFIBTransaction;
+  Packlist_No: Integer; aFileName: string);
+begin
+  frxExportXLS.DefaultPath:= Path['DbfPackLists'];
+  frxExportXLS.FileName:= aFileName;
+  frxReport.LoadFromFile(Path['FastReport'] + 'packlistpi3.fr3');
+  frxReport.Variables.Variables['PackList_No']:= Format('''%u''', [Packlist_No]);
+  frxReport.PrepareReport(true);
+  frxReport.Export(frxExportXLS);
 end;
 
 
@@ -695,6 +710,7 @@ begin
   if actInstallPatch.Enabled then
     subMenuSystem.ImageIndex:= actInstallPatch.ImageIndex;
 end;
+
 
 end.
 

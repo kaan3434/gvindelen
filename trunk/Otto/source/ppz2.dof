@@ -97,7 +97,7 @@ PackageDCPOutputDir=
 SearchPath=
 Packages=vcl;rtl;dbrtl;inet;inetdb;dsnap;bdertl;vclx;vcldb;vcldbx;vclactnband;vclshlctrls;vclie;xmlrtl;inetdbbde;inetdbxpress;webdsnap;soaprtl;websnap;adortl;dbexpress;dsnapcon;dbxcds;ibxpress;teeui;teedb;tee;dss;VclSmp;dclOfficeXP;IntrawebDB_50_70;Intraweb_50_70;VclNewlyext;EhLib70;EhLibDataDrivers70;tb2k_d7;TBX_D7;Gvindln7;visualclx
 Conditionals=
-DebugSourceDirs=
+DebugSourceDirs=D:\4Delphi\tdbf\
 UsePackages=0
 [Parameters]
 RunParams=
@@ -105,10 +105,6 @@ HostApplication=
 Launcher=
 UseLauncher=0
 DebugCWD=
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0

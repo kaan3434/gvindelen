@@ -1163,7 +1163,7 @@ begin
     where o.order_id = :v_order_id
     into :v_byr2eur, :v_order_code;
 
-  v_amount_eur = v_amount_byr / v_byr2eur;
+  v_amount_eur = cast(v_amount_byr as numeric(18,2)) / v_byr2eur;
 
   execute procedure param_set(:i_param_id, 'ORDER_CODE', :v_order_code);
   execute procedure param_set(:i_param_id, 'BYR2EUR', :v_byr2eur);

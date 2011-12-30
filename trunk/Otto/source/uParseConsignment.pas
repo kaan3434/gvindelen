@@ -112,6 +112,30 @@ begin
       Value2Vars(LineNo, 'LINE_NO')));
 end;
 
+function CalcControlChar(St: string): Char;
+var
+  k: Integer;
+begin
+  k:= 11 - (8*StrToInt(st[1]) + 6*StrToInt(st[2]) + 4*StrToInt(st[3]) +
+            2*StrToInt(st[4]) + 3*StrToInt(st[5]) + 5*StrToInt(st[6]) +
+            9*StrToInt(st[7]) + 7*StrToInt(st[8])) mod 11;
+  case k of
+    10 : Result:= '0';
+    11 : Result:= '5';
+  else
+    Result:= IntToStr(k)[1];
+  end;
+end;
+
+function GetBarCode(ndOrder: TXmlNode): string;
+var
+  Body: string;
+begin
+  Body:= CopyLast(GetXmlAttr(ndOrder, 'PACKLIST_NO'), 3) +
+         FilterString(GetXmlAttr(ndOrder, 'ORDER_CODE'), '0123456789');
+  Result:= 'CZ'+Body+CalcControlChar(Body)+'LT';
+end;
+
 procedure ParseConsignmentLine300(aMessageId, LineNo: Integer;
   sl: TStringList; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
@@ -129,9 +153,11 @@ begin
     if ndOrder <> nil then
     begin
       SetXmlAttr(ndOrder, 'WEIGHT', sl[6]);
+      SetXmlAttrAsMoney(ndOrder, 'ITEMSCOST_EUR', sl[3]);
       SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'PACKED');
       BatchMoveFields2(ndOrder, ndOrders, 'PACKLIST_NO;PACKLIST_DT;PALETTE_NO');
       SetXmlAttr(ndOrder, 'PACKET_NO', sl[1]);
+      SetXmlAttr(ndOrder, 'BAR_CODE', GetBarCode(ndOrder));
       ndOrder.Document.XmlFormat:= xfReadable;
       ndOrder.Document.SaveToFile('order.xml');
       dmOtto.ActionExecute(aTransaction, ndOrder);

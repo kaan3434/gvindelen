@@ -8,7 +8,7 @@ procedure ExportPackList(aTransaction: TpFIBTransaction);
 
 implementation
 uses
-  SysUtils, GvNativeXml, udmOtto, GvStr, Dbf, GvFile;
+  SysUtils, GvNativeXml, udmOtto, GvStr, Dbf, GvFile, uMain, Dialogs;
 
 function GetPlace(ndPlace: TXmlNode): string;
 begin
@@ -124,37 +124,12 @@ begin
   end;
 end;
 
-function CalcControlChar(St: string): Char;
-var
-  k: Integer;
-begin
-  k:= 11 - (8*StrToInt(st[1]) + 6*StrToInt(st[2]) + 4*StrToInt(st[3]) +
-            2*StrToInt(st[4]) + 3*StrToInt(st[5]) + 5*StrToInt(st[6]) +
-            9*StrToInt(st[7]) + 7*StrToInt(st[8])) mod 11;
-  case k of
-    10 : Result:= '0';
-    11 : Result:= '5';
-  else
-    Result:= IntToStr(k)[1];
-  end;  
-end;
-
-function GetBarCode(ndOrder: TXmlNode): string;
-var
-  Body: string;
-begin
-  Body:= CopyLast(GetXmlAttr(ndOrder, 'PACKLIST_NO'), 3) +
-         FilterString(GetXmlAttr(ndOrder, 'ORDER_CODE'), '0123456789');
-  Result:= 'CZ'+Body+CalcControlChar(Body)+'LT';
-end;
-
 procedure ExportOrder(aTransaction: TpFIBTransaction;
   ndProduct, ndOrders: TXmlNode; tblCons, tblConsPi3: TDataSet; aOrderId: integer);
 var
   ndOrder, ndOrderItems, ndOrderItem, ndOrderTaxs: TXmlNode;
   OrderItemList: string;
   OrderItemId: Variant;
-  OrderItemsCostEur: Extended;
   i: integer;
 begin
   ndOrder:= ndProduct.NodeFindOrCreate('ORDERS').NodeFindOrCreate('ORDER');
@@ -162,15 +137,6 @@ begin
     dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
     ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
     dmOtto.OrderItemsGet(ndOrderItems, aOrderId, aTransaction);
-    OrderItemsCostEur:= 0;
-    for i:= 0 to ndOrderItems.NodeCount -1 do
-    begin
-      ndOrderItem:= ndOrderItems[i];
-      if XmlAttrIn(ndOrderItem, 'STATUS_SIGN', 'PACKED') then
-        OrderItemsCostEur:= OrderItemsCostEur + StrToFloat(GetXmlAttrAsMoney(ndOrderItem, 'COST_EUR'));
-    end;
-    SetXmlAttr(ndOrder, 'ITEMSCOST_EUR', OrderItemsCostEur);
-    SetXmlAttr(ndOrder, 'BAR_CODE', GetBarCode(ndOrder));
     ndOrderTaxs:= ndOrder.NodeFindOrCreate('ORDERTAXS');
     dmOtto.OrderTaxsGet(ndOrderTaxs, aOrderId, aTransaction);
     SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'DELIVERING');
@@ -195,6 +161,8 @@ end;
 
 procedure ExportPack(aTransaction: TpFIBTransaction;
   ndProduct: TXmlNode; aPackNo: integer);
+const
+  HeaderText = 'Формирование паклиста';
 var
   ConsName, ConsPi3Name: string;
   OrderList: string;
@@ -210,13 +178,14 @@ begin
     ConsName:= Format('t-cons_%s_%uv.dbf',
       [GetXmlAttr(ndProduct, 'PARTNER_NUMBER'), aPackNo]);
     copyFile(Path['Stru']+'tcons.dbf', Path['DbfPackLists'] + ConsName);
-    ConsPi3Name:= Format('t-cons_%s_%uvpi3.dbf',
+    ConsPi3Name:= Format('t-cons_%s_%uvpi3',
       [GetXmlAttr(ndProduct, 'PARTNER_NUMBER'), aPackNo]);
-    copyFile(Path['Stru']+'tconspi3.dbf', Path['DbfPackLists'] + ConsPi3Name);
+    copyFile(Path['Stru']+'tconspi3.dbf', Path['DbfPackLists'] + ConsPi3Name+'.dbf');
+    MainForm.PrintPackList(aTransaction, aPackNo, ConsPi3Name+'.xls');
     dbfCons.FilePath:= Path['DbfPackLists'];
     dbfCons.TableName:= ConsName;
     dbfConsPi3.FilePath:= Path['DbfPackLists'];
-    dbfConsPi3.TableName:= ConsPi3Name;
+    dbfConsPi3.TableName:= ConsPi3Name+'.dbf';
     try
       dbfCons.Open;
       dbfConsPi3.Open;
@@ -241,6 +210,7 @@ begin
       dbfConsPi3.Free;
       dbfCons.Free;
     end;
+    dmOtto.CreateAlert(HeaderText, Format('Сформирован паклист %u', [aPackNo]), mtInformation);
   finally
     ndOrders.Clear;
   end;
