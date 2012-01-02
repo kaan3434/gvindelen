@@ -98,7 +98,6 @@ begin
       DayOfTheYear(Date)]));
     SaveStringAsFile(Text, FileName);
     dmOtto.CreateAlert('Запрос на ануляцию', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
-    // CreateOutgoingMessage(FileName);
   finally
     ndProduct.Clear;
   end;

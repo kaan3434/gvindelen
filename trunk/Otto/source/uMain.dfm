@@ -3,7 +3,7 @@ object MainForm: TMainForm
   Top = 177
   Width = 845
   Height = 512
-  Caption = 'A'
+  Caption = 'PPZ'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
