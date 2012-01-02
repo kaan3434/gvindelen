@@ -162,10 +162,11 @@ end;
 
 function ChildByAttributes(aRootNode: TXmlNode; aAttrNames: string; aValues: array of Variant): TXmlNode;
 var
-  i, j: Integer;
+  i, j, k: Integer;
   AttrNames: TStringList;
-  Founded: Boolean;
+  Founded, AnyFounded: Boolean;
   Value: String;
+  varArray: array of Variant;
 begin
   AttrNames:= TStringList.Create;
   try
@@ -178,7 +179,19 @@ begin
       for j:= 0 to AttrNames.Count - 1 do
       begin
         Value:= Result.ReadAttributeString(AttrNames[j], '');
-        Founded:=  Value = aValues[j];
+        if VarIsArray(aValues[j]) then
+        begin
+          varArray:= aValues[j];
+          AnyFounded:= false;
+          for k:= VarArrayLowBound(varArray, 1) to VarArrayHighBound(varArray, 1) do
+          begin
+            AnyFounded:= Value = varArray[k];
+            if AnyFounded then break;
+          end;
+          Founded:= AnyFounded and Founded;
+        end
+        else
+          Founded:=  Value = aValues[j];
         if not Founded then Break;
       end;
       if Founded then Exit;

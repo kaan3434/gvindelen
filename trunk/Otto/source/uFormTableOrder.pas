@@ -39,12 +39,15 @@ type
     dsHistory: TDataSource;
     actMakeInvoice: TAction;
     btnMakeInvoice: TTBXItem;
+    actAssignPayment: TAction;
+    btnAssignPayment: TTBXItem;
     procedure actSendOrdersExecute(Sender: TObject);
     procedure actFilterApprovedExecute(Sender: TObject);
     procedure actFilterAcceptRequestExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure grdMainDblClick(Sender: TObject);
     procedure actMakeInvoiceExecute(Sender: TObject);
+    procedure actAssignPaymentExecute(Sender: TObject);
   private
     procedure ApplyFilter(aStatusSign: string);
     { Private declarations }
@@ -58,7 +61,7 @@ var
 implementation
 
 uses
-  udmOtto, GvStr, uFormWizardOrder, uMain;
+  udmOtto, GvStr, uFormWizardOrder, uMain, uDlgPayment;
 
 {$R *.dfm}
 
@@ -300,6 +303,67 @@ end;
 procedure TFormTableOrders.actMakeInvoiceExecute(Sender: TObject);
 begin
   MainForm.PrintInvoice(trnWrite, qryMain['ORDER_ID']);
+end;
+
+procedure TFormTableOrders.actAssignPaymentExecute(Sender: TObject);
+var
+  AccountId: Integer;
+  Amount_BYR: Double;
+  Byr2Eur: Integer;
+  Xml: TNativeXml;
+  ndOrder, ndClient: TXmlNode;
+  DlgManualPayment: TDlgManualPayment;
+begin
+  DlgManualPayment:= TDlgManualPayment.Create(self);
+  Xml:= TNativeXml.CreateName('ORDER');
+  ndOrder:= Xml.Root;
+  try
+    dmOtto.ObjectGet(ndOrder, qryMain['ORDER_ID'], trnNSI);
+    ndClient:= ndOrder.NodeNew('CLIENT');
+    dmOtto.ObjectGet(ndClient, qryMain['CLIENT_ID'], trnNSI);
+
+    DlgManualPayment.Caption:= 'Ручное зачисление на заявку';
+    DlgManualPayment.lblAmountEur.Caption:= 'Сумма, BYR';
+    DlgManualPayment.edtAmountEur.DecimalPlaces:= 0;
+    DlgManualPayment.edtAmountEur.DisplayFormat:= '### ### ##0';
+    DlgManualPayment.edtByr2Eur.Value:= GetXmlAttrValue(ndOrder, 'BYR2EUR');
+    if DlgManualPayment.ShowModal = mrOk then
+    begin
+      Amount_BYR:= DlgManualPayment.edtAmountEur.Value;
+      Byr2Eur:= DlgManualPayment.edtByr2Eur.Value;
+      trnWrite.StartTransaction;
+      try
+        if GetXmlAttrValue(ndClient, 'ACCOUNT_ID') = null then
+        begin
+          // Создаем счет
+          AccountId:= dmOtto.GetNewObjectId('ACCOUNT');
+          dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_CREATE', '', AccountId);
+          SetXmlAttr(ndClient, 'ACCOUNT_ID', AccountId);
+          dmOtto.ActionExecute(trnWrite, ndClient);
+          SetXmlAttr(ndOrder, 'ACCOUNT_ID', AccountId);
+          dmOtto.ActionExecute(trnWrite, ndOrder);
+        end;
+        dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_PAYMENTIN',
+          XmlAttrs2Vars(ndOrder, 'ORDER_ID=ID;ID=ACCOUNT_ID',
+          Value2Vars(Amount_BYR, 'AMOUNT_BYR')));
+        trnWrite.Commit;
+      except
+        on E:Exception do
+          begin
+            trnWrite.Rollback;
+            ShowMessage(E.Message);
+          end
+      end;
+    end;
+    qryMain.CloseOpen(True);
+    qryAccountMovements.CloseOpen(True);
+    qryOrderItems.CloseOpen(True);
+    qryOrderTaxs.CloseOpen(True);
+    qryOrderAttrs.CloseOpen(True);
+  finally
+    Xml.Free;
+    DlgManualPayment.Free;
+  end;
 end;
 
 end.

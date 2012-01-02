@@ -8,7 +8,7 @@ procedure ExportPackList(aTransaction: TpFIBTransaction);
 
 implementation
 uses
-  SysUtils, GvNativeXml, udmOtto, GvStr, Dbf, GvFile, uMain, Dialogs;
+  SysUtils, GvNativeXml, udmOtto, GvStr, Dbf, GvFile, uMain, Dialogs, GvVariant;
 
 function GetPlace(ndPlace: TXmlNode): string;
 begin
@@ -66,8 +66,8 @@ begin
     tblCons.Append;
     BatchMoveFields2(tblCons, ndProduct, 'KTPART=PARTNER_NUMBER');
     BatchMoveFields2(tblCons, ndOrder,
-      'KTKUNDE=ORDER_CODE;NRSENDUNG=PACKLIST_NO;NRPALETTE=PALETTE_NO;NRKARTON=PACKET_NO;'+
-      'NEWICHT=WEIGHT;DATEEXCH=CREATE_DTM;RATEEXCH=BYR2EUR;USEXCH="0";VIDPLAT="0";'+
+      'KTKUNDE=ORDER_CODE;NRSENDUNG=PACKLIST_NO;NRKARTON=PALETTE_NO;'+
+      'DATEEXCH=CREATE_DTM;RATEEXCH=BYR2EUR;USEXCH="0";VIDPLAT="0";'+
       'CONTR_ID=ID;COSTALL=ITEMSCOST_EUR;BARKOD=BAR_CODE');
     BatchMoveFields2(tblCons, ndOrderItem,
       'NRART=ARTICLE_CODE;BZARTORG=DESCRIPTION;MENGE=AMOUNT;PRVK=PRICE_EUR;'+
@@ -78,6 +78,7 @@ begin
       'GOSNUM=POSTINDEX');
     BatchMoveFields2(tblCons, ndClient,
       'BLACKLIST="0"');
+    tblCons['NEWICHT']:= GetXmlAttrValue(ndOrder, 'WEIGHT') / 1000;
 
     tblCons['KTNAME']:= Translit(
       GetXmlAttr(ndClient, 'FIRST_NAME') + ' '+
@@ -91,12 +92,12 @@ begin
                         GetXmlAttr(ndClient, 'MID_NAME', ' ');
     tblCons['STREETRUS']:= GetAdress(ndAdress);
     tblCons['CITYRUS']:= GetPlace(ndPlace);
-    tblCons['REGIONRUS']:= GetXmlAttr(ndPlace, 'REGION_NAME',
-                           GetXmlAttr(ndPlace, 'AREA_NAME', '', ' р-н '), ' обл.');
+    tblCons['REGIONRUS']:= GetXmlAttr(ndPlace, 'AREA_NAME', '', ' р-н., ')+
+                           GetXmlAttr(ndPlace, 'REGION_NAME', '', ' обл.');
     tblCons['STREET']:= Translit(GetAdress(ndAdress));
     tblCons['CITY']:= Translit(GetPlace(ndPlace));
-    tblCons['REGION']:= Translit(GetXmlAttr(ndPlace, 'REGION_NAME',
-                           GetXmlAttr(ndPlace, 'AREA_NAME', '', ' р-н '), ' обл.'));
+    tblCons['REGION']:= Translit(GetXmlAttr(ndPlace, 'AREA_NAME', '', ' р-н., ')+
+                           GetXmlAttr(ndPlace, 'REGION_NAME', '', ' обл.'));
     tblCons['TEL']:= ReplaceAll(replaceAll(GetXmlAttr(ndClient, 'MOBILE_PHONE', '+375'), '+3750', '+375'), '+', '');
     tblCons['COSTBYR']:= aTransaction.DefaultDatabase.QueryValue(
       'select round(cast(:cost_eur as money_eur) * cast(:byr2eur as value_integer), -1) from rdb$database',
@@ -145,7 +146,7 @@ begin
     OrderItemList:= aTransaction.DefaultDatabase.QueryValue(
       'select list(oi.orderitem_id) '+
       'from orderitems oi '+
-      'inner join statuses s on (s.status_id = oi.status_id and s.status_sign = ''PACKED'') '+
+      'inner join statuses s on (s.status_id = oi.status_id and s.status_sign in (''PACKED'', ''DELIVERING'')) '+
       'where oi.order_id = :order_id',
       0, [aOrderId], aTransaction);
     while OrderItemList <> '' do

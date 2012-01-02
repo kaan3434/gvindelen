@@ -12,6 +12,9 @@ inherited FormTableOrders: TFormTableOrders
         Action = actMakeInvoice
         DisplayMode = nbdmImageAndText
       end
+      object btnAssignPayment: TTBXItem
+        Action = actAssignPayment
+      end
     end
   end
   inherited pnlMain: TJvPanel
@@ -561,6 +564,10 @@ inherited FormTableOrders: TFormTableOrders
       ImageIndex = 0
       OnExecute = actMakeInvoiceExecute
     end
+    object actAssignPayment: TAction
+      Caption = #1047#1072#1095#1080#1089#1083#1080#1090#1100' '#1087#1083#1072#1090#1077#1078
+      OnExecute = actAssignPaymentExecute
+    end
   end
   inherited imgListMain: TPngImageList
     PngImages = <
@@ -594,9 +601,6 @@ inherited FormTableOrders: TFormTableOrders
         Background = clWindow
       end>
     Bitmap = {}
-  end
-  inherited trnNSI: TpFIBTransaction
-    Active = True
   end
   object qryOrderAttrs: TpFIBDataSet
     SelectSQL.Strings = (

@@ -50,23 +50,7 @@ begin
 
     ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
       'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
-      [sl[4], Dimension, 'BUNDLING']);
-    if ndOrderItem = nil then
-      ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
-        'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
-        [sl[4], Dimension, 'ACCEPTREQUEST']);
-    if ndOrderItem = nil then
-      ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
-        'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
-        [sl[4], Dimension, 'ACCEPTED']);
-    if ndOrderItem = nil then
-      ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
-        'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
-        [sl[4], sl[5], 'ACCEPTREQUEST']);
-    if ndOrderItem = nil then
-      ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
-        'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
-        [sl[4], sl[5], 'ACCEPTED']);
+      [sl[4], VarArrayOf([Dimension, sl[5]]), VarArrayOf(['BUNDLING', 'ACCEPTREQUEST', 'ACCEPTED', 'PACKED', 'DELIVERING'])]);
     if ndOrderItem <> nil then
     begin
       SetXmlAttr(ndOrderItem, 'DESCRIPTION', sl[6]);
