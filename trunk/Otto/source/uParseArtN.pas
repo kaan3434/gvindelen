@@ -11,15 +11,15 @@ implementation
 
 uses
   Classes, SysUtils, GvStr, udmOtto, pFIBStoredProc, Variants, GvNativeXml,
-  Dialogs, Controls, StrUtils, GvFile;
+  Dialogs, Controls, StrUtils, GvFile, GvVariant;
 
 procedure ParseArtNLine(aMessageId, LineNo: Integer; aLine: string; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
   OrderId: variant;
   sl: TStringList;
-  ndOrder, ndOrderItem: TXmlNode;
+  ndOrder, ndOrderItem, ndOrderItems: TXmlNode;
   NewStatusSign: variant;
-  StateSign: Variant;
+  StateSign, Dimension: Variant;
   StateId: Variant;
   StatusName, MessageClass: Variant;
   NewDeliveryMessage, OrderCode: string;
@@ -35,24 +35,56 @@ begin
       0, [OrderCode], aTransaction);
     if OrderId<>null then
     begin
-      ndOrder:= ndOrders.NodeNew('ORDER');
-      dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
-      dmOtto.OrderItemsGet(ndOrder.NodeNew('ORDERITEMS'), OrderId, aTransaction);
-      ndOrderItem:= ndOrder.NodeByAttributeValue('ORDERITEM', 'ORDERITEM_INDEX', Trim(sl[8]), true);
-      if ndOrderItem <> nil then
+      ndOrder:= ndOrders.NodeByAttributeValue('ORDER', 'ID', OrderId);
+
+      if ndOrder = nil then
       begin
+        ndOrder:= ndOrders.NodeNew('ORDER');
+        dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
+        dmOtto.OrderItemsGet(ndOrder.NodeNew('ORDERITEMS'), OrderId, aTransaction);
+      end;
+      ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
+
+      Dimension:= dmOtto.Recode('ARTICLE', 'DIMENSION', sl[11]);
+
+      ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM', 'ORDERITEM_INDEX', sl[8]);
+      if ndOrderItem = nil then
+        ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
+          'ARTICLE_CODE;DIMENSION;ORDERITEM_INDEX',
+          [sl[9], VarArrayOf([Dimension, sl[11]]), '']);
+      if ndOrderItem <> nil then
+      try
+        SetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX', sl[8]);
         if GetXmlAttrValue(ndOrderItem, 'WEIGHT') = null then
         begin
-          SetXmlAttr(ndOrderItem, 'WEIGHT', Trim(sl[16]));
-          dmOtto.ActionExecute(aTransaction, ndOrderItem);
+          SetXmlAttr(ndOrderItem, 'WEIGHT', Trunc(ToNumber(sl[16])*1000));
+          dmOtto.Notify(aMessageId,
+            '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Обновлен вес.',
+            'I',
+            XmlAttrs2Vars(ndOrder, 'ORDER_CODE;',
+            XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
+            Value2Vars(LineNo, 'LINE_NO'))));
         end;
 
+        if GetXmlAttrValue(ndOrder, 'AUFTRAG_ID') = null then
+          SetXmlAttr(ndOrder, 'AUFTRAG_ID', sl[7]);
+
+        dmOtto.ActionExecute(aTransaction, ndOrderItem);
         dmOtto.Notify(aMessageId,
-          '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Обновлен вес.',
+          '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Ok.',
           'I',
           XmlAttrs2Vars(ndOrder, 'ORDER_CODE;',
           XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
           Value2Vars(LineNo, 'LINE_NO'))));
+      except
+        on E: Exception do
+          dmOtto.Notify(aMessageId,
+            '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Ошибка ([ERROR_TEXT])',
+            'E',
+            XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION',
+            XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
+            Value2Vars(LineNo, 'LINE_NO',
+            Value2Vars(E.Message, 'ERROR_TEXT')))));
       end
       else
         dmOtto.Notify(aMessageId,
@@ -92,19 +124,22 @@ begin
   Lines:= TStringList.Create;
   try
     St:= LoadFileAsString(Path['Messages.In']+MessageFileName);
+    St:= ReplaceAll(St, '     ', ' ');
+    St:= ReplaceAll(St, '    ', ' ');
     St:= ReplaceAll(St, '   ', ' ');
     St:= ReplaceAll(St, '  ', ' ');
     St:= ReplaceAll(St, ' ;', ';');
     St:= ReplaceAll(St, '; ', ';');
-    Lines.Text:= ReplaceAll(St, #13#10#13#10, #13#10);
+    St:= ReplaceAll(St, #10' ', #10);
+    Lines.Text:= ReplaceAll(St, #13#13#10, #13#10);
     For LineNo:= 1 to Lines.Count - 1 do
       ParseArtNLine(aMessageId, LineNo, Lines[LineNo], ndMessage, aTransaction);
   finally
+    dmOtto.Notify(aMessageId,
+      'Конец обработки файла: [FILE_NAME]', 'I',
+      Value2Vars(MessageFileName, 'FILE_NAME'));
     Lines.Free;
   end;
-  dmOtto.Notify(aMessageId,
-    'Конец обработки файла: [FILE_NAME]', 'I',
-    Value2Vars(MessageFileName, 'FILE_NAME'));
 end;
 
 procedure ProcessArtN(aMessageId: Integer; aTransaction: TpFIBTransaction);
