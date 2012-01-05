@@ -48,11 +48,11 @@ begin
       dmOtto.OrderItemsGet(ndOrder.NodeNew('ORDERITEMS'), OrderId, aTransaction);
       ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
         'ARTICLE_CODE;DIMENSION;ORDERITEM_INDEX',
-        [sl[5], Dimension, sl[4]]);
+        [sl[5], VarArrayOf([Dimension, sl[6]]), sl[4]]);
       if ndOrderItem = nil then
         ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
           'ARTICLE_CODE;DIMENSION;ORDERITEM_INDEX;STATUS_SIGN',
-          [sl[5], Dimension, '', 'ACCEPTED']);
+          [sl[5], VarArrayOf([Dimension, sl[6]]), '', VarArrayOf(['ACCEPTREQUEST','ACCEPTED','BUNDLING'])]);
       if ndOrderItem <> nil then
       begin
         ndOrderItem.ValueAsBool:= true;
