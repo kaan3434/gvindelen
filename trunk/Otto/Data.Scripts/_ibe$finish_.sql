@@ -646,7 +646,8 @@ AS
 declare variable v_flaglist list_signs;
 begin
   new.article_code = upper(new.article_code);
-  new.status_dtm = current_timestamp;
+  if (new.status_id <> old.status_id) then
+    new.status_dtm = current_timestamp;
   if (exists (select *
                 from flags2statuses f2s
                 where f2s.status_id = new.status_id
@@ -723,7 +724,11 @@ AS
 begin
   if (old.status_id <> new.status_id) then
     new.status_dtm = current_timestamp;
-
+  if (not exists (select *
+                from flags2statuses f2s
+                where f2s.status_id = new.status_id
+                  and f2s.flag_sign = 'CREDIT')) then
+    new.amount = 0;
   new.cost_eur= new.price_eur * new.amount;
 end
 ^
@@ -1055,8 +1060,8 @@ end^
 
 
 CREATE OR ALTER PROCEDURE ACT_ACCOUNT_DEBITORDER (
-    I_PARAM_ID TYPE OF ID_PARAM,
-    I_OBJECT_ID TYPE OF ID_OBJECT,
+    I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
+    I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL,
     I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ACCOUNT')
 AS
 declare variable V_AMOUNT_EUR type of MONEY_EUR;
@@ -1138,8 +1143,8 @@ end^
 
 
 CREATE OR ALTER PROCEDURE ACT_ACCOUNT_PAYMENTIN (
-    I_PARAM_ID TYPE OF ID_PARAM,
-    I_OBJECT_ID TYPE OF ID_OBJECT,
+    I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
+    I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL,
     I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ACCOUNT')
 AS
 declare variable V_AMOUNT_EUR type of MONEY_EUR;
@@ -1163,7 +1168,7 @@ begin
     where o.order_id = :v_order_id
     into :v_byr2eur, :v_order_code;
 
-  v_amount_eur = cast(v_amount_byr as numeric(18,2)) / v_byr2eur;
+  v_amount_eur = round(cast(v_amount_byr as numeric(18,3)) / v_byr2eur, 2);
 
   execute procedure param_set(:i_param_id, 'ORDER_CODE', :v_order_code);
   execute procedure param_set(:i_param_id, 'BYR2EUR', :v_byr2eur);
@@ -3241,6 +3246,25 @@ begin
 end^
 
 
+CREATE OR ALTER PROCEDURE ORDER_X_ACTIVEITEMSCOUNT (
+    I_DEST_PARAM_ID TYPE OF ID_PARAM NOT NULL,
+    I_PARAM_NAME TYPE OF SIGN_ATTR NOT NULL,
+    I_SRC_PARAM_ID TYPE OF ID_PARAM)
+AS
+declare variable V_OBJECT_ID type of ID_OBJECT;
+declare variable V_AMOUNT type of VALUE_INTEGER;
+begin
+  select o_value from param_get(:i_src_param_id, 'ID') into :v_object_id;
+
+  select sum(oi.amount)
+    from orderitems oi
+    where oi.order_id = :v_object_id
+    into :v_amount;
+
+  execute procedure param_set(:i_dest_param_id, :i_param_name, :v_amount);
+end^
+
+
 CREATE OR ALTER PROCEDURE ORDER_X_UNINVOICED (
     I_DEST_PARAM_ID TYPE OF ID_PARAM,
     I_PARAM_NAME TYPE OF SIGN_ATTR,
@@ -3453,6 +3477,13 @@ begin
       execute statement (:v_sql) (dest_param_id := :i_dest_param_id, pattern := :i_param_value, src_param_id := :i_src_param_id);
     end
   end
+  else
+  if (:i_param_kind = 'F') then
+  begin
+    select o_pattern from param_fillpattern(:i_src_param_id, :i_param_value) into :v_sql;
+    execute statement (:v_sql) into :v_param_value;
+    execute procedure param_set (:i_dest_param_id, :i_param_name, :v_param_value);
+  end
 end^
 
 
@@ -3633,7 +3664,7 @@ end^
 
 
 CREATE OR ALTER PROCEDURE PARAM_FILLPATTERN (
-    I_PARAM_ID TYPE OF ID_PARAM,
+    I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
     I_PATTERN TYPE OF VALUE_ATTR)
 RETURNS (
     O_PATTERN TYPE OF VALUE_ATTR)
@@ -3642,7 +3673,7 @@ declare variable V_PARAM_NAME type of SIGN_ATTR;
 declare variable V_PARAM_VALUE type of VALUE_ATTR;
 begin
   o_pattern = i_pattern;
-  for select p.param_name, p.param_value
+  for select p.param_name, coalesce(p.param_value, '')
         from params p
         where p.param_id = :i_param_id
         into :v_param_name, :v_param_value do
@@ -3837,6 +3868,36 @@ begin
   end
 
   suspend;
+end^
+
+
+CREATE OR ALTER PROCEDURE PLACE_READ (
+    I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL)
+RETURNS (
+    O_PARAM_NAME TYPE OF SIGN_OBJECT,
+    O_PARAM_VALUE TYPE OF VALUE_ATTR)
+AS
+declare variable V_REGION_NAME type of NAME_OBJECT;
+declare variable V_AREA_NAME type of NAME_OBJECT;
+begin
+  select p.area_name, p.region_name
+    from v_places p
+    where p.place_id = :i_object_id
+    into :v_area_name, :v_region_name;
+
+  if (:v_area_name is not null) then
+  begin
+    o_param_name = 'AREA_NAME';
+    o_param_value = :v_area_name;
+    suspend;
+  end
+
+  if (:v_region_name is not null) then
+  begin
+    o_param_name = 'REGION_NAME';
+    o_param_value = :v_region_name;
+    suspend;
+  end
 end^
 
 
