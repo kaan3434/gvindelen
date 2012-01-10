@@ -169,6 +169,9 @@ object MainForm: TMainForm
         ImageIndex = 16
         Layout = tbxlGlyphTop
       end
+      object btnReturn: TTBXItem
+        Action = actReturn
+      end
     end
   end
   object sbMain: TTBXStatusBar
@@ -326,6 +329,10 @@ object MainForm: TMainForm
       Category = 'ProcessMessages'
       Caption = #1055#1088#1086#1090#1086#1082#1086#1083#1099' '#1040#1085#1091#1083#1103#1094#1080#1080
       OnExecute = actProcessCancellationExecute
+    end
+    object actReturn: TAction
+      Caption = #1042#1086#1079#1074#1088#1072#1090
+      OnExecute = actReturnExecute
     end
   end
   object imgListMainMenu: TPngImageList
@@ -1373,7 +1380,7 @@ object MainForm: TMainForm
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 40907.117907800920000000
+    ReportOptions.LastChange = 40912.089165196800000000
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
     Left = 352

@@ -95,11 +95,6 @@ begin
   frmOrderItems.ndOrderItems:= ndOrderItems;
   IncludeForm(wzIPageOrderItems, frmOrderItems);
 
-  // FrameOrder
-  frmOrder:= TFrameOrder.Create(self);
-  frmOrder.ndOrder:= ndOrder;
-  IncludeForm(wzIPageOrder, frmOrder);
-
   wzForm.ActivePage:= wzIPageOrderItems;
 end;
 

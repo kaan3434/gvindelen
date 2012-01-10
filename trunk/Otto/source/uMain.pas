@@ -132,6 +132,8 @@ type
     actProcessCancellation: TAction;
     frxFIBComponents1: TfrxFIBComponents;
     frxExportXLS: TfrxXMLExport;
+    actReturn: TAction;
+    btnReturn: TTBXItem;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -163,6 +165,7 @@ type
     procedure actProcessArtNExecute(Sender: TObject);
     procedure actProcessCancellationExecute(Sender: TObject);
     procedure alMainUpdate(Action: TBasicAction; var Handled: Boolean);
+    procedure actReturnExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -712,6 +715,11 @@ begin
     subMenuSystem.ImageIndex:= actInstallPatch.ImageIndex;
 end;
 
+
+procedure TMainForm.actReturnExecute(Sender: TObject);
+begin
+  s
+end;
 
 end.
 

@@ -10,6 +10,7 @@ inherited FormWizardReturn: TFormWizardReturn
     ActivePage = wzIPageOrder
     object wzIPageOrderItems: TJvWizardInteriorPage
       Header.Height = 30
+      Header.ParentFont = False
       Header.Title.Color = clNone
       Header.Title.Text = 'Title'
       Header.Title.Anchors = [akLeft, akTop, akRight]
@@ -31,6 +32,7 @@ inherited FormWizardReturn: TFormWizardReturn
     end
     object wzIPageOrder: TJvWizardInteriorPage
       Header.Height = 30
+      Header.ParentFont = False
       Header.Title.Color = clNone
       Header.Title.Text = #1042#1086#1079#1074#1088#1072#1090' '#1089#1090#1086#1080#1084#1086#1089#1090#1080
       Header.Title.Anchors = [akLeft, akTop, akRight]
