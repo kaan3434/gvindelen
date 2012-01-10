@@ -40,6 +40,8 @@ type
     procedure dbOttoAfterConnect(Sender: TObject);
   private
     { Private declarations }
+    FUserName: string;
+    FPassword: string;
   public
     { Public declarations }
     Build: Variant;
@@ -97,6 +99,8 @@ type
       DlgType: TMsgDlgType; Duration: Integer=0);
     function GetWeight(aArticleSign, aAtricleSize: String; aTransaction: TpFIBTransaction): variant;
     function GetMinPrice(aArticleSign, aAtricleSize: String; aTransaction: TpFIBTransaction): variant;
+    procedure InitProgress(aMaxValue: Integer=100; aNotifyText: String='');
+    procedure StepProgress;
   end;
 
 var
@@ -167,27 +171,26 @@ var
   dbParams: TVarList;
   BackupFileName: String;
 begin
-//  GvFile.CopyFile(Path['Database']+'otto_ppz.fdb.old', Path['Database']+'otto_ppz.fdb');
   BackupFileName:= Format('%s%s_Dayly.fbk',
     [Path['Backup'], FormatDateTime('YYYYMMDD', Date)]);
-  if not FileExists(BackupFileName) then
-  try
-    BackupDatabase(BackupFileName);
-    CreateAlert('Ежедневная резервная копия', Format(
-      'Успеспешно создана (%s)', [BackupFileName]), mtInformation);
-  except
-    CreateAlert('Ежедневная резервная копия', Format(
-      'Ошибка создания (%s)', [BackupFileName]), mtError);
-  end;
   if dbOtto.Connected then dbOtto.Close;
   dbParams:= TVarList.Create;
   try
     dbParams.LoadSectionFromIniFile(ProjectIniFileName, 'DataBase');
-    dbOtto.DBName:= Path['DataBase']+dbParams['FileName'];
-    dbOtto.ConnectParams.UserName:= dbParams['Login'];
-    dbOtto.ConnectParams.Password:= dbParams['Password'];
+    dbOtto.DBName:= dbParams['ServerName']+':'+dbParams['FileName'];
     dbOtto.ConnectParams.CharSet:= 'CYRL';
     dbOtto.Open(true);
+    FUserName:= dbOtto.DBParams.Values['user_name'];
+    FPassword:= dbOtto.DBParams.Values['password'];
+    if not FileExists(BackupFileName) then
+    try
+      BackupDatabase(BackupFileName);
+      CreateAlert('Ежедневная резервная копия', Format(
+        'Успеспешно создана (%s)', [BackupFileName]), mtInformation);
+    except
+      CreateAlert('Ежедневная резервная копия', Format(
+        'Ошибка создания (%s)', [BackupFileName]), mtError);
+    end;
   finally
     dbParams.Free;
   end;
@@ -717,7 +720,9 @@ begin
     dbParams:= TVarList.Create;
     try
       dbParams.LoadSectionFromIniFile(ProjectIniFileName, 'DataBase');
-      DatabaseName := Path['DataBase']+dbParams['FileName'];
+      ServerName:= dbParams['ServerName'];
+      Protocol:= TCP;
+      DatabaseName := dbParams['FileName'];
       Params.Values['user_name']:= dbParams['Login'];
       Params.Values['password']:= dbParams['Password'];
     finally
@@ -745,7 +750,8 @@ begin
     dbParams:= TVarList.Create;
     try
       dbParams.LoadSectionFromIniFile(ProjectIniFileName, 'DataBase');
-      DatabaseName.Text := Path['DataBase']+dbParams['FileName'];
+      Protocol:= TCP;
+      DatabaseName.Text := dbParams['FileName'];
       Params.Values['user_name']:= dbParams['Login'];
       Params.Values['password']:= dbParams['Password'];
     finally
@@ -839,6 +845,23 @@ begin
     'select min(a.price_eur) from v_articles a '+
     'where a.article_sign = :article_sign and trim(a.dimension) = trim(:article_size)',
     0, [aArticleSign, aAtricleSize], aTransaction);
+end;
+
+procedure TdmOtto.InitProgress(aMaxValue: Integer=100; aNotifyText: String='');
+begin
+  MainForm.pbMain.Max:= aMaxValue;
+  MainForm.pbMain.Position:= 0;
+  MainForm.pbMain.Step:= 1;
+  MainForm.sbMain.SimplePanel:= aNotifyText <> '';
+  MainForm.sbMain.SimpleText:= aNotifyText;
+  MainForm.Refresh;
+  Application.ProcessMessages;
+end;
+
+procedure TdmOtto.StepProgress;
+begin
+  MainForm.pbMain.StepIt;
+  Application.ProcessMessages;
 end;
 
 initialization

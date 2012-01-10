@@ -132,12 +132,17 @@ inherited FormTableOrders: TFormTableOrders
             Footers = <>
             Title.Alignment = taCenter
             Title.Caption = #1057#1090#1086#1080#1084#1086#1089#1090#1100', BYR'
+          end
+          item
+            EditButtons = <>
+            FieldName = 'BAR_CODE'
+            Footers = <>
           end>
         inherited RowDetailData: TRowDetailPanelControlEh
           object pcDetailInfo: TPageControl
             Left = 0
             Top = 0
-            Width = 606
+            Width = 671
             Height = 198
             ActivePage = ts1
             Align = alClient
@@ -147,7 +152,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdOrderProperties: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 598
+                Width = 663
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -378,7 +383,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdAccountMovements: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 598
+                Width = 663
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -530,7 +535,8 @@ inherited FormTableOrders: TFormTableOrders
       '    statuses.STATUS_SIGN,'
       '    orders.STATUS_DTM,'
       '    v_order_summary.cost_eur,'
-      '    v_order_summary.cost_byr'
+      '    v_order_summary.cost_byr,'
+      '    orders.bar_code'
       'FROM ORDERS '
       
         '  inner join v_clients_fio on (v_clients_fio.client_id = orders.' +
@@ -628,6 +634,9 @@ inherited FormTableOrders: TFormTableOrders
         Background = clWindow
       end>
     Bitmap = {}
+  end
+  inherited trnNSI: TpFIBTransaction
+    Active = True
   end
   object qryOrderAttrs: TpFIBDataSet
     SelectSQL.Strings = (

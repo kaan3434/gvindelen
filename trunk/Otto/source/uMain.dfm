@@ -22,8 +22,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 829
-    Height = 49
+    Width = 837
+    Height = 47
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -171,16 +171,25 @@ object MainForm: TMainForm
       end
       object btnReturn: TTBXItem
         Action = actReturn
+        OnClick = btnReturnClick
       end
     end
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 432
-    Width = 829
+    Top = 436
+    Width = 837
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
+  end
+  object pbMain: TProgressBar
+    Left = 0
+    Top = 419
+    Width = 837
+    Height = 17
+    Align = alBottom
+    TabOrder = 1
   end
   object alMain: TActionList
     Images = imgListMainMenu
@@ -332,7 +341,6 @@ object MainForm: TMainForm
     end
     object actReturn: TAction
       Caption = #1042#1086#1079#1074#1088#1072#1090
-      OnExecute = actReturnExecute
     end
   end
   object imgListMainMenu: TPngImageList

@@ -132,9 +132,14 @@ begin
     St:= ReplaceAll(St, '; ', ';');
     St:= ReplaceAll(St, #10' ', #10);
     Lines.Text:= ReplaceAll(St, #13#13#10, #13#10);
+    dmOtto.InitProgress(Lines.Count, Format('Ообработка файла %s ...', [MessageFileName]));
     For LineNo:= 1 to Lines.Count - 1 do
+    begin
       ParseArtNLine(aMessageId, LineNo, Lines[LineNo], ndMessage, aTransaction);
+      dmOtto.StepProgress;
+    end;
   finally
+    dmOtto.InitProgress;
     dmOtto.Notify(aMessageId,
       'Конец обработки файла: [FILE_NAME]', 'I',
       Value2Vars(MessageFileName, 'FILE_NAME'));

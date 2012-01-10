@@ -7,15 +7,14 @@ object dmOtto: TdmOtto
   Height = 405
   Width = 624
   object dbOtto: TpFIBDatabase
-    DBName = 'D:\otto\Data\otto_ppz.fdb'
+    DBName = 'localhost:D:\otto\Data\otto_ppz.fdb'
     DBParams.Strings = (
-      'lc_ctype=CYRL'
-      'password=masterkey'
-      'user_name=sysdba')
+      'lc_ctype=CYRL')
     DefaultTransaction = trnAutonomouse
     DefaultUpdateTransaction = trnAutonomouse
     SQLDialect = 3
     Timeout = 0
+    UseLoginPrompt = True
     DesignDBOptions = [ddoIsDefaultDatabase, ddoStoreConnected]
     UseRepositories = []
     LibraryName = 'fbclient.dll'
@@ -240,27 +239,22 @@ object dmOtto: TdmOtto
     Top = 16
   end
   object fibBackup: TpFIBBackupService
-    ServerName = 'localhost'
     LibraryName = 'fbclient.dll'
     Protocol = TCP
     Params.Strings = (
-      'user_name=SYSDBA'
-      'password=masterkey'
       'sql_role_name=')
     LoginPrompt = False
     BlockingFactor = 0
-    DatabaseName = 'D:\otto\Data\otto-ppz.fdb'
     Options = [ConvertExtTables]
     Left = 456
     Top = 128
   end
   object fibRestore: TpFIBRestoreService
-    ServerName = 'localhost'
     LibraryName = 'fbclient.dll'
     Protocol = TCP
     LoginPrompt = False
     PageBuffers = 0
-    Options = [Replace, CreateNewDB]
+    Options = [Replace, CreateNewDB, ValidationCheck, FixFssMetadata, FixFssData]
     Left = 456
     Top = 176
   end

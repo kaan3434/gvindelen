@@ -12,7 +12,8 @@ uses
   JvEmbeddedForms, JvExControls, JvProgressComponent, frxRich, pFIBScripter,
   JvDialogs, JvBaseDlg, IB_Services, pngimage,
   gsFileVersionInfo, JvLogFile, JvThread, JvProgressDialog, dbf,
-  frxExportXML, frxExportHTML, frxExportXLS, uFrameBase1, uFrameOrderItems;
+  frxExportXML, frxExportHTML, frxExportXLS, uFrameBase1, uFrameOrderItems,
+  ComCtrls;
 
 type
   TMainForm = class(TForm)
@@ -132,6 +133,7 @@ type
     actProcessCancellation: TAction;
     frxFIBComponents1: TfrxFIBComponents;
     frxExportXLS: TfrxXMLExport;
+    pbMain: TProgressBar;
     actReturn: TAction;
     btnReturn: TTBXItem;
     procedure actParseOrderXmlExecute(Sender: TObject);
@@ -165,7 +167,7 @@ type
     procedure actProcessArtNExecute(Sender: TObject);
     procedure actProcessCancellationExecute(Sender: TObject);
     procedure alMainUpdate(Action: TBasicAction; var Handled: Boolean);
-    procedure actReturnExecute(Sender: TObject);
+    procedure btnReturnClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -188,7 +190,7 @@ uses
   uParseConsignment, uFormProtocol, GvNativeXml, pFIBQuery, uParsePayments,
   uFormWizardOrder, uExportOrders, uSetByr2Eur, uExportSMSReject,
   uExportCancellation, uExportOrder, uExportInvoices, uExportPackList, 
-  uParseArtN, uParseCancellation;
+  uParseArtN, uParseCancellation, uFormWizardReturn;
 
 procedure TMainForm.actParseOrderXmlExecute(Sender: TObject);
 var
@@ -255,6 +257,7 @@ begin
       ProcessProtocol(vMessageId, trnWrite);
       with TFormProtocol.Create(Self, vMessageId) do
         Show;
+      Application.ProcessMessages;
     end
   until vMessageId = 0;
 end;
@@ -270,6 +273,7 @@ begin
       ProcessLiefer(vMessageId, trnWrite);
       with TFormProtocol.Create(Self, vMessageId) do
         Show;
+      Application.ProcessMessages;
     end;
   until vMessageId = 0;
 end;
@@ -285,6 +289,7 @@ begin
       ProcessConsignment(vMessageId, trnWrite);
       with TFormProtocol.Create(Self, vMessageId) do
         Show;
+      Application.ProcessMessages;
     end;
   until vMessageId = 0;
 end;
@@ -365,6 +370,7 @@ begin
       ProcessPayment(vMessageId, trnWrite);
       with TFormProtocol.Create(Self, vMessageId) do
         Show;
+      Application.ProcessMessages;
     end;
   until vMessageId = 0;
 end;
@@ -380,6 +386,7 @@ begin
       ProcessArtN(vMessageId, trnWrite);
       with TFormProtocol.Create(Self, vMessageId) do
         Show;
+      Application.ProcessMessages;
     end;
   until vMessageId = 0;
 end;
@@ -716,9 +723,9 @@ begin
 end;
 
 
-procedure TMainForm.actReturnExecute(Sender: TObject);
+procedure TMainForm.btnReturnClick(Sender: TObject);
 begin
-  s
+  TFormWizardReturn.CreateBlank(Self).Show;
 end;
 
 end.

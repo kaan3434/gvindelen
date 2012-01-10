@@ -155,6 +155,7 @@ begin
   try
     if FileExists(Path['Messages.In']+MessageFileName) then
     begin
+    
       Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
       For LineNo:= 0 to Lines.Count - 1 do
         ParseLieferLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
