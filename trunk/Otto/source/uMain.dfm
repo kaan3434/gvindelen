@@ -171,7 +171,6 @@ object MainForm: TMainForm
       end
       object btnReturn: TTBXItem
         Action = actReturn
-        OnClick = btnReturnClick
       end
     end
   end

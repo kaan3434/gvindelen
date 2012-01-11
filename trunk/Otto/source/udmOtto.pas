@@ -171,8 +171,6 @@ var
   dbParams: TVarList;
   BackupFileName: String;
 begin
-  BackupFileName:= Format('%s%s_Dayly.fbk',
-    [Path['Backup'], FormatDateTime('YYYYMMDD', Date)]);
   if dbOtto.Connected then dbOtto.Close;
   dbParams:= TVarList.Create;
   try
@@ -182,14 +180,22 @@ begin
     dbOtto.Open(true);
     FUserName:= dbOtto.DBParams.Values['user_name'];
     FPassword:= dbOtto.DBParams.Values['password'];
+    BackupFileName:= Format('%s%s_%s_Dayly.fbk',
+      [Path['Backup'], FormatDateTime('YYYYMMDD', Date),
+       FillFront(IntToStr(dmOtto.Build), 6, '0')]);
     if not FileExists(BackupFileName) then
     try
-      BackupDatabase(BackupFileName);
-      CreateAlert('Ежедневная резервная копия', Format(
-        'Успеспешно создана (%s)', [BackupFileName]), mtInformation);
-    except
-      CreateAlert('Ежедневная резервная копия', Format(
-        'Ошибка создания (%s)', [BackupFileName]), mtError);
+      dbOtto.Close;
+      try
+        BackupDatabase(BackupFileName);
+        CreateAlert('Ежедневная резервная копия', Format(
+          'Успеспешно создана (%s)', [BackupFileName]), mtInformation);
+      except
+        CreateAlert('Ежедневная резервная копия', Format(
+          'Ошибка создания (%s)', [BackupFileName]), mtError);
+      end;
+    finally
+      dbOtto.Open(true);
     end;
   finally
     dbParams.Free;
@@ -713,21 +719,14 @@ end;
 
 procedure TdmOtto.BackupDatabase(aFileName: string);
 var
-  dbParams: TVarList;
+  dbName: string;
 begin
   with fibBackup do
   begin
-    dbParams:= TVarList.Create;
-    try
-      dbParams.LoadSectionFromIniFile(ProjectIniFileName, 'DataBase');
-      ServerName:= dbParams['ServerName'];
-      Protocol:= TCP;
-      DatabaseName := dbParams['FileName'];
-      Params.Values['user_name']:= dbParams['Login'];
-      Params.Values['password']:= dbParams['Password'];
-    finally
-      dbParams.Free;
-    end;
+    dbName:= dbOtto.DatabaseName;
+    ServerName:= TakeFront5(dbName, ':');
+    Protocol:= TCP;
+    DatabaseName := dbName;
     BackupFile.Clear;
     BackupFile.Add(aFileName);
     Attach;
@@ -743,20 +742,14 @@ end;
 
 procedure TdmOtto.RestoreDatabase(aFileName: string);
 var
-  dbParams: TVarList;
+  dbName: string;
 begin
   with fibRestore do
   begin
-    dbParams:= TVarList.Create;
-    try
-      dbParams.LoadSectionFromIniFile(ProjectIniFileName, 'DataBase');
-      Protocol:= TCP;
-      DatabaseName.Text := dbParams['FileName'];
-      Params.Values['user_name']:= dbParams['Login'];
-      Params.Values['password']:= dbParams['Password'];
-    finally
-      dbParams.Free;
-    end;
+    dbName:= dbOtto.DatabaseName;
+    ServerName:= TakeFront5(dbName, ':');
+    Protocol:= TCP;
+    DatabaseName.Text := dbName;
     BackupFile.Clear;
     BackupFile.Add(aFileName);
     dbOtto.Close;
@@ -777,6 +770,7 @@ begin
   try
     Build:= dbOtto.QueryValue(
       'select max(build) from builds', 0);
+    dbOtto.UseLoginPrompt:= False;
   except
     Build:= 0;
   end;

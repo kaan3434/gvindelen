@@ -9,7 +9,8 @@ object dmOtto: TdmOtto
   object dbOtto: TpFIBDatabase
     DBName = 'localhost:D:\otto\Data\otto_ppz.fdb'
     DBParams.Strings = (
-      'lc_ctype=CYRL')
+      'lc_ctype=CYRL'
+      'user_name=Valery')
     DefaultTransaction = trnAutonomouse
     DefaultUpdateTransaction = trnAutonomouse
     SQLDialect = 3
@@ -242,7 +243,8 @@ object dmOtto: TdmOtto
     LibraryName = 'fbclient.dll'
     Protocol = TCP
     Params.Strings = (
-      'sql_role_name=')
+      'user_name=sysdba'
+      'password=masterkey')
     LoginPrompt = False
     BlockingFactor = 0
     Options = [ConvertExtTables]
@@ -252,6 +254,9 @@ object dmOtto: TdmOtto
   object fibRestore: TpFIBRestoreService
     LibraryName = 'fbclient.dll'
     Protocol = TCP
+    Params.Strings = (
+      'user_name=sysdba'
+      'password=masterkey')
     LoginPrompt = False
     PageBuffers = 0
     Options = [Replace, CreateNewDB, ValidationCheck, FixFssMetadata, FixFssData]
