@@ -50,8 +50,8 @@ var
 begin
   DecimalSeparator:= '.';
   Application.Initialize;
-  Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TdmOtto, dmOtto);
+  Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TDlgManualPayment, DlgManualPayment);
   Application.CreateForm(TFrameBase2, FrameBase2);
   Application.Run;

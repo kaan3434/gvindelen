@@ -101,6 +101,7 @@ type
     function GetMinPrice(aArticleSign, aAtricleSize: String; aTransaction: TpFIBTransaction): variant;
     procedure InitProgress(aMaxValue: Integer=100; aNotifyText: String='');
     procedure StepProgress;
+    property UserName: string read FUserName;
   end;
 
 var

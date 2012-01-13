@@ -614,7 +614,7 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   verInfo.Filename := ParamStr(0);
-  Caption:= Format('PPZ2 Build:%s', [verInfo.GetBuildOnly]);
+  Caption:= Format('PPZ2 Build:%s %s', [verInfo.GetBuildOnly, dmOtto.UserName]);
 end;
 
 procedure TMainForm.scrptUpdateExecuteError(Sender: TObject; StatementNo,

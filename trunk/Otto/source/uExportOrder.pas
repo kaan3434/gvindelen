@@ -17,8 +17,8 @@ begin
   if GetXmlAttrValue(ndPlace, 'PLACETYPE_CODE', '4') = 4 then
     Result:= Translit(GetXmlAttr(ndPlace, 'PLACE_NAME'))
   else
-    Result:= Translit(GetXmlAttr(ndPlace, 'PLACETYPE_NAME', ' ', '.') +
-                     GetXmlAttr(ndPlace, 'PLACE_NAME', ' '));
+    Result:= Translit(GetXmlAttr(ndPlace, 'PLACETYPE_SIGN') +
+                     GetXmlAttr(ndPlace, 'PLACE_NAME', '. '));
 end;
 
 function GetAdress(ndAdress: TXmlNode; MaxLen: integer): string;
@@ -58,6 +58,8 @@ begin
     dmOtto.ObjectGet(ndAdress, GetXmlAttrValue(ndOrder, 'ADRESS_ID'), aTransaction);
     dmOtto.ObjectGet(ndPlace, GetXmlAttrValue(ndAdress, 'PLACE_ID'), aTransaction);
     ndOrder.ValueAsBool:= True;
+    ndOrder.Document.XmlFormat:= xfReadable;
+    ndOrder.Document.SaveToFile('Order.xml');
 
     Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
     Line.Add(FilterString(GetXmlAttr(ndOrder, 'ORDER_CODE'), '0123456789'));
@@ -67,7 +69,7 @@ begin
     Line.Add(Translit(GetXmlAttr(ndClient, 'FIRST_NAME') + ' '+ Copy(GetXmlAttr(ndClient, 'MID_NAME'), 1, 1)));
     Line.Add('');
     Line.Add(GetAdress(ndAdress, 32));
-    Line.Add(GetXmlAttr(ndPlace, 'AREA_NAME', '', ' r-n'));
+    Line.Add(Translit(GetXmlAttr(ndPlace, 'AREA_NAME', '', ' r-n')));
     Line.Add(GetXmlAttr(ndAdress, 'POSTINDEX'));
     Line.Add(GetPlace(ndPlace, 24));
     Line.Add(IfThen(XmlAttrIn(ndClient, 'STATUS_SIGN', 'APPROVED'), 'N', 'U'));
