@@ -49,8 +49,6 @@ end
 /* Creating roles */
 SET TERM ; ^
 
-CREATE ROLE USERS;
-
 
 /* Create(Add) Crant */
 GRANT ALL ON ACCOPERS TO ELENA;
