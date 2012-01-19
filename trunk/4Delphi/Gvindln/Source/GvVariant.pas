@@ -2,7 +2,7 @@ unit GvVariant;
 
 interface
 uses
-  Variants, Sysutils;
+  Variants, SysUtils;
 
 function IsNull(Value: Variant): Boolean;
 
@@ -36,12 +36,12 @@ function ToNumber(St: string): Variant;
 var
   p1, p2: Integer;
 begin
-  p1:= Pos(St, '.');
-  p2:= Pos(St, ',');
-  if p1 > 0 then
+  p1:= Pos(',', St);
+  p2:= Pos('.', St);
+  if p1>0 then
     St[p1]:= DecimalSeparator
   else
-  if p2 > 0 then
+  if p2>0 then
     St[p2]:= DecimalSeparator;
   Result:= St;
 end;

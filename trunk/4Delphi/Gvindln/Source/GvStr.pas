@@ -239,6 +239,7 @@ function Translit(St: string): string;
 function UpCaseFirst(St: string): string;
 function UpCaseWord(St: string; KeyChars: string=' ,.!-:?'): string;
 
+
 implementation
 uses
   windows, sysutils, Zlib, Math, StrUtils;
@@ -2278,8 +2279,8 @@ end;
 
 function Translit(St: string): string;
 const
-  Rus='ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖÚÛİàáâãäåæçèéêëìíîïğñòóôõöúûı';
-  Lat='ABVGDEJZIYKLMNOPRSTUFHC`YEabvgdejziyklmnoprstufhc`ye';
+  Rus='ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÚÛİàáâãäåæçèéêëìíîïğñòóôõúûı';
+  Lat='ABVGDEJZIYKLMNOPRSTUFH`YEabvgdejziyklmnoprstufh`ye';
 var
   Mapping: TStringList;
   i, lr, p: Integer;
@@ -2287,7 +2288,7 @@ begin
   Result:= St;
   Mapping:= TStringList.Create;
   try
-    Mapping.Text:= ReplaceAll('Ëş=Liu;ëş=liu;¸=yo;×=Ch;÷=ch;Ø=Sh;ø=sh;Ù=Sch;ù=sch;Ş=Yu;ş=yu;ß=Ya;ÿ=ya;ü=', ';', #13#10);
+    Mapping.Text:= ReplaceAll('Ëş=Liu;ëş=liu;¸=yo;×=Ch;÷=ch;Ø=Sh;ø=sh;Ù=Sch;ù=sch;Ş=Yu;ş=yu;ß=Ya;ÿ=ya;Ö=Ts;ö=ts;ü=', ';', #13#10);
     for i:= 0 to Mapping.count - 1 do
       Result:= ReplaceAll(Result, Mapping.Names[i], Mapping.ValueFromIndex[i], true);
   finally
