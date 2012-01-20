@@ -144,13 +144,11 @@ ALTER TABLE FLAGS2STATUSES ADD CONSTRAINT FK_FLAGS2STATUSES_FLAG FOREIGN KEY (FL
 ALTER TABLE FLAGS2STATUSES ADD CONSTRAINT FK_FLAGS2STATUSES_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE MAGAZINES ADD CONSTRAINT FK_MAGAZINES_CATALOG FOREIGN KEY (CATALOG_ID) REFERENCES CATALOGS (CATALOG_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE MESSAGES ADD CONSTRAINT FK_MESSAGES_PORT FOREIGN KEY (PORT_ID) REFERENCES PORTS (PORT_ID) ON UPDATE CASCADE;
-ALTER TABLE MESSAGES ADD CONSTRAINT FK_MESSAGES_SESSION FOREIGN KEY (BUSY_ID) REFERENCES SESSIONS (SESSION_ID) ON UPDATE CASCADE;
 ALTER TABLE MESSAGES ADD CONSTRAINT FK_MESSAGES_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE MESSAGES ADD CONSTRAINT FK_MESSAGES_TEMPLATE FOREIGN KEY (TEMPLATE_ID) REFERENCES TEMPLATES (TEMPLATE_ID) ON UPDATE CASCADE;
 ALTER TABLE MESSAGE_ATTRS ADD CONSTRAINT FK_MESSAGE_ATTRS_ATTR FOREIGN KEY (ATTR_ID) REFERENCES ATTRS (ATTR_ID) ON UPDATE CASCADE;
 ALTER TABLE MESSAGE_ATTRS ADD CONSTRAINT FK_MESSAGE_ATTRS_MESSAGE FOREIGN KEY (OBJECT_ID) REFERENCES MESSAGES (MESSAGE_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE NOTIFIES ADD CONSTRAINT FK_NOTIFIES_MESSAGE FOREIGN KEY (MESSAGE_ID) REFERENCES MESSAGES (MESSAGE_ID) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE NOTIFIES ADD CONSTRAINT FK_NOTIFIES_PARAM FOREIGN KEY (PARAM_ID) REFERENCES PARAMHEADS (PARAM_ID) ON UPDATE CASCADE;
 ALTER TABLE ORDERHISTORY ADD CONSTRAINT FK_ORDERHISTORY_ORDER FOREIGN KEY (ORDER_ID) REFERENCES ORDERS (ORDER_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE ORDERHISTORY ADD CONSTRAINT FK_ORDERHISTORY_STATE FOREIGN KEY (STATE_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE ORDERHISTORY ADD CONSTRAINT FK_ORDERHISTORY_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
@@ -255,7 +253,7 @@ end
 
 /* Trigger: REGISTER_SESSION */
 CREATE OR ALTER TRIGGER REGISTER_SESSION
-ACTIVE ON CONNECT POSITION 0
+INACTIVE ON CONNECT POSITION 0
 AS
 begin
   delete from sessions where session_id >= current_connection;
@@ -1691,6 +1689,8 @@ begin
 
     execute procedure orderhistory_update(:i_object_id, :v_new_status_id, null);
   end
+  else
+    exception ex_status_conversion_unavail 'From '||:v_now_status_id||' to '||:v_new_status_id;
 end^
 
 
@@ -1941,11 +1941,14 @@ begin
       into :v_updateable, :v_new_status_id;
   end
 
-  if ((v_updateable = 1) or exists(select o_value from param_get(:i_param_id, 'UPDATEABLE'))) then
+  if (v_updateable = 1) then
   begin
     execute procedure param_set(:i_param_id, 'STATUS_ID', :v_new_status_id);
     execute procedure object_put(:i_param_id);
   end
+  else
+    exception ex_status_conversion_unavail 'From '||:v_now_status_id||' to '||:v_new_status_id;
+
 end^
 
 
@@ -2962,38 +2965,15 @@ begin
   begin
     select o_param_id from param_create('NOTIFY', :i_message_id) into :v_param_id;
     execute procedure param_unparse(:v_param_id, :i_params);
+    select o_pattern from param_fillpattern(:v_param_id, :i_notify_text) into :i_notify_text;
   end
 
-  insert into notifies(message_id, param_id, notify_text, notify_class)
-    values(:i_message_id, :v_param_id, :i_notify_text, upper(:i_state))
+
+  insert into notifies(message_id, notify_text, notify_class)
+    values(:i_message_id, :i_notify_text, upper(:i_state))
     returning notify_id
     into :o_notify_id;
   suspend;
-end^
-
-
-CREATE OR ALTER PROCEDURE NOTIFY_QUERY (
-    I_MESSAGE_ID TYPE OF ID_MESSAGE)
-RETURNS (
-    O_NOTIFY_TEXT TYPE OF VALUE_ATTR,
-    O_NOTIFY_CLASS TYPE OF VALUE_CHAR)
-AS
-declare variable V_PARAM_ID type of ID_PARAM;
-declare variable V_PARAM_NAME type of SIGN_ATTR;
-declare variable V_PARAM_VALUE type of VALUE_ATTR;
-begin
-  for select n.notify_text, n.param_id, n.notify_class
-    from notifies n
-    where n.message_id = :i_message_id
-    order by n.notify_id
-    into :o_notify_text, :v_param_id, :o_notify_class do
-  begin
-    for select p.param_name, p.param_value from params p
-          where p.param_id = :v_param_id
-          into :v_param_name, :v_param_value do
-      o_notify_text = replace(o_notify_text, '['||:v_param_name||']', :v_param_value);
-    suspend;
-  end
 end^
 
 
@@ -3175,6 +3155,43 @@ begin
   if (o_updateable = 0) then
     select coalesce(o_value, 0) from param_get(:i_param_id, 'CHANGED') into :o_updateable;
 
+  suspend;
+end^
+
+
+CREATE OR ALTER PROCEDURE ORDER_ANUL (
+    I_ORDER_ID TYPE OF ID_ORDER NOT NULL)
+RETURNS (
+    O_NEW_STATUS_SIGN TYPE OF SIGN_OBJECT)
+AS
+declare variable V_ORDERITEMS_CNT type of VALUE_INTEGER;
+declare variable V_ORDER_STATUS_ID type of ID_STATUS;
+declare variable V_ORDER_STATUS_SIGN type of SIGN_OBJECT;
+declare variable V_PARAM_ID type of ID_PARAM;
+declare variable V_ACTION_ID type of ID_ACTION;
+begin
+  select count(*) from orderitems oi
+    inner join flags2statuses f2s on (f2s.status_id = oi.status_id and f2s.flag_sign = 'CREDIT')
+    where oi.order_id = :i_order_id
+    into :v_orderitems_cnt;
+
+  select s.status_id, s.status_sign
+    from orders o
+      inner join statuses s on (s.status_id = o.status_id)
+    where o.order_id = :i_order_id
+    into :v_order_status_id, :v_order_status_sign;
+
+  if (:v_orderitems_cnt = 0 and :v_order_status_sign not in ('CANCELLED', 'ANULLED', 'REJECTED')) then
+  begin
+    select o_param_id from param_create('ORDER', :i_order_id) into :v_param_id;
+    select o_action_id from action_run('ORDER', 'ORDER_CANCELLED', :v_param_id, :i_order_id) into :v_action_id;
+  end
+
+  select s.status_sign
+    from orders o
+      inner join statuses s on (s.status_id = o.status_id)
+    where o.order_id = :i_order_id
+    into :o_new_status_sign;
   suspend;
 end^
 
@@ -3872,18 +3889,19 @@ end^
 
 
 CREATE OR ALTER PROCEDURE PLACE_READ (
-    I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL)
+    I_OBJECT_ID TYPE OF ID_OBJECT)
 RETURNS (
     O_PARAM_NAME TYPE OF SIGN_OBJECT,
     O_PARAM_VALUE TYPE OF VALUE_ATTR)
 AS
 declare variable V_REGION_NAME type of NAME_OBJECT;
 declare variable V_AREA_NAME type of NAME_OBJECT;
+declare variable V_PLACETYPE_SIGN type of NAME_SHORT;
 begin
-  select p.area_name, p.region_name
+  select p.area_name, p.region_name, p.placetype_sign
     from v_places p
     where p.place_id = :i_object_id
-    into :v_area_name, :v_region_name;
+    into :v_area_name, :v_region_name, :v_placetype_sign;
 
   if (:v_area_name is not null) then
   begin
@@ -3898,6 +3916,11 @@ begin
     o_param_value = :v_region_name;
     suspend;
   end
+
+  o_param_name = 'PLACETYPE_SIGN';
+  o_param_value = :v_placetype_sign;
+  suspend;
+
 end^
 
 
@@ -4339,3 +4362,10 @@ end^
 
 
 SET TERM ; ^
+
+
+/******************************************************************************/
+/***                                 Roles                                  ***/
+/******************************************************************************/
+
+CREATE ROLE USERS;

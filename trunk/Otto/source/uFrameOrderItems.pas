@@ -175,6 +175,7 @@ begin
   finally
     mtblOrderItems.Tag:= 0;
   end;
+  mtblOrderItemsAfterScroll(mtblOrderItems);
 end;
 
 procedure TFrameOrderItems.ProgressCheckAvailShow(Sender: TObject);

@@ -41,6 +41,9 @@ type
     btnMakeInvoice: TTBXItem;
     actAssignPayment: TAction;
     btnAssignPayment: TTBXItem;
+    subSetStatuses: TTBXSubmenuItem;
+    qryNextStatus: TpFIBDataSet;
+    actSetStatus: TAction;
     procedure actSendOrdersExecute(Sender: TObject);
     procedure actFilterApprovedExecute(Sender: TObject);
     procedure actFilterAcceptRequestExecute(Sender: TObject);
@@ -48,6 +51,9 @@ type
     procedure grdMainDblClick(Sender: TObject);
     procedure actMakeInvoiceExecute(Sender: TObject);
     procedure actAssignPaymentExecute(Sender: TObject);
+    procedure qryMainAfterScroll(DataSet: TDataSet);
+    procedure actSetStatusExecute(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     procedure ApplyFilter(aStatusSign: string);
     { Private declarations }
@@ -293,6 +299,7 @@ begin
   qryStatuses.Open;
   qryAccountMovements.Open;
   qryHistory.Open;
+  qryNextStatus.Open;
 end;
 
 procedure TFormTableOrders.grdMainDblClick(Sender: TObject);
@@ -364,6 +371,60 @@ begin
     Xml.Free;
     DlgManualPayment.Free;
   end;
+end;
+
+procedure TFormTableOrders.qryMainAfterScroll(DataSet: TDataSet);
+var
+  btnSetStatus: TTBXItem;
+  CompName: string;
+  i: Integer;
+begin
+  for i:= 0 to subSetStatuses.Count - 1 do
+    subSetStatuses.Items[i].Visible:= False;
+  if qryNextStatus.Active then
+  begin
+    qryNextStatus.First;
+    while not qryNextStatus.Eof do
+    begin
+      CompName:= Format('btnSetStatus_%s', [qryNextStatus['STATUS_SIGN']]);
+      btnSetStatus:= TTBXItem(subSetStatuses.FindComponent(CompName));
+      if btnSetStatus = nil then
+      begin
+        btnSetStatus:= TTBXItem.Create(subSetStatuses);
+        btnSetStatus.Action:= actSetStatus;
+        btnSetStatus.Name:= CompName;
+        btnSetStatus.Tag:= qryNextStatus['STATUS_ID'];
+        btnSetStatus.Caption:= qryNextStatus['STATUS_NAME'];
+        subSetStatuses.Add(btnSetStatus);
+      end
+      else
+        btnSetStatus.Visible:= True;
+      qryNextStatus.Next;
+    end;
+  end;
+end;
+
+procedure TFormTableOrders.actSetStatusExecute(Sender: TObject);
+var
+  StatusId: Integer;
+  StatusSign: String;
+  OrderId: variant;
+begin
+  OrderId:= qryMain['ORDER_ID'];
+  try
+    StatusId:= TAction(Sender).ActionComponent.Tag;
+    StatusSign:= qryStatuses.Lookup('STATUS_ID', StatusId, 'STATUS_SIGN');
+    dmOtto.ActionExecute(trnWrite, 'ORDER', '', Value2Vars(StatusSign, 'NEW.STATUS_SIGN'), OrderId);
+  finally
+    qryMain.CloseOpen(true);
+  end
+end;
+
+procedure TFormTableOrders.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  inherited;
+  if trnWrite.Active then trnWrite.Commit;
 end;
 
 end.

@@ -20,8 +20,8 @@ object FormProtocol: TFormProtocol
   object grdProtocol: TDBGridEh
     Left = 0
     Top = 0
-    Width = 920
-    Height = 446
+    Width = 912
+    Height = 442
     Align = alClient
     AutoFitColWidths = True
     DataGrouping.GroupLevels = <>
@@ -43,14 +43,14 @@ object FormProtocol: TFormProtocol
     Columns = <
       item
         EditButtons = <>
-        FieldName = 'O_NOTIFY_TEXT'
+        FieldName = 'NOTIFY_TEXT'
         Footers = <>
         Width = 300
       end
       item
         AutoFitColWidth = False
         EditButtons = <>
-        FieldName = 'O_NOTIFY_CLASS'
+        FieldName = 'NOTIFY_CLASS'
         Footers = <>
         ImageList = imgListNotifyClass
         KeyList.Strings = (
@@ -65,10 +65,14 @@ object FormProtocol: TFormProtocol
   object qryProtocol: TpFIBDataSet
     SelectSQL.Strings = (
       'SELECT'
-      '    O_NOTIFY_TEXT,'
-      '    O_NOTIFY_CLASS'
+      '  NOTIFY_TEXT,'
+      '  NOTIFY_CLASS'
       'FROM'
-      '    NOTIFY_QUERY(:MESSAGE_ID) ')
+      '  NOTIFIES'
+      'WHERE '
+      '  MESSAGE_ID = :MESSAGE_ID'
+      'ORDER BY '
+      '  NOTIFY_ID')
     Transaction = trnRead
     Database = dmOtto.dbOtto
     Left = 240
@@ -99,9 +103,9 @@ object FormProtocol: TFormProtocol
     Top = 96
   end
   object trnRead: TpFIBTransaction
-    Active = True
     DefaultDatabase = dmOtto.dbOtto
     TimeoutAction = TARollback
+    MDTTransactionRole = mtrAutoDefine
     Left = 368
     Top = 40
   end

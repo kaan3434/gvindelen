@@ -478,7 +478,6 @@ end;
 procedure TMainForm.actExportOrdersExecute(Sender: TObject);
 var
   ProductXml: TNativeXml;
-  ndProducts, ndProduct, ndOrders: TXmlNode;
   p: Integer;
   FileName: string;
 begin

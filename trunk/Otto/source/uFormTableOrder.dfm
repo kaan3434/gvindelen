@@ -16,6 +16,9 @@ inherited FormTableOrders: TFormTableOrders
         Action = actAssignPayment
         DisplayMode = nbdmImageAndText
       end
+      object subSetStatuses: TTBXSubmenuItem
+        Caption = #1059#1089#1090#1072#1085#1086#1074#1080#1090#1100' '#1089#1090#1072#1090#1091#1089
+      end
     end
   end
   inherited pnlMain: TJvPanel
@@ -144,7 +147,7 @@ inherited FormTableOrders: TFormTableOrders
             Top = 0
             Width = 671
             Height = 198
-            ActivePage = ts1
+            ActivePage = tsOrderItems
             Align = alClient
             TabOrder = 0
             object tsOrderAttrs: TTabSheet
@@ -246,7 +249,17 @@ inherited FormTableOrders: TFormTableOrders
                   end
                   item
                     EditButtons = <>
+                    FieldName = 'ORDERITEM_INDEX'
+                    Footers = <>
+                  end
+                  item
+                    EditButtons = <>
                     FieldName = 'ARTICLE_CODE'
+                    Footers = <>
+                  end
+                  item
+                    EditButtons = <>
+                    FieldName = 'NAME_RUS'
                     Footers = <>
                   end
                   item
@@ -550,6 +563,7 @@ inherited FormTableOrders: TFormTableOrders
       'order by Create_dtm')
     CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
     CacheModelOptions.BufferChunks = 100
+    AfterScroll = qryMainAfterScroll
     Transaction = trnNSI
     UpdateTransaction = trnNSI
   end
@@ -575,6 +589,10 @@ inherited FormTableOrders: TFormTableOrders
       Caption = #1047#1072#1095#1080#1089#1083#1080#1090#1100' '#1087#1083#1072#1090#1077#1078
       ImageIndex = 1
       OnExecute = actAssignPaymentExecute
+    end
+    object actSetStatus: TAction
+      Caption = 'actSetStatus'
+      OnExecute = actSetStatusExecute
     end
   end
   inherited imgListMain: TPngImageList
@@ -674,9 +692,17 @@ inherited FormTableOrders: TFormTableOrders
       '    oi.COST_EUR,'
       '    oi.STATUS_ID,'
       '    s.STATUS_NAME,'
-      '    oi.STATUS_DTM'
+      '    oi.STATUS_DTM,'
+      '    oi.ORDERITEM_INDEX,'
+      '    oia1.attr_value||oia2.attr_value name_rus'
       'FROM ORDERITEMS oi'
       '  inner join statuses s on (s.status_id = oi.status_id)'
+      
+        '  inner join v_orderitem_attrs oia1 on (oia1.object_id = oi.orde' +
+        'ritem_id and oia1.attr_sign='#39'NAME_RUS'#39')'
+      
+        '  inner join v_orderitem_attrs oia2 on (oia2.object_id = oi.orde' +
+        'ritem_id and oia2.attr_sign='#39'KIND_RUS'#39')'
       'WHERE ORDER_ID = :ORDER_ID'
       'ORDER BY ORDERITEM_ID')
     Transaction = trnNSI
@@ -771,7 +797,6 @@ inherited FormTableOrders: TFormTableOrders
       'left join statuses s2 on (s2.status_id = oh.state_id)'
       'where oh.order_id = :order_id'
       'order by oh.action_dtm')
-    Active = True
     Transaction = dmOtto.trnAutonomouse
     Database = dmOtto.dbOtto
     DataSource = dsMain
@@ -783,5 +808,17 @@ inherited FormTableOrders: TFormTableOrders
     DataSet = qryHistory
     Left = 808
     Top = 248
+  end
+  object qryNextStatus: TpFIBDataSet
+    SelectSQL.Strings = (
+      'select s.status_id, s.status_name, s.status_sign'
+      'from status_rules sr'
+      '  inner join statuses s on (s.status_id = sr.new_status_id)'
+      'where sr.old_status_id = :status_id')
+    Transaction = trnWrite
+    Database = dmOtto.dbOtto
+    DataSource = dsMain
+    Left = 736
+    Top = 296
   end
 end

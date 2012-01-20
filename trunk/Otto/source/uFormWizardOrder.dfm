@@ -1,6 +1,6 @@
 inherited FormWizardOrder: TFormWizardOrder
-  Left = 317
-  Top = 201
+  Left = 153
+  Top = 57
   ActiveControl = btnClientPageFirst
   Caption = 'FormWizardOrder'
   OnCloseQuery = FormCloseQuery
