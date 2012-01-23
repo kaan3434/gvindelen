@@ -6,14 +6,16 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uFrameBase1, StdCtrls, ExtCtrls, ImgList, PngImageList,
   ActnList, FIBDatabase, pFIBDatabase, TBXStatusBars, TB2Dock, TB2Toolbar,
-  TBX, JvExStdCtrls, JvGroupBox;
+  TBX, JvExStdCtrls, JvGroupBox, Mask, JvExMask, JvToolEdit, JvMaskEdit;
 
 type
   TFrameBase2 = class(TFrameBase1)
-    rgReturnKind: TRadioGroup;
     grpPostMovement: TJvGroupBox;
     grpBankMovement: TJvGroupBox;
     edBankAccount: TLabeledEdit;
+    grpCommon: TJvGroupBox;
+    rgReturnKind: TRadioGroup;
+    edtPostPackage: TJvMaskEdit;
   private
     { Private declarations }
   public
