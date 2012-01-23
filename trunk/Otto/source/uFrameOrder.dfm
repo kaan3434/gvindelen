@@ -174,9 +174,6 @@ inherited FrameOrder: TFrameOrder
       end
     end
   end
-  inherited trnWrite: TpFIBTransaction
-    Active = True
-  end
   object qryTaxPlans: TpFIBDataSet
     SelectSQL.Strings = (
       'select p.taxplan_id,'
@@ -234,7 +231,6 @@ inherited FrameOrder: TFrameOrder
         ' oa.o_param_name)'
       'where replace(o_param_name, '#39'_'#39', '#39'-'#39') like '#39'%-DTM'#39
       'order by event_dtm')
-    Active = True
     Transaction = trnWrite
     Database = dmOtto.dbOtto
     Left = 424

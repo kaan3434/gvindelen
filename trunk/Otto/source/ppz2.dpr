@@ -41,7 +41,7 @@ uses
   uParseLiefer in 'uParseLiefer.pas',
   GvVariant in '..\..\4Delphi\Gvindln\Source\GvVariant.pas',
   uDlgPayment in 'uDlgPayment.pas' {DlgManualPayment},
-  uFrameReturn in 'uFrameReturn.pas' {FrameBase2};
+  uFrameReturn in 'uFrameReturn.pas' {FrameMoneyBack};
 
 {$R *.res}
 
@@ -53,6 +53,5 @@ begin
   Application.CreateForm(TdmOtto, dmOtto);
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TDlgManualPayment, DlgManualPayment);
-  Application.CreateForm(TFrameBase2, FrameBase2);
   Application.Run;
 end.

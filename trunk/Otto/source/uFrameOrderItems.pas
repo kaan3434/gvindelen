@@ -401,12 +401,14 @@ end;
 
 procedure TFrameOrderItems.mtblOrderItemsBeforeEdit(DataSet: TDataSet);
 begin
+  if DataSet.Tag = 1 then Exit;
   if not FlagPresent('EDITABLE', ndOrderItem, 'STATUS_FLAG_LIST') then
     Abort;
 end;
 
 procedure TFrameOrderItems.mtblOrderItemsBeforeInsert(DataSet: TDataSet);
 begin
+  if DataSet.Tag = 1 then Exit;
   if not FlagPresent('APPENDABLE', ndOrder, 'STATUS_FLAG_LIST') then
     Abort;
 end;

@@ -1,6 +1,6 @@
 object FormWizardBase: TFormWizardBase
-  Left = 187
-  Top = 133
+  Left = 305
+  Top = 244
   Width = 1024
   Height = 555
   Caption = 'FormWizardBase'

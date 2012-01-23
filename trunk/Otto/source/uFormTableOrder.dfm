@@ -653,9 +653,6 @@ inherited FormTableOrders: TFormTableOrders
       end>
     Bitmap = {}
   end
-  inherited trnNSI: TpFIBTransaction
-    Active = True
-  end
   object qryOrderAttrs: TpFIBDataSet
     SelectSQL.Strings = (
       'select a.attr_name, o.o_param_name, o.o_param_value'
@@ -694,15 +691,17 @@ inherited FormTableOrders: TFormTableOrders
       '    s.STATUS_NAME,'
       '    oi.STATUS_DTM,'
       '    oi.ORDERITEM_INDEX,'
-      '    oia1.attr_value||oia2.attr_value name_rus'
+      
+        '    coalesce(oia1.attr_value, '#39#39')||'#39' '#39'||coalesce(oia2.attr_value' +
+        ', '#39#39') name_rus'
       'FROM ORDERITEMS oi'
       '  inner join statuses s on (s.status_id = oi.status_id)'
       
-        '  inner join v_orderitem_attrs oia1 on (oia1.object_id = oi.orde' +
-        'ritem_id and oia1.attr_sign='#39'NAME_RUS'#39')'
+        '  left join v_orderitem_attrs oia1 on (oia1.object_id = oi.order' +
+        'item_id and oia1.attr_sign='#39'NAME_RUS'#39')'
       
-        '  inner join v_orderitem_attrs oia2 on (oia2.object_id = oi.orde' +
-        'ritem_id and oia2.attr_sign='#39'KIND_RUS'#39')'
+        '  left join v_orderitem_attrs oia2 on (oia2.object_id = oi.order' +
+        'item_id and oia2.attr_sign='#39'KIND_RUS'#39')'
       'WHERE ORDER_ID = :ORDER_ID'
       'ORDER BY ORDERITEM_ID')
     Transaction = trnNSI

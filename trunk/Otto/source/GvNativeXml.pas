@@ -44,7 +44,7 @@ procedure BatchMoveFields2(aDestNode, aSrcNode: TXmlNode; aMapping: string;
   aMandatory: Boolean = false); overload;
 
 procedure BatchMoveXMLNodes2Dataset(aDestDataSet: TDataSet; aSrcListNode: TXmlNode;
-  aMapping: string; aMode:TCopyMode; aShowProgress: Boolean = false);
+  aMapping: string; aMode:TCopyMode);
 
 
 procedure Combo2XmlAttr(aCombo: TDBComboBoxEh; aNode: TXmlNode;
@@ -384,11 +384,10 @@ begin
 end;
 
 procedure BatchMoveXMLNodes2Dataset(aDestDataSet: TDataSet; aSrcListNode: TXmlNode; 
-  aMapping: string; aMode:TCopyMode; aShowProgress: Boolean = false);
+  aMapping: string; aMode:TCopyMode);
 var
   slFrom, slTo: TStringList;
   i, f: Integer;
-  aProgress: TJvProgressDialog;
 begin
   case aMode of
     cmReplace:
@@ -398,29 +397,13 @@ begin
     end;
   end;
 
-  aProgress:= TJvProgressDialog.Create(nil);
-  try
-    if aShowProgress then
-    begin
-      aProgress.InitValues(0, aSrcListNode.NodeCount, 200, 0, 'Чтение данных', '');
-      aProgress.ShowCancel := False;
-      aProgress.Show;
-    end;
-
-    for i:= 0 to aSrcListNode.NodeCount - 1 do
-    begin
-      aDestDataSet.Append;
-      BatchMoveFields2(aDestDataSet, aSrcListNode[i], aMapping);
-      if aShowProgress and (i mod 10 = 0) then
-        aProgress.Position:= i;
-    end;
-    if aDestDataSet.State <> dsBrowse then
-      aDestDataSet.Post;
-    if aShowProgress then
-      aProgress.Hide;
-  finally
-    aProgress.Free;
+  for i:= 0 to aSrcListNode.NodeCount - 1 do
+  begin
+    aDestDataSet.Append;
+    BatchMoveFields2(aDestDataSet, aSrcListNode[i], aMapping);
   end;
+  if aDestDataSet.State <> dsBrowse then
+    aDestDataSet.Post;
 end;
 
 procedure Combo2XmlAttr(aCombo: TDBComboBoxEh; aNode: TXmlNode;

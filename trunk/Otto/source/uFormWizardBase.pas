@@ -29,7 +29,7 @@ type
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
     constructor CreateBlank(AOwner: TComponent); virtual;
-    constructor CreateDB(AOwner: TComponent;aObjectId: Integer); virtual;
+    constructor CreateDB(AOwner: TComponent;aObjectId: Integer); 
     constructor CreateXml(AOwner: TComponent;aXml: TNativeXml); virtual;
     constructor CreateMessage(AOwner: TComponent; aMessageId: integer); virtual;
     destructor Destroy; override;
@@ -37,6 +37,7 @@ type
     procedure InitFrames; virtual;
     function Root: TXmlNode;
     procedure BuildXml; virtual;
+    procedure ReadFromDB(aObjectId: Integer); virtual;
     procedure ParseMessage(aFileName: string); virtual; abstract;
     procedure UpdateCaptions; virtual;
     procedure UpdateControls(aPage: TJvWizardCustomPage); virtual;
@@ -92,6 +93,8 @@ begin
   Create(AOwner);
   SourceFlag:= sfDatabase;
   ObjectId:= aObjectId;
+  ReadFromDB(ObjectId);
+  trnWrite.StartTransaction;
 end;
 
 constructor TFormWizardBase.CreateXml(AOwner: TComponent;
@@ -155,7 +158,7 @@ begin
   if Pos(',TCustomForm,', Parents) > 0 then
     TCustomForm(AForm).BorderStyle:= bsNone;
   AForm.Align:= alClient;
-  AForm.Show;
+  AForm.Visible:= true;
 end;
 
 constructor TFormWizardBase.CreateMessage(AOwner: TComponent;
@@ -171,6 +174,11 @@ begin
   MessageId:= aMessageId;
   trnWrite.StartTransaction;
   ParseMessage(SourceFileName);
+end;
+
+procedure TFormWizardBase.ReadFromDB(aObjectId: Integer);
+begin
+
 end;
 
 end.

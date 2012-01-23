@@ -48,10 +48,10 @@ type
   public
     { Public declarations }
     constructor CreateBlank(AOwner: TComponent); virtual;
-    constructor CreateDB(AOwner: TComponent; aObjectId: Integer); override;
     constructor CreateMessage(AOwner: TComponent; aMessageId: integer); override;
     procedure ParseMessage(aFileName: string); override;
     procedure BuildXml; override;
+    procedure ReadFromDB(aObjectId: Integer); override;
     property OrderId: integer read GetObjectId write SetObjectId;
   end;
 
@@ -106,8 +106,7 @@ end;
 
 
 
-constructor TFormWizardOrder.CreateDB(AOwner: TComponent;
-  aObjectId: Integer);
+procedure TFormWizardOrder.ReadFromDB(aObjectId: Integer);
 begin
   inherited;
   dmOtto.ObjectGet(ndOrder, OrderId, trnRead);
@@ -117,7 +116,6 @@ begin
   dmOtto.ObjectGet(ndPlace, GetXmlAttrValue(ndAdress, 'PLACE_ID'), trnRead);
   dmOtto.OrderItemsGet(ndOrderItems, OrderId, trnRead);
   dmOtto.OrderTaxsGet(ndOrderTaxs, OrderId, trnRead);
-  trnWrite.StartTransaction;
 end;
 
 

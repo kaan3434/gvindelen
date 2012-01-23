@@ -167,7 +167,7 @@ type
     procedure actProcessArtNExecute(Sender: TObject);
     procedure actProcessCancellationExecute(Sender: TObject);
     procedure alMainUpdate(Action: TBasicAction; var Handled: Boolean);
-    procedure btnReturnClick(Sender: TObject);
+    procedure actReturnExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -722,9 +722,24 @@ begin
 end;
 
 
-procedure TMainForm.btnReturnClick(Sender: TObject);
+procedure TMainForm.actReturnExecute(Sender: TObject);
+var
+  OrderId: variant;
+  OrderCode: string;
 begin
-  TFormWizardReturn.CreateBlank(Self).Show;
+  OrderCode:= '7002';
+//  if InputQuery('Возврат позиций заявки', 'Укажите номер заявки', OrderCode) then
+  begin
+    OrderId := trnRead.DefaultDatabase.QueryValue(
+      'select o.order_id from orders o '+
+      ' inner join statuses s on (s.status_id = o.status_id) '+
+      'where order_code like ''_''||:order_code '
+      , 0, [FillFront(FilterString(OrderCode, '0123456789'), 5, '0')], trnRead);
+    if OrderId <> null then
+      TFormWizardReturn.CreateDB(Self, OrderId)
+    else
+      ShowMessage('Заявка еще не доставлена или не существует');
+  end;
 end;
 
 end.

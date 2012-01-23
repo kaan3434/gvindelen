@@ -1,13 +1,35 @@
 inherited FormWizardReturn: TFormWizardReturn
-  Left = 261
-  Top = 129
-  ActiveControl = wzIPageOrder
+  Left = 268
+  Top = 253
+  ActiveControl = wzWPage
   Caption = 'FormWizardReturn'
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   inherited wzForm: TJvWizard
-    ActivePage = wzIPageOrder
+    ActivePage = wzWPage
+    OnFinishButtonClick = wzFormFinishButtonClick
+    OnActivePageChanging = wzFormActivePageChanging
+    object wzWPage: TJvWizardWelcomePage
+      Header.Title.Color = clNone
+      Header.Title.Text = 'Welcome'
+      Header.Title.Anchors = [akLeft, akTop, akRight]
+      Header.Title.Font.Charset = DEFAULT_CHARSET
+      Header.Title.Font.Color = clWindowText
+      Header.Title.Font.Height = -16
+      Header.Title.Font.Name = 'MS Sans Serif'
+      Header.Title.Font.Style = [fsBold]
+      Header.Subtitle.Color = clNone
+      Header.Subtitle.Text = 'Subtitle'
+      Header.Subtitle.Anchors = [akLeft, akTop, akRight, akBottom]
+      Header.Subtitle.Font.Charset = DEFAULT_CHARSET
+      Header.Subtitle.Font.Color = clWindowText
+      Header.Subtitle.Font.Height = -11
+      Header.Subtitle.Font.Name = 'MS Sans Serif'
+      Header.Subtitle.Font.Style = []
+      EnabledButtons = [bkNext, bkCancel, bkHelp]
+      Caption = 'wzWPage'
+    end
     object wzIPageOrderItems: TJvWizardInteriorPage
       Header.Height = 30
       Header.ParentFont = False
@@ -28,9 +50,10 @@ inherited FormWizardReturn: TFormWizardReturn
       Header.Subtitle.Font.Height = -11
       Header.Subtitle.Font.Name = 'MS Sans Serif'
       Header.Subtitle.Font.Style = []
+      VisibleButtons = [bkNext, bkCancel]
       Caption = 'wzIPageOrderItems'
     end
-    object wzIPageOrder: TJvWizardInteriorPage
+    object wzIPageMoneyBackKind: TJvWizardInteriorPage
       Header.Height = 30
       Header.ParentFont = False
       Header.Title.Color = clNone
@@ -51,8 +74,15 @@ inherited FormWizardReturn: TFormWizardReturn
       Header.Subtitle.Font.Name = 'MS Sans Serif'
       Header.Subtitle.Font.Style = []
       Panel.Visible = True
+      EnabledButtons = [bkBack, bkNext, bkFinish, bkCancel]
+      VisibleButtons = [bkBack, bkFinish, bkCancel]
       Color = clWindow
-      Caption = 'wzIPageOrder'
+      Caption = 'wzIPageMoneyBackKind'
     end
+  end
+  object errHandler: TpFibErrorHandler
+    OnFIBErrorEvent = errHandlerFIBErrorEvent
+    Left = 456
+    Top = 16
   end
 end

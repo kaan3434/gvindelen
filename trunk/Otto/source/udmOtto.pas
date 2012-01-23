@@ -144,6 +144,7 @@ begin
     begin
       aTransaction.RollBackToSavePoint('OnExecuteAction');
       ShowMessage(E.Message);
+      raise;
     end;
   end;
 end;
