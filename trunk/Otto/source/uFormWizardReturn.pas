@@ -13,14 +13,10 @@ type
     wzIPageOrderItems: TJvWizardInteriorPage;
     wzIPageMoneyBackKind: TJvWizardInteriorPage;
     wzWPage: TJvWizardWelcomePage;
-    errHandler: TpFibErrorHandler;
     procedure FormCreate(Sender: TObject);
     procedure wzFormActivePageChanging(Sender: TObject;
       var ToPage: TJvWizardCustomPage);
     procedure wzFormFinishButtonClick(Sender: TObject);
-    procedure errHandlerFIBErrorEvent(Sender: TObject;
-      ErrorValue: EFIBError; KindIBError: TKindIBError;
-      var DoRaise: Boolean);
   private
     { Private declarations }
     ndOrder: TXmlNode;
@@ -145,15 +141,6 @@ begin
   except
     trnWrite.Rollback;
   end;
-end;
-
-procedure TFormWizardReturn.errHandlerFIBErrorEvent(Sender: TObject;
-  ErrorValue: EFIBError; KindIBError: TKindIBError; var DoRaise: Boolean);
-begin
-  inherited;
-  ShowMessage('ErrorValue='+ErrorValue.);
-  DoRaise:= True;
-
 end;
 
 end.

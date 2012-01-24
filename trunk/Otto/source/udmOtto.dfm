@@ -10,7 +10,7 @@ object dmOtto: TdmOtto
     DBName = 'localhost:D:\otto\Data\otto_ppz.fdb'
     DBParams.Strings = (
       'lc_ctype=CYRL'
-      'user_name=Valery')
+      'user_name=SYSDBA')
     DefaultTransaction = trnAutonomouse
     DefaultUpdateTransaction = trnAutonomouse
     SQLDialect = 3
@@ -271,6 +271,11 @@ object dmOtto: TdmOtto
     IndexDefs = <>
     TableLevel = 4
     Left = 144
+    Top = 224
+  end
+  object errHandler: TpFibErrorHandler
+    Options = [oeException, oeForeignKey, oeLostConnect, oeCheck, oeUniqueViolation]
+    Left = 240
     Top = 224
   end
 end

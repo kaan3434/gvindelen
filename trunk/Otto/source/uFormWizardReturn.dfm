@@ -80,9 +80,4 @@ inherited FormWizardReturn: TFormWizardReturn
       Caption = 'wzIPageMoneyBackKind'
     end
   end
-  object errHandler: TpFibErrorHandler
-    OnFIBErrorEvent = errHandlerFIBErrorEvent
-    Left = 456
-    Top = 16
-  end
 end

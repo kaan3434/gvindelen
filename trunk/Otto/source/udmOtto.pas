@@ -7,7 +7,7 @@ uses
   pFIBQuery, pFIBStoredProc, DBLookupEh, NativeXml, MemTableEh, DB,
   FIBDataSet, pFIBDataSet, Variants, MemTableDataEh, IB_Services, 
   JvComponentBase, JvDesktopAlert, Dialogs, JvBaseDlg, ImgList, Controls,
-  PngImageList, pngimage, gsFileVersionInfo, dbf;
+  PngImageList, pngimage, gsFileVersionInfo, dbf, pFIBErrorHandler;
 
 type
   TdmOtto = class(TDataModule)
@@ -35,6 +35,7 @@ type
     fibRestore: TpFIBRestoreService;
     AlertStock: TJvDesktopAlertStack;
     dbfCons: TDbf;
+    errHandler: TpFibErrorHandler;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
     procedure dbOttoAfterConnect(Sender: TObject);
