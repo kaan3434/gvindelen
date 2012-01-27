@@ -91,7 +91,6 @@ object MainForm: TMainForm
         Caption = #1048#1079' '#1080#1085#1090#1077#1088#1085#1077#1090#1072
         DisplayMode = nbdmImageAndText
         Layout = tbxlGlyphTop
-        Visible = False
       end
       object btnImportMagazine: TTBXItem
         Action = actImportArticles
