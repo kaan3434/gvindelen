@@ -127,6 +127,7 @@ begin
   try
     sl.Delimiter:= ';';
     sl.DelimitedText:= '"'+ReplaceAll(aLine, ';', '";"')+'"';
+    SetXmlAttr(ndOrderItem, 'ID', dmOtto.GetNewObjectId('ORDERITEM'));
     st:= FilterString(sl[1], '0123456789');
     if st='' then
       CatalogId:= CatalogDetect('Internet');
@@ -138,6 +139,8 @@ begin
     st:= FilterString(UpperCase(sl[4]), '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ');
     SetXmlAttr(ndOrderItem, 'DIMENSION', st);
     SetXmlAttr(ndOrderItem, 'PRICE_EUR', ToFloat(EscapeString(sl[5])));
+    SetXmlAttr(ndOrderItem, 'AMOUNT', 1);
+    SetXmlAttr(ndOrderItem, 'COST_EUR', ToFloat(EscapeString(sl[5])));
     st:= sl[6];
     SetXmlAttr(ndOrderItem, 'NAME_RUS', EscapeString(TakeFront5(st)));
     SetXmlAttr(ndOrderItem, 'KIND_RUS', EscapeString(st));

@@ -43,7 +43,7 @@ begin
   Sl:= TStringList.Create;
   try
     try
-      sl.Text:= ReadIniSection(ProjectIniFileName, 'Proxy');
+      sl.Text:= ReadIniSection(ProjectIniFileName, 'Proxy_'+GetUserFromWindows);
       if sl.Text <> '' then
       begin
         HTTP.ProxyParams.ProxyServer:= Sl.Values['Host'];

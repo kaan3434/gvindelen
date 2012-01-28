@@ -479,7 +479,7 @@ begin
   if not mtblOrderItems.Eof then
   begin
     OrderFlagList:= dmOtto.GetFlagListById(GetXmlAttrValue(ndOrder, 'STATUS_ID'));
-    ItemFlagList:= mtblOrderItems['FLAG_SIGN_LIST'];
+    ItemFlagList:= mtblOrderItems.FieldByName('FLAG_SIGN_LIST').AsString;
     Cancelable:= (Pos(',CANCELABLE,', OrderFlagList) > 0)
       and (Pos(',DELETEABLE,', ItemFlagList)+Pos(',CANCELABLE,', ItemFlagList) > 0);
   end
