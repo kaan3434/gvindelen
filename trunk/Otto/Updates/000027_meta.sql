@@ -20,9 +20,16 @@ ALTER TABLE PLACES DROP CONSTRAINT FK_PLACES_PHONEPREFIX;
 
 ALTER TABLE PHONEPREFIXES DROP CONSTRAINT PK_PHONEPREFIXES;
 
+ALTER TABLE ORDERITEMS DROP CONSTRAINT FK_ORDERITEMS_ARTICLE;
+
 ALTER TABLE ORDERHISTORY DROP CONSTRAINT FK_ORDERHISTORY_STATUS;
 
 ALTER TABLE ORDERHISTORY DROP CONSTRAINT FK_ORDERHISTORY_STATE;
+
+ALTER TABLE ORDERITEMS ADD MAGAZINE_ID ID_MAGAZINE;
+
+/* Alter Field (Null / Not Null)... */
+UPDATE RDB$RELATION_FIELDS SET RDB$NULL_FLAG = NULL WHERE RDB$FIELD_NAME='ACTION_SIGN' AND RDB$RELATION_NAME='LOGS';
 
 /* Empty ORDERHISTORY_UPDATE for drop ORDERHISTORY(STATE_ID) */
 SET TERM ^ ;
@@ -37,6 +44,7 @@ I_STATE_ID TYPE OF ID_STATE)
 SET TERM ; ^
 
 ALTER TABLE ORDERHISTORY ALTER COLUMN STATE_ID TYPE ID_STATUS;
+
 
 /* Drop table-fields... */
 DROP VIEW V_CLIENTADRESS;
@@ -67,72 +75,17 @@ DROP TABLE PHONEPREFIXES;
 DROP TABLE PHONETYPES;
 
 
+/* Create Procedure... */
+SET TERM ^ ;
+
+CREATE PROCEDURE ACTION_REEXECUTE(I_LOG_ID TYPE OF ID_LOG)
+ AS
+ BEGIN EXIT; END
+^
+
+
 /* Drop domains... */
-/* Drop: FIB$BOOLEAN (TDmnData) */
-DROP DOMAIN FIB$BOOLEAN;
-
-/* Drop: ID_CONTROL (TDmnData) */
-DROP DOMAIN ID_CONTROL;
-
-/* Drop: ID_DEAL (TDmnData) */
-DROP DOMAIN ID_DEAL;
-
-/* Drop: ID_DELIVERY (TDmnData) */
-DROP DOMAIN ID_DELIVERY;
-
-/* Drop: ID_ELEM (TDmnData) */
-DROP DOMAIN ID_ELEM;
-
-/* Drop: ID_INVOICE (TDmnData) */
-DROP DOMAIN ID_INVOICE;
-
-/* Drop: ID_SESSION (TDmnData) */
-DROP DOMAIN ID_SESSION;
-
-/* Drop: ID_STATE (TDmnData) */
-DROP DOMAIN ID_STATE;
-
-/* Drop: MSG_DTM (TDmnData) */
-DROP DOMAIN MSG_DTM;
-
-/* Drop: MSG_ID (TDmnData) */
-DROP DOMAIN MSG_ID;
-
-/* Drop: MSG_SIGN (TDmnData) */
-DROP DOMAIN MSG_SIGN;
-
-/* Drop: NODE_ID (TDmnData) */
-DROP DOMAIN NODE_ID;
-
-/* Drop: NODE_NAME (TDmnData) */
-DROP DOMAIN NODE_NAME;
-
-/* Drop: NODE_TYPE (TDmnData) */
-DROP DOMAIN NODE_TYPE;
-
-/* Drop: NODE_VALUE (TDmnData) */
-DROP DOMAIN NODE_VALUE;
-
-/* Drop: OBJ_CODE (TDmnData) */
-DROP DOMAIN OBJ_CODE;
-
-/* Drop: OBJ_NAME (TDmnData) */
-DROP DOMAIN OBJ_NAME;
-
-/* Drop: OBJ_SIGN (TDmnData) */
-DROP DOMAIN OBJ_SIGN;
-
-/* Drop: ORD_CODE (TDmnData) */
-DROP DOMAIN ORD_CODE;
-
-/* Drop: ORD_ID (TDmnData) */
-DROP DOMAIN ORD_ID;
-
-/* Drop: REST_ID (TDmnData) */
-DROP DOMAIN REST_ID;
-
-/* Drop: TEXT (TDmnData) */
-DROP DOMAIN TEXT;
+SET TERM ; ^
 
 /* Create Views... */
 /* Create view: V_PLACE_TEXT (ViwData.CreateDependDef) */
@@ -526,6 +479,10 @@ begin
 
   execute procedure param_unparse(:v_param_id, :i_params);
 
+--  select o_log_id
+--    from log_create(:i_object_sign, :v_param_id, null, null, coalesce(:i_object_id, 0))
+--    into :v_log_id;
+
   i_object_id = nullif(i_object_id, 0);
   if (:i_object_id is not null) then
     execute procedure param_set(:v_param_id, 'ID', :i_object_id);
@@ -539,17 +496,12 @@ begin
       from action_detect(:i_object_sign, :i_object_id, :v_new_status_sign)
       into :i_action_sign;
 
-  if (i_action_sign is not null) then
-    select o_action_id
-      from action_run(:i_object_sign, :i_action_sign, :v_param_id, :i_object_id)
-      into :o_action_id;
-  else
-  begin
-    select s.status_sign
-      from statuses s
-      where s.status_id = :v_now_status_id
-      into :v_now_status_sign;
-  end
+  if (i_action_sign is null) then
+    i_action_sign= :i_object_sign||'_STORE';
+
+  select o_action_id
+    from action_run(:i_object_sign, :i_action_sign, :v_param_id, :i_object_id)
+    into :o_action_id;
   suspend;
 end
 ^
@@ -714,6 +666,9 @@ begin
     else
     if (v_procedure_name = 'ORDER_FOREACH_ORDERTAX') then
       execute procedure act_order_foreach_ordertax(:i_param_id, :i_object_id);
+    else
+    if (v_procedure_name = 'ORDER_FOREACH_TAXRATE') then
+      execute procedure act_order_foreach_taxrate(:i_param_id, :i_object_id);
     else
     if (v_procedure_name = 'ORDERITEM_STORE') then
       execute procedure act_orderitem_store(:i_param_id, :i_object_id);
@@ -1337,6 +1292,25 @@ begin
 end
 ^
 
+/* Restore proc. body: ACTION_REEXECUTE */
+ALTER PROCEDURE ACTION_REEXECUTE(I_LOG_ID TYPE OF ID_LOG)
+ AS
+declare variable V_PARAMS type of VALUE_BLOB;
+declare variable V_OBJECT_SIGN type of SIGN_OBJECT;
+declare variable V_ACTION_SIGN type of SIGN_ACTION;
+declare variable V_ACTION_ID type of ID_ACTION;
+begin
+  select l.action_sign, l.params_in
+    from logs l
+    where l.log_id = :i_log_id 
+    into :v_object_sign, :v_params;
+
+  select o_action_id from action_execute(:v_object_sign, :v_params, null, null)
+    into :v_action_id;
+
+end
+^
+
 /* Restore proc. body: NOTIFY_CREATE */
 ALTER PROCEDURE NOTIFY_CREATE(I_MESSAGE_ID TYPE OF ID_MESSAGE,
 I_NOTIFY_TEXT TYPE OF VALUE_ATTR,
@@ -1569,6 +1543,32 @@ end
 ^
 
 SET TERM ; ^
+
+ALTER TABLE ORDERITEMS ALTER COLUMN ORDERITEM_ID POSITION 1;
+
+ALTER TABLE ORDERITEMS ALTER COLUMN ORDER_ID POSITION 2;
+
+ALTER TABLE ORDERITEMS ALTER COLUMN ARTICLE_ID POSITION 3;
+
+ALTER TABLE ORDERITEMS ALTER COLUMN MAGAZINE_ID POSITION 4;
+
+ALTER TABLE ORDERITEMS ALTER COLUMN ARTICLE_CODE POSITION 5;
+
+ALTER TABLE ORDERITEMS ALTER COLUMN DIMENSION POSITION 6;
+
+ALTER TABLE ORDERITEMS ALTER COLUMN PRICE_EUR POSITION 7;
+
+ALTER TABLE ORDERITEMS ALTER COLUMN AMOUNT POSITION 8;
+
+ALTER TABLE ORDERITEMS ALTER COLUMN COST_EUR POSITION 9;
+
+ALTER TABLE ORDERITEMS ALTER COLUMN STATUS_ID POSITION 10;
+
+ALTER TABLE ORDERITEMS ALTER COLUMN STATUS_DTM POSITION 11;
+
+ALTER TABLE ORDERITEMS ALTER COLUMN STATE_ID POSITION 12;
+
+ALTER TABLE ORDERITEMS ALTER COLUMN ORDERITEM_INDEX POSITION 13;
 
 ALTER TABLE PLACES ALTER COLUMN PLACE_ID POSITION 1;
 
