@@ -10,7 +10,7 @@ object dmOtto: TdmOtto
     DBName = 'localhost:D:\otto\Data\otto_ppz.fdb'
     DBParams.Strings = (
       'lc_ctype=CYRL'
-      'user_name=SYSDBA')
+      'user_name=sysdba')
     DefaultTransaction = trnAutonomouse
     DefaultUpdateTransaction = trnAutonomouse
     SQLDialect = 3
@@ -274,6 +274,7 @@ object dmOtto: TdmOtto
     Top = 224
   end
   object errHandler: TpFibErrorHandler
+    OnFIBErrorEvent = errHandlerFIBErrorEvent
     Options = [oeException, oeForeignKey, oeLostConnect, oeCheck, oeUniqueViolation]
     Left = 240
     Top = 224

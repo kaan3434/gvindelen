@@ -727,8 +727,8 @@ var
   OrderId: variant;
   OrderCode: string;
 begin
-  OrderCode:= '7002';
-//  if InputQuery('Возврат позиций заявки', 'Укажите номер заявки', OrderCode) then
+//  OrderCode:= '7002';
+  if InputQuery('Возврат позиций заявки', 'Укажите номер заявки', OrderCode) then
   begin
     OrderId := trnRead.DefaultDatabase.QueryValue(
       'select o.order_id from orders o '+

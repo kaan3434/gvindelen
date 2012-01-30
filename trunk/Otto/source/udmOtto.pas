@@ -7,7 +7,7 @@ uses
   pFIBQuery, pFIBStoredProc, DBLookupEh, NativeXml, MemTableEh, DB,
   FIBDataSet, pFIBDataSet, Variants, MemTableDataEh, IB_Services, 
   JvComponentBase, JvDesktopAlert, Dialogs, JvBaseDlg, ImgList, Controls,
-  PngImageList, pngimage, gsFileVersionInfo, dbf, pFIBErrorHandler;
+  PngImageList, pngimage, gsFileVersionInfo, dbf, pFIBErrorHandler, FIB;
 
 type
   TdmOtto = class(TDataModule)
@@ -39,6 +39,9 @@ type
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
     procedure dbOttoAfterConnect(Sender: TObject);
+    procedure errHandlerFIBErrorEvent(Sender: TObject;
+      ErrorValue: EFIBError; KindIBError: TKindIBError;
+      var DoRaise: Boolean);
   private
     { Private declarations }
     FUserName: string;
@@ -859,6 +862,17 @@ procedure TdmOtto.StepProgress;
 begin
   MainForm.pbMain.StepIt;
   Application.ProcessMessages;
+end;
+
+procedure TdmOtto.errHandlerFIBErrorEvent(Sender: TObject;
+  ErrorValue: EFIBError; KindIBError: TKindIBError; var DoRaise: Boolean);
+var
+  WMessage: WideString;
+  AMessage: AnsiString;
+begin
+  WMessage:= UTF8Decode(ErrorValue.Message);
+  AMessage:= WMessage;
+  ErrorValue.Message := AMessage;
 end;
 
 initialization

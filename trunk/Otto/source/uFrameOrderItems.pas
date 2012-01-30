@@ -190,7 +190,7 @@ var
   i, j: Integer;
   nl: TXmlNodeList;
   ArticleId: variant;
-  aWeight: variant;
+  aWeight, aMagazineId, aPriceEur, aArticleCode,aImageLink: variant;
   nArticleSign, aArticleSign: string;
   aDimension, nDimension, aColor, aDescription: string;
   OrderItemId: Integer;
@@ -290,23 +290,33 @@ begin
                   0, [aArticleSign, aDimension]);
                 aColor:= dmOtto.Recode('ARTICLECODE', 'DIMENSION', GetXmlAttrValue(nl[j].Parent, 'DIMENSION'));
                 aDescription:= dmOtto.Recode('ARTICLECODE', 'NAME', GetXmlAttrValue(nl[j].Parent, 'name'));
-                ArticleId:= trnWrite.DefaultDatabase.QueryValue(
-                  'select o_article_id from article_goc(:magazine_id,:article_code, :color, :dimension, :price_eur, :weight, :description, :image)',
-                  0, [GetXmlAttrValue(ndOrderItem, 'MAGAZINE_ID'),
-                      GetXmlAttrValue(nl[j], 'article_code'),
-                      aColor,
-                      aDimension,
-                      GetXmlAttrValue(nl[j], 'price_eur'),
-                      aWeight,
-                      aDescription,
-                      GetXmlAttrValue(nl[j].Parent, 'image_link')]);
-                trnWrite.DefaultDatabase.QueryValue(
-                  'update articlecodes set color = :color where article_sign = :article_sign',
-                  0, [aColor, aArticleSign], trnWrite);
+                aMagazineId:= GetXmlAttrValue(ndOrderItem, 'MAGAZINE_ID');
+                aArticleCode:= GetXmlAttrValue(nl[j], 'article_code');
+                aPriceEur:= GetXmlAttrValue(nl[j], 'price_eur');
+                aImageLink:= GetXmlAttrValue(nl[j].Parent, 'image_link');
+                trnWrite.SetSavePoint('ArticleGOC');
+                try
+                  ArticleId:= trnWrite.DefaultDatabase.QueryValue(
+                    'select o_article_id from article_goc(:magazine_id,:article_code, :color, :dimension, :price_eur, :weight, :description, :image)',
+                    0, [aMagazineId,
+                        aArticleCode,
+                        aColor,
+                        aDimension,
+                        aPriceEur,
+                        aWeight,
+                        aDescription,
+                        aImageLink]);
+                  trnWrite.DefaultDatabase.QueryValue(
+                    'update articlecodes set color = :color where article_sign = :article_sign',
+                    0, [aColor, aArticleSign], trnWrite);
+                  if (aArticleSign = nArticleSign) and (aDimension = nDimension) then
+                    SetXmlAttr(ndOrderItem, 'ARTICLE_ID', ArticleId);
+                except
+                  trnWrite.RollBackToSavePoint('ArticleGOC');
+                end;
 
                 if (aArticleSign = nArticleSign) and (aDimension = nDimension) then
                 begin
-                  SetXmlAttr(ndOrderItem, 'ARTICLE_ID', ArticleId);
                   if GetXmlAttrAsMoney(nl[j], 'price_eur') <> GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') then
                     SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', GetXmlAttrAsMoney(nl[j], 'price_eur'));
                 end;
@@ -489,10 +499,29 @@ begin
 end;
 
 procedure TFrameOrderItems.actReturnRequestExecute(Sender: TObject);
+var
+  OrderItemId: Variant;
+  bm: TBookmark;
 begin
-  ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM','ID', mtblOrderItems['ORDERITEM_ID']);
-  if ndOrderItem <> nil then
-    dmOtto.ActionExecute(trnWrite, ndOrderItem, 'RETURNING');
+  OrderItemId:= mtblOrderItems['ORDERITEM_ID'];
+  bm:= mtblOrderItems.GetBookmark;
+  try
+    Write;
+    try
+      ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM','ID', OrderItemId);
+      if ndOrderItem <> nil then
+      begin
+        SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'RETURNING');
+        dmOtto.ActionExecute(trnWrite, ndOrderItem);
+        dmOtto.ObjectGet(ndOrderItem, OrderItemId, trnWrite);
+      end;
+    finally
+      read;
+    end
+  finally
+    mtblOrderItems.GotoBookmark(bm);
+    mtblOrderItems.FreeBookmark(bm);
+  end;
 end;
 
 procedure TFrameOrderItems.actReturnRequestUpdate(Sender: TObject);

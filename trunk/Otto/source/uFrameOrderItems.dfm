@@ -6,7 +6,7 @@ inherited FrameOrderItems: TFrameOrderItems
   PixelsPerInch = 96
   TextHeight = 13
   inherited dckTop: TTBXDock
-    Width = 1117
+    Width = 1109
     inherited tlBarTop: TTBXToolbar
       object btnCheckAvailable: TTBXItem
         Action = actCheckAvailable
@@ -36,22 +36,22 @@ inherited FrameOrderItems: TFrameOrderItems
     end
   end
   inherited sb: TTBXStatusBar
-    Top = 406
-    Width = 1117
+    Top = 402
+    Width = 1109
   end
   object grBoxOrderItems: TJvGroupBox [2]
     Left = 0
     Top = 26
-    Width = 1117
-    Height = 380
+    Width = 1109
+    Height = 376
     Align = alClient
     Caption = #1040#1088#1090#1080#1082#1091#1083#1099' '#1079#1072#1103#1074#1082#1080
     TabOrder = 1
     object grdOrderItems: TDBGridEh
       Left = 2
       Top = 15
-      Width = 1113
-      Height = 363
+      Width = 1105
+      Height = 359
       Align = alClient
       AllowedOperations = [alopInsertEh, alopUpdateEh, alopAppendEh]
       AutoFitColWidths = True
@@ -215,7 +215,7 @@ inherited FrameOrderItems: TFrameOrderItems
         object grdArticles: TDBGridEh
           Left = 0
           Top = 0
-          Width = 1080
+          Width = 1072
           Height = 198
           Align = alClient
           AutoFitColWidths = True
@@ -330,12 +330,6 @@ inherited FrameOrderItems: TFrameOrderItems
         end
       end
     end
-  end
-  inherited trnRead: TpFIBTransaction
-    Active = True
-  end
-  inherited trnWrite: TpFIBTransaction
-    Active = True
   end
   inherited actList: TActionList
     Top = 184
@@ -518,7 +512,6 @@ inherited FrameOrderItems: TFrameOrderItems
     Bitmap = {}
   end
   object mtblOrderItems: TMemTableEh
-    Active = True
     FieldDefs = <
       item
         Name = 'ORDERITEM_ID'
@@ -934,7 +927,6 @@ inherited FrameOrderItems: TFrameOrderItems
       '    STATUS_ID'
       'FROM'
       '    MAGAZINES ')
-    Active = True
     Transaction = trnWrite
     Database = dmOtto.dbOtto
     Left = 137
@@ -945,7 +937,6 @@ inherited FrameOrderItems: TFrameOrderItems
       'select *'
       'from statuses s'
       'order by s.status_id')
-    Active = True
     Transaction = trnRead
     Database = dmOtto.dbOtto
     Left = 200
