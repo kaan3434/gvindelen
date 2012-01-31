@@ -29,7 +29,7 @@ begin
     sl.DelimitedText:= '"'+ReplaceAll(aLine, ';', '";"')+'"';
 
     OrderId:= aTransaction.DefaultDatabase.QueryValue(
-      'select order_id from orders where order_code like ''_''||:order_code',
+      'select order_id from orders where order_code like ''%''||:order_code',
       0, [FilterString(sl[2], '0123456789')], aTransaction);
     if OrderId<>null then
     begin

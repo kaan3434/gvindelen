@@ -136,6 +136,7 @@ type
     pbMain: TProgressBar;
     actReturn: TAction;
     btnReturn: TTBXItem;
+    actProcessInfo2Pay: TAction;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -733,7 +734,7 @@ begin
     OrderId := trnRead.DefaultDatabase.QueryValue(
       'select o.order_id from orders o '+
       ' inner join statuses s on (s.status_id = o.status_id) '+
-      'where order_code like ''_''||:order_code '
+      'where order_code like ''%''||:order_code '
       , 0, [FillFront(FilterString(OrderCode, '0123456789'), 5, '0')], trnRead);
     if OrderId <> null then
       TFormWizardReturn.CreateDB(Self, OrderId)

@@ -346,6 +346,10 @@ object MainForm: TMainForm
       ImageIndex = 17
       OnExecute = actReturnExecute
     end
+    object actProcessInfo2Pay: TAction
+      Category = 'ProcessMessages'
+      Caption = 'Info2Pay'
+    end
   end
   object imgListMainMenu: TPngImageList
     Height = 24

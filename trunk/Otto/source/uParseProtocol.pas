@@ -22,7 +22,7 @@ var
   StatusSign, StatusName: Variant;
 begin
   OrderId:= aTransaction.DefaultDatabase.QueryValue(
-    'select o.order_id from orders o where order_code like ''_''||:order_code',
+    'select o.order_id from orders o where order_code like ''%''||:order_code',
     0, [FillFront(sl[1],5, '0')], aTransaction);
   if OrderId <> null then
   begin
@@ -49,7 +49,7 @@ var
   NewDeliveryMessage, Dimension: string;
 begin
   OrderId:= aTransaction.DefaultDatabase.QueryValue(
-    'select o.order_id from orders o where order_code like ''_''||:order_code',
+    'select o.order_id from orders o where order_code like ''%''||:order_code',
     0, [FillFront(sl[1],5, '0')], aTransaction);
   if OrderId <> null then
   begin
