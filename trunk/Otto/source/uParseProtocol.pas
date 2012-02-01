@@ -21,9 +21,10 @@ var
   ndOrder, ndClient: TXmlNode;
   StatusSign, StatusName: Variant;
 begin
+  OrderCode:= FillFront(sl[1],5, '0');
   OrderId:= aTransaction.DefaultDatabase.QueryValue(
-    'select o.order_id from orders o where order_code like ''%''||:order_code',
-    0, [FillFront(sl[1],5, '0')], aTransaction);
+    'select o.order_id from orders o where order_code like ''_''||:order_code',
+    0, [OrderCode], aTransaction);
   if OrderId <> null then
   begin
     dmOtto.Notify(aMessageId,
