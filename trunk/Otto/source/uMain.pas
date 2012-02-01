@@ -137,6 +137,8 @@ type
     actReturn: TAction;
     btnReturn: TTBXItem;
     actProcessInfo2Pay: TAction;
+    actExportToSite: TAction;
+    btnExportToSite: TTBXItem;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -169,6 +171,8 @@ type
     procedure actProcessCancellationExecute(Sender: TObject);
     procedure alMainUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure actReturnExecute(Sender: TObject);
+    procedure actProcessInfo2PayExecute(Sender: TObject);
+    procedure actExportToSiteExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -191,7 +195,8 @@ uses
   uParseConsignment, uFormProtocol, GvNativeXml, pFIBQuery, uParsePayments,
   uFormWizardOrder, uExportOrders, uSetByr2Eur, uExportSMSReject,
   uExportCancellation, uExportOrder, uExportInvoices, uExportPackList, 
-  uParseArtN, uParseCancellation, uFormWizardReturn;
+  uParseArtN, uParseCancellation, uFormWizardReturn, uParseInfo2Pay, 
+  uExportToSite;
 
 procedure TMainForm.actParseOrderXmlExecute(Sender: TObject);
 var
@@ -407,6 +412,21 @@ begin
   until vMessageId = 0;
 end;
 
+procedure TMainForm.actProcessInfo2PayExecute(Sender: TObject);
+var
+  vMessageId: Integer;
+begin
+  repeat
+    vMessageId := dmOtto.MessageBusy(8);
+    if vMessageId > 0 then
+    begin
+      ProcessInfo2Pay(vMessageId, trnWrite);
+      with TFormProtocol.Create(Self, vMessageId) do
+        Show;
+    end;
+  until vMessageId = 0;
+end;
+
 
 
 procedure TMainForm.tmrImportMessagesTimer(Sender: TObject);
@@ -614,7 +634,7 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   verInfo.Filename := ParamStr(0);
-  Caption:= Format('PPZ2 Build:%s %s', [verInfo.GetBuildOnly, dmOtto.UserName]);
+  Caption:= Format('PPZ2 Builds:%s/%s %s', [verInfo.GetBuildOnly, dmOtto.Build, dmOtto.UserName]);
 end;
 
 procedure TMainForm.scrptUpdateExecuteError(Sender: TObject; StatementNo,
@@ -741,6 +761,11 @@ begin
     else
       ShowMessage('«а€вка еще не доставлена или не существует');
   end;
+end;
+
+procedure TMainForm.actExportToSiteExecute(Sender: TObject);
+begin
+  ExportToSite(trnRead);
 end;
 
 end.

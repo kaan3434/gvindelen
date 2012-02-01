@@ -77,7 +77,10 @@ type
     procedure ObjectGet(aNode: TXmlNode; aObjectId: Integer; aTransaction: TpFIBTransaction);
     procedure OrderItemsGet(ndOrderItems: TXmlNode; aOrderId: Integer;
       aTransaction: TpFIBTransaction);
-    procedure OrderTaxsGet(ndOrderTaxs: TXmlNode; aOrderId: Integer; aTransaction: TpFIBTransaction);
+    procedure OrderTaxsGet(ndOrderTaxs: TXmlNode; aOrderId: Integer;
+      aTransaction: TpFIBTransaction);
+    procedure OrderMoneysGet(ndOrderMoneys: TXmlNode; aOrderId: Integer;
+      aTransaction: TpFIBTransaction);
     procedure ClientRead(ndClient: TxmlNode; aClientId: Integer; aTransaction: TpFIBTransaction);
     procedure AdressRead(ndAdress: TXmlNode; aAdressId: Integer; aTransaction: TpFIBTransaction);
     procedure PlaceRead(ndPlace: TXmlNode; aPlaceId: Integer; aTransaction: TpFIBTransaction);
@@ -468,6 +471,30 @@ begin
         OrderItemId:= FieldByName('ORDERTAX_ID').AsInteger;
         ndOrderItem:= ndOrderTaxs.NodeNew('ORDERTAX');
         ObjectGet(ndOrderItem, OrderItemId, aTransaction);
+        Next;
+      end;
+    finally
+      Close;
+    end;
+  end;
+end;
+
+procedure TdmOtto.OrderMoneysGet(ndOrderMoneys: TXmlNode; aOrderId: Integer; aTransaction: TpFIBTransaction);
+var
+  ndOrderMoney: TXmlNode;
+  OrderMoneyId: Integer;
+begin
+  with qryTempUpd do
+  begin
+    Transaction:= aTransaction;
+    SQL.Text:= 'select * from OrderMoneys where Order_Id = :OrderId order by ordermoney_id';
+    ExecWP([aOrderId]);
+    try
+      while not Eof do
+      begin
+        OrderMoneyId:= FieldByName('ORDERMONEY_ID').AsInteger;
+        ndOrderMoney:= ndOrderMoneys.NodeNew('ORDERMONEY');
+        ObjectGet(ndOrderMoney, OrderMoneyId, aTransaction);
         Next;
       end;
     finally

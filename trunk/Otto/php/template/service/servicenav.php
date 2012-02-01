@@ -4,6 +4,7 @@
     <!--#servicenav_delivery#-->
     <!--#servicenav_restriction#-->
     <!--#servicenav_payment#-->
+    <!--#servicenav_paymethod#-->
     <!--#servicenav_return#-->
     <!--#servicenav_catalogorder#-->
     <!--#servicenav_contact#-->
