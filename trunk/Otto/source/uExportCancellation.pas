@@ -24,7 +24,7 @@ begin
   try
     dmOtto.ObjectGet(ndOrderItem, aOrderItemId, aTransaction);
     Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
-    Line.Add(FilterString(GetXmlAttr(ndOrder, 'ORDER_CODE'), '0123456789'));
+    Line.Add(CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5));
     Line.Add('900');
     Line.Add(GetXmlAttr(ndOrder, 'AUFTRAG_ID'));
     Line.Add(GetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX'));

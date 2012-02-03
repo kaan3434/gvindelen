@@ -570,7 +570,6 @@ inherited FormTableOrders: TFormTableOrders
   inherited actListMain: TActionList
     object actSendOrders: TAction
       Caption = #1054#1090#1087#1088#1072#1074#1080#1090#1100' '#1079#1072#1103#1074#1082#1080
-      OnExecute = actSendOrdersExecute
     end
     object actFilterApproved: TAction
       Caption = #1054#1092#1086#1088#1084#1083#1077#1085#1085#1099#1077

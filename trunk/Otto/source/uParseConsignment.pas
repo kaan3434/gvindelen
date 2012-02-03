@@ -26,16 +26,14 @@ end;
 procedure ParseConsignmentLine200(aMessageId, LineNo: Integer;
   sl: TStringList; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
-  OrderCode: WideString;
   ndOrder, ndOrderItem: TXmlNode;
   OrderId, NewStatusSign, StatusId, StatusName: variant;
   NewDeliveryMessage: string;
   Dimension: string;
 begin
-  OrderCode:= FillFront(sl[2], 5, '0');
   OrderId:= aTransaction.DefaultDatabase.QueryValue(
-    'select order_id from orders where order_code like ''%''||:order_code',
-    0, [OrderCode], aTransaction);
+    'select order_id from orders where order_code like ''_''||:order_code',
+    0, [FillFront(sl[2], 5, '0')], aTransaction);
   if OrderId<>null then
   begin
     ndOrder:= ndOrders.NodeByAttributeValue('ORDER', 'ID', OrderId);
@@ -123,14 +121,12 @@ end;
 procedure ParseConsignmentLine300(aMessageId, LineNo: Integer;
   sl: TStringList; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
-  OrderCode: string;
   OrderId: Variant;
   ndOrder: TXmlNode;
 begin
-  OrderCode:= FillFront(sl[2], 5, '0');
   OrderId:= aTransaction.DefaultDatabase.QueryValue(
-    'select order_id from orders where order_code like ''%''||:order_code',
-    0, [OrderCode], aTransaction);
+    'select order_id from orders where order_code like ''_''||:order_code',
+    0, [FillFront(sl[2], 5, '0')], aTransaction);
   if OrderId<>null then
   begin
     ndOrder:= ndOrders.NodeByAttributeValue('ORDER', 'ID', OrderId);

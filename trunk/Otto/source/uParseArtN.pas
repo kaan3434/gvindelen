@@ -31,7 +31,7 @@ begin
 
     OrderCode:= FillFront(FilterString(Trim(sl[5]), '0123456789'), 5, '0');
     OrderId:= aTransaction.DefaultDatabase.QueryValue(
-      'select order_id from orders where order_code like ''%''||:order_code',
+      'select order_id from orders where order_code like ''_''||:order_code',
       0, [OrderCode], aTransaction);
     if OrderId<>null then
     begin

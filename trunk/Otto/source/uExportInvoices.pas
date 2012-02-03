@@ -21,7 +21,7 @@ begin
   try
     dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
     result:= GetXmlAttr(ndProduct, 'PARTNER_NUMBER')+';'+
-             FilterString(GetXmlAttr(ndorder, 'ORDER_CODE'), '0123456789')+';1'#13#10;
+             CopyLast(GetXmlAttr(ndorder, 'ORDER_CODE'), 5)+';1'#13#10;
     if GetXmlAttr(ndOrder, 'STATUS_SIGN') <> 'PAID' then
       SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'PAID');
     SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'PAYSENT');

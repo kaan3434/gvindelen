@@ -84,7 +84,7 @@ begin
       GetXmlAttr(ndClient, 'FIRST_NAME') + ' '+
       Copy(GetXmlAttr(ndClient, 'MID_NAME'), 1, 1) + ' ' +
       GetXmlAttr(ndClient, 'LAST_NAME'));
-    tblCons['AUFEXT']:= FilterString(GetXmlAttr(ndOrder, 'ORDER_CODE'), '0123456789');
+    tblCons['AUFEXT']:= CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5);
     tblCons['GRART']:= dmOtto.Recode('ARTICLE', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION'));
     tblCons['NAMEZAK']:= GetXmlAttr(ndOrderItem, 'NAME_RUS') + GetXmlAttr(ndOrderItem, 'KIND_RUS', ' ');
     tblCons['FAMILY']:= GetXmlAttr(ndClient, 'LAST_NAME') +

@@ -113,7 +113,7 @@ begin
   Line:= TStringList.Create;
   try
     Line.Add(GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'));
-    Line.Add(FilterString(GetXmlAttrValue(ndOrder, 'ORDER_CODE'), '0123456789'));
+    Line.Add(CopyLast(GetXmlAttrValue(ndOrder, 'ORDER_CODE'), 5));
 //    Line.Add(GetXmlAttrValue(ndOrder, 'CLIENT_ID'));
     Line.Add('100');
     Line.Add('1');
@@ -145,8 +145,7 @@ begin
     Line.Add(GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'));
     Line.Add(GetXmlAttrValue(ndOrder, 'CLIENT_ID'));
     Line.Add('200');
-    Line.Add(FilterString(GetXmlAttrValue(ndOrder, 'ORDER_CODE'), '0123456789'));
-//    Line.Add(GetXmlAttrValue(ndOrder, 'ORDER_CODE'));
+    Line.Add(CopyLast(GetXmlAttrValue(ndOrder, 'ORDER_CODE'), 5));
     Line.Add(GetXmlAttrValue(ndOrderItem, 'ARTICLE_CODE'));
     Dimension:= GetXmlAttrValue(ndOrderItem, 'DIMENSION');
     if FilterString(Dimension, '0123456789') <> Dimension then
