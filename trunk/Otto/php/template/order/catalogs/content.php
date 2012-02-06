@@ -15,10 +15,10 @@ vertical-align: middle; text-align: center;
 }
 .teaser {background-color:white;}
 
-.dottedTop { background: url(/assets/ru-otto-moda/imagesOnline/frame/dotline_horizontal.gif) top left repeat-x transparent; }
-.dottedBottom { background: url(/assets/ru-otto-moda/imagesOnline/frame/dotline_horizontal.gif) bottom left repeat-x transparent; }
-.dotted { background: url(/assets/ru-otto-moda/imagesOnline/frame/dotline_horizontal.gif) top left repeat-x transparent !important; }
-.popup .dotted { background: url(/assets/ru-otto-moda/imagesOnline/frame/dotline_horizontal.gif) top left repeat-x transparent !important; }
+.dottedTop { background: url(/assets/otto-by/images/spacer/dotline_horizontal.gif) top left repeat-x transparent; }
+.dottedBottom { background: url(/assets/otto-by/images/spacer/dotline_horizontal.gif) bottom left repeat-x transparent; }
+.dotted { background: url(/assets/otto-by/images/spacer/dotline_horizontal.gif) top left repeat-x transparent !important; }
+.popup .dotted { background: url(/assets/otto-by/images/spacer/dotline_horizontal.gif) top left repeat-x transparent !important; }
 
 </style>
 
@@ -50,9 +50,14 @@ vertical-align: middle; text-align: center;
 <?php
   $fpath = $template_path . $_GET['path'] . '/';
   $files = scandir($fpath);
+  $index = 1;
   foreach($files as $f) {
     if ((substr($f, 0, 4) == 'cat_') and (substr($f, -4) == '.inc')) {
       include $fpath . $f;
+      $index++;
+      if ($index % 2) {
+        echo '<p class="dotted full">&nbsp;</p>';
+      }
     }
   }
   ?>
@@ -125,31 +130,6 @@ vertical-align: middle; text-align: center;
 </div>
 </div>
 </div>
-<div class="downloadBox">
-<table class="imageWrapper">
-<tbody><tr>
-<td>
-<div class="content" style="background-color:#fff;margin:1px 0 0 1px;">
-<a href="http://www.otto.de/is-bin/INTERSHOP.enfinity/WFS/Otto-OttoDe-Site/de_DE/-/EUR/OV_ViewTemplate-View?Template=popups/blaetterbarer_katalog&amp;CatalogPage=1&amp;ls=0&amp;BlaetterbarerKatalog=sbi2_123#lmPromo=la,3,hk,sh6547505,fl,Z1_S1_TTMI_Special" target="_blank"><img src="assets/otto-by/images/catalogs2011_05/so_bin_ich.jpg" alt="So bin ich"></a>
-</div>
-</td>
-</tr>
-</tbody></table>
-<div class="text">
-<div class="inner">
-<b>So bin ich</b>
-<p>Вы  можете найти и подобрать себе одежду, смоделированную специально для нестандартных фигур. So Bin Ich - смело, дерзко, симпатично. Огромный выбор моделей больших размеров. Стиль - от спортивного до элегантного. Все размеры по одной цене.<br />
- На немецком языке. /172стр./</p>
-
-
-<a href="http://www.otto.de/is-bin/INTERSHOP.enfinity/WFS/Otto-OttoDe-Site/de_DE/-/EUR/OV_ViewTemplate-View?Template=popups/blaetterbarer_katalog&amp;CatalogPage=1&amp;ls=0&amp;BlaetterbarerKatalog=sbi2_123#lmPromo=la,3,hk,sh6547505,fl,Z1_S1_TTMI_Special" target="_blank">Посмотреть каталог</a><br />
- <a href="http://www.otto-moda.lt/katalogu-uzsakymai" target="_blank">Заказать на сайте</a>, <a href="/?path=service/contact">в офисе</a>
-<br>
-
-</div>
-</div>
-</div>
-
 
 <p class="dotted full">&nbsp;</p>
 

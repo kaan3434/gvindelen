@@ -4502,3 +4502,8 @@ float:left;margin-right:15px;
 .dottedBottom { background: url(../images/imagesOnline/frame/dotline_horizontal.gif) bottom left repeat-x transparent; }
 
 .dotted { background: url(../images/imagesOnline/frame/dotline_horizontal.gif) top left repeat-x transparent !important; }
+
+.full {
+    clear: both;
+    width: 769px;
+}
