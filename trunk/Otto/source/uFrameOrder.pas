@@ -80,7 +80,7 @@ begin
   inherited;
   SetXmlAttr(ndOrder, 'PRODUCT_ID', lcbProduct.Value);
   SetXmlAttr(ndOrder, 'TAXPLAN_ID', lcbTaxPlan.Value);
-  dmOtto.ActionExecute(trnWrite, ndOrder);
+  dmOtto.ActionExecute(trnWrite, ndOrder, 'DRAFT');
   dmOtto.ObjectGet(ndOrder, OrderId, trnWrite);
 end;
 

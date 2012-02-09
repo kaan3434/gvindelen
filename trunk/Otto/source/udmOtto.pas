@@ -183,10 +183,16 @@ begin
   if dbOtto.Connected then dbOtto.Close;
   dbParams:= TVarList.Create;
   try
-    dbParams.LoadSectionFromIniFile(ProjectIniFileName, 'DataBase');
+    dbParams.LoadSectionFromIniFile(ProjectIniFileName, 'DataBase_'+GetUserFromWindows);
+    if dbParams.Count = 0 then
+      dbParams.LoadSectionFromIniFile(ProjectIniFileName, 'DataBase');
     dbOtto.DBName:= dbParams['ServerName']+':'+dbParams['FileName'];
     dbOtto.ConnectParams.CharSet:= 'CYRL';
-    dbOtto.Open(true);
+    try
+      dbOtto.Open(true);
+    except
+      Halt;
+    end;
     FUserName:= dbOtto.DBParams.Values['user_name'];
     FPassword:= dbOtto.DBParams.Values['password'];
     BackupFileName:= Format('%s%s_%s_Dayly.fbk',

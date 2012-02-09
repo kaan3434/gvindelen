@@ -140,12 +140,17 @@ inherited FormTableOrders: TFormTableOrders
             EditButtons = <>
             FieldName = 'BAR_CODE'
             Footers = <>
+          end
+          item
+            EditButtons = <>
+            FieldName = 'USER_SIGN'
+            Footers = <>
           end>
         inherited RowDetailData: TRowDetailPanelControlEh
           object pcDetailInfo: TPageControl
             Left = 0
             Top = 0
-            Width = 671
+            Width = 736
             Height = 198
             ActivePage = tsOrderItems
             Align = alClient
@@ -155,7 +160,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdOrderProperties: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 663
+                Width = 728
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -208,7 +213,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdOrderItems: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 663
+                Width = 728
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -549,7 +554,8 @@ inherited FormTableOrders: TFormTableOrders
       '    orders.STATUS_DTM,'
       '    v_order_summary.cost_eur,'
       '    v_order_summary.cost_byr,'
-      '    orders.bar_code'
+      '    orders.bar_code,'
+      '    orders.user_sign'
       'FROM ORDERS '
       
         '  inner join v_clients_fio on (v_clients_fio.client_id = orders.' +
@@ -560,7 +566,7 @@ inherited FormTableOrders: TFormTableOrders
         'rs.order_id)'
       'where '
       '/*FILTER*/ 1=1'
-      'order by Create_dtm')
+      'order by Create_dtm desc')
     CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
     CacheModelOptions.BufferChunks = 100
     AfterScroll = qryMainAfterScroll

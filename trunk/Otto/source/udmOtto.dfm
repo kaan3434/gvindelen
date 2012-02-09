@@ -7,13 +7,11 @@ object dmOtto: TdmOtto
   Height = 405
   Width = 624
   object dbOtto: TpFIBDatabase
-    Connected = True
     DBName = 'localhost:D:\otto\Data\otto_ppz.fdb'
     DBParams.Strings = (
       'lc_ctype=CYRL'
-      'user_name=sysdba'
-      'password=masterkey'
-      'sql_role_name=')
+      'user_name=SYSDBA'
+      'password=masterkey')
     DefaultTransaction = trnAutonomouse
     DefaultUpdateTransaction = trnAutonomouse
     SQLDialect = 3
@@ -112,7 +110,6 @@ object dmOtto: TdmOtto
     Top = 176
   end
   object trnAutonomouse: TpFIBTransaction
-    Active = True
     DefaultDatabase = dbOtto
     TimeoutAction = TARollback
     TRParams.Strings = (

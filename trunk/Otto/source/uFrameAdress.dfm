@@ -7,17 +7,17 @@ inherited FrameAdress: TFrameAdress
   PixelsPerInch = 96
   TextHeight = 13
   inherited dckTop: TTBXDock
-    Width = 904
+    Width = 912
   end
   inherited sb: TTBXStatusBar
-    Top = 390
-    Width = 904
+    Top = 394
+    Width = 912
   end
   object pnlRightOnAdress: TJvPanel [2]
-    Left = 614
+    Left = 622
     Top = 26
     Width = 290
-    Height = 364
+    Height = 368
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
@@ -27,15 +27,15 @@ inherited FrameAdress: TFrameAdress
     BorderWidth = 4
     Constraints.MaxWidth = 290
     Constraints.MinWidth = 290
-    TabOrder = 0
+    TabOrder = 2
     object grBoxAdress: TJvGroupBox
       Left = 5
-      Top = 208
+      Top = 212
       Width = 280
       Height = 151
       Align = alBottom
       Caption = #1040#1076#1088#1077#1089' ('#1053#1086#1074#1099#1081')'
-      TabOrder = 1
+      TabOrder = 2
       object lblPostIndex: TLabel
         Left = 8
         Top = 16
@@ -151,12 +151,12 @@ inherited FrameAdress: TFrameAdress
     end
     object grBoxPlace: TJvGroupBox
       Left = 5
-      Top = 88
+      Top = 92
       Width = 280
       Height = 120
       Align = alBottom
       Caption = #1053#1072#1089#1077#1083#1077#1085#1085#1099#1081' '#1087#1091#1085#1082#1090' ('#1053#1086#1074#1099#1081')'
-      TabOrder = 0
+      TabOrder = 1
       object lbl2: TLabel
         Left = 8
         Top = 16
@@ -231,7 +231,7 @@ inherited FrameAdress: TFrameAdress
         Height = 21
         EditButtons = <>
         TabOrder = 2
-        Visible = True
+        Visible = False
         OnEnter = SetKeyLayout
         OnKeyDown = EditKeyDown
       end
@@ -252,16 +252,16 @@ inherited FrameAdress: TFrameAdress
       Left = 5
       Top = 5
       Width = 280
-      Height = 83
+      Height = 87
       Align = alClient
       Caption = #1050#1083#1080#1077#1085#1090' ('#1053#1086#1074#1099#1081')'
-      TabOrder = 2
+      TabOrder = 0
       PropagateEnable = True
       object txtClientName: TStaticText
         Left = 2
         Top = 15
         Width = 276
-        Height = 66
+        Height = 70
         Align = alClient
         AutoSize = False
         BorderStyle = sbsSunken
@@ -272,16 +272,16 @@ inherited FrameAdress: TFrameAdress
   object pnlCenterOnAdress: TPanel [3]
     Left = 0
     Top = 26
-    Width = 614
-    Height = 364
+    Width = 622
+    Height = 368
     Align = alClient
     BorderWidth = 4
     Caption = 'pCenter'
     TabOrder = 1
     object split1: TJvNetscapeSplitter
       Left = 5
-      Top = 173
-      Width = 604
+      Top = 177
+      Width = 612
       Height = 10
       Cursor = crVSplit
       Align = alBottom
@@ -292,16 +292,16 @@ inherited FrameAdress: TFrameAdress
     object grBoxgb2: TJvGroupBox
       Left = 5
       Top = 5
-      Width = 604
-      Height = 193
-      Align = alTop
+      Width = 612
+      Height = 172
+      Align = alClient
       Caption = #1053#1072#1089#1077#1083#1077#1085#1085#1099#1077' '#1087#1091#1085#1082#1090#1099
       TabOrder = 0
       object grdPlaces: TDBGridEh
         Left = 2
         Top = 15
-        Width = 600
-        Height = 176
+        Width = 608
+        Height = 155
         TabStop = False
         Align = alClient
         AutoFitColWidths = True
@@ -380,8 +380,8 @@ inherited FrameAdress: TFrameAdress
     end
     object grBoxgb1: TJvGroupBox
       Left = 5
-      Top = 183
-      Width = 604
+      Top = 187
+      Width = 612
       Height = 176
       Align = alBottom
       Caption = #1040#1076#1088#1077#1089#1072
@@ -389,7 +389,7 @@ inherited FrameAdress: TFrameAdress
       object grdAdresses: TDBGridEh
         Left = 2
         Top = 15
-        Width = 600
+        Width = 608
         Height = 159
         TabStop = False
         Align = alBottom
