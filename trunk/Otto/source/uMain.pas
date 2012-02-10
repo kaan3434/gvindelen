@@ -99,7 +99,6 @@ type
     frxPDFExport: TfrxPDFExport;
     actImportPayments: TAction;
     btn8: TTBXItem;
-    actPaymentAssign: TAction;
     btn9: TTBXItem;
     tmrImportMessages: TTimer;
     frxReport: TfrxReport;
@@ -139,6 +138,7 @@ type
     actProcessInfo2Pay: TAction;
     actExportToSite: TAction;
     btnExportToSite: TTBXItem;
+    subExportActions: TTBXSubmenuItem;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);

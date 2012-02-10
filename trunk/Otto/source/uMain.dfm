@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 264
-  Top = 240
+  Left = 307
+  Top = 236
   Width = 845
   Height = 512
   Caption = 'PPZ'
@@ -22,8 +22,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 837
-    Height = 47
+    Width = 829
+    Height = 49
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -38,31 +38,42 @@ object MainForm: TMainForm
         Layout = tbxlGlyphTop
       end
       object sMenu2: TTBXSubmenuItem
-        Caption = #1044#1077#1081#1089#1090#1074#1080#1103
+        Caption = #1042#1093#1086#1076#1103#1097#1080#1077
         DisplayMode = nbdmImageAndText
         ImageIndex = 8
         Layout = tbxlGlyphTop
         Options = [tboDropdownArrow]
-        object btn10: TTBXItem
-          Action = actExportOrders
-        end
         object btn6: TTBXItem
           Action = actProcessProtocol
+        end
+        object btn2: TTBXItem
+          Action = actProcessArtN
         end
         object btn5: TTBXItem
           Action = actProcessLiefer
         end
+        object btnCancellation: TTBXItem
+          Action = actProcessCancellation
+        end
         object btn4: TTBXItem
           Action = actProcessPackList
-        end
-        object btn7: TTBXItem
-          Action = actProcessConsignment
+          Visible = False
         end
         object btn8: TTBXItem
           Action = actImportPayments
         end
-        object btn2: TTBXItem
-          Action = actProcessArtN
+        object btn7: TTBXItem
+          Action = actProcessConsignment
+        end
+      end
+      object subExportActions: TTBXSubmenuItem
+        Caption = #1048#1089#1093#1086#1076#1103#1097#1080#1077
+        DisplayMode = nbdmImageAndText
+        ImageIndex = 3
+        Layout = tbxlGlyphTop
+        Options = [tboDropdownArrow]
+        object btn10: TTBXItem
+          Action = actExportOrders
         end
         object btn12: TTBXItem
           Action = actExportSMSRejected
@@ -75,9 +86,6 @@ object MainForm: TMainForm
         end
         object btn15: TTBXItem
           Action = actExportPackList
-        end
-        object btnCancellation: TTBXItem
-          Action = actProcessCancellation
         end
         object btnExportToSite: TTBXItem
           Action = actExportToSite
@@ -139,9 +147,9 @@ object MainForm: TMainForm
         end
       end
       object btn9: TTBXItem
-        Action = actPaymentAssign
         Caption = #1055#1083#1072#1090#1077#1078#1080
         DisplayMode = nbdmImageAndText
+        ImageIndex = 10
         Layout = tbxlGlyphTop
         Visible = False
       end
@@ -182,16 +190,16 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 436
-    Width = 837
+    Top = 432
+    Width = 829
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object pbMain: TProgressBar
     Left = 0
-    Top = 419
-    Width = 837
+    Top = 415
+    Width = 829
     Height = 17
     Align = alBottom
     TabOrder = 1
@@ -202,7 +210,7 @@ object MainForm: TMainForm
     Left = 128
     Top = 96
     object actExportOrders: TAction
-      Category = 'ProcessMessages'
+      Category = 'Export'
       Caption = #1054#1090#1087#1088#1072#1074#1080#1090#1100' '#1079#1072#1103#1074#1082#1080
       OnExecute = actExportOrdersExecute
     end
@@ -261,22 +269,22 @@ object MainForm: TMainForm
       ImageIndex = 8
     end
     object actProcessProtocol: TAction
-      Category = 'ProcessMessages'
+      Category = 'Import'
       Caption = #1055#1088#1086#1090#1086#1082#1086#1083
       OnExecute = actProcessProtocolExecute
     end
     object actProcessLiefer: TAction
-      Category = 'ProcessMessages'
+      Category = 'Import'
       Caption = 'Liefer'
       OnExecute = actProcessLieferExecute
     end
     object actProcessPackList: TAction
-      Category = 'ProcessMessages'
+      Category = 'Import'
       Caption = #1055#1072#1082#1083#1080#1089#1090
       OnExecute = actProcessPackListExecute
     end
     object actProcessConsignment: TAction
-      Category = 'ProcessMessages'
+      Category = 'Import'
       Caption = #1050#1086#1085#1089#1080#1075#1084#1077#1085#1090
       OnExecute = actProcessConsignmentExecute
     end
@@ -286,15 +294,12 @@ object MainForm: TMainForm
       OnExecute = actPrintInvoicesExecute
     end
     object actImportPayments: TAction
-      Category = 'ProcessMessages'
+      Category = 'Import'
       Caption = #1055#1083#1072#1090#1077#1078#1080
       OnExecute = actImportPaymentsExecute
     end
-    object actPaymentAssign: TAction
-      Caption = #1056#1072#1079#1085#1077#1084#1090#1080' '#1087#1083#1072#1090#1077#1078#1080
-      ImageIndex = 10
-    end
     object actInstallPatch: TAction
+      Category = 'Service'
       Caption = #1042#1099#1083#1077#1095#1080#1090#1100
       ImageIndex = 11
       OnExecute = actInstallPatchExecute
@@ -305,42 +310,44 @@ object MainForm: TMainForm
       OnExecute = actSetByr2EurExecute
     end
     object actExportSMSRejected: TAction
-      Category = 'ProcessMessages'
+      Category = 'Export'
       Caption = #1054#1090#1087#1088#1072#1074#1080#1090#1100' SMS '#1086#1073' '#1086#1090#1082#1072#1079#1072#1093
       OnExecute = actExportSMSRejectedExecute
     end
     object actExportCancellation: TAction
-      Category = 'ProcessMessages'
+      Category = 'Export'
       Caption = #1054#1090#1087#1088#1072#1074#1080#1090#1100' '#1079#1072#1087#1088#1086#1089#1099' '#1085#1072' '#1072#1085#1091#1083#1103#1094#1080#1102
       OnExecute = actExportCancellationExecute
     end
     object actExportPayment: TAction
-      Category = 'ProcessMessages'
+      Category = 'Export'
       Caption = #1054#1090#1087#1088#1072#1074#1080#1090#1100' '#1054#1087#1083#1072#1095#1077#1085#1085#1099#1077' '#1079#1072#1103#1074#1082#1080
       OnExecute = actExportPaymentExecute
     end
     object actExportPackList: TAction
-      Category = 'ProcessMessages'
+      Category = 'Export'
       Caption = #1054#1090#1087#1088#1072#1074#1080#1090#1100' '#1055#1072#1082#1083#1080#1089#1090' '#1074' '#1042#1080#1083#1100#1085#1102#1089
       OnExecute = actExportPackListExecute
     end
     object actBackup: TAction
+      Category = 'Service'
       Caption = #1057#1076#1077#1083#1072#1090#1100' '#1088#1077#1079#1077#1088#1074#1085#1102' '#1082#1086#1087#1080#1102
       ImageIndex = 14
       OnExecute = actBackupExecute
     end
     object actRestore: TAction
+      Category = 'Service'
       Caption = #1042#1086#1089#1089#1090#1072#1085#1086#1074#1080#1090#1100' '#1080#1079' '#1088#1077#1079#1077#1088#1074#1085#1086#1081' '#1082#1086#1087#1080#1080
       ImageIndex = 15
       OnExecute = actRestoreExecute
     end
     object actProcessArtN: TAction
-      Category = 'ProcessMessages'
+      Category = 'Import'
       Caption = 'ArtN'
       OnExecute = actProcessArtNExecute
     end
     object actProcessCancellation: TAction
-      Category = 'ProcessMessages'
+      Category = 'Import'
       Caption = #1055#1088#1086#1090#1086#1082#1086#1083#1099' '#1040#1085#1091#1083#1103#1094#1080#1080
       OnExecute = actProcessCancellationExecute
     end
@@ -350,12 +357,12 @@ object MainForm: TMainForm
       OnExecute = actReturnExecute
     end
     object actProcessInfo2Pay: TAction
-      Category = 'ProcessMessages'
+      Category = 'Import'
       Caption = 'Info2Pay'
       OnExecute = actProcessInfo2PayExecute
     end
     object actExportToSite: TAction
-      Category = 'ProcessMessages'
+      Category = 'Export'
       Caption = #1044#1072#1085#1085#1099#1077' '#1076#1083#1103' '#1089#1072#1081#1090#1072
       OnExecute = actExportToSiteExecute
     end
