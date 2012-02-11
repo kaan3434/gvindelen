@@ -105,7 +105,7 @@
                  <td width="30%"><font color="red">Форма оплаты</font></td> 
                  <td width="30%"><select size="1" name="PayForm" class="cat_tables_form"> 
                                     <option value="Предоплата" <? if ($_POST['PayForm'] == "") echo "selected"; ?>>Предоплата</option>
-                                    <!--option value="Наложенный платеж" <? if ($_POST['PayForm'] == "") echo "selected"; ?>>Наложенным платежом</option-->
+                                    <option value="Наложенный платеж" <? if ($_POST['PayForm'] == "") echo "selected"; ?>>Наложенным платежом</option>
                                   </select></td> 
                </tr> 
              </tbody></table>

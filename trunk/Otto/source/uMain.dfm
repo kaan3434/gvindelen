@@ -202,7 +202,16 @@ object MainForm: TMainForm
     Width = 829
     Height = 17
     Align = alBottom
+    TabOrder = 2
+  end
+  object txt1: TStaticText
+    Left = 432
+    Top = 232
+    Width = 21
+    Height = 17
+    Caption = 'txt1'
     TabOrder = 1
+    OnClick = txt1Click
   end
   object alMain: TActionList
     Images = imgListMainMenu
@@ -1455,7 +1464,7 @@ object MainForm: TMainForm
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 40939.979501435180000000
+    ReportOptions.LastChange = 40939.979501435170000000
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
     Left = 352

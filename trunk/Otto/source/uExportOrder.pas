@@ -72,7 +72,7 @@ begin
     Line.Add(Translit(GetXmlAttr(ndPlace, 'AREA_NAME', '', ' r-n')));
     Line.Add(GetXmlAttr(ndAdress, 'POSTINDEX'));
     Line.Add(GetPlace(ndPlace, 24));
-    Line.Add(IfThen(XmlAttrIn(ndClient, 'STATUS_SIGN', 'APPROVED'), 'N', 'U'));
+    Line.Add(IfThen(XmlAttrIn(ndOrder, 'STATUS_SIGN', 'APPROVED'), 'N', 'U'));
     Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
     if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'APPROVED') then
       dmOtto.ActionExecute(aTransaction, ndOrder, 'ACCEPTREQUEST');
