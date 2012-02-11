@@ -38,28 +38,36 @@ var
   OrderList, FileName, OrderText: string;
   OrderId: variant;
 begin
+  OrderText:= '';
   ndProduct:= ndProducts.NodeFindOrCreate('PRODUCT');
   try
-    dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
-    OrderList:= aTransaction.DefaultDatabase.QueryValue(
-      'select list(distinct o.order_id) '+
-      'from orders o '+
-      '  inner join statuses s on (s.status_id = o.status_id and s.status_sign in (''ACCEPTED'',''PAID'')) '+
-      '  inner join v_order_paid op on (op.order_id = o.order_id) '+
-      'where o.product_id = :product_id',
-      0, [aProductId], aTransaction);
-    while OrderList <> '' do
-    begin
-      OrderId:= TakeFront5(OrderList, ',');
-      OrderText:= OrderText + ExportOrder(aTransaction, ndProduct, OrderId);
-    end;
+    if not aTransaction.Active then
+      aTransaction.StartTransaction;
+    try
+      dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
+      OrderList:= aTransaction.DefaultDatabase.QueryValue(
+        'select list(distinct o.order_id) '+
+        'from orders o '+
+        '  inner join statuses s on (s.status_id = o.status_id and s.status_sign in (''ACCEPTED'',''PAID'')) '+
+        '  inner join v_order_paid op on (op.order_id = o.order_id) '+
+        'where o.product_id = :product_id',
+        0, [aProductId], aTransaction);
+      while OrderList <> '' do
+      begin
+        OrderId:= TakeFront5(OrderList, ',');
+        OrderText:= OrderText + ExportOrder(aTransaction, ndProduct, OrderId);
+      end;
 
-    FileName:= GetNextFileName(Format('%szlg_%s_%%.2u.%.3d', [
-      Path['PaidInvoices'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
-      DayOfTheYear(Date)]));
-    ForceDirectories(ExtractFileDir(FileName));
-    SaveStringAsFile(OrderText, FileName);
-    dmOtto.CreateAlert('Отправка платежей', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
+      FileName:= GetNextFileName(Format('%szlg_%s_%%.2u.%.3d', [
+        Path['PaidInvoices'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
+        DayOfTheYear(Date)]));
+      ForceDirectories(ExtractFileDir(FileName));
+      SaveStringAsFile(OrderText, FileName);
+      aTransaction.Commit;
+      dmOtto.CreateAlert('Отправка платежей', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
+    except
+      aTransaction.Rollback;
+    end;
   finally
     ndProduct.Clear;
   end;
@@ -73,29 +81,22 @@ var
   ProductList: string;
   Files: TStringList;
 begin
-  if aTransaction.Active then aTransaction.Rollback;
-  aTransaction.StartTransaction;
+  xml:= TNativeXml.CreateName('PRODUCTS');
   try
-    xml:= TNativeXml.CreateName('PRODUCTS');
-    try
-      ndProducts:= Xml.Root;
-      ProductList:= aTransaction.DefaultDatabase.QueryValue(
-        'select list(distinct o.product_id) '+
-        'from orders o '+
-        '  inner join statuses s on (s.status_id = o.status_id and s.status_sign in (''ACCEPTED'',''PAID'')) '+
-        '  inner join v_order_paid op on (op.order_id = o.order_id)',
-        0, aTransaction);
-      while ProductList <> '' do
-      begin
-        ProductId:= TakeFront5(ProductList, ',');
-        ExportProduct(aTransaction, ndProducts, ProductId);
-      end;
-    finally
-      Xml.Free;
+    ndProducts:= Xml.Root;
+    ProductList:= aTransaction.DefaultDatabase.QueryValue(
+      'select list(distinct o.product_id) '+
+      'from orders o '+
+      '  inner join statuses s on (s.status_id = o.status_id and s.status_sign in (''ACCEPTED'',''PAID'')) '+
+      '  inner join v_order_paid op on (op.order_id = o.order_id)',
+      0, aTransaction);
+    while ProductList <> '' do
+    begin
+      ProductId:= TakeFront5(ProductList, ',');
+      ExportProduct(aTransaction, ndProducts, ProductId);
     end;
-    aTransaction.Commit;
-  except
-    aTransaction.Rollback;
+  finally
+    Xml.Free;
   end;
 end;
 

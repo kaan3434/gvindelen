@@ -29,7 +29,7 @@ uses
   uFrameOrderSummary in 'uFrameOrderSummary.pas' {FrameOrderSummary: TFrame},
   uParseOrder in 'uParseOrder.pas',
   uFormWizardReturn in 'uFormWizardReturn.pas' {FormWizardReturn},
-  uExportOrders in 'uExportOrders.pas',
+  uExportPrePackList in 'uExportPrePackList.pas',
   uSetByr2Eur in 'uSetByr2Eur.pas' {FormSetByr2Eur},
   uExportSMSReject in 'uExportSMSReject.pas',
   uExportToSite in 'uExportToSite.pas',
