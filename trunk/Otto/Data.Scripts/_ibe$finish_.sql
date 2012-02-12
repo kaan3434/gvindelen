@@ -150,7 +150,6 @@ ALTER TABLE NOTIFIES ADD CONSTRAINT FK_NOTIFIES_MESSAGE FOREIGN KEY (MESSAGE_ID)
 ALTER TABLE ORDERHISTORY ADD CONSTRAINT FK_ORDERHISTORY_ORDER FOREIGN KEY (ORDER_ID) REFERENCES ORDERS (ORDER_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE ORDERHISTORY ADD CONSTRAINT FK_ORDERHISTORY_STATE FOREIGN KEY (STATE_ID) REFERENCES STATUSES (STATUS_ID) ON DELETE SET NULL ON UPDATE CASCADE;
 ALTER TABLE ORDERHISTORY ADD CONSTRAINT FK_ORDERHISTORY_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE ORDERITEMS ADD CONSTRAINT FK_ORDERITEMS_ARTICLE FOREIGN KEY (ARTICLE_ID) REFERENCES ARTICLES (ARTICLE_ID) ON UPDATE CASCADE;
 ALTER TABLE ORDERITEMS ADD CONSTRAINT FK_ORDERITEMS_ORDER FOREIGN KEY (ORDER_ID) REFERENCES ORDERS (ORDER_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE ORDERITEMS ADD CONSTRAINT FK_ORDERITEMS_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE ORDERITEM_ATTRS ADD CONSTRAINT FK_ORDERITEM_ATTRS_ATTR FOREIGN KEY (ATTR_ID) REFERENCES ATTRS (ATTR_ID) ON UPDATE CASCADE;
@@ -2048,7 +2047,7 @@ end^
 
 
 CREATE OR ALTER PROCEDURE ACTION_DETECT (
-    I_OBJECT_SIGN TYPE OF SIGN_OBJECT NOT NULL,
+    I_OBJECT_SIGN TYPE OF SIGN_OBJECT,
     I_OBJECT_ID TYPE OF ID_OBJECT,
     I_NEW_STATUS_SIGN TYPE OF SIGN_OBJECT)
 RETURNS (
@@ -2142,6 +2141,10 @@ begin
 
   execute procedure param_unparse(:v_param_id, :i_params);
 
+--  select o_log_id
+--    from log_create(:i_object_sign, :v_param_id, null, null, coalesce(:i_object_id, 0))
+--    into :v_log_id;
+
   i_object_id = nullif(i_object_id, 0);
   if (:i_object_id is not null) then
     execute procedure param_set(:v_param_id, 'ID', :i_object_id);
@@ -2155,18 +2158,32 @@ begin
       from action_detect(:i_object_sign, :i_object_id, :v_new_status_sign)
       into :i_action_sign;
 
-  if (i_action_sign is not null) then
-    select o_action_id
-      from action_run(:i_object_sign, :i_action_sign, :v_param_id, :i_object_id)
-      into :o_action_id;
-  else
-  begin
-    select s.status_sign
-      from statuses s
-      where s.status_id = :v_now_status_id
-      into :v_now_status_sign;
-  end
+  if (i_action_sign is null) then
+    i_action_sign= :i_object_sign||'_STORE';
+
+  select o_action_id
+    from action_run(:i_object_sign, :i_action_sign, :v_param_id, :i_object_id)
+    into :o_action_id;
   suspend;
+end^
+
+
+CREATE OR ALTER PROCEDURE ACTION_REEXECUTE (
+    I_LOG_ID TYPE OF ID_LOG)
+AS
+declare variable V_PARAMS type of VALUE_BLOB;
+declare variable V_OBJECT_SIGN type of SIGN_OBJECT;
+declare variable V_ACTION_SIGN type of SIGN_ACTION;
+declare variable V_ACTION_ID type of ID_ACTION;
+begin
+  select l.action_sign, l.params_in
+    from logs l
+    where l.log_id = :i_log_id 
+    into :v_object_sign, :v_params;
+
+  select o_action_id from action_execute(:v_object_sign, :v_params, null, null)
+    into :v_action_id;
+
 end^
 
 
@@ -2313,6 +2330,9 @@ begin
     else
     if (v_procedure_name = 'ORDER_FOREACH_ORDERTAX') then
       execute procedure act_order_foreach_ordertax(:i_param_id, :i_object_id);
+    else
+    if (v_procedure_name = 'ORDER_FOREACH_TAXRATE') then
+      execute procedure act_order_foreach_taxrate(:i_param_id, :i_object_id);
     else
     if (v_procedure_name = 'ORDERITEM_STORE') then
       execute procedure act_orderitem_store(:i_param_id, :i_object_id);
@@ -2651,6 +2671,9 @@ end^
 
 CREATE OR ALTER PROCEDURE IMP_CLIENTS (
     I_CLIENT_ID INTEGER = 0)
+RETURNS (
+    O_CLIENT_ID TYPE OF ID_CLIENT,
+    O_PLACE_ID TYPE OF ID_PLACE)
 AS
 declare variable V_FIRST_NAME type of NAME_REF;
 declare variable V_LAST_NAME type of NAME_REF;
@@ -2676,27 +2699,35 @@ declare variable V_STREETTYPE_CODE type of CODE_PLACETYPE;
 declare variable V_HOUSE type of NAME_REF;
 declare variable V_BUILDING type of NAME_REF;
 declare variable V_FLAT type of NAME_REF;
+declare variable V_POST_INDEX type of CODE_POSTINDEX;
+declare variable V_CITY_NAME type of NAME_OBJECT;
+declare variable V_AREA_REGION type of NAME_OBJECT;
 begin
   delete from clients where client_id < 0;
 
-  for select -cast(ic.client_id as id_client), replace(ic.family, '.', ' '), ic.street, ic.home, ic.cityget_id,
-              ic.telephone, ic.email, replace(ic.kodmob, '375', '0')||ic.mobil
-         from imp_client ic
+  for select -cast(ic.client_id as id_client), replace(ic.family, '.', ' '),
+             ic.street, ic.home, replace(ic.mobil, '+375', '0'),
+             ic.indexcity, ic.city_rus, ic.partobl
+         from imp_client3 ic
          where ic.client_id > :i_client_id
-         into :v_client_id, :v_family, :v_street, :v_home, :v_cityget_id,
-              :v_telephone, :v_email, :v_mobil do
+         order by ic.client_id
+         into :v_client_id, :v_family,
+              :v_street, :v_home, :v_mobil,
+              :v_post_index, :v_city_name, :v_area_region do
   begin
-    select o_head, o_tile from splitstring(:v_family, ' ') into :v_last_name, :v_family;
-    select trim(o_head), trim(o_tile) from splitstring(trim(:v_family), ' ') into :v_first_name, :v_mid_name;
+    o_client_id = v_client_id;
+    select trim(o_head), trim(o_tile) from splitstring(:v_family, ' ') into :v_last_name, :v_family;
+    select trim(o_head), trim(o_tile) from splitstring(:v_family, ' ') into :v_first_name, :v_mid_name;
 
-    select trim(cg.city_rus), trim(replace(cg.kodtel, '8-', '')), coalesce(ct.nametype, 'ã'), r.namereg, o.nameobl
-      from imp_cityget cg
-        left join imp_citytype ct on (ct.type_id = cg.type_id)
-        left join imp_oblast o on (o.oblast_id = cg.oblast_id)
-        left join imp_region r on (r.region_id = cg.region_id)
-      where cg.city_id = :v_cityget_id
-      into :v_place_name, :v_phone_code, :v_place_type_name, :v_area_name, :v_region_name;
+    select trim(o_head), trim(o_tile) from splitstring(:v_city_name, ' ') into :v_place_type_name, :v_place_name;
+    select trim(o_head), trim(o_tile) from splitstring(:v_area_region, ' ') into :v_area_name, :v_region_name;
 
+
+    if (v_place_name is null) then
+    begin
+      v_place_name = v_place_type_name;
+      v_place_type_name = 'ã';
+    end
     select pt.placetype_code
       from placetypes pt
       where pt.placetype_sign = :v_place_type_name
@@ -2704,14 +2735,14 @@ begin
     if (v_placetype_code is null) then
       exception ex_import 'Unknown PLACETYPE '||coalesce(:v_place_type_name, 'null');
 
-
     select pl.place_id
       from places pl
-      where pl.place_name = :v_place_name
+      where (pl.place_name = :v_place_name or replace(pl.place_name, '¸', 'e') = :v_place_name)
         and pl.placetype_code = :v_placetype_code
       into :v_place_id;
+    o_place_id = v_place_id;
 
-    if (row_count = 0) then
+    if (row_count <> 1) then
     begin
       select pl.place_id
         from places pl
@@ -2720,38 +2751,30 @@ begin
         into :v_area_id;
       if (row_count = 0) then
         exception ex_import 'Unknown AREANAME='||coalesce(:v_area_name, 'null')||' CLIENT_ID='||:v_client_id;
+      else
+        insert into places(placetype_code, owner_place, place_name)
+          values(:v_placetype_code, :v_area_id, :v_place_name)
+          returning place_id
+          into :v_place_id;
     end
 
-    select pl.place_id
-      from places pl
-      where pl.place_name = :v_place_name
-        and pl.placetype_code = :v_placetype_code
-      into :v_place_id;
-
-    -- create place
-    if (v_place_id is null) then
-      insert into places (placetype_code, place_name, owner_place)
-        values(:v_placetype_code, :v_place_name, :v_area_id)
-        returning place_id
-        into :v_place_id;
-
     -- create client
+    select c.client_id
+      from clients c
+        inner join adresses a on (a.client_id = c.client_id)
+        inner join places p on (p.place_id = a.place_id)
+      where c.last_name = :v_last_name
+        and c.first_name = :v_first_name
+        and c.mid_name = :v_mid_name
+      into :v_client_id;
+
+
     insert into clients (client_id, last_name, first_name, mid_name, mobile_phone)
       values(:v_client_id, :v_last_name, :v_first_name, :v_mid_name, :v_mobil);
 
-    if (:v_telephone is not null) then
-    begin
-      select trim(o_head) from splitstring(:v_telephone, ' ') into :v_telephone;
-      v_telephone = replace(:v_telephone, '(', '');
-      v_telephone = replace(:v_telephone, ')', '');
-      if (strlen(:v_telephone) < 8) then
-        v_telephone = :v_phone_code||:v_telephone;
-      if (v_telephone is null) then
-        exception ex_import 'Phone AREACODE is NULL CityGet='||:v_cityget_id;
-      execute procedure attr_put('CLIENT', :v_client_id, 'PHONE_NUMBER', :v_telephone);
-    end
     if (:v_email is not null) then
       execute procedure attr_put('CLIENT', :v_client_id, 'EMAIL', :v_email);
+
 
     select o_head from splitstring(:v_street, ' ') into :v_streettype_name;
     if (:v_streettype_name <> :v_street) then
@@ -2788,10 +2811,11 @@ begin
 
     -- create adress
     insert into adresses (adress_id, client_id, place_id, streettype_code,
-      street_name, house, building, flat)
+      street_name, house, building, flat, postindex)
       values(:v_client_id, :v_client_id, :v_place_id, :v_streettype_code,
-        :v_street, :v_house, :v_building, :v_flat);
+        :v_street, :v_house, :v_building, :v_flat, :v_post_index);
 
+    suspend;
   end
 end^
 
@@ -3176,7 +3200,7 @@ end^
 
 
 CREATE OR ALTER PROCEDURE ORDER_ANUL (
-    I_ORDER_ID TYPE OF ID_ORDER NOT NULL)
+    I_ORDER_ID TYPE OF ID_ORDER)
 RETURNS (
     O_NEW_STATUS_SIGN TYPE OF SIGN_OBJECT)
 AS
@@ -3775,8 +3799,8 @@ end^
 
 
 CREATE OR ALTER PROCEDURE PARAM_UNPARSE (
-    I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
-    I_PARAMS TYPE OF VALUE_BLOB NOT NULL)
+    I_PARAM_ID TYPE OF ID_PARAM,
+    I_PARAMS TYPE OF VALUE_BLOB)
 AS
 declare variable V_LINE type of VALUE_ATTR;
 declare variable V_PARAM_SIGN type of SIGN_OBJECT;
@@ -4091,8 +4115,8 @@ end^
 
 
 CREATE OR ALTER PROCEDURE SPLITBLOB (
-    I_BLOB TYPE OF VALUE_BLOB NOT NULL,
-    I_DEVIDER TYPE OF DEVIDER NOT NULL)
+    I_BLOB TYPE OF VALUE_BLOB,
+    I_DEVIDER TYPE OF DEVIDER)
 RETURNS (
     O_LINE TYPE OF VALUE_ATTR)
 AS
@@ -4113,7 +4137,7 @@ end^
 
 CREATE OR ALTER PROCEDURE SPLITSTRING (
     I_STRING TYPE OF VALUE_ATTR,
-    I_DEVIDER TYPE OF DEVIDER NOT NULL)
+    I_DEVIDER TYPE OF DEVIDER)
 RETURNS (
     O_HEAD TYPE OF VALUE_ATTR,
     O_TILE TYPE OF VALUE_ATTR)
