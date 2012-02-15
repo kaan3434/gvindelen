@@ -129,7 +129,12 @@ for($i=1;$i<=12; $i++) {
 <?php
   if (count($order_items) > 0) {
     $attach = $header . "\r\n" . implode("\r\n", $order_items);
-    $order_filename = "orders/" . $order_name .".dat";
+    if ($_POST['PayForm'] == 'Предоплата') {
+      $partner_code = '73105061';
+    } else {
+      $partner_code = '73105050';
+    }
+    $order_filename = "orders/$partner_code/$order_name.dat";
     file_put_contents($order_filename, utf8_to_ansi_ru($attach));
 ?>
            <font color='blue'>С условиями оформления заявки по интернету и с условиями получения международной посылки с товаром по каталогам OTTO ознакомилась / ознакомился.</font><br>

@@ -2702,6 +2702,7 @@ declare variable V_FLAT type of NAME_REF;
 declare variable V_POST_INDEX type of CODE_POSTINDEX;
 declare variable V_CITY_NAME type of NAME_OBJECT;
 declare variable V_AREA_REGION type of NAME_OBJECT;
+declare variable V_ACCOUNT_ID type of ID_ACCOUNT;
 begin
   delete from clients where client_id < 0;
 
@@ -2740,81 +2741,91 @@ begin
       where (pl.place_name = :v_place_name or replace(pl.place_name, '¸', 'e') = :v_place_name)
         and pl.placetype_code = :v_placetype_code
       into :v_place_id;
-    o_place_id = v_place_id;
 
     if (row_count <> 1) then
     begin
+      v_place_id = null;
       select pl.place_id
         from places pl
        where pl.place_name = :v_area_name
          and pl.placetype_code = 3
         into :v_area_id;
       if (row_count = 0) then
-        exception ex_import 'Unknown AREANAME='||coalesce(:v_area_name, 'null')||' CLIENT_ID='||:v_client_id;
+        exception ex_import 'Unknown AREANAME for PLACE='||:v_place_name||' CLIENT_ID='||:v_client_id;
       else
-        insert into places(placetype_code, owner_place, place_name)
-          values(:v_placetype_code, :v_area_id, :v_place_name)
+        insert into places(place_id, placetype_code, owner_place, place_name)
+          values(gen_id(seq_place_id, 1), :v_placetype_code, :v_area_id, :v_place_name)
           returning place_id
           into :v_place_id;
     end
+    else
+      o_place_id = :v_place_id;
 
     -- create client
-    select c.client_id
-      from clients c
-        inner join adresses a on (a.client_id = c.client_id)
-        inner join places p on (p.place_id = a.place_id)
-      where c.last_name = :v_last_name
-        and c.first_name = :v_first_name
-        and c.mid_name = :v_mid_name
-      into :v_client_id;
-
-
-    insert into clients (client_id, last_name, first_name, mid_name, mobile_phone)
-      values(:v_client_id, :v_last_name, :v_first_name, :v_mid_name, :v_mobil);
-
-    if (:v_email is not null) then
-      execute procedure attr_put('CLIENT', :v_client_id, 'EMAIL', :v_email);
-
-
-    select o_head from splitstring(:v_street, ' ') into :v_streettype_name;
-    if (:v_streettype_name <> :v_street) then
+    if (not exists(select c.client_id
+        from clients c
+          inner join adresses a on (a.client_id = c.client_id)
+          inner join places p on (p.place_id = a.place_id)
+        where c.last_name = :v_last_name
+          and c.first_name = :v_first_name
+          and c.mid_name = :v_mid_name)) then
     begin
-      select st.streettype_code
-        from streettypes st
-        where st.streettype_short = :v_streettype_name
-        into :v_streettype_code;
-      if (row_count = 0) then
-        exception ex_import 'unknown streettypes '||coalesce(:v_streettype_name, 'null');
-      v_street= substring(v_street from char_length(v_streettype_name)+1);
+        insert into clients (client_id, last_name, first_name, mid_name, mobile_phone)
+          values(:v_client_id, :v_last_name, :v_first_name, :v_mid_name, :v_mobil);
+    
+        if (:v_email is not null) then
+          execute procedure attr_put('CLIENT', :v_client_id, 'EMAIL', :v_email);
+    
+    
+        select o_head from splitstring(:v_street, ' ') into :v_streettype_name;
+        if (:v_streettype_name <> :v_street) then
+        begin
+          select st.streettype_code
+            from streettypes st
+            where st.streettype_short = :v_streettype_name
+            into :v_streettype_code;
+          if (row_count = 0) then
+            exception ex_import 'unknown streettypes '||coalesce(:v_streettype_name, 'null');
+          v_street= substring(v_street from char_length(v_streettype_name)+1);
+        end
+        else
+          select st.streettype_code
+            from streettypes st
+            where st.streettype_short = 'óë'
+            into :v_streettype_code;
+    
+        if (v_home like '%-%-%') then
+        begin
+          select trim(o_head), trim(o_tile) from splitstring(:v_home, '-') into :v_house, :v_home;
+          select trim(o_head), trim(o_tile) from splitstring(:v_home, '-') into :v_building, :v_flat;
+        end
+        else if (v_home like '%/%-%') then
+        begin
+          select trim(o_head), trim(o_tile) from splitstring(:v_home, '/') into :v_house, :v_home;
+          select trim(o_head), trim(o_tile) from splitstring(:v_home, '-') into :v_building, :v_flat;
+        end
+        else
+        begin
+          select trim(o_head), trim(o_tile) from splitstring(:v_home, '-') into :v_house, :v_flat;
+          v_building = null;
+        end
+    
+        -- create adress
+        insert into adresses (adress_id, client_id, place_id, streettype_code,
+          street_name, house, building, flat, postindex)
+          values(:v_client_id, :v_client_id, :v_place_id, :v_streettype_code,
+            :v_street, :v_house, :v_building, :v_flat, :v_post_index);
+    
+        -- create account
+        insert into accounts(rest_eur)
+          values(0)
+          returning account_id
+          into :v_account_id;
+    
+        update clients c
+          set c.account_id = :v_account_id
+          where c.client_id = :v_client_id;
     end
-    else
-      select st.streettype_code
-        from streettypes st
-        where st.streettype_short = 'óë'
-        into :v_streettype_code;
-
-    if (v_home like '%-%-%') then
-    begin
-      select trim(o_head), trim(o_tile) from splitstring(:v_home, '-') into :v_house, :v_home;
-      select trim(o_head), trim(o_tile) from splitstring(:v_home, '-') into :v_building, :v_flat;
-    end
-    else if (v_home like '%/%-%') then
-    begin
-      select trim(o_head), trim(o_tile) from splitstring(:v_home, '/') into :v_house, :v_home;
-      select trim(o_head), trim(o_tile) from splitstring(:v_home, '-') into :v_building, :v_flat;
-    end
-    else
-    begin
-      select trim(o_head), trim(o_tile) from splitstring(:v_home, '-') into :v_house, :v_flat;
-      v_building = null;
-    end
-
-    -- create adress
-    insert into adresses (adress_id, client_id, place_id, streettype_code,
-      street_name, house, building, flat, postindex)
-      values(:v_client_id, :v_client_id, :v_place_id, :v_streettype_code,
-        :v_street, :v_house, :v_building, :v_flat, :v_post_index);
-
     suspend;
   end
 end^
