@@ -8,7 +8,7 @@ procedure ExportPackList(aTransaction: TpFIBTransaction);
 
 implementation
 uses
-  SysUtils, GvNativeXml, udmOtto, GvStr, Dbf, GvFile, uMain, Dialogs, GvVariant;
+  SysUtils, GvNativeXml, udmOtto, GvStr, Dbf, GvFile, uMain, Dialogs;
 
 function GetPlace(ndPlace: TXmlNode): string;
 begin

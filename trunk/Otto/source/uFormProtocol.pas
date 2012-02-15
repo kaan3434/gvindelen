@@ -4,8 +4,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, DBGridEhGrouping, DB, FIBDatabase, pFIBDatabase, FIBDataSet,
-  pFIBDataSet, GridsEh, DBGridEh, PrnDbgeh, ImgList, PngImageList;
+  Dialogs, DB, FIBDatabase, pFIBDatabase, FIBDataSet,
+  pFIBDataSet, GridsEh, DBGridEh, PrnDbgeh, ImgList, PngImageList,
+  DBGridEhGrouping;
 
 type
   TFormProtocol = class(TForm)

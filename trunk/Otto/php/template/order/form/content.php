@@ -62,7 +62,7 @@
                  <td width="40%"><font color="red"><? echo $_POST['Flat_Error'];?></font></td>
                </tr> 
                <tr> 
-                 <td width="30%">Индекс</td> 
+                 <td width="30%"><font color="red">Индекс</font></td> 
                  <td width="30%"><input type="text" size="35" name="PostIndex" class="cat_tables_form" value="<? echo $_POST['PostIndex'];?>"></td>
                  <td width="40%"><font color="red"><? echo $_POST['PostIndex_Error'];?></font></td>
                </tr> 
@@ -104,8 +104,8 @@
                <tr> 
                  <td width="30%"><font color="red">Форма оплаты</font></td> 
                  <td width="30%"><select size="1" name="PayForm" class="cat_tables_form"> 
-                                    <option value="Предоплата" <? if ($_POST['PayForm'] == "") echo "selected"; ?>>Предоплата</option>
-                                    <option value="Наложенный платеж" <? if ($_POST['PayForm'] == "") echo "selected"; ?>>Наложенным платежом</option>
+                                    <option value="Предоплата" <? if ($_POST['PayForm'] == "Предоплата") echo "selected"; ?>>Предоплата</option>
+                                    <option value="Наложенный платеж" <? if ($_POST['PayForm'] == "Наложенный платеж") echo "selected"; ?>>Наложенным платежом</option>
                                   </select></td> 
                </tr> 
              </tbody></table>
@@ -114,7 +114,7 @@
                <thead>
                <tr align="center" valign="middle">
                  <th><font color="red" size="1">Каталог</font></th>
-                 <th><font size="1">Tип</font></th>
+                 <!--th><font size="1">Tип</font></th-->
                  <th><font size="1">Стр.</font></th>
                  <th><font size="1">№<br/>поз.</font></th>
                  <th><font color="red" size="1">Артикул<br/>ЛАТИНСКИМ</font></th>
@@ -127,32 +127,32 @@
                <tbody>
 <?php for($i=1;$i<=12; $i++) { ?>
                <tr align="center">
-                 <td width="54"><select id="Catalog<?php echo $i;?>" name="Catalog<?php echo $i;?>" class="cat_tables_form">
-                   <option value="ALBA MODA">Alba Moda</option>
-                   <option value="APART">Apart</option>
-                   <option value="BAUR">Baur</option>
-                   <option value="CFL">CFL</option>
-                   <option value="CREATION">Creation</option>
-                   <option value="EXTRA">Extra</option>
-                   <option value="EXTRA SELECTION">Extra Selection</option>
-                   <option value="EXTRA SPECIAL">Extra Special</option>
-                   <option value="HEINE">Heine</option>
-                   <option value="KLITZEKLEIN">Klitzeklein</option>
-                   <option value="OTTO-de">OTTO-de ~1100стр.</option>
-                   <option value="OTTO-ru">OTTO-ru ~500стр.</option>
-                   <option value="OTTO-by">OTTO-ru ~300стр.</option>
-                   <option value="SCHENKEN">Schenken</option>
-                   <option value="SCHUH">Schuh</option>
-                   <option value="SHEEGO">Sheego</option>
-                   <option value="SPECIAL">Special</option>
-                   <option value="VENCA">Venca</option>
-                   <option value="3 PAGEN">3 PAGEN</option>
-                   <option value="11">Другое Название</option>
+                 <td width="54"><select selectindex=-1 id="Catalog<?php echo $i;?>" name="Catalog<?php echo $i;?>" class="cat_tables_form">
+                   <option value="ALBA MODA" <? if ($_POST["Catalog$i"] == "ALBA MODA") echo "selected"; ?>>Alba Moda</option>
+                   <option value="APART" <? if ($_POST["Catalog$i"] == "APART") echo "selected"; ?>>Apart</option>
+                   <option value="BAUR" <? if ($_POST["Catalog$i"] == "BAUR") echo "selected"; ?>>Baur</option>
+                   <option value="CFL" <? if ($_POST["Catalog$i"] == "CFL") echo "selected"; ?>>CFL</option>
+                   <option value="CREATION" <? if ($_POST["Catalog$i"] == "CREATIONA") echo "selected"; ?>>Creation</option>
+                   <option value="EXTRA" <? if ($_POST["Catalog$i"] == "EXTRA") echo "selected"; ?>>Extra</option>
+                   <option value="EXTRA SELECTION" <? if ($_POST["Catalog$i"] == "EXTRA SELECTION") echo "selected"; ?>>Extra Selection</option>
+                   <option value="EXTRA SPECIAL" <? if ($_POST["Catalog$i"] == "EXTRA SPECIAL") echo "selected"; ?>>Extra Special</option>
+                   <option value="HEINE" <? if ($_POST["Catalog$i"] == "HEINE") echo "selected"; ?>>Heine</option>
+                   <option value="KLITZEKLEIN" <? if ($_POST["Catalog$i"] == "KLITZEKLEIN") echo "selected"; ?>>Klitzeklein</option>
+                   <option value="OTTO-de" <? if ($_POST["Catalog$i"] == "OTTO-de") echo "selected"; ?>>OTTO-de ~1100стр.</option>
+                   <option value="OTTO-ru" <? if ($_POST["Catalog$i"] == "OTTO-ru") echo "selected"; ?>>OTTO-ru ~500стр.</option>
+                   <option value="OTTO-by" <? if ($_POST["Catalog$i"] == "OTTO-by") echo "selected"; ?>>OTTO-ru ~300стр.</option>
+                   <option value="SCHENKEN" <? if ($_POST["Catalog$i"] == "ALBA MODA") echo "selected"; ?>>Schenken</option>
+                   <option value="SCHUH" <? if ($_POST["Catalog$i"] == "SCHENKEN") echo "selected"; ?>>Schuh</option>
+                   <option value="SHEEGO" <? if ($_POST["Catalog$i"] == "SHEEGO") echo "selected"; ?>>Sheego</option>
+                   <option value="SPECIAL" <? if ($_POST["Catalog$i"] == "SPECIAL") echo "selected"; ?>>Special</option>
+                   <option value="VENCA" <? if ($_POST["Catalog$i"] == "VENCA") echo "selected"; ?>>Venca</option>
+                   <option value="3 PAGEN" <? if ($_POST["Catalog$i"] == "3 PAGEN") echo "selected"; ?>>3 PAGEN</option>
+                   <option value="11"  <? if ($_POST["Catalog$i"] == "") echo "selected"; ?>>Интернет</option>
                  </select></td>
-                 <td width="25"><select id="CatalogType<?php echo $i;?>" name="CatalogType<?php echo $i;?>"  class="cat_tables_form">
+                 <!--td width="25"><select id="CatalogType<?php echo $i;?>" name="CatalogType<?php echo $i;?>"  class="cat_tables_form">
                    <option value="интернет">Интернет</option>
                    <option value="печатный">Печатный</option>
-                 </select></td>
+                 </select></td-->
                  <td width="25"><input type="text" maxlength="4" size="5" name="CatalogPage<?php echo $i;?>" class="cat_tables_form"></td>
                  <td width="25"><input type="text" maxlength="4" size="3" name="ItemPos<?php echo $i;?>" class="cat_tables_form"></td>
                  <td width="40"><input type="text" maxlength="8" size="10" name="Articul<?php echo $i;?>" class="cat_tables_form"></td>

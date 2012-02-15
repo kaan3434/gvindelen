@@ -7,7 +7,7 @@ procedure ExportInvoices(aTransaction: TpFIBTransaction);
 
 implementation
 uses
-  udmOtto, NativeXml, GvNativeXml, GvStr, GvMath, GvFile, DateUtils, Dialogs;
+  udmOtto, NativeXml, GvNativeXml, GvStr, GvFile, DateUtils, Dialogs;
 
 function ExportOrder(aTransaction: TpFIBTransaction;
   ndProduct: TXmlNode; aOrderId: integer): string;

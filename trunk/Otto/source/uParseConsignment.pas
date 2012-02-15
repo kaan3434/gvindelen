@@ -10,8 +10,8 @@ procedure ProcessConsignment(aMessageId: Integer; aTransaction: TpFIBTransaction
 implementation
 
 uses
-  Classes, SysUtils, GvStr, udmOtto, pFIBStoredProc, Variants, GvNativeXml,
-  Dialogs, Controls, StrUtils;
+  Classes, SysUtils, GvStr, udmOtto, Variants, GvNativeXml,
+  Dialogs, Controls;
 
 procedure ParseConsignmentLine100(aMessageId, LineNo: Integer;
   sl: TStringList; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);

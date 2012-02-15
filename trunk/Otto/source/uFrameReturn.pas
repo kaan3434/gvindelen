@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uFrameBase1, StdCtrls, ExtCtrls, ImgList, PngImageList,
   ActnList, FIBDatabase, pFIBDatabase, TBXStatusBars, TB2Dock, TB2Toolbar,
-  TBX, JvExStdCtrls, JvGroupBox, Mask, JvExMask, JvToolEdit, JvMaskEdit,
+  TBX, JvExStdCtrls, JvGroupBox, Mask, JvExMask, JvMaskEdit,
   DBCtrlsEh, NativeXml;
 
 type

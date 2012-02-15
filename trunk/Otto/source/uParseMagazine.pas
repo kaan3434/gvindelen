@@ -10,7 +10,7 @@ procedure ParseArticles(aTransaction: TpFIBTransaction; aLines: TStringList; ndM
 implementation
 
 uses
-  GvNativeXml, GvStr, SysUtils, pFIBStoredProc, Dialogs, Controls;
+  GvNativeXml, GvStr, SysUtils, Dialogs, Controls;
 
 procedure ParseLine(aTransaction: TpFIBTransaction; aLine: string; ndMagazine: TXmlNode);
 var

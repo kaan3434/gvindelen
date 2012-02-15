@@ -4,10 +4,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, uBaseNSIForm, DBGridEhGrouping, FIBDatabase, pFIBDatabase,
+  Dialogs, uBaseNSIForm, FIBDatabase, pFIBDatabase,
   ImgList, PngImageList, ActnList, DB, FIBDataSet, pFIBDataSet, GridsEh,
   DBGridEh, StdCtrls, JvExStdCtrls, JvGroupBox, ExtCtrls, JvExExtCtrls,
-  JvExtComponent, JvPanel, TB2Item, TBX, TB2Dock, TB2Toolbar, ComCtrls;
+  JvExtComponent, JvPanel, TB2Item, TBX, TB2Dock, TB2Toolbar, ComCtrls,
+  DBGridEhGrouping;
 
 type
   TFormTableClients = class(TBaseNSIForm)

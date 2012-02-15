@@ -6,10 +6,10 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uFrameBase1, ImgList, PngImageList, ActnList, FIBDatabase,
   pFIBDatabase, TBXStatusBars, TB2Dock, TB2Toolbar, TBX, DBGridEh,
-  DBGridEhGrouping, DB, FIBDataSet, pFIBDataSet, GridsEh, ExtCtrls,
+  DB, FIBDataSet, pFIBDataSet, GridsEh, ExtCtrls,
   JvExExtCtrls, JvNetscapeSplitter, JvExStdCtrls, JvEdit, JvValidateEdit,
   DBCtrlsEh, StdCtrls, Mask, DBLookupEh, JvGroupBox, NativeXml,
-  JvComponentBase, JvEmbeddedForms, JvExtComponent, JvPanel;
+  JvComponentBase, JvEmbeddedForms, JvPanel, DBGridEhGrouping;
 
 type
   TFrameOrder = class(TFrameBase1)

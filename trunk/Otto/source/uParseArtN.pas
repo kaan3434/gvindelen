@@ -10,8 +10,8 @@ procedure ProcessArtN(aMessageId: Integer; aTransaction: TpFIBTransaction);
 implementation
 
 uses
-  Classes, SysUtils, GvStr, udmOtto, pFIBStoredProc, Variants, GvNativeXml,
-  Dialogs, Controls, StrUtils, GvFile, GvVariant;
+  Classes, SysUtils, GvStr, udmOtto, Variants, GvNativeXml,
+  Dialogs, Controls, GvFile, GvVariant;
 
 procedure ParseArtNLine(aMessageId, LineNo: Integer; aLine: string; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
@@ -123,21 +123,28 @@ begin
   // загружаем файл
   Lines:= TStringList.Create;
   try
-    St:= LoadFileAsString(Path['Messages.In']+MessageFileName);
-    St:= ReplaceAll(St, '     ', ' ');
-    St:= ReplaceAll(St, '    ', ' ');
-    St:= ReplaceAll(St, '   ', ' ');
-    St:= ReplaceAll(St, '  ', ' ');
-    St:= ReplaceAll(St, ' ;', ';');
-    St:= ReplaceAll(St, '; ', ';');
-    St:= ReplaceAll(St, #10' ', #10);
-    Lines.Text:= ReplaceAll(St, #13#13#10, #13#10);
-    dmOtto.InitProgress(Lines.Count, Format('ќобработка файла %s ...', [MessageFileName]));
-    For LineNo:= 1 to Lines.Count - 1 do
+    if FileExists(Path['Messages.In']+MessageFileName) then
     begin
-      ParseArtNLine(aMessageId, LineNo, Lines[LineNo], ndMessage, aTransaction);
-      dmOtto.StepProgress;
-    end;
+      St:= LoadFileAsString(Path['Messages.In']+MessageFileName);
+      St:= ReplaceAll(St, '     ', ' ');
+      St:= ReplaceAll(St, '    ', ' ');
+      St:= ReplaceAll(St, '   ', ' ');
+      St:= ReplaceAll(St, '  ', ' ');
+      St:= ReplaceAll(St, ' ;', ';');
+      St:= ReplaceAll(St, '; ', ';');
+      St:= ReplaceAll(St, #10' ', #10);
+      Lines.Text:= ReplaceAll(St, #13#13#10, #13#10);
+      dmOtto.InitProgress(Lines.Count, Format('ќобработка файла %s ...', [MessageFileName]));
+      For LineNo:= 1 to Lines.Count - 1 do
+      begin
+        ParseArtNLine(aMessageId, LineNo, Lines[LineNo], ndMessage, aTransaction);
+        dmOtto.StepProgress;
+      end;
+    end
+    else
+      dmOtto.Notify(aMessageId,
+        '‘айл [FILE_NAME] не найден.', 'E',
+        Value2Vars(MessageFileName, 'FILE_NAME'));
   finally
     dmOtto.InitProgress;
     dmOtto.Notify(aMessageId,

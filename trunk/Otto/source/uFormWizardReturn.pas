@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uFormWizardBase, fib, FIBDatabase, pFIBDatabase, ActnList,
   JvExControls, JvWizard, uFrameOrderItems, uFrameReturn, NativeXml,
-  StdCtrls, ExtCtrls, JvExStdCtrls, JvGroupBox, pFIBErrorHandler;
+  ExtCtrls, JvExStdCtrls, JvGroupBox;
 
 type
   TFormWizardReturn = class(TFormWizardBase)
@@ -49,7 +49,7 @@ var
 implementation
 
 uses
-  udmOtto, GvStr, GvNativeXml;
+  udmOtto, GvNativeXml;
 
 {$R *.dfm}
 

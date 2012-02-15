@@ -6,9 +6,9 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uFrameBase1, ImgList, PngImageList, ActnList, FIBDatabase,
   pFIBDatabase, ExtCtrls, JvExExtCtrls, JvExtComponent, JvPanel,
-  TBXStatusBars, TB2Dock, TB2Toolbar, TBX, DBGridEhGrouping, GridsEh,
+  TBXStatusBars, TB2Dock, TB2Toolbar, TBX, GridsEh,
   DBGridEh, StdCtrls, JvExStdCtrls, JvCheckBox, JvGroupBox, DB, FIBDataSet,
-  pFIBDataSet, NativeXml, TB2Item;
+  pFIBDataSet, NativeXml, TB2Item, DBGridEhGrouping;
 
 type
   TFrameOrderSummary = class(TFrameBase1)
@@ -70,7 +70,7 @@ var
 implementation
 
 uses
-  udmOtto, GvNativeXml, GvStr, GvMath;
+  udmOtto, GvNativeXml, GvStr;
 
 {$R *.dfm}
 

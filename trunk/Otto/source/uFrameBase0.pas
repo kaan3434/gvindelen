@@ -44,8 +44,7 @@ type
 
 implementation
 
-uses
-  uBaseWizardForm;
+
 
 {$R *.dfm}
 

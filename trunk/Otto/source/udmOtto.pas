@@ -4,10 +4,10 @@ interface
 
 uses
   SysUtils, Classes, GvVars, FIBDatabase, pFIBDatabase, FIBQuery,
-  pFIBQuery, pFIBStoredProc, DBLookupEh, NativeXml, MemTableEh, DB,
+  pFIBQuery, pFIBStoredProc, NativeXml, MemTableEh, DB,
   FIBDataSet, pFIBDataSet, Variants, MemTableDataEh, IB_Services, 
-  JvComponentBase, JvDesktopAlert, Dialogs, JvBaseDlg, ImgList, Controls,
-  PngImageList, pngimage, gsFileVersionInfo, dbf, pFIBErrorHandler, FIB;
+  JvComponentBase, JvDesktopAlert, Dialogs, JvBaseDlg, Controls,
+  gsFileVersionInfo, dbf, pFIBErrorHandler, FIB;
 
 type
   TdmOtto = class(TDataModule)
@@ -149,6 +149,7 @@ begin
   except
     on E:Exception do
     begin
+      SaveStringAsFile(aParams, 'Params.txt');
       aTransaction.RollBackToSavePoint('OnExecuteAction');
       ShowMessage(E.Message);
       raise;

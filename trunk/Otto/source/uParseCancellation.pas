@@ -10,7 +10,7 @@ procedure ProcessCancellation(aMessageId: Integer; aTransaction: TpFIBTransactio
 implementation
 
 uses
-  Classes, SysUtils, GvStr, udmOtto, pFIBStoredProc, Variants, GvNativeXml,
+  Classes, SysUtils, GvStr, udmOtto, Variants, GvNativeXml,
   Dialogs, Controls, StrUtils;
 
 procedure ParseCancelLine(aMessageId, LineNo: Integer; aLine: string; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);

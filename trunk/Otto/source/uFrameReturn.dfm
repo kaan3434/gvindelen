@@ -7,16 +7,16 @@ inherited FrameMoneyBack: TFrameMoneyBack
   PixelsPerInch = 96
   TextHeight = 13
   inherited dckTop: TTBXDock
-    Width = 934
+    Width = 926
   end
   inherited sb: TTBXStatusBar
-    Top = 431
-    Width = 934
+    Top = 427
+    Width = 926
   end
   object grpBankMovement: TJvGroupBox [2]
     Left = 0
     Top = 161
-    Width = 934
+    Width = 926
     Height = 152
     Align = alTop
     Caption = #1040#1090#1088#1080#1073#1091#1090#1099' '#1073#1072#1085#1082#1086#1074#1089#1082#1086#1075#1086' '#1087#1077#1088#1077#1074#1086#1076#1072
@@ -91,7 +91,7 @@ inherited FrameMoneyBack: TFrameMoneyBack
   object grpCommon: TJvGroupBox [3]
     Left = 0
     Top = 26
-    Width = 934
+    Width = 926
     Height = 87
     Align = alTop
     Caption = #1054#1073#1097#1080#1077' '#1072#1090#1088#1080#1073#1091#1090#1099
@@ -147,7 +147,7 @@ inherited FrameMoneyBack: TFrameMoneyBack
   object rgReturnKind: TRadioGroup [4]
     Left = 0
     Top = 113
-    Width = 934
+    Width = 926
     Height = 48
     Align = alTop
     Caption = #1044#1077#1081#1089#1090#1074#1080#1103' '#1089' '#1086#1089#1090#1072#1090#1082#1086#1084

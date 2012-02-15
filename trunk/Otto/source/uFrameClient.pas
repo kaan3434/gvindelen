@@ -5,11 +5,11 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uFrameBase1, ImgList, PngImageList, ActnList, FIBDatabase,
-  pFIBDatabase, ExtCtrls, JvExExtCtrls, JvExtComponent, JvPanel,
-  TBXStatusBars, TB2Dock, TB2Toolbar, TBX, DBGridEhGrouping, DB,
+  pFIBDatabase, ExtCtrls, JvExExtCtrls, JvPanel,
+  TBXStatusBars, TB2Dock, TB2Toolbar, TBX, DB,
   FIBDataSet, pFIBDataSet, StdCtrls, DBCtrlsEh, Mask, JvExMask, JvToolEdit,
   JvMaskEdit, JvExStdCtrls, JvGroupBox, GridsEh, DBGridEh,
-  JvNetscapeSplitter, NativeXml;
+  JvNetscapeSplitter, NativeXml, DBGridEhGrouping;
 
 type
   TFrameClient = class(TFrameBase1)

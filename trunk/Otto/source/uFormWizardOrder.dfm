@@ -32,8 +32,8 @@ inherited FormWizardOrder: TFormWizardOrder
       Panel.Visible = True
       VisibleButtons = [bkNext, bkCancel]
       DesignSize = (
-        1016
-        479)
+        1008
+        475)
       object btnClientPageFirst: TButton
         Left = 192
         Top = 104

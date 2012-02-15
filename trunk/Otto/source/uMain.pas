@@ -6,13 +6,13 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ActnList, ImgList, TB2Item, TBX, TB2Dock, TB2Toolbar,
   TBXStatusBars, GvVars, PngImageList, DB, FIBDataSet, pFIBDataSet, NativeXml,
-  StdCtrls, JvComponentBase, JvFormAutoSize, TBXDkPanels, Menus, StdActns,
+  JvComponentBase, JvFormAutoSize, Menus, StdActns,
   FIBDatabase, pFIBDatabase, JvDSADialogs, frxClass, frxExportPDF,
-  frxFIBComponents, ExtCtrls, DBGridEhGrouping, GridsEh, DBGridEh,
-  JvEmbeddedForms, JvExControls, JvProgressComponent, frxRich, pFIBScripter,
-  JvDialogs, JvBaseDlg, IB_Services, pngimage,
-  gsFileVersionInfo, JvLogFile, JvThread, JvProgressDialog, dbf,
-  frxExportXML, frxExportHTML, frxExportXLS, uFrameBase1, uFrameOrderItems,
+  frxFIBComponents, ExtCtrls, DBGridEh,
+  JvEmbeddedForms, JvProgressComponent, frxRich, pFIBScripter,
+  JvBaseDlg, 
+  gsFileVersionInfo, JvLogFile, JvProgressDialog, 
+  frxExportXML, 
   ComCtrls;
 
 type
@@ -189,11 +189,11 @@ implementation
 
 {$R *.dfm}
 uses
-  GvFile, IniFiles, GvStr, udmOtto, FIBQuery, uParseOrder,
-  uOttoArticleUpdate, DateUtils, uWzrdArticles, uBaseNSIForm,
+  GvFile, GvStr, udmOtto, FIBQuery, 
+  uWzrdArticles, uBaseNSIForm,
   uFormTableOrder, uFormTableClients, uParseProtocol, uParseLiefer,
-  uParseConsignment, uFormProtocol, GvNativeXml, pFIBQuery, uParsePayments,
-  uFormWizardOrder, uExportOrders, uSetByr2Eur, uExportSMSReject,
+  uParseConsignment, uFormProtocol, pFIBQuery, uParsePayments,
+  uFormWizardOrder, uSetByr2Eur, uExportSMSReject,
   uExportCancellation, uExportOrder, uExportInvoices, uExportPackList, 
   uParseArtN, uParseCancellation, uFormWizardReturn, uParseInfo2Pay, 
   uExportToSite;

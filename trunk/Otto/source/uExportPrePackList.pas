@@ -8,7 +8,7 @@ procedure ExportPrePackList(aTransaction: TpFIBTransaction);
 implementation
 
 uses
-  NativeXml, GvNativeXml, udmOtto, GvStr, GvFile, GvDtTm, DateUtils, Dialogs;
+  NativeXml, GvNativeXml, udmOtto, GvStr, GvFile, DateUtils, Dialogs;
 
 function ExportOrder(aTransaction: TpFIBTransaction;
   ndProduct, ndOrders: TXmlNode; aOrderId: integer): string;

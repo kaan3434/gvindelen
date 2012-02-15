@@ -59,16 +59,17 @@ begin
         if GetXmlAttrValue(ndOrderItem, 'ORDERITEM_INDEX') = null then
           SetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX', sl[4]);
 
-        SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', sl[9]);
+        SetXmlAttrAsMoney(ndOrderItem, 'NEW.PRICE_EUR', sl[9]);
 
-        if GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') <> GetXmlAttrAsMoney(ndOrderItem, 'COST_EUR') then
+        if GetXmlAttrAsMoney(ndOrderItem, 'NEW.PRICE_EUR') <> GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') then
         begin
           dmOtto.Notify(aMessageId,
-            '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Измнена цена [COST_EUR] => [PRICE_EUR].',
+            '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Измнена цена [PRICE_EUR] => [NEW.PRICE_EUR].',
             'W',
-            XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR',
+            XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;NEW.PRICE_EUR',
             XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
             Value2Vars(LineNo, 'LINE_NO'))));
+          SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', sl[9]);
           SetXmlAttrAsMoney(ndOrderItem, 'COST_EUR', GetXmlAttrValue(ndOrderItem, 'PRICE_EUR')*getXmlAttrValue(ndOrderItem, 'AMOUNT'));
         end;
 
@@ -84,15 +85,22 @@ begin
             Strings2Vars(sl, 'DELIVERY_CODE=10')))))
         end
         else
-          SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', StateSign);
-
-        if sl[12] <> '00000000000000' then
+        if Pos(','+StateSign+',', ',ANULLED,REJECTED,') <> 0 then
         begin
-          SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'BUNDLING');
-          MessageClass:= 'I';
+          SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', StateSign);
+          MessageClass:= 'W';
         end
         else
-          MessageClass:= 'W';
+        begin
+          SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', StateSign);
+          if sl[12] <> '00000000000000' then
+          begin
+            SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'BUNDLING');
+            MessageClass:= 'I';
+          end
+          else
+            MessageClass:= 'W';
+        end;
         StatusName:= aTransaction.DefaultDatabase.QueryValue(
           'select status_name from statuses where object_sign=''ORDERITEM'' and status_sign = :status_sign',
           0, [GetXmlAttrValue(ndOrderItem, 'STATUS_SIGN')]);
@@ -114,7 +122,7 @@ begin
               XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION',
               XmlAttrs2Vars(ndOrder, 'ORDER_CODE;CLIENT_ID',
               Value2Vars(LineNo, 'LINE_NO',
-              Value2Vars(E.Message, 'ERROR_TEXT')))));
+              Value2Vars(Trim(E.Message), 'ERROR_TEXT')))));
         end;
       end
       else
@@ -155,21 +163,25 @@ begin
   try
     if FileExists(Path['Messages.In']+MessageFileName) then
     begin
-    
       Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
+      dmOtto.InitProgress(Lines.Count, Format('Ообработка файла %s ...', [MessageFileName]));
       For LineNo:= 0 to Lines.Count - 1 do
+      begin
         ParseLieferLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
+        dmOtto.StepProgress;
+      end
     end
     else
       dmOtto.Notify(aMessageId,
         'Файл [FILE_NAME] не найден.', 'E',
         Value2Vars(MessageFileName, 'FILE_NAME'));
   finally
+    dmOtto.InitProgress;
+    dmOtto.Notify(aMessageId,
+      'Конец обработки файла: [FILE_NAME]', 'I',
+      Value2Vars(MessageFileName, 'FILE_NAME'));
     Lines.Free;
   end;
-  dmOtto.Notify(aMessageId,
-    'Конец обработки файла: [FILE_NAME]', 'I',
-    Value2Vars(MessageFileName, 'FILE_NAME'));
 end;
 
 procedure ProcessLiefer(aMessageId: Integer; aTransaction: TpFIBTransaction);

@@ -4,11 +4,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, uBaseNSIForm, DBGridEhGrouping, FIBDatabase, pFIBDatabase,
+  Dialogs, uBaseNSIForm, FIBDatabase, pFIBDatabase,
   ImgList, PngImageList, ActnList, DB, FIBDataSet, pFIBDataSet, GridsEh,
   DBGridEh, StdCtrls, JvExStdCtrls, JvGroupBox, ExtCtrls, JvExExtCtrls,
   JvExtComponent, JvPanel, TB2Item, TBX, TB2Dock, TB2Toolbar, ComCtrls,
-  NativeXml, GvNativeXml, EhLibFIB;
+  NativeXml, GvNativeXml, EhLibFIB, DBGridEhGrouping;
 
 type
   TFormTableOrders = class(TBaseNSIForm)
@@ -66,7 +66,7 @@ var
 implementation
 
 uses
-  udmOtto, GvStr, uFormWizardOrder, uMain, uDlgPayment;
+  udmOtto, uFormWizardOrder, uMain, uDlgPayment;
 
 {$R *.dfm}
 

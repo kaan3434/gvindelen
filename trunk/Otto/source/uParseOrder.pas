@@ -10,7 +10,7 @@ procedure ParseFileOrder(aFileName: string; ndOrder: TXmlNode; aTransaction: TpF
 implementation
 
 uses
-  Classes, SysUtils, GvStr, udmOtto, pFIBStoredProc, Variants, GvNativeXml,
+  Classes, SysUtils, GvStr, udmOtto, Variants, GvNativeXml,
   Dialogs, Controls;
 
 function ToFloat(aStr: string): Double;

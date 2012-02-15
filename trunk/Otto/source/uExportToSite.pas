@@ -8,7 +8,7 @@ procedure ExportToSite(aTransaction: TpFIBTransaction);
 implementation
 
 uses
-  NativeXml, GvNativeXml, udmOtto, GvStr, GvFile, GvDtTm, DateUtils, Dialogs;
+  NativeXml, GvNativeXml, udmOtto, GvStr, GvFile, Dialogs;
 
 procedure ExportOrder(aTransaction: TpFIBTransaction;
   ndOrders: TXmlNode; aOrderId: integer);

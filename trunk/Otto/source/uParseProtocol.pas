@@ -10,7 +10,7 @@ procedure ProcessProtocol(aMessageId: Integer; aTransaction: TpFIBTransaction);
 implementation
 
 uses
-  Classes, SysUtils, GvStr, udmOtto, pFIBStoredProc, Variants, GvNativeXml,
+  Classes, SysUtils, GvStr, udmOtto, Variants, GvNativeXml,
   Dialogs, Controls, StrUtils;
 
 procedure ParseProtocolLine100(aMessageId, LineNo, DealId: Integer;

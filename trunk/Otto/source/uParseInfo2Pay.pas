@@ -10,8 +10,8 @@ procedure ProcessInfo2Pay(aMessageId: Integer; aTransaction: TpFIBTransaction);
 implementation
 
 uses
-  Classes, SysUtils, GvStr, udmOtto, pFIBStoredProc, Variants, GvNativeXml,
-  Dialogs, Controls, StrUtils;
+  Classes, SysUtils, GvStr, udmOtto, Variants, GvNativeXml,
+  Dialogs, Controls;
 
 procedure ParseInfo2PayLine(aMessageId, LineNo: Integer; aLine: string; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var

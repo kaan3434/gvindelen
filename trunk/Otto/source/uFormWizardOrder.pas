@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uFormWizardBase, FIBDatabase, pFIBDatabase, ActnList,
   JvExControls, JvWizard, NativeXml, ExtCtrls, JvExExtCtrls,
-  JvExtComponent, JvPanel, uFrameOrderItems, uFrameOrder, uFrameClient,
+  JvPanel, uFrameOrderItems, uFrameOrder, uFrameClient,
   uFrameAdress, uFrameOrderSummary, StdCtrls;
 
 type

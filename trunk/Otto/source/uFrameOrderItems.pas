@@ -4,12 +4,12 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, uFrameBase0, ImgList, PngImageList, ActnList, FIBDatabase,
-  pFIBDatabase, TBXStatusBars, TB2Dock, TB2Toolbar, TBX, DBGridEhGrouping,
+  Dialogs, ImgList, PngImageList, ActnList, FIBDatabase,
+  pFIBDatabase, TBXStatusBars, TB2Dock, TB2Toolbar, TBX, 
   MemTableDataEh, Db, FIBDataSet, pFIBDataSet, MemTableEh, ExtCtrls,
   JvExExtCtrls, JvImage, GridsEh, DBGridEh, NativeXml, JvComponentBase,
   JvProgressComponent, TB2Item, StdCtrls, JvExStdCtrls, JvGroupBox,
-  JvEmbeddedForms, JvFormAutoSize, JvExtComponent, uFrameBase1;
+  JvEmbeddedForms, JvFormAutoSize, uFrameBase1, DBGridEhGrouping;
 
 type
   TFrameOrderItems = class(TFrameBase1)

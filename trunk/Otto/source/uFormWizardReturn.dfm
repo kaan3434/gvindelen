@@ -11,6 +11,7 @@ inherited FormWizardReturn: TFormWizardReturn
     OnFinishButtonClick = wzFormFinishButtonClick
     OnActivePageChanging = wzFormActivePageChanging
     object wzWPage: TJvWizardWelcomePage
+      Header.ParentFont = False
       Header.Title.Color = clNone
       Header.Title.Text = 'Welcome'
       Header.Title.Anchors = [akLeft, akTop, akRight]

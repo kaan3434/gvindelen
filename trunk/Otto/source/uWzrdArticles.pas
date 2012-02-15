@@ -4,13 +4,13 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, uBaseWizardForm, DBGridEhGrouping, GridsEh, DBGridEh, StdCtrls,
+  Dialogs, uBaseWizardForm, GridsEh, DBGridEh, StdCtrls,
   JvExStdCtrls, JvGroupBox, ExtCtrls, JvExExtCtrls, JvExtComponent,
   JvPanel, JvWizard, ActnList, JvExControls, DB, FIBDataSet, pFIBDataSet,
-  Mask, DBCtrlsEh, JvExMask, JvToolEdit, MemTableDataEh, MemTableEh,
+  Mask, DBCtrlsEh, JvExMask, JvToolEdit, MemTableDataEh, 
   NativeXml, JvBaseDlg, JvProgressDialog, JvComponentBase,
-  JvProgressComponent, JvButton, JvCtrls, JvValidators, JvErrorIndicator,
-  FIBDatabase, pFIBDatabase, FIBQuery, pFIBQuery;
+  JvProgressComponent, JvValidators, JvErrorIndicator,
+  FIBDatabase, pFIBDatabase, FIBQuery, DBGridEhGrouping;
 
 type
   TWzArticlesOtto = class(TBaseWizardForm)
@@ -89,7 +89,7 @@ var
 implementation
 
 uses
-  udmOtto, uParseMagazine, GvNativeXml, gvStr;
+  udmOtto, uParseMagazine, GvNativeXml;
 
 {$R *.dfm}
 

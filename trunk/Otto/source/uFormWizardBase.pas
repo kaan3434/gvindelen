@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, JvWizard, JvWizardRouteMapNodes, JvExControls, StdCtrls,
+  Dialogs, JvWizard, JvWizardRouteMapNodes, JvExControls, 
   Buttons, ActnList, NativeXml, FIBDatabase, pFIBDatabase;
 
 type
@@ -47,7 +47,7 @@ type
 implementation
 
 uses
-  udmOtto, uFrameBase1, uFrameBase0;
+  udmOtto;
 
 {$R *.dfm}
 
