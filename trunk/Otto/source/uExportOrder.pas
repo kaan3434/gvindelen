@@ -47,6 +47,7 @@ var
   OrderItemId: Variant;
   Line: TStringList;
 begin
+  Result:= '';
   ndOrder:= ndProduct.NodeFindOrCreate('ORDERS').NodeFindOrCreate('ORDER');
   ndClient:= ndOrder.NodeFindOrCreate('CLIENT');
   ndAdress:= ndOrder.NodeFindOrCreate('ADRESS');
@@ -60,22 +61,24 @@ begin
     ndOrder.ValueAsBool:= True;
     ndOrder.Document.XmlFormat:= xfReadable;
     ndOrder.Document.SaveToFile('Order.xml');
-
-    Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
-    Line.Add(CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5));
-    Line.Add('100');
-    Line.Add(IfThen(LastChar(GetXmlAttr(ndClient, 'FIRST_NAME')) in ['à', 'ÿ'], '3', '1'));
-    Line.Add(Translit(GetXmlAttr(ndClient, 'LAST_NAME')));
-    Line.Add(Translit(GetXmlAttr(ndClient, 'FIRST_NAME') + ' '+ Copy(GetXmlAttr(ndClient, 'MID_NAME'), 1, 1)));
-    Line.Add('');
-    Line.Add(GetAdress(ndAdress, 32));
-    Line.Add(Translit(GetXmlAttr(ndPlace, 'AREA_NAME', '', ' r-n')));
-    Line.Add(GetXmlAttr(ndAdress, 'POSTINDEX'));
-    Line.Add(GetPlace(ndPlace, 24));
-    Line.Add(IfThen(XmlAttrIn(ndOrder, 'STATUS_SIGN', 'APPROVED'), 'N', 'U'));
-    Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
     if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'APPROVED') then
-      dmOtto.ActionExecute(aTransaction, ndOrder, 'ACCEPTREQUEST');
+    begin
+      Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
+      Line.Add(CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5));
+      Line.Add('100');
+      Line.Add(IfThen(LastChar(GetXmlAttr(ndClient, 'FIRST_NAME')) in ['à', 'ÿ'], '3', '1'));
+      Line.Add(Translit(GetXmlAttr(ndClient, 'LAST_NAME')));
+      Line.Add(Translit(GetXmlAttr(ndClient, 'FIRST_NAME') + ' '+ Copy(GetXmlAttr(ndClient, 'MID_NAME'), 1, 1)));
+      Line.Add('');
+      Line.Add(GetAdress(ndAdress, 32));
+      Line.Add(Translit(GetXmlAttr(ndPlace, 'AREA_NAME', '', ' r-n')));
+      Line.Add(GetXmlAttr(ndAdress, 'POSTINDEX'));
+      Line.Add(GetPlace(ndPlace, 24));
+      Line.Add('N');
+      Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
+      if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'APPROVED') then
+        dmOtto.ActionExecute(aTransaction, ndOrder, 'ACCEPTREQUEST');
+    end;
   finally
     Line.Free;
     ndOrder.Clear;
@@ -166,6 +169,8 @@ begin
       OrderItemText:= OrderItemText + ExportOrder(aTransaction, ndProduct, OrderId);
       ClientText:= ClientText + ExportClient(aTransaction, ndProduct, OrderId);
     end;
+
+
 
     FileName:= GetNextFileName(Format('%sa%s_%%.2u.%.3d', [
       Path['OrderRequests'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
