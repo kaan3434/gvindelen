@@ -209,6 +209,7 @@ begin
   try
     Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
     ndOrder:= ndOrders.NodeNew('ORDER');
+    dmOtto.InitProgress(Lines.Count, Format('Ообработка файла %s ...', [MessageFileName]));
     For LineNo:= 0 to Lines.Count - 1 do
       ParseProtocolLine(aMessageId, LineNo, DealId, Lines[LineNo], ndOrders, aTransaction);
     For n:= 0 to ndOrders.NodeCount - 1 do
@@ -216,13 +217,15 @@ begin
       ndOrder:= ndOrders[n];
       if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'ACCEPTREQUEST') then
         dmOtto.ActionExecute(aTransaction, ndOrder, 'ACCEPTED');
+      dmOtto.StepProgress;
     end;
   finally
+    dmOtto.InitProgress;
+    dmOtto.Notify(aMessageId,
+      'Конец обработки файла: [FILE_NAME]', 'I',
+      Value2Vars(MessageFileName, 'FILE_NAME'));
     Lines.Free;
   end;
-  dmOtto.Notify(aMessageId,
-    'Конец обработки файла: [FILE_NAME]', 'I',
-    Value2Vars(MessageFileName, 'FILE_NAME'));
 end;
 
 procedure ProcessProtocol(aMessageId: Integer; aTransaction: TpFIBTransaction);
@@ -236,7 +239,7 @@ begin
       aTransaction.StartTransaction;
     try
       ParseProtocol(aMessageId, aXml.Root, aTransaction);
-//      dmOtto.MessageRelease(aTransaction, aMessageId);
+      dmOtto.MessageRelease(aTransaction, aMessageId);
       dmOtto.MessageSuccess(aTransaction, aMessageId);
       aTransaction.Commit;
     except
