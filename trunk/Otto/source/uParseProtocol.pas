@@ -223,11 +223,11 @@ begin
     end;
   finally
     dmOtto.InitProgress;
-    dmOtto.Notify(aMessageId,
-      'Конец обработки файла: [FILE_NAME]', 'I',
-      Value2Vars(MessageFileName, 'FILE_NAME'));
+  dmOtto.Notify(aMessageId,
+    'Конец обработки файла: [FILE_NAME]', 'I',
+    Value2Vars(MessageFileName, 'FILE_NAME'));
     Lines.Free;
-  end;
+end;
 end;
 
 procedure ProcessProtocol(aMessageId: Integer; aTransaction: TpFIBTransaction);
