@@ -145,7 +145,6 @@ function ExtractWord(N: Integer; const S: string; const WordDelims: String): str
 function WordPosition(const N: Integer; const S: string; const WordDelims: String): Integer;
 function IsWild(InputStr, Wilds: string; IgnoreCase: Boolean): Boolean;
 function FindPart(const HelpWilds, InputStr: string): Integer;
-function IsWordPresent(const W, S: string; const WordDelims: String): Boolean;
 
 procedure WriteStringToStream(Stream: TStream; St: String);
 function ReadStringFromStream(Stream: TStream): String;
@@ -239,6 +238,7 @@ function Translit(St: string): string;
 function UpCaseFirst(St: string): string;
 function UpCaseWord(St: string; KeyChars: string=' ,.!-:?'): string;
 
+function IsWordPresent(aWord, aWordList, aDelimiter: String): Boolean;
 
 implementation
 uses
@@ -1358,19 +1358,6 @@ begin
   Result := StrToIntDef(HexStr, 0);
 end;
 
-function IsWordPresent(const W, S: string; const WordDelims: String): Boolean;
-var
-  Count, I: Integer;
-begin
-  Result := False;
-  Count := WordCount(S, WordDelims);
-  for I := 1 to Count do
-    if ExtractWord(I, S, WordDelims) = W then begin
-      Result := True;
-      Exit;
-    end;
-end;
-
 procedure WriteStringToStream(Stream: TStream; St: String);
 var
   Len: Integer;
@@ -2312,6 +2299,11 @@ function UpCaseWord(St: string; KeyChars: string=' ,.!-:?'): string;
 begin
   While St<>'' do
     Result:= Result + UpCaseFirst(TakeFront3(St, KeyChars));
+end;
+
+function IsWordPresent(aWord, aWordList, aDelimiter: String): Boolean;
+begin
+  result:= Pos(aDelimiter+aWord+aDelimiter, aDelimiter+aWordList+aDelimiter) > 0;
 end;
 
 end.
