@@ -56,6 +56,7 @@ function DetectCaption(aNode : TXmlNode; aCaption: String): string;
 
 function ChildByAttributes(aRootNode: TXmlNode; aAttrNames: string; aValues: array of Variant): TXmlNode;
 
+function DataSet2Vars(aDataSet: TDataSet; aFieldNames: string; aVars: string = ''): string;
 function XmlAttrs2Vars(aNode: TXmlNode; aAttrNames: string; aVars: string = ''): string;
 function Strings2Vars(aStrings: TStrings; aAttrNames: string; aVars: string = ''): string;
 function Value2Vars(aValue: Variant; aAttrName: string; aVars: string =''): string;
@@ -436,6 +437,30 @@ begin
     Value:= GetXmlAttrValue(aNode, aAttrNameValue, aDefaultValue);
     if not VarIsNull(Value) then
       aCombo.Text:= Value;
+  end;
+end;
+
+function DataSet2Vars(aDataSet: TDataSet; aFieldNames: string; aVars: string = ''): string;
+var
+  Vars: TVarList;
+  FieldFrom, NameTo: string;
+begin
+  Vars:= TVarList.Create;
+  try
+    Vars.Text:= aVars;
+    While aFieldNames <> '' do
+    begin
+      FieldFrom:= TakeFront5(aFieldNames,' ;,');
+      if Pos('=', FieldFrom) = 0 then
+        NameTo:= FieldFrom
+      else
+        NameTo:= TakeFront5(FieldFrom, '=');
+      if aDataSet.FindField(FieldFrom) <> nil then
+        Vars[NameTo]:= aDataSet.FieldByName(FieldFrom).AsString;
+    end;
+    Result:= Vars.Text;
+  finally
+    Vars.Free;
   end;
 end;
 

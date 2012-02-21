@@ -115,6 +115,7 @@ begin
       if NewDeliveryMessage <> sl[11] then
         StateId:= dmOtto.GetStatusBySign('ORDERITEM', NewDeliveryMessage);
 
+      NewDeliveryMessage:= dmOtto.Recode('ORDERITEM', 'DELIVERY_MESSAGE_RUS', sl[11]);
       if Pos(',AVAILABLE,', dmOtto.GetFlagListById(StateId)) = 0 then
       begin
         SetXmlAttr(ndOrderItem, 'STATE_ID', null);
@@ -133,12 +134,13 @@ begin
         ndOrderItem.ValueAsBool:= True;
         dmOtto.ActionExecute(aTransaction, ndOrderItem);
         dmOtto.Notify(aMessageId,
-          '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [NEW.STATUS_NAME].',
+          '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [NEW.STATUS_NAME] ([DELIVERY_MESSAGE_RUS]).',
           'I',
           XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
           XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION',
+          Value2Vars(NewDeliveryMessage, 'DELIVERY_MESSAGE_RUS',
           Value2Vars(LineNo, 'LINE_NO',
-          Value2Vars(StatusName, 'NEW.STATUS_NAME')))));
+          Value2Vars(StatusName, 'NEW.STATUS_NAME'))))));
       except
         on E: Exception do
           dmOtto.Notify(aMessageId,

@@ -101,6 +101,8 @@ begin
           else
             MessageClass:= 'W';
         end;
+
+        NewDeliveryMessage:= dmOtto.Recode('ORDERITEM', 'DELIVERY_MESSAGE_RUS', sl[11]);
         StatusName:= aTransaction.DefaultDatabase.QueryValue(
           'select status_name from statuses where object_sign=''ORDERITEM'' and status_sign = :status_sign',
           0, [GetXmlAttrValue(ndOrderItem, 'STATUS_SIGN')]);
@@ -108,12 +110,13 @@ begin
           ndOrderItem.ValueAsBool:= True;
           dmOtto.ActionExecute(aTransaction, ndOrderItem);
           dmOtto.Notify(aMessageId,
-            '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [STATUS_NAME]',
+            '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [STATUS_NAME] ([DELIVERY_MESSAGE_RUS])',
             MessageClass,
             XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION',
             XmlAttrs2Vars(ndOrder, 'ORDER_CODE;CLIENT_ID',
+            Value2Vars(NewDeliveryMessage, 'DELIVERY_MESSAGE_RUS',
             Value2Vars(LineNo, 'LINE_NO',
-            Value2Vars(StatusName, 'STATUS_NAME')))));
+            Value2Vars(StatusName, 'STATUS_NAME'))))));
         except
           on E: Exception do
             dmOtto.Notify(aMessageId,

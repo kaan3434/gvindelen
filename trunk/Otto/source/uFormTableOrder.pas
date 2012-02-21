@@ -44,6 +44,10 @@ type
     subSetStatuses: TTBXSubmenuItem;
     qryNextStatus: TpFIBDataSet;
     actSetStatus: TAction;
+    actDeleteOrder: TAction;
+    btnDeleteOrder: TTBXItem;
+    actBalanceOrder: TAction;
+    btnBalanceOrder: TTBXItem;
     procedure actFilterApprovedExecute(Sender: TObject);
     procedure actFilterAcceptRequestExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -53,6 +57,10 @@ type
     procedure qryMainAfterScroll(DataSet: TDataSet);
     procedure actSetStatusExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure actDeleteOrderUpdate(Sender: TObject);
+    procedure actDeleteOrderExecute(Sender: TObject);
+    procedure actBalanceOrderUpdate(Sender: TObject);
+    procedure actBalanceOrderExecute(Sender: TObject);
   private
     procedure ApplyFilter(aStatusSign: string);
     { Private declarations }
@@ -66,7 +74,7 @@ var
 implementation
 
 uses
-  udmOtto, uFormWizardOrder, uMain, uDlgPayment;
+  udmOtto, uFormWizardOrder, uMain, uDlgPayment, GvStr, GvVariant;
 
 {$R *.dfm}
 
@@ -228,6 +236,82 @@ procedure TFormTableOrders.FormClose(Sender: TObject;
 begin
   inherited;
   if trnWrite.Active then trnWrite.Commit;
+end;
+
+procedure TFormTableOrders.actDeleteOrderUpdate(Sender: TObject);
+var
+  FlagList: variant;
+begin
+  FlagList:= qryStatuses.Lookup('STATUS_ID', qryMain['STATUS_ID'], 'FLAG_SIGN_LIST');
+  actDeleteOrder.Enabled:= IsWordPresent('DELETEABLE', nvl(FlagList,''), ',');
+end;
+
+procedure TFormTableOrders.actDeleteOrderExecute(Sender: TObject);
+var
+  OrderId: variant;
+  bm: TBookmark;
+begin
+  if MessageDlg('Удалить заявку?', mtConfirmation, [mbOK,mbCancel], 0) = mrOk then
+  begin
+    if not trnWrite.Active then
+      trnWrite.StartTransaction;
+    trnWrite.SetSavePoint('BeforeDeleteOrder');
+    try
+      bm:= qryMain.GetBookmark;
+      qryMain.DisableControls;
+      try
+        OrderId:= trnWrite.DefaultDatabase.QueryValue(
+          'delete from orders where order_id = :order_id returning order_id',
+          0, [OrderId], trnWrite);
+        ShowMessage('Заявка удалена');
+      finally
+        qryMain.GotoBookmark(bm);
+        qryMain.FreeBookmark(bm);
+        qryMain.EnableControls;
+      end;
+    except
+      trnWrite.RollBackToSavePoint('BeforeDeleteOrder');
+      ShowMessage('Ошибка при удалении заявки');
+    end;
+  end;
+
+end;
+
+procedure TFormTableOrders.actBalanceOrderUpdate(Sender: TObject);
+var
+  FlagList: variant;
+begin
+  FlagList:= qryStatuses.Lookup('STATUS_ID', qryMain['STATUS_ID'], 'FLAG_SIGN_LIST');
+  actBalanceOrder.Enabled:= IsWordPresent('BALANCEABLE', nvl(FlagList,''), ',') and (qryMain['COST_EUR']<>0);
+end;
+
+procedure TFormTableOrders.actBalanceOrderExecute(Sender: TObject);
+var
+  AccountId, AmountEur: Variant;
+  bm: TBookmark;
+begin
+  qryMain.DisableControls;
+  bm:= qryMain.GetBookmark;
+  if not trnWrite.Active then
+    trnWrite.StartTransaction;
+  try
+    trnWrite.SetSavePoint('BeforeBalanceOrder');
+    try
+      dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_DEBITORDER',
+        DataSet2Vars(qryMain, 'AMOUNT_EUR=COST_EUR;ORDER_ID'), qryMain['ACCOUNT_ID']);
+      ShowMessage('Заявка сбалансирована');
+    except
+      on E: Exception do
+      begin
+        trnWrite.RollBackToSavePoint('BeforeBalanceOrder');
+        ShowMessage(e.Message);
+      end;
+    end;
+  finally
+    qryMain.GotoBookmark(bm);
+    qryMain.FreeBookmark(bm);
+    qryMain.EnableControls;
+  end;
 end;
 
 end.

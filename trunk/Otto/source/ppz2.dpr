@@ -41,7 +41,8 @@ uses
   uParseInfo2Pay in 'uParseInfo2Pay.pas',
   GvVariant in '..\..\4Delphi\Gvindln\Source\GvVariant.pas',
   uDlgPayment in 'uDlgPayment.pas' {DlgManualPayment},
-  uFrameReturn in 'uFrameReturn.pas' {FrameMoneyBack};
+  uFrameReturn in 'uFrameReturn.pas' {FrameMoneyBack},
+  uParseLiefer in 'uParseLiefer.pas';
 
 {$R *.res}
 
