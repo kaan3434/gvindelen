@@ -1,3 +1,7 @@
+<?php
+    $url = 'ppz2orders/'.$_POST['OrderNum'].'.xml';       
+    $xml= simplexml_load_file($url);       
+?>
 <div class="maincontent" id="ordercontent">
   <div id="headline_item">
     <div class="text">
@@ -21,15 +25,12 @@
       <div class="box">
         <div class="pad">
           
-<?php
-   $dblink = db_connect();
-   $query = mysql_query('select * from sendinet i left join status s on (s.status_name = i.statusname) where coalesce(s.status_code, 0) >= 0 and i.articul not like \'*%\' and NUMZAK="'.$_POST['OrderNum'].'"', $dblink);
-   $row = mysql_fetch_assoc($query);
-   $row1 = $row;
-?>
-          <p>Заявка № <strong><? echo $_POST['OrderNum'];?></strong> от <strong><? echo $row['DATE0'];?></strong> г на имя <strong><? echo $row['FAMILY'];?></strong></p>
-          <p>E-майл: <? echo $row['EMAIL'];?> | Kурс евро: <strong><? echo $row['VALUEEUR'];?></strong> | Вес посылки: <strong><? echo $row['WEIGHT'];?> кг.</strong></p>
-          <p>Сумма к оплатe: <strong><? echo $row['SUMRUN']-$row['SUMPAY'];?> BYR</strong><br/><br/></p>
+          <p>Заявка № <strong><? echo $xml->ORDER['ORDER_CODE'];?></strong> от <strong><? echo $xml->ORDER['CREATE_DTM'];?></strong> г на имя <strong><? echo $xml->ORDER['CLIENT_FIO'];?></strong></p>
+          <p>E-майл: <? echo $xml->ORDER->CLIENT['EMAIL'];?> | Kурс евро: <strong><? echo $xml->ORDER['BYR2EUR'];?></strong> | Вес посылки: <strong><? echo $xml->ORDER['WEIGHT'];?> г.</strong></p>
+          <p>Сумма к оплатe: <strong><? echo $row['SUMRUN']-$row['SUMPAY'];?> BYR</strong></p>
+          <p>Номер посылки: <a href="http://belpost.by"><? echo $xml->ORDER['BARCODE']; ?></a></p>
+          <p>Форма оплаты: <strong><? echo $xml->ORDER['PRODUCT_NAME']; ?></strong></p>
+          <p>Статус заявки: <strong><? echo $xml->ORDER['STATUS_NAME']; ?></strong><br/><br/></p>
           <table border=1 cellpadding="4">
             <thead>
               <tr>
@@ -38,83 +39,46 @@
                 <th>Aртикул</th>
                 <th>Размер</th>
                 <th>Цена в евро</th>
-                <th>Цена в бел руб</th>
                 <th>Статус</th>
-                <th>Состояние на cкладе отправителя</th>
-                <th>Полный номер посылки</th>
-                <!--th>Bозврат</th-->
+                <th>Дата изм. статуса</th>
               </tr>
             </thead>
             <tbody>
 <?php 
-  $row_num = 0;
-  do { 
-    $row_num += 1;                
+  $row_num = 1;
+  foreach ($xml->ORDER->ORDERITEMS->ORDERITEM as $orderitem) {
   ?>
               <tr>
-                <td><? echo $row_num;?></td>
-                <td><? echo $row['NAMEZAK'];?></td>
-                <td><? echo $row['ARTICUL'];?></td>
-                <td><? echo $row['SIZE'];?></td>
-                <td><? echo $row['SUMEUR'];?></td>
-                <td><? echo $row['SUMRUB'];?></td>
-                <td><? echo $row['STATUSNAME'];?></td>
-                <td><? echo $row['DATEPI3'];?></td>
-                <td><? echo $row['SENDING'];?></td>
-                <!--td><input type="checkbox" name="grazinimas<?echo $row_num;?>" value="<? echo $_POST['OrderNum'].$row_num.$row['ARTICUL'];?>"></td-->
+                <td><? echo $row_num++;?></td>
+                <td><? echo $orderitem['NAME_RUS'].' '.$orderitem['KIND_RUS'];?></td>
+                <td><? echo $orderitem['ARTICLE_CODE'];?></td>
+                <td><? echo $orderitem['DIMENSION'];?></td>
+                <td><? echo $orderitem['COST_EUR'];?></td>
+                <td><? echo $orderitem['STATUS_NAME'].' '.$orderitem['STATE_NAME'];?></td>
+                <td><? echo $orderitem['STATUS_DTM'];?></td>
               </tr>
-<?php } while ($row = mysql_fetch_assoc($query)); 
-  $query = mysql_query('select * from sendinet i left join status s on (s.status_name = i.statusname) where i.articul like \'*%\' and NUMZAK="'.$_POST['OrderNum'].'"', $dblink);
-  while ($rowserv = mysql_fetch_assoc($query)) { 
-    $row_num += 1;
+<?php }; 
+  foreach ($xml->ORDER->ORDERTAXS->ORDERTAX as $ordertax) {
 ?>
               <tr>
-                <td><? echo $row_num;?></td>
-                <td colspan="3"><? echo $rowserv['NAMEZAK'];?></td>
-                <td><? echo $rowserv['SUMEUR'];?></td>
-                <td><? echo $rowserv['SUMRUB'];?></td>
-                <td><? echo $rowserv['STATUSNAME'];?></td>
-                <td><? echo $rowserv['DATEPI3'];?></td>
+                <td><? echo $row_num++;?></td>
+                <td colspan="3"><? echo $ordertax['TAXSERV_NAME'];?></td>
+                <td><? echo $ordertax['COST_EUR'];?></td>
+                <td><? echo $ordertax['STATUS_NAME'];?></td>
+                <td><? echo $ordertax['STATUS_DTM'];?></td>
               </tr>
-<?php } while ($row = mysql_fetch_assoc($query)); 
+<?php }; 
+  foreach ($xml->ORDER->ORDERMONEYS->ORDERMONEY as $ordermoney) {
 ?>
-            </tbody>
-         
-<?php
-   $query = mysql_query('select * from sendinet i left join status s on (s.status_name = i.statusname) where coalesce(s.status_code, 0) < 0 and NUMZAK="'.$_POST['OrderNum'].'"', $dblink);
-   
-   if ($rowcancel = mysql_fetch_assoc($query)) {;
+              <tr>
+                <td><? echo $row_num++;?></td>
+                <td colspan="3"><? if ($ordermoney['AMOUNT_EUR'] > 0) {echo "Поступившая оплата";} else {echo "Задолженность";} ?></td>
+                <td><? echo $ordermoney['AMOUNT_EUR'];?></td>
+                <td><? echo $ordermoney['STATUS_NAME'];?></td>
+                <td><? echo $ordermoney['STATUS_DTM'];?></td>
+              </tr>
+<?php }; 
 ?>
-          <tr>
-            <td colspan="9" align="center"><h3>Анулированные позиции</h3></td>
-          </tr>
-            <!--thead>
-              <tr>
-                <th>№</th>
-                <th>Наименование</th>
-                <th>Aртикул</th>
-                <th>Размер</th>
-                <th>Цена в евро</th>
-                <th>Цена в бел руб</th>
-                <th>Статус</th>
-              </tr>
-            </thead-->
-            <tbody>
-<?php 
-  do { 
-    $row_num += 1;
-  ?>
-              <tr>
-                <td><? echo $row_num;?></td>
-                <td><? echo $rowcancel['NAMEZAK'];?></td>
-                <td><? echo $rowcancel['ARTICUL'];?></td>
-                <td><? echo $rowcancel['SIZE'];?></td>
-                <td><? echo $rowcancel['SUMEUR'];?></td>
-                <td><? echo $rowcancel['SUMRUB'];?></td>
-                <td><? echo $rowcancel['STATUSNAME'];?></td>
-              </tr>
-<?php } while ($rowcancel = mysql_fetch_assoc($query)); 
-}?>
             </tbody>
           </table>
           </form>
@@ -126,12 +90,27 @@
       <h3 class="head head-hidden">Бланки для возврата товара</h3>
       <div class="box">
         <div class="pad">
-          <p><a href="blanks/blank1.pdf">&gt;&gt; Бланк заявления для возвратa посылки</a></p>
-          <p><a href="blanks/blank2.pdf">&gt;&gt; Образец заполнения почтовых бланков возврата</a></p>
+          <p><a href="blanks/return_blank.pdf">&gt;&gt; Бланк заявления для возвратa посылки</a></p>
         </div>
       </div>
     </div>
-
+    
+<?php if ($xml->ORDER['PRODUCT_ID'] == '1') {?>
+    <div class="container">
+      <h3 class="head head-hidden">Извещение на оплату заявки</h3>
+      <div class="box">
+        <div class="pad">
+<?php if (file_exists('invoices/inv_'.$_POST['OrderNum'].'.pdf')) { ?>
+          <p><a href="invoices/inv_<? echo $_POST['OrderNum']; ?>.pdf">Извещение на оплату заявки</a></p>
+<? } else { ?>
+          <p>Извините, но извещение на оплату заявки еще сформировано, или не опубликовано.</p>
+<? } ?>
+        </div>
+      </div>
+    </div>
+<?php    };
+?>    
+    
   </div>
 </div>
 

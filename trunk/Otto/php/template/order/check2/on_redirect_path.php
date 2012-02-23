@@ -13,26 +13,25 @@ function on_redirect_path ($path) {
     $_POST['OrderNum_Error'] = 'Отсутствует Номер заявки';
     return 'order/check';
   }
-  if (strlen(utf8_to_ansi_ru($_POST['OrderNum'])) <> 6) {
-    $_POST['OrderNum_Error'] = 'Длина кода заявки 6 знаков';
+  if (strlen($_POST['OrderNum']) < 5) {
+    $_POST['OrderNum_Error'] = 'Длина кода заявки 5-6 знаков только цифры';
     return 'order/check';
   }
   
   try {
-    $dblink = db_connect();
-    $sql = 'select * from sendinet where numzak = "'.$_POST['OrderNum'].'" and upper(family) like upper("'.$_POST['LastName'].' %") limit 1';
-    $query = mysql_query($sql, $dblink);
-    $order_founded = mysql_num_rows($query) > 0;
-    mysql_close($dblink);
+    $url = 'ppz2orders/'.$_POST['OrderNum'].'.xml';       //адрес XML документа
+//    $data = file_get_contents($url);
+ 
+    $xml= simplexml_load_file($url);       //Интерпретирует XML-документ в объект
+ 
   } catch (exception $e) {
-    $_POST['Check_Error'] = 'Не могу открыть БД';
+    $_POST['Check_Error'] = 'Заявка не найдена';
   }
 
-  if (!$order_founded) {
-    $_POST['Check_Error'] = 'Информация о заявке отсутствует:<br/>a) Фамилия или номер введены с ошибками<br/>б) Заявка отсутствует в поисковике, повторите попытку позже<br/>';
+  if ($xml->ORDER->CLIENT['LAST_NAME'] <> $_POST['LastName']) {
+    $_POST['LastName_Error'] = 'Фамилия не соотвтесвует заявке';
     return 'order/check';
   }
-  
   return $path;
 }
 ?>

@@ -45,6 +45,7 @@ var
   ndOrders: TXmlNode;
   OrderId: Variant;
   OrderList: string;
+  OrderCount: Integer;
 begin
   ForceDirectories(Path['ExportToSite']);
   DeleteFiles(Path['ExportToSite']+'*.*');
@@ -57,11 +58,16 @@ begin
       'where o.create_dtm >= current_date - 100 '+
       ' and o.order_code is not null',
        0, aTransaction);
+    OrderCount:= WordCount(OrderList, ',');
+    dmOtto.InitProgress(OrderCount, 'Выгрузка данных для сайта');
     while OrderList <> '' do
     begin
       OrderId:= TakeFront5(OrderList, ',');
       ExportOrder(aTransaction, ndOrders, OrderId);
+      dmOtto.StepProgress;
     end;
+    dmOtto.CreateAlert('Выгрузка данных для сайта', Format('%u файлов выгружено', [OrderCount]), mtInformation, 30000);
+    dmOtto.InitProgress;
   finally
     Xml.Free;
   end;

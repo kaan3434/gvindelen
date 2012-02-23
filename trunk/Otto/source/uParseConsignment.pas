@@ -114,7 +114,7 @@ var
   Body: string;
 begin
   Body:= CopyLast(GetXmlAttr(ndOrder, 'PACKLIST_NO'), 3) +
-         FilterString(GetXmlAttr(ndOrder, 'ORDER_CODE'), '0123456789');
+         CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5);
   Result:= 'CZ'+Body+CalcControlChar(Body)+'LT';
 end;
 
@@ -140,7 +140,23 @@ begin
       SetXmlAttr(ndOrder, 'BAR_CODE', GetBarCode(ndOrder));
       ndOrder.Document.XmlFormat:= xfReadable;
       ndOrder.Document.SaveToFile('order.xml');
-      dmOtto.ActionExecute(aTransaction, ndOrder);
+      try
+        dmOtto.ActionExecute(aTransaction, ndOrder);
+        dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
+        dmOtto.Notify(aMessageId,
+          '[LINE_NO]. Заявка [ORDER_CODE], Вес [WEIGHT], Стоимость [ITEMSCOST_EUR], Пакет [PACKET_NO], Bar Code [BAR_CODE]. [STATUS_NAME]',
+          'I',
+          XmlAttrs2Vars(ndOrder, 'ORDER_CODE;WEIGHT;ITEMSCOST_EUR;PACKET_NO;BAR_CODE;STATUS_NAME',
+          Value2Vars(LineNo, 'LINE_NO')));
+      except
+        on E: Exception do
+          dmOtto.Notify(aMessageId,
+            '[LINE_NO]. Заявка [ORDER_CODE], Ошибка ([ERROR_TEXT])',
+            'E',
+            XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
+            Value2Vars(LineNo, 'LINE_NO',
+            Value2Vars(E.Message, 'ERROR_TEXT'))));
+      end;
     end;
   end;
 end;
