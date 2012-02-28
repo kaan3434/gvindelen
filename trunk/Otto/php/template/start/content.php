@@ -19,29 +19,31 @@
           </font>
         </div>
       </li>
-    </ul>
-    <ul class="ulist">
 
-      <!--li>
-        <div class="picture">
-          <a href="?path=order/catalogs"><img width="377" height="181" border="0" src="/assets/otto-by/images/start/advert_2011_1.jpg"></a>
-        </div>  
-      </li-->
-
-      
       <li>
-        <div class="widetxt">
+        <div class="widetxt2h">
           <div class="hl">
-            <a href="">Уважаемые клиенты!</a>
+            <a href="">Результаты акции!</a>
           </div>
-          <font color='green'>
-          <p>Первые 5 клиентов, сделавшие <font color="red">23 февраля</font> через сайт заявки, 
-             стоимость товаров которых будет превышать <font color="blue">70&euro;</font>,
-             получат в подарок большой каталог ОТТО (1120 страниц).</p>
+          <font color='green' size="4">
+          <p>Поздравляем счастливую пятерку наших клиентов, которые первыми сделали 23 февраля через наш сайт интернет-заявку на сумму более 70&euro;! Это:</p>
+          </font>
+          <font color='red'>
+          <p><br/>-&nbsp;Прошина Инна (Ждановичи);</p>
+          <p>-&nbsp;Белоусова Анастасия (Витебск);</p>
+          <p>-&nbsp;Кадол Наталья (Гомель);</p>
+          <p>-&nbsp;Кривицкая Елена (пос. Озерный, Минская обл.);</p>
+          <p>-&nbsp;Коновалова Марина (Мозырь).</p>
+          </font>
+          <font color='blue'>
+          <p><br/>Большие каталоги ОТТО будут высланы им по почте до конца этой недели!</p>
           </font>
         </div>
       </li>
-      
+
+    </ul>
+    <ul class="ulist">
+
       <li>
         <div class="widetxt">
           <div class="hl">
