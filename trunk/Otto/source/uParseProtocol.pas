@@ -211,9 +211,12 @@ begin
   try
     Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
     ndOrder:= ndOrders.NodeNew('ORDER');
-    dmOtto.InitProgress(Lines.Count, Format('ќобработка файла %s ...', [MessageFileName]));
+    dmOtto.InitProgress(Lines.Count*2, Format('ќобработка файла %s ...', [MessageFileName]));
     For LineNo:= 0 to Lines.Count - 1 do
+    begin
       ParseProtocolLine(aMessageId, LineNo, DealId, Lines[LineNo], ndOrders, aTransaction);
+      dmOtto.StepProgress;
+    end;
     For n:= 0 to ndOrders.NodeCount - 1 do
     begin
       ndOrder:= ndOrders[n];

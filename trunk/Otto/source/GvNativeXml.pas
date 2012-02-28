@@ -211,6 +211,8 @@ begin
   Result:= ReplaceAll(Result, '="', '=~');
   Result:= ReplaceAll(Result, '" ', '"'#13#10);
   Result:= ReplaceAll(Result, '=~', '="');
+  while Pos('&amp;', Result) > 0 do
+    Result:= ReplaceAll(Result, '&amp;', '&');
 end;
 
 function GetXmlAttr(aNode: TXmlNode; aAttributeName: string;

@@ -27,7 +27,7 @@ procedure ParseConsignmentLine200(aMessageId, LineNo: Integer;
   sl: TStringList; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
   ndOrder, ndOrderItem: TXmlNode;
-  OrderId, NewStatusSign, StatusId, StatusName: variant;
+  OrderId, NewStatusSign, StatusId, StatusName, OrderItemId: variant;
   NewDeliveryMessage: string;
   Dimension: string;
 begin
@@ -48,26 +48,24 @@ begin
 
     ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
       'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
-      [sl[4], VarArrayOf([Dimension, sl[5]]), VarArrayOf(['BUNDLING', 'ACCEPTREQUEST', 'ACCEPTED', 'PACKED', 'DELIVERING'])]);
+      [sl[4], VarArrayOf([Dimension, sl[5]]), VarArrayOf(['BUNDLING', 'ACCEPTREQUEST', 'ACCEPTED'])]);
     if ndOrderItem <> nil then
     begin
+      OrderItemId:= GetXmlAttrValue(ndOrderItem, 'ID');
       SetXmlAttr(ndOrderItem, 'DESCRIPTION', sl[6]);
       SetXmlAttr(ndOrderItem, 'NREGWG', sl[9]);
       SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'PACKED');
-      StatusName:= aTransaction.DefaultDatabase.QueryValue(
-        'select status_name from statuses where object_sign=''ORDERITEM'' and status_sign = :status_sign',
-        0, ['PACKED']);
       try
         dmOtto.ActionExecute(aTransaction, ndOrderItem);
+        dmOtto.ObjectGet(ndOrderItem, OrderItemId, aTransaction);
         dmOtto.Notify(aMessageId,
           '[LINE_NO]. Заявка [ORDER_CODE], Артикул [ARTICLE_CODE], Размер [DIMENSION]. Палетта [PALETTE_NO]. Пакет [PACKET_NO]. [STATUS_NAME]',
           'I',
           XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
           XmlAttrs2Vars(ndOrders,'PALETTE_NO',
-          XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDER_ID;ARTICLE_CODE;DIMENSION',
+          XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDER_ID;ARTICLE_CODE;DIMENSION;STATUS_NAME',
           Strings2Vars(sl, 'PACKET_NO=1',
-          Value2Vars(LineNo, 'LINE_NO',
-          Value2Vars(StatusName, 'STATUS_NAME')))))));
+          Value2Vars(LineNo, 'LINE_NO'))))));
       except
         on E: Exception do
           dmOtto.Notify(aMessageId,
