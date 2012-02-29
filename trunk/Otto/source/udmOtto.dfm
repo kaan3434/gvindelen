@@ -11,8 +11,7 @@ object dmOtto: TdmOtto
     DBParams.Strings = (
       'lc_ctype=CYRL'
       'user_name=sysdba'
-      'password=masterkey'
-      'sql_role_name=')
+      'password=masterkey')
     DefaultTransaction = trnAutonomouse
     DefaultUpdateTransaction = trnAutonomouse
     SQLDialect = 3

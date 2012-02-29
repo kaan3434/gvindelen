@@ -234,8 +234,8 @@ begin
     try
       while not Eof do
       begin
-        aKeys.Add(Fields[0].Value);
-        aValues.Add(Fields[1].Value);
+        if aKeys<> nil then aKeys.Add(Fields[0].Value);
+        if aValues<> nil then aValues.Add(Fields[1].Value);
         Next;
       end;
     finally

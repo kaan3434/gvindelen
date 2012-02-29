@@ -58,6 +58,9 @@ type
     fldOrderItemsFLAG_SIGN_LIST: TStringField;
     fldOrderItems_COST_EUR: TFloatField;
     fldOrderItems_AMOUNT: TIntegerField;
+    subDiscard: TTBXSubmenuItem;
+    actDiscard: TAction;
+    btnDiscard: TTBXItem;
     procedure ProgressCheckAvailShow(Sender: TObject);
     procedure actCheckAvailableExecute(Sender: TObject);
     procedure grdOrderItemsColEnter(Sender: TObject);
@@ -89,6 +92,8 @@ type
     procedure mtblOrderItemsAfterScroll(DataSet: TDataSet);
     procedure mtblOrderItemsAfterInsert(DataSet: TDataSet);
     procedure grdOrderItemsKeyPress(Sender: TObject; var Key: Char);
+    procedure actDiscardUpdate(Sender: TObject);
+    procedure actDiscardExecute(Sender: TObject);
   private
     { Private declarations }
     FQryStatuses: Pointer;
@@ -524,6 +529,38 @@ begin
   end;
 end;
 
+procedure TFrameOrderItems.actDiscardUpdate(Sender: TObject);
+begin
+  actReturnRequest.Enabled:= mtblOrderItems['STATUS_SIGN'] = 'DELIVERING';
+end;
+
+procedure TFrameOrderItems.actDiscardExecute(Sender: TObject);
+var
+  OrderItemId: Variant;
+  bm: TBookmark;
+begin
+  OrderItemId:= mtblOrderItems['ORDERITEM_ID'];
+  bm:= mtblOrderItems.GetBookmark;
+  try
+    Write;
+    try
+      ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM','ID', OrderItemId);
+      if ndOrderItem <> nil then
+      begin
+        SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'DISCARDED');
+        dmOtto.ActionExecute(trnWrite, ndOrderItem);
+        dmOtto.ObjectGet(ndOrderItem, OrderItemId, trnWrite);
+      end;
+    finally
+      read;
+    end
+  finally
+    mtblOrderItems.GotoBookmark(bm);
+    mtblOrderItems.FreeBookmark(bm);
+  end;
+end;
+
+
 procedure TFrameOrderItems.actReturnRequestUpdate(Sender: TObject);
 begin
   actReturnRequest.Enabled:= mtblOrderItems['STATUS_SIGN'] = 'DELIVERING';
@@ -713,5 +750,6 @@ begin
       if not (Key in ['0'..'9', 'A'..'Z']) then Key:= #0;
   end;
 end;
+
 
 end.

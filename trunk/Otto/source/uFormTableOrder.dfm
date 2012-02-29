@@ -33,6 +33,7 @@ inherited FormTableOrders: TFormTableOrders
     inherited grBoxMain: TJvGroupBox
       inherited grdMain: TDBGridEh
         AllowedOperations = [alopDeleteEh]
+        IndicatorTitle.ShowDropDownSign = True
         Options = [dgTitles, dgIndicator, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
         OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghMultiSortMarking, dghEnterAsTab, dghIncSearch, dghRowHighlight, dghColumnResize, dghHotTrack, dghExtendVertLines]
         ReadOnly = True
@@ -41,6 +42,7 @@ inherited FormTableOrders: TFormTableOrders
         STFilter.InstantApply = True
         STFilter.Visible = True
         OnDblClick = grdMainDblClick
+        OnFillSTFilterListValues = grdMainFillSTFilterListValues
         Columns = <
           item
             EditButtons = <>
@@ -160,7 +162,7 @@ inherited FormTableOrders: TFormTableOrders
             Top = 0
             Width = 736
             Height = 198
-            ActivePage = tsOrderItems
+            ActivePage = tsOrderAttrs
             Align = alClient
             TabOrder = 0
             object tsOrderAttrs: TTabSheet
@@ -322,7 +324,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdOrderTaxs: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 598
+                Width = 728
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -409,7 +411,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdAccountMovements: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 663
+                Width = 728
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -473,7 +475,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdHistory: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 598
+                Width = 728
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -738,9 +740,6 @@ inherited FormTableOrders: TFormTableOrders
         Background = clWindow
       end>
     Bitmap = {}
-  end
-  inherited trnNSI: TpFIBTransaction
-    Active = True
   end
   object qryOrderAttrs: TpFIBDataSet
     SelectSQL.Strings = (

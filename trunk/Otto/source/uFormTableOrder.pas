@@ -61,6 +61,8 @@ type
     procedure actDeleteOrderExecute(Sender: TObject);
     procedure actBalanceOrderUpdate(Sender: TObject);
     procedure actBalanceOrderExecute(Sender: TObject);
+    procedure grdMainFillSTFilterListValues(Sender: TCustomDBGridEh;
+      Column: TColumnEh; Items: TStrings; var Processed: Boolean);
   private
     procedure ApplyFilter(aStatusSign: string);
     { Private declarations }
@@ -220,15 +222,26 @@ var
   StatusId: Integer;
   StatusSign: String;
   OrderId: variant;
+  bm: TBookmark;
 begin
   OrderId:= qryMain['ORDER_ID'];
+  qryMain.DisableControls;
+
   try
-    StatusId:= TAction(Sender).ActionComponent.Tag;
-    StatusSign:= qryStatuses.Lookup('STATUS_ID', StatusId, 'STATUS_SIGN');
-    dmOtto.ActionExecute(trnWrite, 'ORDER', '', Value2Vars(StatusSign, 'NEW.STATUS_SIGN'), OrderId);
+    if not trnWrite.Active then trnWrite.StartTransaction;
+    try
+      trnWrite.SetSavePoint('SetStatus');
+      StatusId:= TAction(Sender).ActionComponent.Tag;
+      StatusSign:= qryStatuses.Lookup('STATUS_ID', StatusId, 'STATUS_SIGN');
+      dmOtto.ActionExecute(trnWrite, 'ORDER', '', Value2Vars(StatusSign, 'NEW.STATUS_SIGN'), OrderId);
+    except
+      trnWrite.RollBackToSavePoint('SetStatus');
+    end;
   finally
-    qryMain.CloseOpen(true);
-  end
+    qryMain.Close;
+    qryMain.Open;
+    qryMain.EnableControls;
+  end;
 end;
 
 procedure TFormTableOrders.FormClose(Sender: TObject;
@@ -312,6 +325,27 @@ begin
     qryMain.FreeBookmark(bm);
     qryMain.EnableControls;
   end;
+end;
+
+procedure TFormTableOrders.grdMainFillSTFilterListValues(
+  Sender: TCustomDBGridEh; Column: TColumnEh; Items: TStrings;
+  var Processed: Boolean);
+var
+  SQL: string;
+begin
+  inherited;
+  if Column.FieldName = 'STATUS_NAME' then
+    SQL:= 'select s.status_name '+
+          ' from statuses s '+
+          ' where s.object_sign = ''ORDER'' '+
+          ' and coalesce(s.isstate, 0) = 0'
+  else
+  if Column.FieldName = 'USER_SIGN' then
+    SQL:= 'select distinct o.user_sign from orders o where o.user_sign is not null'
+  else
+    SQL:= '';
+  if SQL<>'' then
+    dmOtto.FillComboStrings(Items, nil, SQL, trnNSI);
 end;
 
 end.
