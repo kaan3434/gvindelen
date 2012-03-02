@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--Created with Liquid XML Studio Developer Edition 9.0.11.3078 (http://www.liquid-technologies.com)-->
+<xs:schema id="NewSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="ORDER" type="OrderType" />
+    <xs:complexType name="ClientType" />
+    <xs:complexType name="OrderType">
+        <xs:sequence>
+            <xs:element name="ORDERITEMS" type="OrderItemListType" />
+            <xs:element name="ORDERTAXS" type="OrderTaxListType" />
+            <xs:element name="ORDERMONEYS" />
+            <xs:element name="CLIENT" type="ClientType" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="OrderItemType">
+        <xs:attribute name="ID" />
+        <xs:attribute name="MAGAZINE_ID" type="xs:integer" />
+        <xs:attribute name="ARTICLE_CODE" type="xs:string" use="required" />
+        <xs:attribute name="DIMENSION" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:maxLength value="5" />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="PRICE_EUR" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:fractionDigits value="2" />
+                    <xs:totalDigits value="8" />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ORDER_ID" use="required" />
+        <xs:attribute name="STATE_ID" />
+        <xs:attributeGroup ref="StatusAttrGroup" />
+    </xs:complexType>
+    <xs:complexType name="OrderTaxType" />
+    <xs:complexType name="OrderItemListType">
+        <xs:sequence>
+            <xs:element name="ORDERITEM" type="OrderItemType" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="OrderTaxListType">
+        <xs:sequence>
+            <xs:element name="ORDERTAX" type="OrderTaxType" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:attributeGroup name="StatusAttrGroup">
+        <xs:attribute name="STATUS_ID" />
+        <xs:attribute name="STATUS_SIGN" />
+        <xs:attribute name="STATUS_NAME" />
+    </xs:attributeGroup>
+</xs:schema>
