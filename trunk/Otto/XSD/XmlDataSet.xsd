@@ -66,4 +66,12 @@
             <xs:enumeration value="ValueXPath" />
         </xs:restriction>
     </xs:simpleType>
+    <xs:complexType name="TDefaultValue">
+        <xs:choice>
+            <xs:element />
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="TDefaultValueConstant">
+        <xs:attribute name="DefaultValue" type="xs:string" />
+    </xs:complexType>
 </xs:schema>
