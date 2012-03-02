@@ -23,26 +23,44 @@
       <li>
         <div class="widetxt2h">
           <div class="hl">
-            <a href="">Результаты акции!</a>
+            <a href="">Милые женщины!</a>
           </div>
-          <font color='green' size="4">
-          <p>Поздравляем счастливую пятерку наших клиентов, которые первыми сделали 23 февраля через наш сайт интернет-заявку на сумму более 70&euro;! Это:</p>
+          <font color="green">
+          <font size="4">
+          <p>Коллектив ЗАО «BALT-POST» сердечно поздравляет вас с наступающим праздником <font color="red">8 марта!</font></p>
+          <p>Счастья, любви, радости, весеннего настроения!</p>
+          <p>И снова акция!<br/><br/></p>
           </font>
-          <font color='red'>
-          <p><br/>-&nbsp;Прошина Инна (Ждановичи);</p>
-          <p>-&nbsp;Белоусова Анастасия (Витебск);</p>
-          <p>-&nbsp;Кадол Наталья (Гомель);</p>
-          <p>-&nbsp;Кривицкая Елена (пос. Озерный, Минская обл.);</p>
-          <p>-&nbsp;Коновалова Марина (Мозырь).</p>
+          
+          <p>Пять клиентов, сделавшие <font color="blue">7  марта</font> на нашем сайте первыми заявки, стоимость товара 
+             в которых более 70 евро, получат в подарок НА ВЫБОР:</p>
+          <p>-&nbsp;Основной каталог Heine (610 стр.);</p>
+          <p>-&nbsp;Основной каталог Alba Moda (320 стр.);</p>
+          <p>-&nbsp;Комплект каталогов со скидками.<br/><br/></p>
           </font>
-          <font color='blue'>
-          <p><br/>Большие каталоги ОТТО будут высланы им по почте до конца этой недели!</p>
+          <font color="blue">
+          <p>Дерзайте! Удачи!</p>
           </font>
         </div>
       </li>
-
+      
     </ul>
     <ul class="ulist">
+
+      <li>
+        <div class="widetxt">
+          <div class="hl">
+            <a href="">Внимание!</a>
+          </div>
+          <font color='blue'>
+          <p>Изменились номера телефонов офиса ЗАО BALT-POST в ТЦ Глобо на Уманской, 54-49.</p>
+          <p>Вместо номеров телефонов <font color="red"><strike>306-01-59</strike></font> и 
+             <font color="red" ><strike>306-01-81</strike></font> с сегодняшнего дня действуют 
+             номера <font color="green" size="3"><b>(017)&nbsp;228-67-79</b></font> 
+             и <font color="green" size="3"><b>(017)&nbsp;228-67-80</b></font>!</p>
+          </font>
+        </div>
+      </li>
 
       <li>
         <div class="widetxt">
@@ -56,7 +74,10 @@
           </font>
         </div>
       </li>
+      
 
+      
+      
       <li>
         <div class="picture">
           <a href="?path=order/form"><img width="179" height="179" border="0" src="/assets/otto-by/images/service/aboutus/pic02.jpg"></a>

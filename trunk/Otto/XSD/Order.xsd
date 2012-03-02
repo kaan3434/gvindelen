@@ -30,8 +30,7 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
-        <xs:attribute name="ORDER_ID" use="required" />
-        <xs:attribute name="STATE_ID" />
+        <xs:attributeGroup ref="StateAttrGroup" />
         <xs:attributeGroup ref="StatusAttrGroup" />
     </xs:complexType>
     <xs:complexType name="OrderTaxType" />
@@ -46,8 +45,26 @@
         </xs:sequence>
     </xs:complexType>
     <xs:attributeGroup name="StatusAttrGroup">
-        <xs:attribute name="STATUS_ID" />
-        <xs:attribute name="STATUS_SIGN" />
-        <xs:attribute name="STATUS_NAME" />
+        <xs:attribute name="STATUS_ID" type="xs:integer" />
+        <xs:attribute name="STATUS_SIGN" type="OBJECT_SIGN" />
+        <xs:attribute name="STATUS_NAME" type="OBJECT_NAME" />
     </xs:attributeGroup>
+    <xs:attributeGroup name="StateAttrGroup">
+        <xs:attribute name="STATE_ID" type="xs:integer" />
+        <xs:attribute name="STATE_SIGN" type="OBJECT_SIGN" />
+        <xs:attribute name="STATE_NAME" type="OBJECT_NAME" />
+    </xs:attributeGroup>
+    <xs:simpleType name="OBJECT_SIGN">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="30" />
+            <xs:pattern value="[A-Z]{1,30}" />
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="OBJECT_NAME">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="100" />
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
 </xs:schema>

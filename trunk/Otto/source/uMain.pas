@@ -139,6 +139,7 @@ type
     actExportToSite: TAction;
     btnExportToSite: TTBXItem;
     subExportActions: TTBXSubmenuItem;
+    btnImportInfo2Pay: TTBXItem;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
