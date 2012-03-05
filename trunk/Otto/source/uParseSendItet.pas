@@ -34,7 +34,7 @@ procedure TForm1.FormActivate(Sender: TObject);
 var
   Xml: TNativeXml;
   ndOrders, ndOrder, ndClient, ndAdress, ndOrderItem, ndOrderTax : TXmlNode;
-  St: string;
+  St, OrderCode: string;
   i: integer;
 begin
   dlgOpen.InitialDir:= 'd:\otto\';
@@ -76,7 +76,8 @@ begin
     for i:= 0 to ndOrders.NodeCount-1 do
     begin
       St:= '<?xml version="1.0" encoding="Windows-1251"?>'+ndOrders[i].WriteToString;
-      SaveStringAsFile(St, GetXmlAttr(ndOrders[i], 'ORDER_CODE','d:\otto\messages\out\','.xml'));
+      OrderCode:= GvStr.FilterString(GetXmlAttr(ndOrders[i], 'ORDER_CODE'), '0123456789');
+      SaveStringAsFile(St, Format('%s%s.xml', [Path['ExportToSite'], OrderCode]));
     end;
     Xml.XmlFormat:= xfReadable;
     Xml.SaveToFile('ORDERS.xml');
@@ -84,4 +85,10 @@ begin
   end;
 end;
 
+initialization
+  Path:= TVarList.Create;
+  Path.LoadSectionFromIniFile(ExtractFilePath(ParamStr(0))+'ppz2.ini', 'PATH');
+  Path.Text:= ReplaceAll(Path.Text, '=.\', '='+ExtractFilePath(ParamStr(0)));
+finalization
+  Path.Free;
 end.
