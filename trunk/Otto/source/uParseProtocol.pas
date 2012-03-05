@@ -44,7 +44,7 @@ end;
 procedure ParseProtocolLine200(aMessageId, LineNo, DealId: Integer;
   sl: TStringList; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
-  OrderId: Variant;
+  OrderId, OrderItemId: Variant;
   ndOrder, ndOrderItems, ndOrderItem: TXmlNode;
   StateSign, StateId, StatusName: variant;
   NewDeliveryMessage, Dimension: string;
@@ -73,6 +73,7 @@ begin
 
     if ndOrderItem <> nil then
     begin
+      OrderItemId:= GetXmlAttrValue(ndOrderItem, 'ID');
       SetXmlAttr(ndOrderItem, 'DIMENSION', Dimension);
       ndOrder.ValueAsBool:= True;
       SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', sl[8]);
@@ -128,19 +129,16 @@ begin
       end;
 
       try
-        StatusName:= aTransaction.DefaultDatabase.QueryValue(
-          'select status_name from statuses where object_sign=''ORDERITEM'' and status_sign = :status_sign',
-          0, [GetXmlAttrValue(ndOrderItem, 'NEW.STATUS_SIGN')]);
         ndOrderItem.ValueAsBool:= True;
         dmOtto.ActionExecute(aTransaction, ndOrderItem);
+        dmOtto.ObjectGet(ndOrderItem, OrderItemId, aTransaction);
         dmOtto.Notify(aMessageId,
-          '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [NEW.STATUS_NAME] ([DELIVERY_MESSAGE_RUS]).',
+          '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [STATUS_NAME] ([DELIVERY_MESSAGE_RUS]).',
           'I',
           XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
-          XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION',
+          XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION;STATUS_NAME',
           Value2Vars(NewDeliveryMessage, 'DELIVERY_MESSAGE_RUS',
-          Value2Vars(LineNo, 'LINE_NO',
-          Value2Vars(StatusName, 'NEW.STATUS_NAME'))))));
+          Value2Vars(LineNo, 'LINE_NO')))));
       except
         on E: Exception do
           dmOtto.Notify(aMessageId,
