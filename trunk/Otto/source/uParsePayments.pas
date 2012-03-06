@@ -19,11 +19,12 @@ var
   PayDate: TDateTime;
   PaymentId, OrderId: Variant;
   Xml: TNativeXml;
-  ndOrder, ndPayment: TXmlNode;
+  ndOrder, ndOrderMoneys, ndorderMoney, ndPayment: TXmlNode;
 begin
   Xml:= TNativeXml.CreateName('PAYMENT');
   ndPayment:= Xml.Root;
   ndOrder:= ndPayment.NodeNew('ORDER');
+  ndOrderMoneys := ndOrder.NodeNew('ORDERMONEYS');
   sl:= TStringList.Create;
   try
     sl.Delimiter:= ';';
@@ -41,11 +42,15 @@ begin
     dmOtto.ActionExecute(aTransaction, ndPayment);
 
     OrderId:= aTransaction.DefaultDatabase.QueryValue(
-      'select order_id from orders where order_code like ''_''||:order_code',
+      'select order_id from orders where order_code like ''%''||:order_code',
       0, [FilterString(sl[3], '0123456789')], aTransaction);
     if OrderId <> null then
     begin
       dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
+      dmOtto.OrderMoneysGet(ndOrderMoneys, OrderId, aTransaction);
+
+      // проверяем на повторное зачисление
+      ndorderMoney:= ChildByAttributes(ndOrderMoneys, ')
       try
         dmOtto.ActionExecute(aTransaction, 'ACCOUNT', 'ACCOUNT_PAYMENTIN',
           XmlAttrs2Vars(ndOrder, 'ORDER_ID=ID;ID=ACCOUNT_ID',
