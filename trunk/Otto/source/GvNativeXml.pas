@@ -345,7 +345,7 @@ procedure BatchMoveFields2(aDestNode: TXmlNode; aSrcDataSet: TDataSet; aMapping:
   aMandatory:boolean = false); overload;
 var
   FldSrc, FldDest: string;
-  FieldDest, FieldSrc: TField;
+  FieldSrc: TField;
 begin
   while aMapping <> '' do
   begin
@@ -359,6 +359,9 @@ begin
       FieldSrc:= aSrcDataSet.FieldByName(FldSrc);
       if FieldSrc = nil then
         raise Exception.CreateFmt('Field "%s" not found in source', [FldSrc])
+      else
+      if FieldSrc.DataType in [ftFloat] then
+        SetXmlAttrAsFloat(aDestNode, FldDest, FieldSrc.Value, aMandatory)
       else
         SetXmlAttr(aDestNode, FldDest, FieldSrc.Value, aMandatory);
     end;

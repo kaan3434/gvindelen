@@ -50,28 +50,31 @@ begin
       dmOtto.OrderMoneysGet(ndOrderMoneys, OrderId, aTransaction);
 
       // проверяем на повторное зачисление
-      ndorderMoney:= ChildByAttributes(ndOrderMoneys, ')
-      try
-        dmOtto.ActionExecute(aTransaction, 'ACCOUNT', 'ACCOUNT_PAYMENTIN',
-          XmlAttrs2Vars(ndOrder, 'ORDER_ID=ID;ID=ACCOUNT_ID',
-          XmlAttrs2Vars(ndPayment, 'AMOUNT_BYR')));
+      ndOrderMoney:= ChildByAttributes(ndOrderMoneys, 'AMOUNT_BYR', [sl[1]]);
+      if ndorderMoney = nil then
+      begin
+        try
+          dmOtto.ActionExecute(aTransaction, 'ACCOUNT', 'ACCOUNT_PAYMENTIN',
+            XmlAttrs2Vars(ndOrder, 'ORDER_ID=ID;ID=ACCOUNT_ID',
+            XmlAttrs2Vars(ndPayment, 'AMOUNT_BYR')));
 
-        dmOtto.ActionExecute(aTransaction, ndPayment, 'ASSIGNED');
-        dmOtto.Notify(aMessageId,
-          '[LINE_NO]. Сумма [AMOUNT_BYR] BYR зачислена на заявку [ORDER_CODE]',
-          'I',
-          XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
-          Strings2Vars(sl, 'AMOUNT_BYR=1',
-          Value2Vars(LineNo, 'LINE_NO'))));
-      except
-        on E: Exception do
+          dmOtto.ActionExecute(aTransaction, ndPayment, 'ASSIGNED');
           dmOtto.Notify(aMessageId,
-            '[LINE_NO]. Сумма [AMOUNT_BYR] BYR. Заявка [ORDER_CODE]. [ERROR_TEXT]',
-            'E',
+            '[LINE_NO]. Сумма [AMOUNT_BYR] BYR зачислена на заявку [ORDER_CODE]',
+            'I',
             XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
             Strings2Vars(sl, 'AMOUNT_BYR=1',
-            Value2Vars(LineNo, 'LINE_NO',
-            Value2Vars(E.Message, 'ERROR_TEXT')))));
+            Value2Vars(LineNo, 'LINE_NO'))));
+        except
+          on E: Exception do
+            dmOtto.Notify(aMessageId,
+              '[LINE_NO]. Сумма [AMOUNT_BYR] BYR. Заявка [ORDER_CODE]. [ERROR_TEXT]',
+              'E',
+              XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
+              Strings2Vars(sl, 'AMOUNT_BYR=1',
+              Value2Vars(LineNo, 'LINE_NO',
+              Value2Vars(E.Message, 'ERROR_TEXT')))));
+        end;
       end;
     end
     else
