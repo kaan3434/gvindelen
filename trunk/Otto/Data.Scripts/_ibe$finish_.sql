@@ -770,6 +770,16 @@ begin
 end
 ^
 
+/* Trigger: PORTS_BI0 */
+CREATE OR ALTER TRIGGER PORTS_BI0 FOR PORTS
+ACTIVE BEFORE INSERT POSITION 0
+AS
+begin
+  if (new.port_id is null) then
+    new.port_id = gen_id(seq_port_id, 1);
+end
+^
+
 /* Trigger: PRODUCTS_BI0 */
 CREATE OR ALTER TRIGGER PRODUCTS_BI0 FOR PRODUCTS
 ACTIVE BEFORE INSERT POSITION 0
