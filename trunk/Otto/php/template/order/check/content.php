@@ -25,7 +25,7 @@
              <form method="post" action="?path=order/check2">
                <table border=0>
                  <tr>
-                   <td>Номер заявки:</td>
+                   <td>Номер заявки (<font color="red"><b>только цифры</b></font>):</td>
                    <td><input name="OrderNum" type="text" id="OrderNum" size="6" maxlength="6" <? echo 'value="'.$_POST['OrderNum'].'"'; ?>></td>
                    <td><font color="red"><? echo $_POST['OrderNum_Error']; ?></font></td>
                  </tr>
