@@ -846,11 +846,6 @@ begin
     StyleOptions.DisplayDuration := Duration;
     Options := [daoCanClose];
     ParentFont := True;
-    //    Image.Bitmap.Canvas.FillRect(Image.BitmapClientRect); //очищаем канву
-//    if DlgType = mtError then
-//      imgListAlerts.Draw(Image.Bitmap.Canvas, 0, 0, 1)
-//    else
-//      imgListAlerts.Draw(Image.Bitmap.Canvas, 0, 0, 0);
     with StyleOptions do
     begin
       StartInterval := 1;

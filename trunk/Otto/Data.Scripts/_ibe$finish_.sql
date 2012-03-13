@@ -641,10 +641,7 @@ declare variable v_flaglist list_signs;
 begin
   new.article_code = upper(new.article_code);
   if (new.status_id <> old.status_id) then
-  begin
     new.status_dtm = current_timestamp;
-    new.state_id = null;
-  end
   if (exists (select *
                 from flags2statuses f2s
                 where f2s.status_id = new.status_id
@@ -692,9 +689,13 @@ ACTIVE BEFORE UPDATE POSITION 0
 AS
 begin
   if (old.status_id <> new.status_id) then
-  begin
     new.status_dtm = current_timestamp;
-    new.state_id = null;
+  if ((new.adress_id is null) and (new.client_id is not null)) then
+  begin
+    select a.adress_id
+      from adresses a
+      where a.client_id = new.client_id
+      into new.adress_id;
   end
 end
 ^
@@ -768,16 +769,6 @@ AS
 begin
   if (new.plugin_id is null) then
     new.plugin_id = gen_id(seq_plugin_id, 1);
-end
-^
-
-/* Trigger: PORTS_BI0 */
-CREATE OR ALTER TRIGGER PORTS_BI0 FOR PORTS
-ACTIVE BEFORE INSERT POSITION 0
-AS
-begin
-  if (new.port_id is null) then
-    new.port_id = gen_id(seq_port_id, 1);
 end
 ^
 
@@ -883,7 +874,7 @@ declare variable V_OBJECT_ID type of ID_OBJECT;
 begin
 
   update accopers ao
-    set ao.order_id = null, ao.ordermoney_id = null;
+    set ao.order_id = null;
 
   delete from payments;
   v_object_id = gen_id(seq_payment_id, -(gen_id(seq_payment_id, 0)));
@@ -3117,27 +3108,21 @@ declare variable V_ADRESS_TEXT type of VALUE_ATTR;
 declare variable V_STATUS_SIGN type of SIGN_ATTR;
 declare variable V_ACCOUNT_ID type of ID_ACCOUNT;
 declare variable V_STATUS_FLAG_LIST type of LIST_SIGNS;
-declare variable V_STATUS_NAME type of NAME_OBJECT;
 begin
-  select p.product_name, vc.client_fio, va.adress_text,
-         s.status_sign, s.flag_sign_list, s.status_name
+  select p.product_name, vc.client_fio, va.adress_text, s.status_sign, s.flag_sign_list
     from orders o
       left join products p on (p.product_id = o.product_id)
       left join v_clients_fio vc on (vc.client_id = o.client_id)
       left join v_adress_text va on (va.adress_id = o.adress_id)
       left join statuses s on (s.status_id = o.status_id)
     where o.order_id = :i_object_id
-    into :v_product_name, :v_client_fio, :v_adress_text,
-         :v_status_sign, :v_status_flag_list, :v_status_name;
+    into :v_product_name, :v_client_fio, :v_adress_text, :v_status_sign, :v_status_flag_list;
 
   o_param_name = 'STATUS_SIGN';
   o_param_value = v_status_sign;
   suspend;
   o_param_name = 'STATUS_FLAG_LIST';
   o_param_value = v_status_flag_list;
-  suspend;
-  o_param_name = 'STATUS_NAME';
-  o_param_value = v_status_name;
   suspend;
 
 
@@ -3262,17 +3247,13 @@ declare variable V_STATUS_SIGN type of SIGN_OBJECT;
 declare variable V_STATUS_FLAG_LIST type of LIST_SIGNS;
 declare variable V_STATE_SIGN type of SIGN_OBJECT;
 declare variable V_STATE_FLAG_LIST type of LIST_SIGNS;
-declare variable V_STATUS_NAME type of NAME_OBJECT;
-declare variable V_STATE_NAME type of NAME_OBJECT;
 begin
-  select s.status_sign, s.flag_sign_list, s.status_name,
-         ss.status_sign, ss.flag_sign_list, ss.status_name
+  select oi.article_id, s.status_sign, s.flag_sign_list, ss.status_sign, ss.flag_sign_list
     from orderitems oi
       inner join statuses s on (s.status_id = oi.status_id)
       left join statuses ss on (ss.status_id = oi.state_id)
     where oi.orderitem_id = :i_object_id
-    into :v_status_sign, :v_status_flag_list, :v_status_name,
-         :v_state_sign, :v_state_flag_list, :v_state_name;
+    into :v_article_id, :v_status_sign, :v_status_flag_list, :v_state_sign, :v_state_flag_list;
 
   o_param_name = 'STATUS_SIGN';
   o_param_value = v_status_sign;
@@ -3281,11 +3262,6 @@ begin
   o_param_name = 'STATUS_FLAG_LIST';
   o_param_value = v_status_flag_list;
   suspend;
-
-  o_param_name = 'STATUS_NAME';
-  o_param_value = v_status_name;
-  suspend;
-
 
   if (v_state_sign is not null) then
   begin
@@ -3296,11 +3272,26 @@ begin
     o_param_name = 'STATE_FLAG_LIST';
     o_param_value = v_state_flag_list;
     suspend;
+  end
 
-    o_param_name = 'STATE_NAME';
-    o_param_value = v_state_name;
+  if (v_article_id is not null) then
+    select ac.magazine_id, a.weight
+      from articles a
+        inner join articlecodes ac on (ac.articlecode_id=a.articlecode_id)
+      where a.article_id = :v_article_id
+      into :o_param_value, :v_weight;
+  else
+    o_param_value = 1;
+  o_param_name = 'MAGAZINE_ID';
+  suspend;
+
+  if (v_weight is not null) then
+  begin
+    o_param_value = :v_weight;
+    o_param_name = 'WEIGHT';
     suspend;
   end
+
 end^
 
 
@@ -3338,16 +3329,13 @@ RETURNS (
 AS
 declare variable V_TAXSERV_ID type of ID_TAX;
 declare variable V_TAXSERV_NAME type of NAME_REF;
-declare variable V_STATUS_SIGN type of SIGN_OBJECT;
-declare variable V_STATUS_NAME type of NAME_OBJECT;
 begin
-  select ts.taxserv_id, ts.taxserv_name, s.status_sign, s.status_name
+  select ts.taxserv_id, ts.taxserv_name
     from ordertaxs ot
       inner join taxrates tr on (tr.taxrate_id = ot.taxrate_id)
       inner join taxservs ts on (ts.taxserv_id = tr.taxserv_id)
-      inner join statuses s on (s.status_id = ot.status_id)
     where ot.ordertax_id = :i_object_id
-    into :v_taxserv_id, :v_taxserv_name, :v_status_sign, :v_status_name;
+    into :v_taxserv_id, :v_taxserv_name;
 
   o_param_name = 'TAXSERV_ID';
   o_param_value = :v_taxserv_id;
@@ -3355,13 +3343,6 @@ begin
   o_param_name = 'TAXSERV_NAME';
   o_param_value = :v_taxserv_name;
   suspend;
-  o_param_name = 'STATUS_SIGN';
-  o_param_value = v_status_sign;
-  suspend;
-  o_param_name = 'STATUS_NAME';
-  o_param_value = v_status_name;
-  suspend;
-
 end^
 
 
@@ -3542,46 +3523,40 @@ begin
       into :v_value;
     if (:i_param_datatype = 'N') then
     begin
-      if ((:i_param_action = '=') and (cast(:v_value as numeric) = cast(:i_param_value_1 as numeric))) then
+      if ((:i_param_action = '=') and
+          (cast(:v_value as numeric) = cast(:i_param_value_1 as numeric))) then
         o_valid = 1;
       else
-      if ((:i_param_action = '<>') and (cast(:v_value as numeric) <> cast(:i_param_value_1 as numeric))) then
+      if ((:i_param_action = '<>') and
+          (cast(:v_value as numeric) <> cast(:i_param_value_1 as numeric))) then
         o_valid = 1;
       else
-      if ((:i_param_action = '>') and (cast(:v_value as numeric) > cast(:i_param_value_1 as numeric))) then
+      if ((:i_param_action = '>') and
+          (cast(:v_value as numeric) > cast(:i_param_value_1 as numeric))) then
         o_valid = 1;
       else
-      if ((:i_param_action = '<') and (cast(:v_value as numeric) < cast(:i_param_value_1 as numeric))) then
+      if ((:i_param_action = '<') and
+          (cast(:v_value as numeric) < cast(:i_param_value_1 as numeric))) then
         o_valid = 1;
       else
-      if ((:i_param_action = '>=') and (cast(:v_value as numeric) >= cast(:i_param_value_1 as numeric))) then
+      if ((:i_param_action = '>=') and
+          (cast(:v_value as numeric) >= cast(:i_param_value_1 as numeric))) then
         o_valid = 1;
       else
-      if ((:i_param_action = '<=') and (cast(:v_value as numeric) <= cast(:i_param_value_1 as numeric))) then
+      if ((:i_param_action = '<=') and
+          (cast(:v_value as numeric) <= cast(:i_param_value_1 as numeric))) then
         o_valid = 1;
       else
-      if ((:i_param_action = 'IS') and (:v_value is null)) then
+      if ((:i_param_action = 'IS') and
+          (:v_value is null)) then
         o_valid = 1;
       else
-      if ((:i_param_action = 'IS NOT') and (:v_value is not null)) then
+      if ((:i_param_action = 'IS NOT') and
+          (:v_value is not null)) then
         o_valid = 1;
       else
-      if ((:i_param_action = 'BETWEEN_[]') and (cast(:v_value as numeric) between cast(:i_param_value_1 as numeric) and cast(:i_param_value_2 as numeric))) then
-        o_valid = 1;
-    end
-    else
-    if (:i_param_datatype = 'S') then
-    begin
-      if ((:i_param_action = '=') and (cast(:v_value as value_attr) = cast(:i_param_value_1 as value_attr))) then
-        o_valid = 1;
-      else
-      if ((:i_param_action = '<>') and (cast(:v_value as value_attr) <> cast(:i_param_value_1 as value_attr))) then
-        o_valid = 1;
-      else
-      if ((:i_param_action = 'IS') and (:v_value is null)) then
-        o_valid = 1;
-      else
-      if ((:i_param_action = 'IS NOT') and (:v_value is not null)) then
+      if ((:i_param_action = 'BETWEEN_[]') and
+          (cast(:v_value as numeric) between cast(:i_param_value_1 as numeric) and cast(:i_param_value_2 as numeric))) then
         o_valid = 1;
     end
   end
