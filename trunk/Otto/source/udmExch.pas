@@ -3,7 +3,7 @@ unit udmExch;
 interface
 
 uses
-  SysUtils, Classes, FIBDatabase, pFIBDatabase, GvVars, JvTimer, DB,
+  SysUtils, Classes, FIBDatabase, pFIBDatabase, GvVars, DB,
   FIBDataSet, pFIBDataSet, IdBaseComponent, IdComponent, IdTCPConnection,
   IdTCPClient, IdExplicitTLSClientServerBase, IdFTP, IdIntercept,
   IdLogBase, IdLogFile, Dialogs, JvBaseDlg, JvDesktopAlert, JvComponentBase;
@@ -13,16 +13,17 @@ type
     dbOtto: TpFIBDatabase;
     trnWrite: TpFIBTransaction;
     trnRead: TpFIBTransaction;
-    tmrScan: TJvTimer;
-    qryPorts: TpFIBDataSet;
+    qryWays: TpFIBDataSet;
     IdFtp: TIdFTP;
     logFile: TIdLogFile;
     alertStockExcange: TJvDesktopAlertStack;
     procedure DataModuleCreate(Sender: TObject);
-    procedure tmrScanTimer(Sender: TObject);
   private
+    procedure ExchangeWay;
+    procedure ChangePath(aNewPortPath: string);
     { Private declarations }
   public
+    procedure ExchangeAllWays;
     procedure CreateAlert(aHeaderText, aMessageText: string;
       DlgType: TMsgDlgType; Duration: Integer = 0);
   end;
@@ -37,7 +38,7 @@ implementation
 {$R *.dfm}
 
 uses
-  IdURI, GvFile, GvStr, Forms;
+  IdURI, GvFile, GvStr, Forms, Variants;
 
 procedure TdmExch.DataModuleCreate(Sender: TObject);
 var
@@ -48,7 +49,7 @@ begin
   try
     dbParams.LoadSectionFromIniFile(IniFileName, 'DataBase_'+GetUserFromWindows);
     if dbParams.Count = 0 then
-      dbParams.LoadSectionFromIniFile(ProjectIniFileName, 'DataBase');
+      dbParams.LoadSectionFromIniFile(IniFileName, 'DataBase');
     dbOtto.DBName:= dbParams['ServerName']+':'+dbParams['FileName'];
     dbOtto.ConnectParams.CharSet:= 'CYRL';
     try
@@ -56,7 +57,7 @@ begin
     except
       Halt;
     end;
-    tmrScanTimer(Self);
+    ExchangeAllWays;
   finally
     dbParams.Free;
   end;
@@ -74,83 +75,12 @@ begin
       begin
         FTP.ProxySettings.Host:= Sl.Values['Host'];
         FTP.ProxySettings.Port:= StrToInt(sl.Values['Port']);
+        FTP.ProxySettings.ProxyType:= fpcmHttpProxyWithFtp;
       end;
     except
     end;
   finally
     sl.Free;
-  end;
-end;
-
-procedure TdmExch.tmrScanTimer(Sender: TObject);
-var
-  URL: String;
-  URI: TIdURI;
-  Files: TStringList;
-  i: Integer;
-  FilePath, FileMask, FileName: String;
-begin
-  tmrScan.Enabled:= False;
-  qryPorts.Open;
-  URL:= '';
-  Files:= TStringList.Create;
-  try
-    qryPorts.First;
-    while not qryPorts.Eof do
-    begin
-      if URL <> qryPorts['PORT_ADRESS'] then
-      begin
-        URL:= qryPorts['PORT_ADRESS'];
-        URI:= TIdURI.Create(URL);
-        try
-          if IdFtp.Connected then
-            IdFtp.Disconnect;
-          IdFtp.Host:= URI.Host;
-          if URI.Port <> '' then IdFtp.Port:= StrToInt(URI.Port);
-          IdFtp.Username:= URI.Username;
-          IdFtp.Password:= URI.Password;
-          FillProxy(IdFTP);
-          try
-            IdFtp.Connect;
-          except
-            CreateAlert('Ошибка соединения', URI.Host, mtError, 30000);
-          end;
-        finally
-          URI.Free;
-        end;
-      end;
-      if IdFtp.Connected then
-      begin
-        Files.Clear;
-        while IdFtp.RetrieveCurrentDir <> '/' do
-          IdFtp.ChangeDirUp;
-        FilePath:= IdFtp.RetrieveCurrentDir;
-        FilePath:= ReplaceAll(qryPorts['SOURCE_PATH'], '/', '\');
-        FileMask:= ExtractFileName(FilePath);
-        FilePath:= ExtractFilePath(FilePath);
-        while FilePath <> '' do
-          IdFtp.ChangeDir(TakeFront5(FilePath, '\'));
-        IdFTP.List(Files, FileMask, false);
-        for i:= 0 to Files.Count-1 do
-        begin
-          FileName:= Format('%s%s\%s',
-             [ExtractFilePath(ParamStr(0)), qryPorts['DEST_PATH'], Files[i]]);
-          if Not FileExists(FileName) then
-          try
-            IdFtp.Get(Files[i], Format('%s%s\%s',
-             [ExtractFilePath(ParamStr(0)), qryPorts['DEST_PATH'], Files[i]]), True, false);
-            CreateAlert('Получен файл', ExtractFileName(FileName), mtInformation, 30000);
-          except;
-          end;
-        end;
-      end;
-      qryPorts.Next;
-    end;
-  finally
-    qryPorts.Close;
-    tmrScan.Enabled:= true;
-    URL:= '';
-    Files.Free;
   end;
 end;
 
@@ -193,6 +123,120 @@ begin
     Application.ProcessMessages;
 end;
 
+
+procedure TdmExch.ChangePath(aNewPortPath: string);
+begin
+  if aNewPortPath <> IdFtp.RetrieveCurrentDir then
+  begin
+    while IdFtp.RetrieveCurrentDir <> '/' do
+      IdFtp.ChangeDirUp;
+    while aNewPortPath <> '' do
+      IdFtp.ChangeDir(TakeFront5(aNewPortPath, '/'));
+  end;
+end;
+
+procedure TdmExch.ExchangeWay;
+var
+  PortFiles, LocalFiles: TStringList;
+  LocalPath, FileName: string;
+  i: Integer;
+begin
+  PortFiles:= TStringList.Create;
+  LocalFiles:= TStringList.Create;
+  try
+    ChangePath(qryWays['PORT_PATH']);
+    IdFtp.List(PortFiles, qryWays['FILE_MASK'], False);
+    LocalPath:= ExtractFilePath(ParamStr(0))+ ReplaceAll(qryWays['LOCAL_PATH']+'/', '//', '/');
+    if IsWordPresent('INBOUND', qryWays['FLAG_SIGN_LIST'], ',') then
+    begin
+      // Входящие сообщения
+      for i:= 0 to PortFiles.Count-1 do
+      begin
+        if trnRead.DefaultDatabase.QueryValue(
+          'select m.message_id from messages m where m.file_name = lower(:file_name)',
+          0, [PortFiles[i]], trnRead) = null then
+        begin
+          FileName:= LocalPath+PortFiles[i];
+          if Not FileExists(FileName) then
+          try
+            IdFtp.Get(PortFiles[i], FileName, True, false);
+            CreateAlert('Получен файл', FileName, mtInformation, 3000);
+          except;
+          end;
+          if IsWordPresent('DELETE', qryWays['FLAG_SIGN_LIST'], ',') then
+            IdFtp.Delete(PortFiles[i]);
+        end
+      end;
+    end
+    else
+    if IsWordPresent('OUTBOUND', qryWays['FLAG_SIGN_LIST'], ',') then
+    begin
+      // исходящие файлы
+      ListFileName(LocalFiles, LocalPath+qryWays['FILE_MASK'], false);
+      for i:= 0 to LocalFiles.Count - 1 do
+      begin
+        FileName:= ExtractFileName(LocalFiles[i]);
+        if PortFiles.IndexOf(FileName) = -1 then
+        try
+          IdFtp.Put(LocalFiles[i], FileName);
+          CreateAlert('Отправлен файл', FileName, mtInformation, 3000);
+        except
+        end;
+        if IsWordPresent('DELETE', qryWays['FLAG_SIGN_LIST'], ',') then
+          DeleteFile(LocalFiles[i]);
+      end;
+    end;
+  finally
+    PortFiles.Free;
+    LocalFiles.Free;
+  end;
+end;
+
+procedure TdmExch.ExchangeAllWays;
+var
+  URL: String;
+  URI: TIdURI;
+  Files: TStringList;
+  i: Integer;
+  FilePath, FileMask, FileName: String;
+begin
+  qryWays.Open;
+  try
+    qryWays.First;
+    while not qryWays.Eof do
+    begin
+      try
+        if URL <> qryWays['PORT_ADRESS'] then
+        begin
+          URL:= qryWays['PORT_ADRESS'];
+          URI:= TIdURI.Create(URL);
+          try
+            if IdFtp.Connected then
+              IdFtp.Disconnect;
+            IdFtp.Host:= URI.Host;
+            if URI.Port <> '' then IdFtp.Port:= StrToInt(URI.Port);
+            IdFtp.Username:= URI.Username;
+            IdFtp.Password:= URI.Password;
+            FillProxy(IdFTP);
+            try
+              IdFtp.Connect;
+            except
+              CreateAlert('Ошибка соединения', URI.Host, mtError, 30000);
+            end;
+          finally
+            URI.Free;
+          end;
+        end;
+        if IdFtp.Connected then
+          ExchangeWay;
+      except
+      end;
+      qryWays.Next;
+    end;
+  finally
+    qryWays.Close;
+  end;
+end;
 
 initialization
   IniFileName:= ExtractFilePath(ParamStr(0))+'ppz2.ini';

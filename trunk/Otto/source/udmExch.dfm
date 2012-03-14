@@ -8,12 +8,13 @@ object dmExch: TdmExch
   object dbOtto: TpFIBDatabase
     DBName = 'localhost:D:\otto\Data\otto_ppz.fdb'
     DBParams.Strings = (
-      'user_name=sysdba'
+      'user_name=SYSDBA'
       'lc_ctype=CYRL'
-      'password=masterkey')
+      'password=masterkey'
+      'sql_role_name=')
     DefaultTransaction = trnRead
     DefaultUpdateTransaction = trnWrite
-    SQLDialect = 3
+    SQLDialect = 1
     Timeout = 0
     UseLoginPrompt = True
     LibraryName = 'fbclient.dll'
@@ -46,26 +47,20 @@ object dmExch: TdmExch
       'read_committed')
     MDTTransactionRole = mtrAutoDefine
     TPBMode = tpbDefault
-    Left = 152
+    Left = 160
     Top = 32
   end
-  object tmrScan: TJvTimer
-    Enabled = False
-    Interval = 600000
-    OnTimer = tmrScanTimer
-    Left = 216
-    Top = 32
-  end
-  object qryPorts: TpFIBDataSet
+  object qryWays: TpFIBDataSet
     SelectSQL.Strings = (
       'select *'
-      'from Ports p'
-      'inner join port2template p2t on (p2t.port_id = p.port_id)'
-      'inner join templates t on (t.template_id = p2t.template_id)'
-      'order by p.port_id')
+      'from ways w'
+      'inner join ports p on (p.port_id = w.port_id)'
+      'inner join statuses s on (s.status_id = w.status_id)'
+      'order by w.port_id, w.port_path')
+    Transaction = trnRead
     Database = dbOtto
     UpdateTransaction = trnWrite
-    Left = 264
+    Left = 224
     Top = 32
   end
   object IdFtp: TIdFTP
@@ -85,7 +80,7 @@ object dmExch: TdmExch
     Top = 88
   end
   object alertStockExcange: TJvDesktopAlertStack
-    Left = 152
+    Left = 160
     Top = 88
   end
 end
