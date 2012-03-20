@@ -115,7 +115,7 @@ AutoIncBuild=0
 MajorVer=1
 MinorVer=0
 Release=0
-Build=33
+Build=35
 Debug=0
 PreRelease=0
 Special=0
@@ -126,7 +126,7 @@ CodePage=1251
 [Version Info Keys]
 CompanyName=
 FileDescription=
-FileVersion=1.0.0.33
+FileVersion=1.0.0.35
 InternalName=
 LegalCopyright=
 LegalTrademarks=
@@ -134,6 +134,8 @@ OriginalFilename=
 ProductName=
 ProductVersion=1.0.0.0
 Comments=
+[Excluded Packages]
+c:\program files\borland\delphi7\Projects\Bpl\FIBDBMidas7.bpl=FIBPlus ClientDataSet
 [HistoryLists\hlDebugSourcePath]
 Count=2
 Item0=D:\4Delphi\tdbf\;D:\4Delphi\NativeXml\
