@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 341
-  Top = 142
+  Left = 399
+  Top = 179
   Width = 845
   Height = 512
   Caption = 'PPZ'
@@ -22,8 +22,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 837
-    Height = 47
+    Width = 829
+    Height = 49
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -89,6 +89,9 @@ object MainForm: TMainForm
         end
         object btn15: TTBXItem
           Action = actExportPackList
+        end
+        object btnPrePackList: TTBXItem
+          Action = actExportPrePacklist
         end
         object btnExportToSite: TTBXItem
           Action = actExportToSite
@@ -193,16 +196,16 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 436
-    Width = 837
+    Top = 432
+    Width = 829
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object pbMain: TProgressBar
     Left = 0
-    Top = 419
-    Width = 837
+    Top = 415
+    Width = 829
     Height = 17
     Align = alBottom
     TabOrder = 1
@@ -368,6 +371,11 @@ object MainForm: TMainForm
       Category = 'Export'
       Caption = #1044#1072#1085#1085#1099#1077' '#1076#1083#1103' '#1089#1072#1081#1090#1072
       OnExecute = actExportToSiteExecute
+    end
+    object actExportPrePacklist: TAction
+      Category = 'Export'
+      Caption = #1055#1088#1077#1076#1055#1072#1082#1083#1080#1089#1090
+      OnExecute = actExportPrePacklistExecute
     end
   end
   object imgListMainMenu: TPngImageList
@@ -1423,7 +1431,7 @@ object MainForm: TMainForm
     ShowProgress = False
     OverwritePrompt = False
     EmbeddedFonts = True
-    PrintOptimized = True
+    PrintOptimized = False
     Outline = False
     Background = False
     HTMLTags = True
@@ -1766,5 +1774,24 @@ object MainForm: TMainForm
     Split = ssRPages
     Left = 408
     Top = 144
+  end
+  object frxInvoice: TfrxReport
+    Version = '4.9.64'
+    DotMatrixReport = False
+    IniFile = '\Software\Fast Reports'
+    PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
+    PreviewOptions.MDIChild = True
+    PreviewOptions.Modal = False
+    PreviewOptions.ShowCaptions = True
+    PreviewOptions.Zoom = 1.000000000000000000
+    PreviewOptions.ZoomMode = zmManyPages
+    PrintOptions.Printer = 'Default'
+    PrintOptions.PrintOnSheet = 0
+    ReportOptions.CreateDate = 40773.818275636600000000
+    ReportOptions.LastChange = 40939.979501435170000000
+    ScriptLanguage = 'PascalScript'
+    StoreInDFM = False
+    Left = 352
+    Top = 200
   end
 end

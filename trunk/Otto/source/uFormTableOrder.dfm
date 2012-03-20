@@ -155,14 +155,30 @@ inherited FormTableOrders: TFormTableOrders
             EditButtons = <>
             FieldName = 'USER_SIGN'
             Footers = <>
+          end
+          item
+            AutoFitColWidth = False
+            Checkboxes = True
+            EditButtons = <>
+            FieldName = 'IS_INVOICED'
+            Footers = <>
+            Width = 20
+          end
+          item
+            AutoFitColWidth = False
+            Checkboxes = True
+            EditButtons = <>
+            FieldName = 'IS_INVOICEPRINTED'
+            Footers = <>
+            Width = 20
           end>
         inherited RowDetailData: TRowDetailPanelControlEh
           object pcDetailInfo: TPageControl
             Left = 0
             Top = 0
-            Width = 736
+            Width = 778
             Height = 198
-            ActivePage = tsOrderAttrs
+            ActivePage = tsHistory
             Align = alClient
             TabOrder = 0
             object tsOrderAttrs: TTabSheet
@@ -170,7 +186,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdOrderProperties: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 728
+                Width = 770
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -475,7 +491,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdHistory: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 728
+                Width = 770
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -507,6 +523,18 @@ inherited FormTableOrders: TFormTableOrders
                     FieldName = 'STATUS_NAME'
                     Footers = <>
                     Width = 300
+                  end
+                  item
+                    EditButtons = <>
+                    FieldName = 'STATE_NAME'
+                    Footers = <>
+                    Width = 300
+                  end
+                  item
+                    AutoFitColWidth = False
+                    EditButtons = <>
+                    FieldName = 'USER_SIGN'
+                    Footers = <>
                   end>
                 object RowDetailData: TRowDetailPanelControlEh
                 end
@@ -566,7 +594,9 @@ inherited FormTableOrders: TFormTableOrders
       '    v_order_summary.cost_byr,'
       '    orders.bar_code,'
       '    orders.user_sign,'
-      '    orders.account_id'
+      '    orders.account_id,'
+      '    1 is_invoiced,'
+      '    0 is_invoiceprinted'
       'FROM ORDERS '
       
         '  inner join v_clients_fio on (v_clients_fio.client_id = orders.' +
@@ -741,6 +771,9 @@ inherited FormTableOrders: TFormTableOrders
       end>
     Bitmap = {}
   end
+  inherited trnNSI: TpFIBTransaction
+    Active = True
+  end
   object qryOrderAttrs: TpFIBDataSet
     SelectSQL.Strings = (
       'select a.attr_name, o.o_param_name, o.o_param_value'
@@ -878,12 +911,13 @@ inherited FormTableOrders: TFormTableOrders
     SelectSQL.Strings = (
       'select oh.action_dtm,'
       '  s1.status_name,'
-      '  s2.status_name state_name'
+      '  s2.status_name state_name,'
+      '  oh.user_sign'
       'from orderhistory oh'
       'inner join statuses s1 on (s1.status_id = oh.status_id)'
       'left join statuses s2 on (s2.status_id = oh.state_id)'
       'where oh.order_id = :order_id'
-      'order by oh.action_dtm')
+      'order by oh.action_dtm desc')
     Transaction = dmOtto.trnAutonomouse
     Database = dmOtto.dbOtto
     DataSource = dsMain
@@ -907,5 +941,52 @@ inherited FormTableOrders: TFormTableOrders
     DataSource = dsMain
     Left = 736
     Top = 296
+  end
+  object frxPDFExport: TfrxPDFExport
+    ShowDialog = False
+    UseFileCache = True
+    ShowProgress = False
+    OverwritePrompt = False
+    EmbeddedFonts = True
+    PrintOptimized = False
+    Outline = False
+    Background = False
+    HTMLTags = True
+    Author = 'Otto.by'
+    Subject = 'FastReport PDF export'
+    ProtectionFlags = [eModify, eCopy, eAnnot]
+    HideToolbar = False
+    HideMenubar = False
+    HideWindowUI = False
+    FitWindow = False
+    CenterWindow = False
+    PrintScaling = False
+    Left = 416
+    Top = 96
+  end
+  object frxInvoice: TfrxReport
+    Version = '4.9.64'
+    DotMatrixReport = False
+    IniFile = '\Software\Fast Reports'
+    PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
+    PreviewOptions.MDIChild = True
+    PreviewOptions.Modal = False
+    PreviewOptions.ShowCaptions = True
+    PreviewOptions.Zoom = 1.000000000000000000
+    PreviewOptions.ZoomMode = zmManyPages
+    PrintOptions.Printer = 'Default'
+    PrintOptions.PrintOnSheet = 0
+    ReportOptions.CreateDate = 40773.818275636600000000
+    ReportOptions.LastChange = 40939.979501435170000000
+    ScriptLanguage = 'PascalScript'
+    StoreInDFM = False
+    OnAfterPrintReport = frxInvoiceAfterPrintReport
+    Left = 352
+    Top = 200
+  end
+  object frxFIBComponents1: TfrxFIBComponents
+    DefaultDatabase = dmOtto.dbOtto
+    Left = 512
+    Top = 144
   end
 end

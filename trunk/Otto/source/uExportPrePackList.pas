@@ -46,6 +46,7 @@ var
   OrderList, FileName, Text: string;
   ndOrders: TXmlNode;
   OrderId: Variant;
+  PartnerNumber: Word;
 begin
   Text:= '';
   ndOrders:= ndProduct.NodeFindOrCreate('ORDERS');
@@ -56,21 +57,24 @@ begin
       'inner join v_order_attrs oa on (oa.object_id = o.order_id and oa.attr_sign = ''PACKLIST_NO'') '+
       'inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign = ''PREPACKED'') '+
       'left join statuses s2 on (s2.status_id = o.state_id and s2.status_sign = ''PREPACKSENT'') '+
-      'where coalesce(s2.status_sign, '')  <> ''PREPACKSENT'' '+
+      'where coalesce(s2.status_sign, '''')  <> ''PREPACKSENT'' '+
       '  and oa.attr_value = :packlist_no',
       0, [aPacklistNo], aTransaction);
+    dmOtto.InitProgress(WordCount(OrderList,','), 'Формирование ответа на ПреПаклист');
     while OrderList <> '' do
     begin
       OrderId:= TakeFront5(OrderList, ',');
       Text:= Text + ExportOrder(aTransaction, ndProduct, ndOrders, OrderId);
+      dmOtto.StepProgress;
     end;
     ForceDirectories(Path['PrePacklists']);
-    FileName:= GetNextFileName(Format('%spay_%s_%s.%.3d', [
-      Path['PrePacklists'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
-      aPacklistNo, DayOfTheYear(Date)]));
+    FileName:= Format('%spay_%u_%u.%.3u',
+      [Path['PrePacklists'], Integer(GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER')),
+       aPacklistNo, DayOfTheYear(Date)]);
     SaveStringAsFile(Text, FileName);
     dmOtto.CreateAlert('Ответ на ПреПаклист', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
   finally
+    dmOtto.InitProgress;
     ndOrders.Delete;
   end
 end;
@@ -123,7 +127,7 @@ begin
   try
     ndProducts:= Xml.Root;
     ProductList:= aTransaction.DefaultDatabase.QueryValue(
-      'select list(o.product_id) '+
+      'select list(distinct o.product_id) '+
       'from orders o '+
       'inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign = ''PREPACKED'') '+
       'left join statuses s2 on (s2.status_id = o.state_id and s2.status_sign = ''PREPACKSENT'') '+

@@ -11,11 +11,11 @@ implementation
 
 uses
   Classes, SysUtils, GvStr, udmOtto, Variants, GvNativeXml,
-  Dialogs, Controls;
+  Dialogs, Controls, uExportPrePackList;
 
 procedure ParseInfo2PayLine(aMessageId, LineNo: Integer; aLine: string; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
-  OrderId: variant;
+  OrderId, OrderItemId: variant;
   sl: TStringList;
   ndOrder, ndOrderItem: TXmlNode;
   NewStatusSign: variant;
@@ -39,7 +39,7 @@ begin
       // если ауфтрак еще не присвоен, сохраняем его на заявке
       if GetXmlAttrValue(ndOrder, 'AUFTRAG_ID') <> sl[6] then
         SetXmlAttr(ndOrder, 'AUFTRAG_ID', sl[6]);
-      dmOtto.ActionExecute(aTransaction, ndOrder);
+      dmOtto.ActionExecute(aTransaction, ndOrder, 'PREPACKED');
       dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
 
       Dimension:= dmOtto.Recode('ARTICLE', 'DIMENSION', sl[9]);
@@ -54,6 +54,7 @@ begin
           [sl[5], VarArrayOf([Dimension, sl[9]]), '', VarArrayOf(['ACCEPTREQUEST','ACCEPTED','BUNDLING'])]);
       if ndOrderItem <> nil then
       begin
+        OrderItemId:= GetXmlAttrValue(ndOrderItem, 'ID');
         ndOrderItem.ValueAsBool:= true;
         if GetXmlAttrValue(ndOrderItem, 'ORDERITEM_INDEX') = null then
           SetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX', sl[7]);
@@ -73,12 +74,10 @@ begin
 
         SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'PREPACKED');
 
-        StatusName:= aTransaction.DefaultDatabase.QueryValue(
-          'select status_name from statuses where object_sign=''ORDERITEM'' and status_sign = :status_sign',
-          0, [GetXmlAttrValue(ndOrderItem, 'STATUS_SIGN')]);
         try
           ndOrderItem.ValueAsBool:= True;
           dmOtto.ActionExecute(aTransaction, ndOrderItem);
+          dmOtto.ObjectGet(ndOrderItem, OrderItemId, aTransaction);
           dmOtto.Notify(aMessageId,
             '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [STATUS_NAME]',
             MessageClass,
@@ -136,19 +135,25 @@ begin
     if FileExists(Path['Messages.In']+MessageFileName) then
     begin
       Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
+      dmOtto.InitProgress(Lines.Count, Format('Обработка файла %s ...', [MessageFileName]));
       For LineNo:= 0 to Lines.Count - 1 do
-        ParseInfo2PayLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
+      begin
+        if Lines[LineNo] <> '' then
+          ParseInfo2PayLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
+        dmOtto.StepProgress;
+      end;
     end
     else
       dmOtto.Notify(aMessageId,
         'Файл [FILE_NAME] не найден.', 'E',
         Value2Vars(MessageFileName, 'FILE_NAME'));
   finally
+    dmOtto.InitProgress;
+    dmOtto.Notify(aMessageId,
+      'Конец обработки файла: [FILE_NAME]', 'I',
+      Value2Vars(MessageFileName, 'FILE_NAME'));
     Lines.Free;
   end;
-  dmOtto.Notify(aMessageId,
-    'Конец обработки файла: [FILE_NAME]', 'I',
-    Value2Vars(MessageFileName, 'FILE_NAME'));
 end;
 
 procedure ProcessInfo2Pay(aMessageId: Integer; aTransaction: TpFIBTransaction);

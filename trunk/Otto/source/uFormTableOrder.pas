@@ -8,7 +8,8 @@ uses
   ImgList, PngImageList, ActnList, DB, FIBDataSet, pFIBDataSet, GridsEh,
   DBGridEh, StdCtrls, JvExStdCtrls, JvGroupBox, ExtCtrls, JvExExtCtrls,
   JvExtComponent, JvPanel, TB2Item, TBX, TB2Dock, TB2Toolbar, ComCtrls,
-  NativeXml, GvNativeXml, EhLibFIB, DBGridEhGrouping;
+  NativeXml, GvNativeXml, EhLibFIB, DBGridEhGrouping, frxClass,
+  frxFIBComponents, frxExportPDF;
 
 type
   TFormTableOrders = class(TBaseNSIForm)
@@ -48,6 +49,9 @@ type
     btnDeleteOrder: TTBXItem;
     actBalanceOrder: TAction;
     btnBalanceOrder: TTBXItem;
+    frxPDFExport: TfrxPDFExport;
+    frxInvoice: TfrxReport;
+    frxFIBComponents1: TfrxFIBComponents;
     procedure actFilterApprovedExecute(Sender: TObject);
     procedure actFilterAcceptRequestExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -63,6 +67,7 @@ type
     procedure actBalanceOrderExecute(Sender: TObject);
     procedure grdMainFillSTFilterListValues(Sender: TCustomDBGridEh;
       Column: TColumnEh; Items: TStrings; var Processed: Boolean);
+    procedure frxInvoiceAfterPrintReport(Sender: TObject);
   private
     procedure ApplyFilter(aStatusSign: string);
     { Private declarations }
@@ -121,8 +126,30 @@ begin
 end;
 
 procedure TFormTableOrders.actMakeInvoiceExecute(Sender: TObject);
+var
+  InvoiceFileName: string;
+  Xml: TNativeXml;
+  ndOrder, ndProduct: TXmlNode;
 begin
-  MainForm.PrintInvoice(trnWrite, qryMain['ORDER_ID']);
+  Xml:= TNativeXml.CreateName('ORDER');
+  ndOrder:= Xml.Root;
+  ndProduct:= ndOrder.NodeNew('PRODUCT');
+  try
+    dmOtto.ObjectGet(ndOrder, qryMain['ORDER_ID'], trnWrite);
+    dmOtto.ObjectGet(ndProduct, GetXmlAttrValue(ndOrder, 'PRODUCT_ID'), trnWrite);
+    InvoiceFileName:= Format('inv_%s.pdf', [GetXmlAttrValue(ndOrder, 'ORDER_CODE')]);
+    ForceDirectories(Path['Invoices']);
+    frxPDFExport.FileName:= Path['Invoices']+InvoiceFileName;
+    frxInvoice.LoadFromFile(GetXmlAttr(ndProduct, 'PARTNER_NUMBER', Path['FastReport']+'invoice_', '.fr3'));
+    frxInvoice.Variables.Variables['OrderId']:= Format('''%u''', [Integer(qryMain['ORDER_ID'])]);
+    frxInvoice.PrepareReport(true);
+    frxInvoice.Export(frxPDFExport);
+    SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'INVOICED');
+    dmOtto.ActionExecute(trnWrite, ndOrder);
+    frxInvoice.ShowPreparedReport;
+  finally
+    Xml.Free;
+  end;
 end;
 
 procedure TFormTableOrders.actAssignPaymentExecute(Sender: TObject);
@@ -346,6 +373,24 @@ begin
     SQL:= '';
   if SQL<>'' then
     dmOtto.FillComboStrings(Items, nil, SQL, trnNSI);
+end;
+
+procedure TFormTableOrders.frxInvoiceAfterPrintReport(Sender: TObject);
+var
+  Xml: TNativeXml;
+  ndOrder: TXmlNode;
+  OrderId: Variant;
+begin
+  Xml:= TNativeXml.CreateName('ORDER');
+  ndOrder:= Xml.Root;
+  try
+    OrderId:= ReplaceAll(frxInvoice.Variables.Variables['OrderId'], '''', '');
+    dmOtto.ObjectGet(ndOrder, OrderId, trnWrite);
+    SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'INVOICEPRINTED');
+    dmOtto.ActionExecute(trnWrite, ndOrder);
+  except
+    xml.Free
+  end;
 end;
 
 end.

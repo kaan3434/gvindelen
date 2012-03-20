@@ -140,6 +140,9 @@ type
     btnExportToSite: TTBXItem;
     subExportActions: TTBXSubmenuItem;
     btnImportInfo2Pay: TTBXItem;
+    actExportPrePacklist: TAction;
+    btnPrePackList: TTBXItem;
+    frxInvoice: TfrxReport;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -174,11 +177,11 @@ type
     procedure actReturnExecute(Sender: TObject);
     procedure actProcessInfo2PayExecute(Sender: TObject);
     procedure actExportToSiteExecute(Sender: TObject);
+    procedure actExportPrePacklistExecute(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
-    procedure PrintInvoice(aTransaction: TpFIBTransaction; OrderId: Integer);
     procedure PrintPackList(aTransaction: TpFIBTransaction; Packlist_No: Integer;
       aFileName: String);
   end;
@@ -190,14 +193,14 @@ implementation
 
 {$R *.dfm}
 uses
-  GvFile, GvStr, udmOtto, FIBQuery, 
+  GvFile, GvStr, udmOtto, FIBQuery, GvNativeXml,
   uWzrdArticles, uBaseNSIForm,
   uFormTableOrder, uFormTableClients, uParseProtocol, uParseLiefer,
   uParseConsignment, uFormProtocol, pFIBQuery, uParsePayments,
   uFormWizardOrder, uSetByr2Eur, uExportSMSReject,
   uExportCancellation, uExportOrder, uExportInvoices, uExportPackList, 
   uParseArtN, uParseCancellation, uFormWizardReturn, uParseInfo2Pay, 
-  uExportToSite;
+  uExportToSite, uExportPrePackList;
 
 procedure TMainForm.actParseOrderXmlExecute(Sender: TObject);
 var
@@ -311,24 +314,6 @@ begin
 end;
 
 
-procedure TMainForm.PrintInvoice(aTransaction: TpFIBTransaction; OrderId: Integer);
-var
-  InvFileName: string;
-  OrderCode: Variant;
-begin
-  OrderCode:= aTransaction.DefaultDatabase.QueryValue(
-    'select order_code from orders where order_id = :order_id',
-    0, [OrderId], aTransaction);
-  InvFileName:= Format('inv_%s.pdf', [OrderCode]);
-  ForceDirectories(Path['Invoices']);
-  frxPDFExport.FileName:= Path['Invoices']+invFileName;
-  frxReport.LoadFromFile(Path['FastReport'] + 'invoice.fr3');
-  frxReport.Variables.Variables['OrderId']:= Format('''%u''', [OrderId]);
-  frxReport.PrepareReport(true);
-  frxReport.Export(frxPDFExport);
-  frxReport.ShowPreparedReport;
-end;
-
 procedure TMainForm.PrintPackList(aTransaction: TpFIBTransaction;
   Packlist_No: Integer; aFileName: string);
 begin
@@ -355,8 +340,8 @@ begin
     try
       while not Eof do
       begin
-        dmOtto.ActionExecute(trnWrite, 'ORDER', 'ORDER_INVOICE', '', Fields[0].AsInteger);
-        PrintInvoice(trnWrite, Fields[0].AsInteger);
+//        dmOtto.ActionExecute(trnWrite, 'ORDER', 'ORDER_INVOICE', '', Fields[0].AsInteger);
+//        PrintInvoice(trnWrite, Fields[0].AsInteger);
         Next;
       end;
     finally
@@ -418,7 +403,7 @@ var
   vMessageId: Integer;
 begin
   repeat
-    vMessageId := dmOtto.MessageBusy(8);
+    vMessageId := dmOtto.MessageBusy(10);
     if vMessageId > 0 then
     begin
       ProcessInfo2Pay(vMessageId, trnWrite);
@@ -767,6 +752,11 @@ end;
 procedure TMainForm.actExportToSiteExecute(Sender: TObject);
 begin
   ExportToSite(trnRead);
+end;
+
+procedure TMainForm.actExportPrePacklistExecute(Sender: TObject);
+begin
+  ExportPrePackList(trnWrite);
 end;
 
 end.

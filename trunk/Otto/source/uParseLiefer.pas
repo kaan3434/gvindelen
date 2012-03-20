@@ -167,7 +167,7 @@ begin
     if FileExists(Path['Messages.In']+MessageFileName) then
     begin
       Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
-      dmOtto.InitProgress(Lines.Count, Format('Ообработка файла %s ...', [MessageFileName]));
+      dmOtto.InitProgress(Lines.Count, Format('Обработка файла %s ...', [MessageFileName]));
       For LineNo:= 0 to Lines.Count - 1 do
       begin
         ParseLieferLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
