@@ -10,7 +10,7 @@ procedure ParseFileOrder(aFileName: string; ndOrder: TXmlNode; aTransaction: TpF
 implementation
 
 uses
-  Classes, SysUtils, GvStr, udmOtto, Variants, GvNativeXml,
+  Classes, SysUtils, GvStr, udmOtto, Variants, GvNativeXml, GvMath,
   Dialogs, Controls;
 
 function ToFloat(aStr: string): Double;
@@ -137,6 +137,7 @@ begin
     st:= FilterString(UpperCase(sl[3]), '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ');
     SetXmlAttr(ndOrderItem, 'ARTICLE_CODE', st);
     st:= FilterString(UpperCase(sl[4]), '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+    if st='' then st:= '0';
     SetXmlAttr(ndOrderItem, 'DIMENSION', st);
     SetXmlAttr(ndOrderItem, 'PRICE_EUR', ToFloat(EscapeString(sl[5])));
     SetXmlAttr(ndOrderItem, 'AMOUNT', 1);
