@@ -44,16 +44,6 @@
     </div>
       
     <div class="container">
-      <h3 class="head head-hidden">Бланки для возврата товара</h3>
-      <div class="box">
-        <div class="pad">
-          <p><a href="blanks/blank1.pdf">&gt;&gt; Бланк заявления для возвратa посылки</a></p>
-          <p><a href="blanks/blank2.pdf">&gt;&gt; Образец заполнения почтовых бланков возврата</a></p>
-        </div>
-      </div>
-    </div>
-
-    <div class="container">
       <h3 class="head head-hidden">Поиск заявки</h3>
       <div class="box">
         <div class="pad">
