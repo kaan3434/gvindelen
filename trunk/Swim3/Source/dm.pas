@@ -15,22 +15,10 @@ type
   TdmSwim = class(TDataModule)
     DataSet: TpFIBDataSet;
     StoredProc: TpFIBStoredProc;
-    UpdateTran: TpFIBTransaction;
+    trnWrite: TpFIBTransaction;
     Database: TpFIBDatabase;
-    ReadTran: TpFIBTransaction;
-    tblASports: TpFIBDataSet;
-    tblBSports: TpFIBDataSet;
-    tblBookers: TpFIBDataSet;
-    tblCountrys: TpFIBDataSet;
-    tblBTournirs: TpFIBDataSet;
-    tblParts: TpFIBDataSet;
-    tblAGamers: TpFIBDataSet;
-    tblBGamers: TpFIBDataSet;
-    tblEvents: TpFIBDataSet;
-    tblATournirs: TpFIBDataSet;
-    tblHistory: TpFIBDataSet;
+    trnRead: TpFIBTransaction;
     spPutEvent: TpFIBStoredProc;
-    spGetSport: TpFIBStoredProc;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private
@@ -144,7 +132,7 @@ begin
     ConnectParams.UserName:= 'sysdba';
     ConnectParams.Password:= 'masterkey';
     ConnectParams.CharSet:= 'CYRL';
-    ConnectParams.RoleName:= 'admin';
+//    ConnectParams.RoleName:= 'admin';
     Connected:= true;
   end;
 end;

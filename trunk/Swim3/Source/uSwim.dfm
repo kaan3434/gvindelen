@@ -1,8 +1,8 @@
 object fSwim: TfSwim
-  Left = 621
-  Top = 232
-  Width = 783
-  Height = 371
+  Left = 219
+  Top = 132
+  Width = 1075
+  Height = 555
   Caption = #1042#1080#1083#1086#1095#1082#1080
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -53,16 +53,16 @@ object fSwim: TfSwim
   TextHeight = 13
   object sb: TStatusBar
     Left = 0
-    Top = 318
-    Width = 775
+    Top = 498
+    Width = 1059
     Height = 19
     Panels = <>
     SimplePanel = True
   end
   object ProgressBar: TProgressBar
     Left = 0
-    Top = 306
-    Width = 775
+    Top = 486
+    Width = 1059
     Height = 12
     Align = alBottom
     Step = 1
@@ -71,8 +71,8 @@ object fSwim: TfSwim
   object TBXDock1: TTBXDock
     Left = 0
     Top = 0
-    Width = 775
-    Height = 65
+    Width = 1059
+    Height = 67
     object ToolbarTop: TTBXToolbar
       Left = 0
       Top = 0
@@ -125,7 +125,7 @@ object fSwim: TfSwim
     end
     object tbTables: TTBXToolbar
       Left = 0
-      Top = 39
+      Top = 41
       Caption = 'tbTables'
       DockPos = 0
       DockRow = 1
@@ -160,8 +160,8 @@ object fSwim: TfSwim
       end
     end
     object tbValutes: TTBXToolbar
-      Left = 467
-      Top = 39
+      Left = 501
+      Top = 41
       Caption = 'tbValutes'
       DockPos = 416
       DockRow = 1
@@ -181,9 +181,9 @@ object fSwim: TfSwim
   end
   object Panel1: TPanel
     Left = 0
-    Top = 65
-    Width = 775
-    Height = 241
+    Top = 67
+    Width = 1059
+    Height = 419
     Align = alClient
     BevelOuter = bvNone
     Caption = 'Panel1'
@@ -191,8 +191,8 @@ object fSwim: TfSwim
     object DockBottom: TTBXDock
       Left = 0
       Top = 0
-      Width = 775
-      Height = 95
+      Width = 1059
+      Height = 99
       object TBXToolbar3: TTBXToolbar
         Left = 0
         Top = 0
@@ -288,7 +288,7 @@ object fSwim: TfSwim
       end
       object ToolbarBottom: TTBXToolbar
         Left = 0
-        Top = 26
+        Top = 27
         BorderStyle = bsNone
         Caption = 'ToolbarBottom'
         DockPos = 0
@@ -327,7 +327,7 @@ object fSwim: TfSwim
       end
       object tbCalculate: TTBXToolbar
         Left = 0
-        Top = 69
+        Top = 72
         Caption = 'tbCalculate'
         ChevronMoveItems = False
         CloseButton = False
@@ -408,8 +408,8 @@ object fSwim: TfSwim
           OnClick = btnDeficitClick
         end
         object cbHour: TDBComboBoxEh
-          Left = 59
-          Top = 0
+          Left = 68
+          Top = 1
           Width = 110
           Height = 21
           EditButton.Action = actHourDec
@@ -443,9 +443,9 @@ object fSwim: TfSwim
     end
     object gridSwim: TDBGridEh
       Left = 0
-      Top = 95
-      Width = 775
-      Height = 96
+      Top = 99
+      Width = 1059
+      Height = 270
       Align = alClient
       AutoFitColWidths = True
       Color = clBtnFace
@@ -634,8 +634,8 @@ object fSwim: TfSwim
     end
     object TBXDock2: TTBXDock
       Left = 0
-      Top = 191
-      Width = 775
+      Top = 369
+      Width = 1059
       Height = 50
       Position = dpBottom
       object TopWindow: TTBXToolWindow
@@ -645,7 +645,7 @@ object fSwim: TfSwim
         Caption = 'Swim'
         CloseButton = False
         ClientAreaHeight = 46
-        ClientAreaWidth = 762
+        ClientAreaWidth = 1046
         DefaultDock = TBXDock2
         DockableTo = [dpBottom]
         DockPos = 0
@@ -665,7 +665,7 @@ object fSwim: TfSwim
         object rePanel: TRichEdit
           Left = 0
           Top = 0
-          Width = 762
+          Width = 1046
           Height = 46
           Align = alClient
           Color = clBtnFace
@@ -2222,9 +2222,9 @@ object fSwim: TfSwim
       '    EVENT_DTM '
       ' ')
     AfterScroll = tblSwimsAfterScroll
-    Transaction = dmSwim.ReadTran
+    Transaction = dmSwim.trnRead
     Database = dmSwim.Database
-    UpdateTransaction = dmSwim.UpdateTran
+    UpdateTransaction = dmSwim.trnWrite
     AutoCommit = True
     OnFilterRecord = tblSwimsFilterRecord
     DataSet_ID = 15

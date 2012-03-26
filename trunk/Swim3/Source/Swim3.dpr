@@ -23,7 +23,6 @@ begin
   Application.Title := 'Вилочки';
   Application.CreateForm(TdmSwim, dmSwim);
   Application.CreateForm(TfSwim, fSwim);
-  Application.CreateForm(TfrmUnknowns, frmUnknowns);
   dmSwimImpl:= TIDMSwimImplement.Create;
   Application.Run;
   dmSwimImpl:= nil;
