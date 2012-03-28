@@ -68,6 +68,8 @@ type
     procedure grdMainFillSTFilterListValues(Sender: TCustomDBGridEh;
       Column: TColumnEh; Items: TStrings; var Processed: Boolean);
     procedure frxInvoiceAfterPrintReport(Sender: TObject);
+    procedure grdMainGetCellParams(Sender: TObject; Column: TColumnEh;
+      AFont: TFont; var Background: TColor; State: TGridDrawState);
   private
     procedure ApplyFilter(aStatusSign: string);
     { Private declarations }
@@ -81,7 +83,7 @@ var
 implementation
 
 uses
-  udmOtto, uFormWizardOrder, uMain, uDlgPayment, GvStr, GvVariant;
+  udmOtto, uFormWizardOrder, uMain, uDlgPayment, GvStr, GvVariant, GvColor;
 
 {$R *.dfm}
 
@@ -390,6 +392,21 @@ begin
     dmOtto.ActionExecute(trnWrite, ndOrder);
   except
     xml.Free
+  end;
+end;
+
+procedure TFormTableOrders.grdMainGetCellParams(Sender: TObject;
+  Column: TColumnEh; AFont: TFont; var Background: TColor;
+  State: TGridDrawState);
+var
+  StatusSign: string;
+begin
+  inherited;
+  if State = [] then
+  begin
+    StatusSign:= grdMain.DataSource.DataSet['STATUS_SIGN'];
+    if IsWordPresent(StatusSign, 'ANULLED,CANCELLED', ',') then
+      AFont.Color:= clGray;
   end;
 end;
 

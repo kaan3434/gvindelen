@@ -43,7 +43,7 @@ uses
   uDlgPayment in 'uDlgPayment.pas' {DlgManualPayment},
   uFrameReturn in 'uFrameReturn.pas' {FrameMoneyBack},
   uParseLiefer in 'uParseLiefer.pas',
-  uExportCancellation in 'uExportCancellation.pas';
+  uExportReturns in 'uExportReturns.pas';
 
 {$R *.res}
 

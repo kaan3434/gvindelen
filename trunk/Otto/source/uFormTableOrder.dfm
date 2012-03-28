@@ -43,6 +43,7 @@ inherited FormTableOrders: TFormTableOrders
         STFilter.Visible = True
         OnDblClick = grdMainDblClick
         OnFillSTFilterListValues = grdMainFillSTFilterListValues
+        OnGetCellParams = grdMainGetCellParams
         Columns = <
           item
             EditButtons = <>
@@ -770,9 +771,6 @@ inherited FormTableOrders: TFormTableOrders
         Background = clWindow
       end>
     Bitmap = {}
-  end
-  inherited trnNSI: TpFIBTransaction
-    Active = True
   end
   object qryOrderAttrs: TpFIBDataSet
     SelectSQL.Strings = (

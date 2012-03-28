@@ -1,4 +1,4 @@
-unit uExportCancellation;
+unit uExportReturns;
 interface
 uses
   Classes, SysUtils, FIBDatabase, pFIBDatabase, JvProgressComponent;
@@ -25,13 +25,17 @@ begin
     dmOtto.ObjectGet(ndOrderItem, aOrderItemId, aTransaction);
     Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
     Line.Add(CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5));
-    Line.Add('900');
+    Line.Add('300');
     Line.Add(GetXmlAttr(ndOrder, 'AUFTRAG_ID'));
     Line.Add(GetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX'));
     Line.Add(GetXmlAttr(ndOrderItem, 'ARTICLE_CODE'));
     Line.Add(dmOtto.Recode('ARTICLE', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION')));
     Line.Add('1');
-    SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'CANCELREQUESTSENT');
+    Line.Add('');
+    Line.Add('');
+    Line.Add('');
+    Line.Add(GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR'));
+    SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'RETURNSENT');
     Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
     dmOtto.ActionExecute(aTransaction, ndOrderItem);
   finally
@@ -54,9 +58,9 @@ begin
     OrderItemList:= aTransaction.DefaultDatabase.QueryValue(
       'select list(oi.orderitem_id) '+
       'from orderitems oi '+
-      'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''CANCELREQUEST'') '+
+      'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign in (''RETURNING'',''DISCARDED'')) '+
       'left join statuses s2 on (s2.status_id = oi.state_id) '+
-      'where coalesce(s2.status_sign, '''')  <> ''CANCELREQUESTSENT'' '+
+      'where coalesce(s2.status_sign, '''')  <> ''RETURNSENT'' '+
       '  and oi.order_id = :order_id',
       0, [aOrderId], aTransaction);
     while OrderItemList <> '' do
@@ -86,10 +90,10 @@ begin
       OrderList:= aTransaction.DefaultDatabase.QueryValue(
         'select list(distinct o.order_id) '+
         'from orderitems oi '+
-        'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''CANCELREQUEST'') '+
+        'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign in (''RETURNING'',''DISCARDED'')) '+
         'left join statuses s2 on (s2.status_id = oi.state_id) '+
         'inner join orders o on (o.order_id = oi.order_id) '+
-        'where coalesce(s2.status_sign, '''')  <> ''CANCELREQUESTSENT'' '+
+        'where coalesce(s2.status_sign, '''')  <> ''RETURNSENT'' '+
         '  and o.product_id = :product_id',
         0, [aProductId], aTransaction);
       while OrderList <> '' do
@@ -97,12 +101,12 @@ begin
         OrderId:= TakeFront5(OrderList, ',');
         Text:= Text + ExportOrder(aTransaction, ndProduct, OrderId);
       end;
-      ForceDirectories(Path['CancelRequests']);
+      ForceDirectories(Path['ReturnRequests']);
       FileName:= GetNextFileName(Format('%ss%s_%%.2u.%.3d', [
-        Path['CancelRequests'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
+        Path['ReturnRequests'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
         DayOfTheYear(Date)]));
       SaveStringAsFile(Text, FileName);
-      dmOtto.CreateAlert('Запрос на ануляцию', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
+      dmOtto.CreateAlert('Запрос на возврат', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
       aTransaction.Commit;
     except
       aTransaction.Rollback;
@@ -112,7 +116,7 @@ begin
   end;
 end;
 
-procedure ExportCancelRequest(aTransaction: TpFIBTransaction);
+procedure ExportReturns(aTransaction: TpFIBTransaction);
 var
   Xml: TNativeXml;
   ndProducts: TXmlNode;
@@ -125,10 +129,10 @@ begin
     ProductList:= aTransaction.DefaultDatabase.QueryValue(
       'select list(distinct o.product_id) '+
       'from orderitems oi '+
-      'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''CANCELREQUEST'') '+
+      'inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign in (''RETURNING'',''DISCARDED'')) '+
       'left join statuses s2 on (s2.status_id = oi.state_id) '+
       'inner join orders o on (o.order_id = oi.order_id)' +
-      'where coalesce(s2.status_sign, '''')  <> ''CANCELREQUESTSENT''',
+      'where coalesce(s2.status_sign, '''')  <> ''RETURNSENT''',
        0, aTransaction);
     while ProductList <> '' do
     begin

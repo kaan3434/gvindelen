@@ -17,7 +17,7 @@ procedure ParseInfo2PayLine(aMessageId, LineNo: Integer; aLine: string; ndOrders
 var
   OrderId, OrderItemId: variant;
   sl: TStringList;
-  ndOrder, ndOrderItem: TXmlNode;
+  ndOrder, ndOrderItems, ndOrderItem: TXmlNode;
   NewStatusSign: variant;
   StateSign: Variant;
   StatusName, MessageClass: Variant;
@@ -34,8 +34,9 @@ begin
     if OrderId<>null then
     begin
       ndOrder:= ndOrders.NodeNew('ORDER');
+      ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
       dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
-      SetXmlAttr(ndOrders, 'PACKLIST_NO', sl[1]);
+      SetXmlAttr(ndOrder, 'PACKLIST_NO', sl[1]);
       // если ауфтрак еще не присвоен, сохраняем его на заявке
       if GetXmlAttrValue(ndOrder, 'AUFTRAG_ID') <> sl[6] then
         SetXmlAttr(ndOrder, 'AUFTRAG_ID', sl[6]);
@@ -44,18 +45,17 @@ begin
 
       Dimension:= dmOtto.Recode('ARTICLE', 'DIMENSION', sl[9]);
 
-      dmOtto.OrderItemsGet(ndOrder.NodeNew('ORDERITEMS'), OrderId, aTransaction);
+      dmOtto.OrderItemsGet(ndOrderItems, OrderId, aTransaction);
       ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
         'ARTICLE_CODE;DIMENSION;ORDERITEM_INDEX',
-        [sl[5], VarArrayOf([Dimension, sl[9]]), sl[7]]);
+        [sl[8], VarArrayOf([Dimension, sl[9]]), sl[7]]);
       if ndOrderItem = nil then
         ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
           'ARTICLE_CODE;DIMENSION;ORDERITEM_INDEX;STATUS_SIGN',
-          [sl[5], VarArrayOf([Dimension, sl[9]]), '', VarArrayOf(['ACCEPTREQUEST','ACCEPTED','BUNDLING'])]);
+          [sl[8], VarArrayOf([Dimension, sl[9]]), '', VarArrayOf(['ACCEPTREQUEST','ACCEPTED','BUNDLING'])]);
       if ndOrderItem <> nil then
       begin
         OrderItemId:= GetXmlAttrValue(ndOrderItem, 'ID');
-        ndOrderItem.ValueAsBool:= true;
         if GetXmlAttrValue(ndOrderItem, 'ORDERITEM_INDEX') = null then
           SetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX', sl[7]);
 
@@ -80,11 +80,10 @@ begin
           dmOtto.ObjectGet(ndOrderItem, OrderItemId, aTransaction);
           dmOtto.Notify(aMessageId,
             '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [STATUS_NAME]',
-            MessageClass,
-            XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION',
+            'I',
+            XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION;STATUS_NAME',
             XmlAttrs2Vars(ndOrder, 'ORDER_CODE;CLIENT_ID',
-            Value2Vars(LineNo, 'LINE_NO',
-            Value2Vars(StatusName, 'STATUS_NAME')))));
+            Value2Vars(LineNo, 'LINE_NO'))));
         except
           on E: Exception do
             dmOtto.Notify(aMessageId,
@@ -135,6 +134,7 @@ begin
     if FileExists(Path['Messages.In']+MessageFileName) then
     begin
       Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
+      Lines.Text:= ReplaceAll(Lines.Text, #13#13#10, #13#10);
       dmOtto.InitProgress(Lines.Count, Format('Обработка файла %s ...', [MessageFileName]));
       For LineNo:= 0 to Lines.Count - 1 do
       begin
