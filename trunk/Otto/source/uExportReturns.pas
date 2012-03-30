@@ -3,7 +3,7 @@ interface
 uses
   Classes, SysUtils, FIBDatabase, pFIBDatabase, JvProgressComponent;
 
-procedure ExportCancelRequest(aTransaction: TpFIBTransaction);
+procedure ExportReturns(aTransaction: TpFIBTransaction);
 
 implementation
 

@@ -202,33 +202,49 @@ begin
   MessageFileName:= dmOtto.dbOtto.QueryValue(
     'select m.file_name from messages m where m.message_id = :message_id', 0,
     [aMessageId]);
-  dmOtto.Notify(aMessageId, 'Начало обработки файла: [FILE_NAME]', 'I',
+  dmOtto.Notify(aMessageId, 'Начало обработки файла: [FILE_NAME]', '',
     Value2Vars(MessageFileName, 'FILE_NAME'));
   // загружаем файл
-  Lines:= TStringList.Create;
+  if not aTransaction.Active then
+    aTransaction.StartTransaction;
   try
-    Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
-    ndOrder:= ndOrders.NodeNew('ORDER');
-    dmOtto.InitProgress(Lines.Count*2, Format('Ообработка файла %s ...', [MessageFileName]));
-    For LineNo:= 0 to Lines.Count - 1 do
-    begin
-      ParseProtocolLine(aMessageId, LineNo, DealId, Lines[LineNo], ndOrders, aTransaction);
-      dmOtto.StepProgress;
+    Lines:= TStringList.Create;
+    try
+      if FileExists(Path['Messages.In']+MessageFileName) then
+      begin
+        Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
+        ndOrder:= ndOrders.NodeNew('ORDER');
+        dmOtto.InitProgress(Lines.Count*2, Format('Ообработка файла %s ...', [MessageFileName]));
+        For LineNo:= 0 to Lines.Count - 1 do
+        begin
+          ParseProtocolLine(aMessageId, LineNo, DealId, Lines[LineNo], ndOrders, aTransaction);
+          dmOtto.StepProgress;
+        end;
+        For n:= 0 to ndOrders.NodeCount - 1 do
+        begin
+          ndOrder:= ndOrders[n];
+          if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'ACCEPTREQUEST') then
+            dmOtto.ActionExecute(aTransaction, ndOrder, 'ACCEPTED');
+          dmOtto.StepProgress;
+        end;
+      end
+      else
+        dmOtto.Notify(aMessageId,
+          'Файл [FILE_NAME] не найден.', 'E',
+          Value2Vars(MessageFileName, 'FILE_NAME'));
+    finally
+      dmOtto.InitProgress;
+      dmOtto.Notify(aMessageId,
+        'Конец обработки файла: [FILE_NAME]', '',
+        Value2Vars(MessageFileName, 'FILE_NAME'));
+      Lines.Free;
     end;
-    For n:= 0 to ndOrders.NodeCount - 1 do
-    begin
-      ndOrder:= ndOrders[n];
-      if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'ACCEPTREQUEST') then
-        dmOtto.ActionExecute(aTransaction, ndOrder, 'ACCEPTED');
-      dmOtto.StepProgress;
-    end;
-  finally
-    dmOtto.InitProgress;
-  dmOtto.Notify(aMessageId,
-    'Конец обработки файла: [FILE_NAME]', 'I',
-    Value2Vars(MessageFileName, 'FILE_NAME'));
-    Lines.Free;
-end;
+    dmOtto.MessageRelease(aTransaction, aMessageId);
+    dmOtto.MessageSuccess(aTransaction, aMessageId);
+    aTransaction.Commit;
+  except
+    aTransaction.Rollback;
+  end
 end;
 
 procedure ProcessProtocol(aMessageId: Integer; aTransaction: TpFIBTransaction);
@@ -238,16 +254,8 @@ begin
   aXml:= TNativeXml.CreateName('MESSAGE');
   SetXmlAttr(aXml.Root, 'MESSAGE_ID', aMessageId);
   try
-    if not aTransaction.Active then
-      aTransaction.StartTransaction;
-    try
-      ParseProtocol(aMessageId, aXml.Root, aTransaction);
-      dmOtto.MessageRelease(aTransaction, aMessageId);
-      dmOtto.MessageSuccess(aTransaction, aMessageId);
-      aTransaction.Commit;
-    except
-      aTransaction.Rollback;
-    end;
+    ParseProtocol(aMessageId, aXml.Root, aTransaction);
+    dmOtto.ShowProtocol(aTransaction, aMessageId);
   finally
     aXml.Free;
   end;

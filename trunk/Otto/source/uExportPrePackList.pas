@@ -15,7 +15,7 @@ function ExportOrder(aTransaction: TpFIBTransaction;
 var
   ndOrder: TXmlNode;
   Line: TStringList;
-  CostByr: Variant;
+  Byr2Eur, CostByr: Variant;
 begin
   Result:= '';
   ndOrder:= ndOrders.NodeFindOrCreate('ORDER');

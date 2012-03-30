@@ -196,7 +196,7 @@ uses
   GvFile, GvStr, udmOtto, FIBQuery, GvNativeXml,
   uWzrdArticles, uBaseNSIForm,
   uFormTableOrder, uFormTableClients, uParseProtocol, uParseLiefer,
-  uParseConsignment, uFormProtocol, pFIBQuery, uParsePayments,
+  uParseConsignment, pFIBQuery, uParsePayments,
   uFormWizardOrder, uSetByr2Eur, uExportSMSReject,
   uExportCancellation, uExportOrder, uExportInvoices, uExportPackList, 
   uParseArtN, uParseCancellation, uFormWizardReturn, uParseInfo2Pay, 
@@ -265,10 +265,8 @@ begin
     if vMessageId > 0 then
     begin
       ProcessProtocol(vMessageId, trnWrite);
-      with TFormProtocol.Create(Self, vMessageId) do
-        Show;
       Application.ProcessMessages;
-    end
+    end;
   until vMessageId = 0;
 end;
 
@@ -281,8 +279,6 @@ begin
     if vMessageId > 0 then
     begin
       ProcessLiefer(vMessageId, trnWrite);
-      with TFormProtocol.Create(Self, vMessageId) do
-        Show;
       Application.ProcessMessages;
     end;
   until vMessageId = 0;
@@ -297,8 +293,6 @@ begin
     if vMessageId > 0 then
     begin
       ProcessConsignment(vMessageId, trnWrite);
-      with TFormProtocol.Create(Self, vMessageId) do
-        Show;
       Application.ProcessMessages;
     end;
   until vMessageId = 0;

@@ -11,9 +11,10 @@ implementation
 
 uses
   Classes, SysUtils, GvStr, udmOtto, Variants, GvNativeXml,
-  Dialogs, Controls, uExportPrePackList;
+  Dialogs, Controls, GvFile, GvDtTm;
 
-procedure ParseInfo2PayLine(aMessageId, LineNo: Integer; aLine: string; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseInfo2PayLine(aMessageId, LineNo: Integer; aLine: string;
+  ndOrders: TXmlNode; aOnDate: TDateTime; aTransaction: TpFIBTransaction);
 var
   OrderId, OrderItemId: variant;
   sl: TStringList;
@@ -36,6 +37,7 @@ begin
       ndOrder:= ndOrders.NodeNew('ORDER');
       ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
       dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
+      SetXmlAttr(ndOrder, 'BYR2EUR', dmOtto.SettingGet(aTransaction, 'BYR2EUR', aOnDate));
       SetXmlAttr(ndOrder, 'PACKLIST_NO', sl[1]);
       // если ауфтрак еще не присвоен, сохраняем его на заявке
       if GetXmlAttrValue(ndOrder, 'AUFTRAG_ID') <> sl[6] then
@@ -114,17 +116,20 @@ begin
   end;
 end;
 
-procedure ParseInfo2Pay(aMessageId: Integer; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseInfo2Pay(aMessageId: Integer; ndOrders: TXmlNode;
+  aTransaction: TpFIBTransaction);
 var
   LineNo: Integer;
   Lines: TStringList;
   MessageFileName: variant;
   ndOrder, ndOrderItems: TXmlNode;
+  DayNo: Variant;
 begin
   dmOtto.ClearNotify(aMessageId);
   MessageFileName:= dmOtto.dbOtto.QueryValue(
     'select m.file_name from messages m where m.message_id = :message_id', 0,
     [aMessageId]);
+  DayNo:= CopyBack4(ExtractFileNameOnly(MessageFileName), '_');
   dmOtto.Notify(aMessageId,
     'Начало обработки файла: [FILE_NAME]', 'I',
     Value2Vars(MessageFileName, 'FILE_NAME'));
@@ -139,7 +144,7 @@ begin
       For LineNo:= 0 to Lines.Count - 1 do
       begin
         if Lines[LineNo] <> '' then
-          ParseInfo2PayLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
+          ParseInfo2PayLine(aMessageId, LineNo, Lines[LineNo], ndOrders, DateOfYear(DayNo), aTransaction);
         dmOtto.StepProgress;
       end;
     end

@@ -975,8 +975,9 @@ inherited FormTableOrders: TFormTableOrders
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 40939.979501435170000000
+    ReportOptions.LastChange = 40998.019255509260000000
     ScriptLanguage = 'PascalScript'
+    ShowProgress = False
     StoreInDFM = False
     OnAfterPrintReport = frxInvoiceAfterPrintReport
     Left = 352

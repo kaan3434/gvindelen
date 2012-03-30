@@ -7,7 +7,8 @@ uses
   pFIBQuery, pFIBStoredProc, NativeXml, MemTableEh, DB,
   FIBDataSet, pFIBDataSet, Variants, MemTableDataEh, IB_Services, 
   JvComponentBase, JvDesktopAlert, Dialogs, JvBaseDlg, Controls,
-  gsFileVersionInfo, dbf, pFIBErrorHandler, FIB;
+  gsFileVersionInfo, dbf, pFIBErrorHandler, FIB, frxExportXLS, frxClass,
+  frxExportPDF, frxFIBComponents;
 
 type
   TdmOtto = class(TDataModule)
@@ -36,6 +37,10 @@ type
     AlertStock: TJvDesktopAlertStack;
     dbfCons: TDbf;
     errHandler: TpFibErrorHandler;
+    frxProtocol: TfrxReport;
+    frxFIBComponents1: TfrxFIBComponents;
+    frxExportPDF: TfrxPDFExport;
+    frxExportXLS: TfrxXLSExport;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
     procedure dbOttoAfterConnect(Sender: TObject);
@@ -91,7 +96,9 @@ type
     function GetStatusBySign(aObjectSign, aStatusSign: string): Variant; overload;
     function GetFlagListById(aStatusId: Integer): string;
     function FlagExists(aNode: TXmlNode; aFlagSign: string): Boolean;
-    function SettingGet(aTransaction: TpFIBTransaction; aSettingSign: string): variant;
+    function SettingGet(aTransaction: TpFIBTransaction; aSettingSign: string): variant; overload;
+    function SettingGet(aTransaction: TpFIBTransaction; aSettingSign: string;
+      aOnDate: TDateTime): variant; overload;
     function ArticleGoC(aMagazineId: integer; aArticleCode, aDimension: String;
       aPriceEUR: Single; aWeight: Variant; aDescription, aBrand : string;
       aTransaction: TpFIBTransaction): integer;
@@ -108,6 +115,8 @@ type
     function GetMinPrice(aArticleSign, aAtricleSize: String; aTransaction: TpFIBTransaction): variant;
     procedure InitProgress(aMaxValue: Integer=100; aNotifyText: String='');
     procedure StepProgress;
+    procedure ShowProtocol(aTransaction: TpFIBTransaction;
+      aMessageId: Integer);
     property UserName: string read FUserName;
   end;
 
@@ -606,6 +615,13 @@ begin
     0, [aSettingSign], aTransaction);
 end;
 
+function TdmOtto.SettingGet(aTransaction: TpFIBTransaction; aSettingSign: string;
+  aOnDate: TDateTime): variant;
+begin
+  result:= dbOtto.QueryValue('select o_value from setting_get(:setting_sign, :on_date)',
+    0, [aSettingSign, aOnDate], aTransaction);
+end;
+
 function TdmOtto.ArticleGoC(aMagazineId: integer; aArticleCode,
   aDimension: String; aPriceEUR: single; aWeight: Variant; aDescription,
   aBrand: string; aTransaction: TpFIBTransaction): integer;
@@ -902,6 +918,13 @@ begin
   WMessage:= UTF8Decode(ErrorValue.Message);
   AMessage:= WMessage;
   ErrorValue.Message := AMessage;
+end;
+
+procedure TdmOtto.ShowProtocol(aTransaction: TpFIBTransaction; aMessageId: Integer);
+begin
+  frxProtocol.LoadFromFile(Path['FastReport']+'protocol.fr3');
+  frxProtocol.Variables.Variables['MessageId']:= aMessageId;
+  frxProtocol.ShowReport;
 end;
 
 initialization

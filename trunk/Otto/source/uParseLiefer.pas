@@ -159,32 +159,43 @@ begin
     'select m.file_name from messages m where m.message_id = :message_id', 0,
     [aMessageId]);
   dmOtto.Notify(aMessageId,
-    'Начало обработки файла: [FILE_NAME]', 'I',
+    'Начало обработки файла: [FILE_NAME]', '',
     Value2Vars(MessageFileName, 'FILE_NAME'));
+    if not aTransaction.Active then
+      aTransaction.StartTransaction;
   // загружаем файл
-  Lines:= TStringList.Create;
+  if not aTransaction.Active then
+    aTransaction.StartTransaction;
   try
-    if FileExists(Path['Messages.In']+MessageFileName) then
-    begin
-      Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
-      dmOtto.InitProgress(Lines.Count, Format('Обработка файла %s ...', [MessageFileName]));
-      For LineNo:= 0 to Lines.Count - 1 do
+    Lines:= TStringList.Create;
+    try
+      if FileExists(Path['Messages.In']+MessageFileName) then
       begin
-        ParseLieferLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
-        dmOtto.StepProgress;
+        Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
+        dmOtto.InitProgress(Lines.Count, Format('Обработка файла %s ...', [MessageFileName]));
+        For LineNo:= 0 to Lines.Count - 1 do
+        begin
+          ParseLieferLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
+          dmOtto.StepProgress;
+        end
       end
-    end
-    else
+      else
+        dmOtto.Notify(aMessageId,
+          'Файл [FILE_NAME] не найден.', 'E',
+          Value2Vars(MessageFileName, 'FILE_NAME'));
+    finally
+      dmOtto.InitProgress;
       dmOtto.Notify(aMessageId,
-        'Файл [FILE_NAME] не найден.', 'E',
+        'Конец обработки файла: [FILE_NAME]', '',
         Value2Vars(MessageFileName, 'FILE_NAME'));
-  finally
-    dmOtto.InitProgress;
-    dmOtto.Notify(aMessageId,
-      'Конец обработки файла: [FILE_NAME]', 'I',
-      Value2Vars(MessageFileName, 'FILE_NAME'));
-    Lines.Free;
-  end;
+      Lines.Free;
+    end;
+    dmOtto.MessageRelease(aTransaction, aMessageId);
+    dmOtto.MessageSuccess(aTransaction, aMessageId);
+    aTransaction.Commit;
+  except
+    aTransaction.Rollback;
+  end
 end;
 
 procedure ProcessLiefer(aMessageId: Integer; aTransaction: TpFIBTransaction);
@@ -194,16 +205,8 @@ begin
   aXml:= TNativeXml.CreateName('MESSAGE');
   SetXmlAttr(aXml.Root, 'MESSAGE_ID', aMessageId);
   try
-    if not aTransaction.Active then
-      aTransaction.StartTransaction;
-    try
-      ParseLiefer(aMessageId, aXml.Root, aTransaction);
-      dmOtto.MessageRelease(aTransaction, aMessageId);
-      dmOtto.MessageSuccess(aTransaction, aMessageId);
-      aTransaction.Commit;
-    except
-      aTransaction.Rollback;
-    end;
+    ParseLiefer(aMessageId, aXml.Root, aTransaction);
+    dmOtto.ShowProtocol(aTransaction, aMessageId);
   finally
     aXml.Free;
   end;

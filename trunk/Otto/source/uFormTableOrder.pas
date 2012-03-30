@@ -132,20 +132,49 @@ var
   InvoiceFileName: string;
   Xml: TNativeXml;
   ndOrder, ndProduct: TXmlNode;
+  OrderId, InvoiceEUR, InvoiceBYR: Variant;
+
+procedure PushInvoiceMoney(ndOrder: TXmlNode; Index: Integer = 0);
 begin
+  if AttrExists(ndOrder, 'INVOICE_EUR_'+IntTostr(Index+1)) then
+    PushInvoiceMoney(ndOrder, Index + 1);
+  BatchMoveFields2(ndOrder, ndOrder,
+    Format('INVOICE_EUR_%u=INVOICE_EUR_%u;INVOICE_BYR_%u=INVOICE_BYR_%u;',
+           [Index+1, Index, Index+1, Index]));
+end;
+
+begin
+  OrderId:= qryMain['ORDER_ID'];
   Xml:= TNativeXml.CreateName('ORDER');
   ndOrder:= Xml.Root;
   ndProduct:= ndOrder.NodeNew('PRODUCT');
   try
-    dmOtto.ObjectGet(ndOrder, qryMain['ORDER_ID'], trnWrite);
+    dmOtto.ObjectGet(ndOrder, OrderId, trnWrite);
     dmOtto.ObjectGet(ndProduct, GetXmlAttrValue(ndOrder, 'PRODUCT_ID'), trnWrite);
     InvoiceFileName:= Format('inv_%s.pdf', [GetXmlAttrValue(ndOrder, 'ORDER_CODE')]);
     ForceDirectories(Path['Invoices']);
     frxPDFExport.FileName:= Path['Invoices']+InvoiceFileName;
     frxInvoice.LoadFromFile(GetXmlAttr(ndProduct, 'PARTNER_NUMBER', Path['FastReport']+'invoice_', '.fr3'));
-    frxInvoice.Variables.Variables['OrderId']:= Format('''%u''', [Integer(qryMain['ORDER_ID'])]);
+    frxInvoice.Variables.Variables['OrderId']:= Format('''%u''', [Integer(OrderId)]);
     frxInvoice.PrepareReport(true);
     frxInvoice.Export(frxPDFExport);
+    // Переносим сумму извещения на заявку
+    InvoiceEUR:= trnWrite.DefaultDatabase.QueryValue(
+      'select cost_eur from v_order_summary where order_id = :order_id',
+      0, [OrderId], trnWrite);
+    InvoiceBYR:= trnWrite.DefaultDatabase.QueryValue(
+      'select cost_byr from v_order_summary where order_id = :order_id',
+      0, [OrderId], trnWrite);
+    SetXmlAttrAsMoney(ndOrder, 'NEW.INVOICE_EUR', InvoiceEUR);
+    SetXmlAttrAsMoney(ndOrder, 'NEW.INVOICE_BYR', InvoiceBYR);
+    if AttrExists(ndOrder, 'INVOICE_EUR_0') or AttrExists(ndOrder, 'INVOICE_BYR_0') then
+    begin
+      if (GetXmlAttrAsMoney(ndOrder, 'NEW.INVOICE_EUR') <> GetXmlAttrAsMoney(ndOrder, 'INVOICE_EUR_0')) or
+         (GetXmlAttrAsMoney(ndOrder, 'NEW.INVOICE_BYR') <> GetXmlAttrAsMoney(ndOrder, 'INVOICE_BYR_0')) then
+        PushInvoiceMoney(ndOrder);
+    end;
+    BatchMoveFields2(ndOrder, ndOrder,
+      'INVOICE_EUR_0=NEW.INVOICE_EUR;INVOICE_BYR_0=NEW.INVOICE_BYR');
     SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'INVOICED');
     dmOtto.ActionExecute(trnWrite, ndOrder);
     frxInvoice.ShowPreparedReport;

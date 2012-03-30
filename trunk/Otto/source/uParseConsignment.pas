@@ -201,41 +201,30 @@ begin
     'select m.file_name from messages m where m.message_id = :message_id', 0,
     [aMessageId]);
   dmOtto.Notify(aMessageId,
-    'Начало обработки файла: [FILE_NAME]', 'I',
+    'Начало обработки файла: [FILE_NAME]', '',
     Value2Vars(MessageFileName, 'FILE_NAME'));
   // загружаем файл
   if not aTransaction.Active then
     aTransaction.StartTransaction;
   try
-    Lines:= TStringList.Create;
-    try
-      if FileExists(Path['Messages.In']+MessageFileName) then
-      begin
+    if FileExists(Path['Messages.In']+MessageFileName) then
+    begin
+      Lines:= TStringList.Create;
+      try
         Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
         For LineNo:= 0 to Lines.Count - 1 do
           ParseConsignmentLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
-      end
-      else
-        dmOtto.Notify(aMessageId,
-          'Файл [FILE_NAME] не найден.', 'E',
-          Value2Vars(MessageFileName, 'FILE_NAME'));
-    finally
-      Lines.Free;
-    end;
+      finally
+        Lines.Free;
+      end;
+    end
+    else
+      dmOtto.Notify(aMessageId,
+        'Файл [FILE_NAME] не найден.', 'E',
+        Value2Vars(MessageFileName, 'FILE_NAME'));
     dmOtto.Notify(aMessageId,
-      'Конец обработки файла: [FILE_NAME]', 'I',
+      'Конец обработки файла: [FILE_NAME]', '',
       Value2Vars(MessageFileName, 'FILE_NAME'));
-    try
-      dmOtto.ActionExecute(aTransaction, 'EVENT', '',
-        Value2Vars('FORM_PROTOCOL', 'EVENT_SIGN',
-        Value2Vars(aMessageId, 'OBJECT_ID')));
-    except
-      on E: Exception do
-        dmOtto.Notify(aMessageId,
-          'Содание события FORM_PROTOCOL. Ошибка ([ERROR_TEXT])',
-          'E',
-          Value2Vars(E.Message, 'ERROR_TEXT'));
-    end;
     dmOtto.MessageRelease(aTransaction, aMessageId);
     dmOtto.MessageSuccess(aTransaction, aMessageId);
     aTransaction.Commit;
@@ -252,6 +241,7 @@ begin
   SetXmlAttr(aXml.Root, 'MESSAGE_ID', aMessageId);
   try
     ParseConsignment(aMessageId, aXml.Root, aTransaction);
+    dmOtto.ShowProtocol(aTransaction, aMessageId);
   finally
     aXml.Free;
   end;
