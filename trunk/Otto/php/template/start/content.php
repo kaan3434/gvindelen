@@ -20,32 +20,21 @@
         </div>
       </li>
 
-      <li>
-        <div class="widetxt2h">
-          <div class="hl">
-            <a href="">Результаты акции <br/>от 7 марта!</a>
-          </div>
-          <font color="green">
-          <p>Коллектив ЗАО «BALT-POST» сердечно поздравляет победителей нашей акции от 7 марта<br/><br/></p>
-          </font>
-          <font color="red" size="3">
-          <p>-&nbsp;<b>Любимову Ольгу</b> (Светлогорск);</p>
-          <p>-&nbsp;<b>Рачинскую Екатерину</b> (Минск);</p>
-          <p>-&nbsp;<b>Мамонько Елену</b> (Минск);</p>
-          <p>-&nbsp;<b>Каминскую Надежду</b> (Минск);</p>
-          <p>-&nbsp;<b>Коломиец Ольгу</b> (Минск).<br/><br/></p>
-          </font>
-          <font color="green">
-          <p>И просит сообщить по адресу <a href="mailto:office2@otto-moda.by">office2@otto-moda.by</a>, 
-             какие каталоги они хотят получить в подарок.
-          </font>
-        </div>
-      </li>
-      
       
     </ul>
     <ul class="ulist">
 
+      <li>
+        <div class="widetxt">
+          <div class="hl">
+            <a href="">Уважаемые клиенты!</a>
+          </div>
+          <font color='red' size="4">
+          <p>С 1-го апреля сервисный сбор устанавливается в размере 7&euro;.</p>
+          </font>
+        </div>
+      </li>
+    
       <li>
         <div class="widetxt">
           <div class="hl">
