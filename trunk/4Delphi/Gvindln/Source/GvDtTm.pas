@@ -3,6 +3,7 @@ unit GvDtTm;
 interface
 
 function DayOfYear(ADate: TDateTime): integer;
+function DateOfYear(aDayNo: Word): TDateTime;
 
 function YearNo(DtTm: TDateTime):Word;
 function NumYearNo(NumDate: Longint): Word;
@@ -70,6 +71,11 @@ var
 begin
   FirstOfYear := EncodeDate(YearNo(ADate), 01, 01);
   Result      := Trunc(ADate) - Trunc(FirstOfYear);
+end;
+
+function DateOfYear(aDayNo: Word): TDateTime;
+begin
+  result:= IncDay(StartOfTheYear(Date), aDayNo-1);
 end;
 
 function YearNo(DtTm:TDateTime):Word;
