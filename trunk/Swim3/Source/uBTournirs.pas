@@ -63,18 +63,13 @@ type
     TBXItem7: TTBXItem;
     cbTemporary: TTBXItem;
     procedure actSporPartUpdate(Sender: TObject);
-    procedure actSporPartExecute(Sender: TObject);
     procedure actCountryPartUpdate(Sender: TObject);
-    procedure actCountryPartExecute(Sender: TObject);
-    procedure FormActivate(Sender: TObject);
     procedure actAppendATournirUpdate(Sender: TObject);
     procedure actAppendATournirExecute(Sender: TObject);
     procedure actSetATournirExecute(Sender: TObject);
     procedure gridMainDblClick(Sender: TObject);
     procedure gridATournirsDblClick(Sender: TObject);
-    procedure actIgnorePartExecute(Sender: TObject);
     procedure actEditATournirExecute(Sender: TObject);
-    procedure actClearTournirHistoryExecute(Sender: TObject);
     procedure actCloseTournirExecute(Sender: TObject);
   private
     { Private declarations }
@@ -123,35 +118,9 @@ begin
   actSporPart.Enabled:= lcbASports.KeyValue<>null;
 end;
 
-procedure TfrmBTournirs.actSporPartExecute(Sender: TObject);
-begin
-  dmSwim.AppendSportPart(tblMain['ASport_Id'],
-                         tblMain['Booker_Id'],
-                         lcbASports.KeyValue,
-                         tblParts['Part_UTxt']);
-  tblMain.Refresh;
-  lcbASports.KeyValue:= null;
-end;
-
 procedure TfrmBTournirs.actCountryPartUpdate(Sender: TObject);
 begin
   actCountryPart.Enabled:= lcbCountrys.KeyValue<>null;
-end;
-
-procedure TfrmBTournirs.actCountryPartExecute(Sender: TObject);
-begin
-  dmSwim.AppendCountryPart(tblMain['ASport_Id'],
-                           tblMain['Booker_Id'],
-                           lcbCountrys.KeyValue,
-                           tblParts['Part_UTxt']);
-  tblMain.Refresh;
-  lcbCountrys.KeyValue:= null;
-end;
-
-procedure TfrmBTournirs.FormActivate(Sender: TObject);
-begin
-  dmSwim.RecognizeTournirs;
-  inherited;
 end;
 
 procedure TfrmBTournirs.actAppendATournirUpdate(Sender: TObject);
@@ -164,20 +133,6 @@ var
   ATournirName: String;
   ATournirId: Integer;
 begin
-  ATournirName:= NormalizeName(eATournirName.Text);
-  dmSwim.AppendATournir(tblMain['ASport_Id'], ATournirName,
-         tblMain['Country_Sgn'], ATournirId);
-  if tblMain.State = dsBrowse then
-    tblMain.Edit;
-  tblMain['ATournir_Id']:= ATournirId;
-  tblMain.Post;
-  if Not tblMain.Filtered then
-    tblMain.Next;
-//  cdsMain.Locate('ATournir_Id', ATournirId, []);
-  tblATournirs.Close;
-  tblATournirs.Open;
-  tblATournirs.Locate('ATournir_Id', ATournirId, []);
-  eATournirName.Text:= '';
 end;
 
 procedure TfrmBTournirs.actSetATournirExecute(Sender: TObject);
@@ -204,16 +159,6 @@ begin
     actSetATournirExecute(Sender);
 end;
 
-procedure TfrmBTournirs.actIgnorePartExecute(Sender: TObject);
-begin
-  dmSwim.AppendIgnorePart(tblMain['ASport_Id'],
-                          tblMain['Booker_Id'],
-                          tblParts['Part_UTxt']);
-  tblMain.Refresh;
-  if Not tblMain.Filtered then
-    tblMain.Next;
-end;
-
 procedure TfrmBTournirs.actEditATournirExecute(Sender: TObject);
 begin
   with gridATournirs do
@@ -224,11 +169,6 @@ begin
     else
       Options:= Options - [dgRowSelect, dgAlwaysShowSelection]+[dgEditing];
   end;
-end;
-
-procedure TfrmBTournirs.actClearTournirHistoryExecute(Sender: TObject);
-begin
-  dmSwim.ClearHistoryByTournir(tblATournirs['ATournir_Id']);
 end;
 
 procedure TfrmBTournirs.actCloseTournirExecute(Sender: TObject);

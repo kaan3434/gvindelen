@@ -1378,7 +1378,6 @@ object fSwim: TfSwim
     Top = 96
   end
   object Version: TgsFileVersionInfo
-    Filename = 'D:\swim2\Swim2.exe'
     Left = 104
     Top = 127
   end

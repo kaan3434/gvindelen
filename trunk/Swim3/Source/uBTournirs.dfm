@@ -8,11 +8,11 @@ inherited frmBTournirs: TfrmBTournirs
   PixelsPerInch = 96
   TextHeight = 13
   inherited Splitter1: TSplitter
-    Top = 199
-    Width = 771
+    Top = 195
+    Width = 763
   end
   inherited TBXDockUp: TTBXDock
-    Width = 771
+    Width = 763
     inherited TBXToolbar: TTBXToolbar
       inherited DBNavigator: TDBNavigator
         Hints.Strings = ()
@@ -20,8 +20,8 @@ inherited frmBTournirs: TfrmBTournirs
     end
   end
   inherited gridMain: TDBGridEh
-    Width = 764
-    Height = 173
+    Width = 756
+    Height = 169
     Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
     Columns = <
       item
@@ -132,11 +132,11 @@ inherited frmBTournirs: TfrmBTournirs
       end>
   end
   inherited Panel: TPanel
-    Top = 202
-    Width = 771
+    Top = 198
+    Width = 763
     Height = 300
     inherited pcDetail: TPageControl
-      Width = 769
+      Width = 761
       Height = 298
       ActivePage = tsTournirs
       object tsParts: TTabSheet
@@ -144,7 +144,7 @@ inherited frmBTournirs: TfrmBTournirs
         object TBXDock1: TTBXDock
           Left = 0
           Top = 0
-          Width = 761
+          Width = 753
           Height = 25
           object TBXToolbar1: TTBXToolbar
             Left = 0
@@ -179,7 +179,7 @@ inherited frmBTournirs: TfrmBTournirs
               Visible = True
             end
             object lcbCountrys: TDBLookupComboboxEh
-              Left = 279
+              Left = 285
               Top = 0
               Width = 200
               Height = 21
@@ -195,7 +195,7 @@ inherited frmBTournirs: TfrmBTournirs
         object gridParts: TDBGridEh
           Left = 0
           Top = 25
-          Width = 761
+          Width = 753
           Height = 245
           Align = alClient
           AutoFitColWidths = True
@@ -243,7 +243,7 @@ inherited frmBTournirs: TfrmBTournirs
         Caption = 'tsTournirs'
         ImageIndex = 1
         object Splitter2: TSplitter
-          Left = 438
+          Left = 430
           Top = 25
           Height = 245
           Align = alRight
@@ -251,7 +251,7 @@ inherited frmBTournirs: TfrmBTournirs
         object TBXDock2: TTBXDock
           Left = 0
           Top = 0
-          Width = 761
+          Width = 753
           Height = 25
           object TBXToolbar2: TTBXToolbar
             Left = 0
@@ -289,7 +289,7 @@ inherited frmBTournirs: TfrmBTournirs
         object gridATournirs: TDBGridEh
           Left = 0
           Top = 25
-          Width = 438
+          Width = 430
           Height = 245
           Align = alClient
           AutoFitColWidths = True
@@ -369,7 +369,7 @@ inherited frmBTournirs: TfrmBTournirs
           end
         end
         object gridHistory: TDBGridEh
-          Left = 441
+          Left = 433
           Top = 25
           Width = 320
           Height = 245
@@ -663,8 +663,8 @@ inherited frmBTournirs: TfrmBTournirs
     end
   end
   inherited dckRight: TTBXMultiDock
-    Left = 764
-    Height = 173
+    Left = 756
+    Height = 169
   end
   inherited tblMain: TpFIBDataSet
     UpdateSQL.Strings = (
@@ -782,17 +782,14 @@ inherited frmBTournirs: TfrmBTournirs
     Top = 40
     object actSporPart: TAction
       Caption = #1044#1088#1091#1075#1086#1081' '#1089#1087#1086#1088#1090
-      OnExecute = actSporPartExecute
       OnUpdate = actSporPartUpdate
     end
     object actCountryPart: TAction
       Caption = #1059#1089#1090'. '#1089#1090#1088#1072#1085#1091
-      OnExecute = actCountryPartExecute
       OnUpdate = actCountryPartUpdate
     end
     object actIgnorePart: TAction
       Caption = #1048#1075#1085#1086#1088#1080#1088#1086#1074#1072#1090#1100
-      OnExecute = actIgnorePartExecute
     end
     object actAppendATournir: TAction
       Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1090#1091#1088#1085#1080#1088
@@ -810,7 +807,6 @@ inherited frmBTournirs: TfrmBTournirs
     end
     object actClearTournirHistory: TAction
       Caption = #1054#1095#1080#1089#1090#1080#1090#1100' '#1080#1089#1090#1086#1088#1080#1102
-      OnExecute = actClearTournirHistoryExecute
     end
     object actCloseTournir: TAction
       Caption = #1047#1072#1082#1088#1099#1090#1100
@@ -858,9 +854,7 @@ inherited frmBTournirs: TfrmBTournirs
       'WHERE'
       '    BTOURNIR_ID = :BTOURNIR_ID'
       'ORDER BY PART_LVL, PART_UTXT')
-    Transaction = dmSwim.ReadTran
     Database = dmSwim.Database
-    UpdateTransaction = dmSwim.UpdateTran
     DataSource = dsMain
     DataSet_ID = 110
     Description = 'PARTS_BY_BTOURNIR'
@@ -944,9 +938,7 @@ inherited frmBTournirs: TfrmBTournirs
     AutoUpdateOptions.KeyFields = 'ASPORT_ID'
     AutoUpdateOptions.GeneratorName = 'GEN_ASPORT_ID'
     AutoUpdateOptions.WhenGetGenID = wgBeforePost
-    Transaction = dmSwim.ReadTran
     Database = dmSwim.Database
-    UpdateTransaction = dmSwim.UpdateTran
     DataSet_ID = 1
     Description = 'ASPORTS'
     Left = 128
@@ -999,9 +991,7 @@ inherited frmBTournirs: TfrmBTournirs
       'FROM'
       '    COUNTRYS '
       'ORDER BY ACOUNTRY_NM')
-    Transaction = dmSwim.ReadTran
     Database = dmSwim.Database
-    UpdateTransaction = dmSwim.UpdateTran
     DataSet_ID = 4
     Description = 'COUNTRYS'
     Left = 160
@@ -1079,9 +1069,7 @@ inherited frmBTournirs: TfrmBTournirs
       '   END_DT,'
       '   ATOURNIR_LVL,'
       '   ATOURNIR_NM')
-    Transaction = dmSwim.ReadTran
     Database = dmSwim.Database
-    UpdateTransaction = dmSwim.UpdateTran
     AutoCommit = True
     DataSource = dsMain
     DataSet_ID = 105
@@ -1106,9 +1094,7 @@ inherited frmBTournirs: TfrmBTournirs
       '   ATOURNIR_ID = :ATOURNIR_ID'
       'ORDER BY'
       '   AGAMER_NM ')
-    Transaction = dmSwim.ReadTran
     Database = dmSwim.Database
-    UpdateTransaction = dmSwim.UpdateTran
     DataSource = dsATournirs
     DataSet_ID = 111
     Left = 224
@@ -1132,9 +1118,7 @@ inherited frmBTournirs: TfrmBTournirs
       'WHERE BTOURNIR_ID = :BTOURNIR_ID'
       'ORDER BY '
       '    EVENT_DTM')
-    Transaction = dmSwim.ReadTran
     Database = dmSwim.Database
-    UpdateTransaction = dmSwim.UpdateTran
     DataSource = dsMain
     DataSet_ID = 112
     Description = 'EVENTS_BY_BTOURNIR'
@@ -1165,9 +1149,7 @@ inherited frmBTournirs: TfrmBTournirs
       'ORDER BY'
       '    EVENT_DTM,'
       '    AGAMER1_NM ')
-    Transaction = dmSwim.ReadTran
     Database = dmSwim.Database
-    UpdateTransaction = dmSwim.UpdateTran
     DataSource = dsATournirs
     DataSet_ID = 113
     Description = 'EVENTS_BY_ATOURNIR'

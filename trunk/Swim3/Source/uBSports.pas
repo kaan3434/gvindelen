@@ -46,10 +46,6 @@ procedure TfrmBSports.actSelectASportsExecute(Sender: TObject);
 var
   BSportId: variant;
 begin
-  BSportId:= tblMain['BSport_Id'];
-  dmSwim.ModifyBSport(tblASports['ASport_Id'], tblMain['Booker_Id'],
-                      tblMain['BSport_Nm'], BSportId);
-  tblMain.Refresh;
 end;
 
 procedure TfrmBSports.CloseDataSets;

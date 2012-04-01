@@ -8,11 +8,11 @@ inherited frmBSports: TfrmBSports
   PixelsPerInch = 96
   TextHeight = 13
   inherited Splitter1: TSplitter
-    Top = 105
-    Width = 707
+    Top = 101
+    Width = 699
   end
   inherited TBXDockUp: TTBXDock
-    Width = 707
+    Width = 699
     inherited TBXToolbar: TTBXToolbar
       inherited DBNavigator: TDBNavigator
         Hints.Strings = ()
@@ -20,8 +20,8 @@ inherited frmBSports: TfrmBSports
     end
   end
   inherited gridMain: TDBGridEh
-    Width = 700
-    Height = 79
+    Width = 692
+    Height = 75
     ColumnDefValues.AutoDropDown = False
     Columns = <
       item
@@ -74,11 +74,11 @@ inherited frmBSports: TfrmBSports
       end>
   end
   inherited Panel: TPanel
-    Top = 108
-    Width = 707
+    Top = 104
+    Width = 699
     Height = 300
     inherited pcDetail: TPageControl
-      Width = 705
+      Width = 697
       Height = 298
       ActivePage = tsASports
       object tsASports: TTabSheet
@@ -87,7 +87,7 @@ inherited frmBSports: TfrmBSports
         object gridASports: TDBGridEh
           Left = 0
           Top = 0
-          Width = 697
+          Width = 689
           Height = 270
           Align = alClient
           AutoFitColWidths = True
@@ -241,8 +241,8 @@ inherited frmBSports: TfrmBSports
     end
   end
   inherited dckRight: TTBXMultiDock
-    Left = 700
-    Height = 79
+    Left = 692
+    Height = 75
   end
   inherited ActionList: TActionList
     object actSelectASports: TAction [2]
@@ -348,9 +348,7 @@ inherited frmBSports: TfrmBSports
       'ORDER BY '
       '    DEFAULT_FLG DESC,'
       '    ASPORT_NM')
-    Transaction = dmSwim.ReadTran
     Database = dmSwim.Database
-    UpdateTransaction = dmSwim.UpdateTran
     AutoCommit = True
     DataSet_ID = 101
     Description = 'ASPORTS_DETAIL'
@@ -384,9 +382,7 @@ inherited frmBSports: TfrmBSports
       'WHERE bt.BSPORT_ID = :BSPORT_ID'
       'ORDER BY '
       '    bt.BTOURNIR_NM  ')
-    Transaction = dmSwim.ReadTran
     Database = dmSwim.Database
-    UpdateTransaction = dmSwim.UpdateTran
     DataSource = dsMain
     DataSet_ID = 106
     Description = 'BTOURNIRS_BY_BSPORT'
