@@ -103,6 +103,14 @@ inherited FrameMoneyBack: TFrameMoneyBack
       Height = 13
       Caption = #1044#1072#1090#1072' '#1074#1099#1076#1072#1095#1080
     end
+    object lblBonus: TLabel
+      Left = 664
+      Top = 24
+      Width = 72
+      Height = 13
+      Caption = #1057#1091#1084#1084#1072' '#1073#1086#1085#1091#1089#1072
+      FocusControl = edtBonus
+    end
     object edBelPostBarCode: TLabeledEdit
       Left = 16
       Top = 40
@@ -142,6 +150,19 @@ inherited FrameMoneyBack: TFrameMoneyBack
       EditLabel.Height = 13
       EditLabel.Caption = #1053#1072#1080#1084#1077#1085#1086#1074#1072#1085#1080#1077' '#1086#1088#1075#1072#1085#1080#1079#1072#1094#1080#1080' '#1074#1099#1076#1072#1074#1096#1077#1081' '#1076#1086#1082#1091#1084#1077#1085#1090
       TabOrder = 3
+    end
+    object edtBonus: TDBNumberEditEh
+      Left = 664
+      Top = 40
+      Width = 73
+      Height = 21
+      currency = False
+      DisplayFormat = '##0.00'
+      EditButton.Visible = True
+      EditButtons = <>
+      TabOrder = 4
+      Value = 0.000000000000000000
+      Visible = True
     end
   end
   object rgReturnKind: TRadioGroup [4]

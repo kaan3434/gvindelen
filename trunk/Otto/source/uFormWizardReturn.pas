@@ -28,6 +28,7 @@ type
     ndClient: TXmlNode;
     ndOrderTaxs: TXmlNode;
     ndOrderTax: TXmlNode;
+    ndOrderMoneys: TXmlNode;
     ndAccount: TXmlNode;
     frmOrderItems: TFrameOrderItems;
     frmMoneyBack: TFrameMoneyBack;
@@ -75,6 +76,7 @@ begin
   ndClient:= ndOrder.NodeFindOrCreate('CLIENT');
   ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
   ndOrderTaxs:= ndOrder.NodeFindOrCreate('ORDERTAXS');
+  ndOrderMoneys:= ndOrder.NodeFindOrCreate('ORDERMONEYS');
   ndAccount:= ndClient.NodeFindOrCreate('ACCOUNT');
 end;
 
@@ -84,6 +86,7 @@ begin
   dmOtto.ObjectGet(ndOrder, aObjectId, trnRead);
   dmOtto.OrderItemsGet(ndOrderItems, aObjectId, trnRead);
   dmOtto.OrderTaxsGet(ndOrderTaxs, aObjectId, trnRead);
+  dmOtto.OrderMoneysGet(ndOrderMoneys, aObjectId, trnRead);
   dmOtto.ObjectGet(ndClient, GetXmlAttrValue(ndOrder, 'CLIENT_ID'), trnRead);
   dmOtto.ObjectGet(ndAccount, GetXmlAttrValue(ndClient, 'ACCOUNT_ID'), trnRead);
   dmOtto.ObjectGet(ndAdress, GetXmlAttrValue(ndOrder, 'ADRESS_ID'), trnRead);

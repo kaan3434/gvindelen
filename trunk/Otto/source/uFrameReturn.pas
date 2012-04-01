@@ -25,6 +25,8 @@ type
     lblPasportIssued: TLabel;
     edPassportIssuer: TLabeledEdit;
     rgReturnKind: TRadioGroup;
+    edtBonus: TDBNumberEditEh;
+    lblBonus: TLabel;
     procedure rgReturnKindClick(Sender: TObject);
   private
     function GetOrderId: Integer;
@@ -32,6 +34,7 @@ type
   public
     ndOrder: TXmlNode;
     ndClient: TXmlNode;
+    ndOrderMoneys: TXmlNode;
     procedure InitData; override;
     procedure FreeData; override;
     procedure OpenTables; override;
@@ -109,6 +112,7 @@ begin
   try
     SetXmlAttr(ndOrder, 'MONEYBACK_KIND', ExtractWord(rgReturnKind.ItemIndex, 'LEAVE;BELPOST;BANK', ';'));
     SetXmlAttr(ndOrder, 'BELPOST_BAR_CODE', edBelPostBarCode.Text);
+    SetXmlAttr(ndOrder, 'BONUS_EUR', edBonus.text);
 
     SetXmlAttr(ndClient, 'PASSPORT_NUM', edPassportNum.Text);
     SetXmlAttr(ndClient, 'PASSPORT_ISSUED', edtPassportIssued.Value);

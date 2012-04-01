@@ -1,13 +1,13 @@
 inherited FormWizardReturn: TFormWizardReturn
-  Left = 268
-  Top = 253
-  ActiveControl = wzWPage
+  Left = 174
+  Top = 61
+  ActiveControl = wzIPageMoneyBackKind
   Caption = 'FormWizardReturn'
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   inherited wzForm: TJvWizard
-    ActivePage = wzWPage
+    ActivePage = wzIPageMoneyBackKind
     OnFinishButtonClick = wzFormFinishButtonClick
     OnActivePageChanging = wzFormActivePageChanging
     object wzWPage: TJvWizardWelcomePage

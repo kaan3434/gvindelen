@@ -130,27 +130,37 @@ begin
     'select m.file_name from messages m where m.message_id = :message_id', 0,
     [aMessageId]);
   dmOtto.Notify(aMessageId,
-    'Начало обработки файла: [FILE_NAME]', 'I',
+    'Начало обработки файла: [FILE_NAME]', '',
     Value2Vars(MessageFileName, 'FILE_NAME'));
   // загружаем файл
-  Lines:= TStringList.Create;
+  if not aTransaction.Active then
+    aTransaction.StartTransaction;
   try
-    if FileExists(Path['Messages.In']+MessageFileName) then
-    begin
-      Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
-      For LineNo:= 0 to Lines.Count - 1 do
-        ParseCancelLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
-    end
-    else
+    Lines:= TStringList.Create;
+    try
+      if FileExists(Path['Messages.In']+MessageFileName) then
+      begin
+        Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
+        For LineNo:= 0 to Lines.Count - 1 do
+          ParseCancelLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
+      end
+      else
+        dmOtto.Notify(aMessageId,
+          'Файл [FILE_NAME] не найден.', 'E',
+          Value2Vars(MessageFileName, 'FILE_NAME'));
+    finally
+      dmOtto.InitProgress;
       dmOtto.Notify(aMessageId,
-        'Файл [FILE_NAME] не найден.', 'E',
+        'Конец обработки файла: [FILE_NAME]', '',
         Value2Vars(MessageFileName, 'FILE_NAME'));
-  finally
-    Lines.Free;
+      Lines.Free;
+    end;
+    dmOtto.MessageRelease(aTransaction, aMessageId);
+    dmOtto.MessageSuccess(aTransaction, aMessageId);
+    aTransaction.Commit;
+  except
+    aTransaction.Rollback;
   end;
-  dmOtto.Notify(aMessageId,
-    'Конец обработки файла: [FILE_NAME]', 'I',
-    Value2Vars(MessageFileName, 'FILE_NAME'));
 end;
 
 procedure ProcessCancellation(aMessageId: Integer; aTransaction: TpFIBTransaction);
@@ -160,16 +170,8 @@ begin
   aXml:= TNativeXml.CreateName('MESSAGE');
   SetXmlAttr(aXml.Root, 'MESSAGE_ID', aMessageId);
   try
-    if not aTransaction.Active then
-      aTransaction.StartTransaction;
-    try
-      ParseCancellation(aMessageId, aXml.Root, aTransaction);
-      dmOtto.MessageRelease(aTransaction, aMessageId);
-      dmOtto.MessageSuccess(aTransaction, aMessageId);
-      aTransaction.Commit;
-    except
-      aTransaction.Rollback;
-    end;
+    ParseCancellation(aMessageId, aXml.Root, aTransaction);
+    dmOtto.ShowProtocol(aTransaction, aMessageId);
   finally
     aXml.Free;
   end;

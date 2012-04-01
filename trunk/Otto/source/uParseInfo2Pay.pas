@@ -131,33 +131,42 @@ begin
     [aMessageId]);
   DayNo:= CopyBack4(ExtractFileNameOnly(MessageFileName), '_');
   dmOtto.Notify(aMessageId,
-    'Начало обработки файла: [FILE_NAME]', 'I',
+    'Начало обработки файла: [FILE_NAME]', '',
     Value2Vars(MessageFileName, 'FILE_NAME'));
   // загружаем файл
-  Lines:= TStringList.Create;
+  if not aTransaction.Active then
+    aTransaction.StartTransaction;
   try
-    if FileExists(Path['Messages.In']+MessageFileName) then
-    begin
-      Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
-      Lines.Text:= ReplaceAll(Lines.Text, #13#13#10, #13#10);
-      dmOtto.InitProgress(Lines.Count, Format('Обработка файла %s ...', [MessageFileName]));
-      For LineNo:= 0 to Lines.Count - 1 do
+    Lines:= TStringList.Create;
+    try
+      if FileExists(Path['Messages.In']+MessageFileName) then
       begin
-        if Lines[LineNo] <> '' then
-          ParseInfo2PayLine(aMessageId, LineNo, Lines[LineNo], ndOrders, DateOfYear(DayNo), aTransaction);
-        dmOtto.StepProgress;
-      end;
-    end
-    else
+        Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
+        Lines.Text:= ReplaceAll(Lines.Text, #13#13#10, #13#10);
+        dmOtto.InitProgress(Lines.Count, Format('Обработка файла %s ...', [MessageFileName]));
+        For LineNo:= 0 to Lines.Count - 1 do
+        begin
+          if Lines[LineNo] <> '' then
+            ParseInfo2PayLine(aMessageId, LineNo, Lines[LineNo], ndOrders, DateOfYear(DayNo), aTransaction);
+          dmOtto.StepProgress;
+        end;
+      end
+      else
+        dmOtto.Notify(aMessageId,
+          'Файл [FILE_NAME] не найден.', 'E',
+          Value2Vars(MessageFileName, 'FILE_NAME'));
+    finally
+      dmOtto.InitProgress;
       dmOtto.Notify(aMessageId,
-        'Файл [FILE_NAME] не найден.', 'E',
+        'Конец обработки файла: [FILE_NAME]', '',
         Value2Vars(MessageFileName, 'FILE_NAME'));
-  finally
-    dmOtto.InitProgress;
-    dmOtto.Notify(aMessageId,
-      'Конец обработки файла: [FILE_NAME]', 'I',
-      Value2Vars(MessageFileName, 'FILE_NAME'));
-    Lines.Free;
+      Lines.Free;
+    end;
+    dmOtto.MessageRelease(aTransaction, aMessageId);
+    dmOtto.MessageSuccess(aTransaction, aMessageId);
+    aTransaction.Commit;
+  except
+    aTransaction.Rollback;
   end;
 end;
 
@@ -168,16 +177,8 @@ begin
   aXml:= TNativeXml.CreateName('MESSAGE');
   SetXmlAttr(aXml.Root, 'MESSAGE_ID', aMessageId);
   try
-    if not aTransaction.Active then
-      aTransaction.StartTransaction;
-    try
-      ParseInfo2Pay(aMessageId, aXml.Root, aTransaction);
-      dmOtto.MessageRelease(aTransaction, aMessageId);
-      dmOtto.MessageSuccess(aTransaction, aMessageId);
-      aTransaction.Commit;
-    except
-      aTransaction.Rollback;
-    end;
+    ParseInfo2Pay(aMessageId, aXml.Root, aTransaction);
+    dmOtto.ShowProtocol(aTransaction, aMessageId);
   finally
     aXml.Free;
   end;

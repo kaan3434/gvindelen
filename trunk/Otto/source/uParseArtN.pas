@@ -118,39 +118,48 @@ begin
     'select m.file_name from messages m where m.message_id = :message_id', 0,
     [aMessageId]);
   dmOtto.Notify(aMessageId,
-    'Начало обработки файла: [FILE_NAME]', 'I',
+    'Начало обработки файла: [FILE_NAME]', '',
     Value2Vars(MessageFileName, 'FILE_NAME'));
   // загружаем файл
-  Lines:= TStringList.Create;
+  if not aTransaction.Active then
+    aTransaction.StartTransaction;
   try
-    if FileExists(Path['Messages.In']+MessageFileName) then
-    begin
-      St:= LoadFileAsString(Path['Messages.In']+MessageFileName);
-      St:= ReplaceAll(St, '     ', ' ');
-      St:= ReplaceAll(St, '    ', ' ');
-      St:= ReplaceAll(St, '   ', ' ');
-      St:= ReplaceAll(St, '  ', ' ');
-      St:= ReplaceAll(St, ' ;', ';');
-      St:= ReplaceAll(St, '; ', ';');
-      St:= ReplaceAll(St, #10' ', #10);
-      Lines.Text:= ReplaceAll(St, #13#13#10, #13#10);
-      dmOtto.InitProgress(Lines.Count, Format('Ообработка файла %s ...', [MessageFileName]));
-      For LineNo:= 1 to Lines.Count - 1 do
+    Lines:= TStringList.Create;
+    try
+      if FileExists(Path['Messages.In']+MessageFileName) then
       begin
-        ParseArtNLine(aMessageId, LineNo, Lines[LineNo], ndMessage, aTransaction);
-        dmOtto.StepProgress;
-      end;
-    end
-    else
+        St:= LoadFileAsString(Path['Messages.In']+MessageFileName);
+        St:= ReplaceAll(St, '     ', ' ');
+        St:= ReplaceAll(St, '    ', ' ');
+        St:= ReplaceAll(St, '   ', ' ');
+        St:= ReplaceAll(St, '  ', ' ');
+        St:= ReplaceAll(St, ' ;', ';');
+        St:= ReplaceAll(St, '; ', ';');
+        St:= ReplaceAll(St, #10' ', #10);
+        Lines.Text:= ReplaceAll(St, #13#13#10, #13#10);
+        dmOtto.InitProgress(Lines.Count, Format('Ообработка файла %s ...', [MessageFileName]));
+        For LineNo:= 1 to Lines.Count - 1 do
+        begin
+          ParseArtNLine(aMessageId, LineNo, Lines[LineNo], ndMessage, aTransaction);
+          dmOtto.StepProgress;
+        end;
+      end
+      else
+        dmOtto.Notify(aMessageId,
+          'Файл [FILE_NAME] не найден.', 'E',
+          Value2Vars(MessageFileName, 'FILE_NAME'));
+    finally
+      dmOtto.InitProgress;
       dmOtto.Notify(aMessageId,
-        'Файл [FILE_NAME] не найден.', 'E',
+        'Конец обработки файла: [FILE_NAME]', '',
         Value2Vars(MessageFileName, 'FILE_NAME'));
-  finally
-    dmOtto.InitProgress;
-    dmOtto.Notify(aMessageId,
-      'Конец обработки файла: [FILE_NAME]', 'I',
-      Value2Vars(MessageFileName, 'FILE_NAME'));
-    Lines.Free;
+      Lines.Free;
+    end;
+    dmOtto.MessageRelease(aTransaction, aMessageId);
+    dmOtto.MessageSuccess(aTransaction, aMessageId);
+    aTransaction.Commit;
+  except
+    aTransaction.Rollback;
   end;
 end;
 
@@ -161,16 +170,8 @@ begin
   aXml:= TNativeXml.CreateName('MESSAGE');
   SetXmlAttr(aXml.Root, 'MESSAGE_ID', aMessageId);
   try
-    if not aTransaction.Active then
-      aTransaction.StartTransaction;
-    try
-      ParseArtN(aMessageId, aXml.Root, aTransaction);
-      dmOtto.MessageRelease(aTransaction, aMessageId);
-      dmOtto.MessageSuccess(aTransaction, aMessageId);
-      aTransaction.Commit;
-    except
-      aTransaction.Rollback;
-    end;
+    ParseArtN(aMessageId, aXml.Root, aTransaction);
+    dmOtto.ShowProtocol(aTransaction, aMessageId);
   finally
     aXml.Free;
   end;

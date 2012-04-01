@@ -354,8 +354,6 @@ begin
     if vMessageId > 0 then
     begin
       ProcessPayment(vMessageId, trnWrite);
-      with TFormProtocol.Create(Self, vMessageId) do
-        Show;
       Application.ProcessMessages;
     end;
   until vMessageId = 0;
@@ -370,8 +368,6 @@ begin
     if vMessageId > 0 then
     begin
       ProcessArtN(vMessageId, trnWrite);
-      with TFormProtocol.Create(Self, vMessageId) do
-        Show;
       Application.ProcessMessages;
     end;
   until vMessageId = 0;
@@ -386,8 +382,7 @@ begin
     if vMessageId > 0 then
     begin
       ProcessCancellation(vMessageId, trnWrite);
-      with TFormProtocol.Create(Self, vMessageId) do
-        Show;
+      Application.ProcessMessages;
     end;
   until vMessageId = 0;
 end;
@@ -401,8 +396,7 @@ begin
     if vMessageId > 0 then
     begin
       ProcessInfo2Pay(vMessageId, trnWrite);
-      with TFormProtocol.Create(Self, vMessageId) do
-        Show;
+      Application.ProcessMessages;
     end;
   until vMessageId = 0;
 end;

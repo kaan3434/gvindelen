@@ -139,10 +139,8 @@ begin
   aXml:= TNativeXml.CreateName('MESSAGE');
   SetXmlAttr(aXml.Root, 'MESSAGE_ID', aMessageId);
   try
-    if not aTransaction.Active then
-      aTransaction.StartTransaction;
     ParsePayment(aMessageId, aXml.Root, aTransaction);
-    aTransaction.Commit;
+    dmOtto.ShowProtocol(aTransaction, aMessageId);
   finally
     aXml.Free;
   end;
