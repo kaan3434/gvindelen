@@ -1,0 +1,1 @@
+//{$DEFINE BUILD_EXE}
