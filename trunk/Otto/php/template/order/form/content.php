@@ -147,20 +147,21 @@
                    <option value="SPECIAL" <? if ($_POST["Catalog$i"] == "SPECIAL") echo "selected"; ?>>Special</option>
                    <option value="VENCA" <? if ($_POST["Catalog$i"] == "VENCA") echo "selected"; ?>>Venca</option>
                    <option value="3 PAGEN" <? if ($_POST["Catalog$i"] == "3 PAGEN") echo "selected"; ?>>3 PAGEN</option>
-                   <option value="11"  <? if ($_POST["Catalog$i"] == "") echo "selected"; ?>>Интернет</option>
+                   <option value="Internet"  <? if ($_POST["Catalog$i"] == "") echo "selected"; ?>>Интернет</option>
                  </select></td>
-                 <!--td width="25"><select id="CatalogType<?php echo $i;?>" name="CatalogType<?php echo $i;?>"  class="cat_tables_form">
-                   <option value="интернет">Интернет</option>
-                   <option value="печатный">Печатный</option>
-                 </select></td-->
                  <td width="25"><input type="text" maxlength="4" size="5" name="CatalogPage<?php echo $i;?>" class="cat_tables_form"></td>
                  <td width="25"><input type="text" maxlength="4" size="3" name="ItemPos<?php echo $i;?>" class="cat_tables_form"></td>
                  <td width="40"><input type="text" maxlength="8" size="10" name="Articul<?php echo $i;?>" class="cat_tables_form"></td>
                  <td width="30"><input type="text" maxlength="3" size="3" name="Size<?php echo $i;?>" class="cat_tables_form"></td>
-                 <td width="41"><input type="text" maxlength="6" size="6" name="Price<?php echo $i;?>" class="cat_tables_form"></td>
                  <td width="48"><input type="text" maxlength="16" size="10" name="RusName<?php echo $i;?>" class="cat_tables_form"></td>
                  <td width="66"><input type="text" maxlength="11" size="14" name="RusInfo<?php echo $i;?>" class="cat_tables_form"></td>
                </tr>
+               
+               <tr>
+<? if ($_POST["Article$i"."_Error"]) {?>               
+                 <td colspan="7"><font color="red"><? echo $_POST["Article$i"."_Error"];?></font></td>
+<? } ?>                 
+               </tr>  
 <?php } ?>
              </tbody></table>
              <center>

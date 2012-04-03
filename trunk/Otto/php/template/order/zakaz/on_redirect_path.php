@@ -95,6 +95,10 @@ function on_redirect_path ($path) {
     return 'order/form';
   }
   
+  // проверяем доступность
+  $xml_avail = download("http://otto.by/otto_check_available.php?ArticleNo=".$ArticleCode."&ArticleSize=".$ArticleSize)
+  
+  
   return $path;
 }
 ?>

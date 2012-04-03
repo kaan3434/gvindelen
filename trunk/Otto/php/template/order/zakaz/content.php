@@ -107,7 +107,6 @@
            
 for($i=1;$i<=12; $i++) { 
    if ($_POST["Articul$i"]) {
-     $_POST["Price$i"] = str_replace(',', '.', $_POST["Price$i"]);
      $order_items[] = $_POST["Catalog$i"].";".$_POST["CatalogPage$i"].";".$_POST["ItemPos$i"].";".$_POST["Articul$i"].";".$_POST["Size$i"].";".$_POST["Price$i"].";".$_POST["RusName$i"]." ".$_POST["RusInfo$i"];?>
                <tr align="center">
                  <td width="54"><? echo $_POST["Catalog$i"];?>&nbsp;</td>

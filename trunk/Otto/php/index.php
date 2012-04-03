@@ -1,5 +1,6 @@
 <?php
   session_start();
+  require "libs/Download.php";
   require "libs/GvStrings.php";
   require "libs/GvHtmlSrv.php";
   require "libs/utf2win.php";
