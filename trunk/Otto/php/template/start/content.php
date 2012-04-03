@@ -29,12 +29,25 @@
           <div class="hl">
             <a href="">Уважаемые клиенты!</a>
           </div>
+          <font color='blue'>
+          <p><font color="red">7</font> и <font color="red">14 апреля</font> в ЗАО "BALT-POST" выходной.</p>
+          <p>Пожалуйста, оставляйте заявки на наших сайтах!</p>
+          </font>
+        </div>
+      </li>
+
+      <li>
+        <div class="widetxt">
+          <div class="hl">
+            <a href="">Уважаемые клиенты!</a>
+          </div>
           <font color='red' size="4">
           <p>С 1-го апреля сервисный сбор устанавливается в размере 7&euro;.</p>
           </font>
         </div>
       </li>
     
+
       <li>
         <div class="widetxt">
           <div class="hl">
