@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<BorlandProject>
-  <Transactions>
-    <Transaction>2012.04.03 13:53:03.407,=D:\Мои документы\RAD Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2012.04.03 13:56:01.423,D:\Swim4\uFormMain.pas=D:\Мои документы\RAD Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2012.04.03 13:56:01.423,D:\Swim4\uFormMain.dfm=D:\Мои документы\RAD Studio\Projects\Unit1.dfm</Transaction>
-    <Transaction>2012.04.03 13:56:06.157,D:\Swim4\Swim4.dproj=D:\Мои документы\RAD Studio\Projects\Project1.dproj</Transaction>
-  </Transactions>
-</BorlandProject>

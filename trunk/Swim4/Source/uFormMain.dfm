@@ -11,6 +11,7 @@ object Form1: TForm1
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Ribbon: TRibbon
@@ -30,9 +31,6 @@ object Form1: TForm1
         Caption = 'Viewer'
         Page = RibbonPage1
       end>
-    ExplicitLeft = 152
-    ExplicitTop = 96
-    ExplicitWidth = 0
     DesignSize = (
       870
       143)
@@ -57,39 +55,15 @@ object Form1: TForm1
       Height = 93
       Caption = 'Scanner'
       Index = 0
-      object RibbonGroupBookers: TRibbonGroup
+      object RibbonGroupScannerBookers: TRibbonGroup
         Left = 4
         Top = 3
-        Width = 201
+        Width = 50
         Height = 86
         ActionManager = actMngRibbon
         Caption = #1041#1091#1082#1084#1077#1082#1077#1088#1099
         GroupIndex = 0
       end
-    end
-  end
-  object DBGridEh1: TDBGridEh
-    Left = 0
-    Top = 143
-    Width = 870
-    Height = 395
-    Align = alClient
-    DataGrouping.GroupLevels = <>
-    Flat = True
-    FooterColor = clWindow
-    FooterFont.Charset = DEFAULT_CHARSET
-    FooterFont.Color = clWindowText
-    FooterFont.Height = -11
-    FooterFont.Name = 'Tahoma'
-    FooterFont.Style = []
-    IndicatorOptions = [gioShowRowIndicatorEh]
-    TabOrder = 1
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -11
-    TitleFont.Name = 'Tahoma'
-    TitleFont.Style = []
-    object RowDetailData: TRowDetailPanelControlEh
     end
   end
   object actMngRibbon: TActionManager
@@ -100,9 +74,9 @@ object Form1: TForm1
             ChangesAllowed = [caModify]
             Items = <
               item
-                Caption = 'ActionClientItem0'
+                Caption = '&ActionClientItem0'
               end>
-            Caption = 'ActionClientItem0'
+            Caption = '&ActionClientItem0'
             KeyTip = 'F'
           end>
         ActionBar = RibbonApplicationMenuBar1
@@ -114,37 +88,8 @@ object Form1: TForm1
             Action = actScanAllBooker
             ImageIndex = 0
             CommandProperties.ButtonSize = bsLarge
-          end
-          item
-            Action = Action2
-            ImageIndex = 3
-          end
-          item
-            Action = Action3
-            ImageIndex = 4
-          end
-          item
-            Action = actScan_bwin
-            Caption = '&bwin'
-            ImageIndex = 0
-          end
-          item
-            Action = actScan_bwin
-            Caption = 'b&win'
-            ImageIndex = 0
-          end
-          item
-            Action = actScan_betcity
-            Caption = 'Be&tCity'
-            ImageIndex = 1
-          end
-          item
-            Action = actScan_betcity
-            Caption = 'B&etCity'
-            ImageIndex = 1
-            CommandProperties.TextAssociation = taDropdown
           end>
-        ActionBar = RibbonGroupBookers
+        ActionBar = RibbonGroupScannerBookers
       end
       item
       end>
@@ -175,7 +120,7 @@ object Form1: TForm1
     Left = 112
     Top = 160
     Bitmap = {
-      494C010107000900040020002000FFFFFFFF2100FFFFFFFFFFFFFFFF424D3600
+      494C0101070009000C0020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000004000000001002000000000000080
       000000000000000000000000000000000000B0ADA700B0ADA700999999009999
       9900999999009999990099999900999999009999990099999900999999009999
@@ -1235,7 +1180,8 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      00000000000000000000000000000000}
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000}
   end
   object imgListRibbon: TImageList
     ColorDepth = cd32Bit
@@ -1243,7 +1189,7 @@ object Form1: TForm1
     Left = 240
     Top = 160
     Bitmap = {
-      494C010107000900040010001000FFFFFF002100FFFFFFFFFFFFFFFF424D3600
+      494C0101070009000C0010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       000000000000000000000000000000000000B0ADA70099999900999999009999
       9900999999009999990099999900999999009999990099999900999999009999
@@ -1511,7 +1457,8 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      00000000000000000000000000000000}
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000}
   end
   object ActionListBookerScan: TActionList
     Images = imgListBookers
@@ -1545,7 +1492,7 @@ object Form1: TForm1
     Left = 208
     Top = 240
     Bitmap = {
-      494C010106000A00040010001000FFFFFFFF2100FFFFFFFFFFFFFFFF424D3600
+      494C010106000A000C0010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       000000000000000000000000000000000000FFFFFF00FFFFFF00FFFFFF00FFFF
       FF00FFFFFF001D25DA001D25DA001D25DA00FFFFFF00FFFFFF00FFFFFF009799
@@ -1813,6 +1760,7 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      00000000000000000000000000000000}
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000}
   end
 end
