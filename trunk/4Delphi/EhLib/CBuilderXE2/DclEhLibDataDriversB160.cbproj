@@ -1,0 +1,324 @@
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+		<PropertyGroup>
+			<ProjectGuid>{B73EEA40-BD4D-46A7-AB8E-BB5F47ABF6F4}</ProjectGuid>
+			<ProjectType>CppPackage</ProjectType>
+			<MainSource>DclEhLibDataDriversB160.cpp</MainSource>
+			<Config Condition="'$(Config)'==''">Debug</Config>
+			<ProjectVersion>13.4</ProjectVersion>
+			<FrameworkType>None</FrameworkType>
+			<Base>True</Base>
+			<Platform Condition="'$(Platform)'==''">Win32</Platform>
+			<TargetedPlatforms>1</TargetedPlatforms>
+			<AppType>Library</AppType>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Base)'=='true') or '$(Base_Win32)'!=''">
+			<Base_Win32>true</Base_Win32>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_1)'!=''">
+			<Cfg_1>true</Cfg_1>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_2)'!=''">
+			<Cfg_2>true</Cfg_2>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Base)'!=''">
+			<VerInfo_Locale>1049</VerInfo_Locale>
+			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=5.6.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=5.6.0.0;Comments=</VerInfo_Keys>
+			<DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
+			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+			<DesignOnlyPackage>true</DesignOnlyPackage>
+			<LinkPackageStatics>teeui.lib;teedb.lib;tee.lib;bcbsmp.lib;inetdbbde.lib;inetdbxpress.lib;soaprtl.lib;dbxcds.lib;indycore.lib;indysystem.lib</LinkPackageStatics>
+			<LinkPackageImports>rtl.bpi;vcldb.bpi;adortl.bpi;bdertl.bpi;vcldbx.bpi;ibxpress.bpi;dsnap.bpi;dsnapcon.bpi;dsnapcon.bpi;dbexpress.bpi;bcbie.bpi;bcboffice2k.bpi</LinkPackageImports>
+			<BRCC_Defines>_DEBUG;$(BRCC_Defines)</BRCC_Defines>
+			<TASM_Defines>_DEBUG;$(TASM_Defines)</TASM_Defines>
+			<BCC_PCHCache>true</BCC_PCHCache>
+			<ILINK_FullDebugInfo>true</ILINK_FullDebugInfo>
+			<DCC_UnitSearchPath>.\;$(BDS)\lib;$(BDS)\lib\obj;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+			<DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
+			<PackageImports>rtl.bpi;vcl.bpi;dbrtl.bpi;dclado.bpi;designdgm.bpi;vclx.bpi;designide.bpi;dcldb.bpi;dclstd.bpi;vcldb.bpi;adortl.bpi;dclbde.bpi;dbx.bpi;bdertl.bpi;vcldbx.bpi;dclib.bpi;ibxpress.bpi;dsnap.bpi;dsnapcon.bpi;dsnap.bpi;dbexpress.bpi;DclEhLibB60.bpi;bcboffice2k.bpi;EhLibDataDriversB60.bpi;EhLibB60.bpi;bcbie.bpi;$(PackageImports)</PackageImports>
+			<ILINK_AppType>Windows</ILINK_AppType>
+			<BRCC_IncludePath>..\Projects;$(BDS)\include;$(BDS)\include\vcl;$(BDS)\include\dinkumware;$(BRCC_IncludePath)</BRCC_IncludePath>
+			<BCC_IncludePath>..\Projects;$(BDS)\include;$(BDS)\include\vcl;$(BDS)\include\dinkumware;$(BCC_IncludePath)</BCC_IncludePath>
+			<ILINK_GenerateLibFile>true</ILINK_GenerateLibFile>
+			<BCC_SourceDebuggingOn>true</BCC_SourceDebuggingOn>
+			<UsePackages>true</UsePackages>
+			<DCC_IncludePath>.\;$(BDS)\lib;$(BDS)\lib\obj;$(DCC_IncludePath)</DCC_IncludePath>
+			<ILINK_GenerateImportLibrary>true</ILINK_GenerateImportLibrary>
+			<TASM_IncludePath>..\Projects;$(BDS)\include;$(BDS)\include\vcl;$(BDS)\include\dinkumware;$(TASM_IncludePath)</TASM_IncludePath>
+			<BCC_Defines>NO_STRICT;$(BCC_Defines)</BCC_Defines>
+			<BCC_DisableOptimizations>true</BCC_DisableOptimizations>
+			<BCC_GenerateMultithreaded>true</BCC_GenerateMultithreaded>
+			<OutputExt>bpl</OutputExt>
+			<FinalOutputDir>.</FinalOutputDir>
+			<ILINK_WinAppType>Package</ILINK_WinAppType>
+			<TASM_AdditionalSwitches> /w2</TASM_AdditionalSwitches>
+			<AllPackageLibs>rtl.lib;vcldb.lib;adortl.lib;bdertl.lib;vcldbx.lib;ibxpress.lib;dsnap.lib;dsnapcon.lib;teeui.lib;teedb.lib;tee.lib;dsnapcon.lib;bcbsmp.lib;inetdbbde.lib;inetdbxpress.lib;dbexpress.lib;bcbie.lib;soaprtl.lib;dbxcds.lib;indycore.lib;indysystem.lib;bcboffice2k.lib</AllPackageLibs>
+			<ILINK_Description>EhLib 5.6 DataDrivers</ILINK_Description>
+			<Multithreaded>true</Multithreaded>
+			<BCC_UserSuppliedOptions> -Vx -r- -k -Ve</BCC_UserSuppliedOptions>
+			<ILINK_LibraryPath>$(BDS)\Projects\Lib;..\Projects;$(BDS)\lib\obj;$(BDS)\lib;$(BDS)\lib\psdk;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+			<DCC_AdditionalSwitches> -LUdcldb;designide;dclado;dclbde;dclib;dcldbx -M</DCC_AdditionalSwitches>
+			<DynamicRTL>true</DynamicRTL>
+			<BCC_DebugLineNumbers>true</BCC_DebugLineNumbers>
+			<BCC_InlineFunctionExpansion>false</BCC_InlineFunctionExpansion>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Base_Win32)'!=''">
+			<Icon_MainIcon>DclEhLibDataDriversB160_Icon.ico</Icon_MainIcon>
+			<DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
+			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+			<VerInfo_Locale>1033</VerInfo_Locale>
+			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_1)'!=''">
+			<BCC_UserSuppliedOptions> -Vx -r- -k -Ve -k</BCC_UserSuppliedOptions>
+			<ILINK_LibraryPath>$(BDS)\lib\debug;$(ILINK_LibraryPath);$(ILINK_LibraryPath)</ILINK_LibraryPath>
+			<BCC_Defines>_DEBUG;$(BCC_Defines);$(BCC_Defines)</BCC_Defines>
+			<IntermediateOutputDir>Debug_Build</IntermediateOutputDir>
+			<DCC_Define>DEBUG;$(DCC_Define);$(DCC_Define)</DCC_Define>
+			<ILINK_DisableIncrementalLinking>true</ILINK_DisableIncrementalLinking>
+			<TASM_Debugging>Full</TASM_Debugging>
+			<DCC_AdditionalSwitches> -LUdcldb;designide;dclado;dclbde;dclib;dcldbx -M -V</DCC_AdditionalSwitches>
+			<TASM_DisplaySourceLines>true</TASM_DisplaySourceLines>
+			<DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_2)'!=''">
+			<BCC_Defines>NDEBUG;$(BCC_Defines);$(BCC_Defines)</BCC_Defines>
+			<BCC_UserSuppliedOptions> -Vx -r- -k -Ve -r</BCC_UserSuppliedOptions>
+			<BCC_OptimizeForSpeed>true</BCC_OptimizeForSpeed>
+			<IntermediateOutputDir>Release_Build</IntermediateOutputDir>
+			<DCC_AdditionalSwitches> -LUdcldb;designide;dclado;dclbde;dclib;dcldbx -M -$O+</DCC_AdditionalSwitches>
+			<TASM_Debugging>None</TASM_Debugging>
+			<ILINK_LibraryPath>$(BDS)\lib\release;$(ILINK_LibraryPath);$(ILINK_LibraryPath)</ILINK_LibraryPath>
+			<BCC_InlineFunctionExpansion>true</BCC_InlineFunctionExpansion>
+		</PropertyGroup>
+		<ItemGroup>
+			<DelphiCompile Include="ADODataDriverDesignEh.pas">
+				<BuildOrder>15</BuildOrder>
+				<BuildOrder>14</BuildOrder>
+			</DelphiCompile>
+			<PackageImport Include="adortl.bpi">
+				<BuildOrder>47</BuildOrder>
+				<BuildOrder>4</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="bcbie.bpi">
+				<BuildOrder>89</BuildOrder>
+				<BuildOrder>10</BuildOrder>
+			</PackageImport>
+			<DelphiCompile Include="BDEDataDriverDesignEh.pas">
+				<BuildOrder>17</BuildOrder>
+				<BuildOrder>16</BuildOrder>
+			</DelphiCompile>
+			<PackageImport Include="bdertl.bpi">
+				<BuildOrder>56</BuildOrder>
+				<BuildOrder>3</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="dbexpress.bpi">
+				<BuildOrder>74</BuildOrder>
+				<BuildOrder>13</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="dbrtl.bpi">
+				<BuildOrder>23</BuildOrder>
+				<BuildOrder>22</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="dbx.bpi">
+				<BuildOrder>6</BuildOrder>
+				<BuildOrder>53</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="dclado.bpi">
+				<BuildOrder>27</BuildOrder>
+				<BuildOrder>26</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="dclbde.bpi">
+				<BuildOrder>50</BuildOrder>
+				<BuildOrder>5</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="dcldb.bpi">
+				<BuildOrder>38</BuildOrder>
+				<BuildOrder>23</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="DclEhLibB160.bpi">
+				<BuildOrder>29</BuildOrder>
+			</PackageImport>
+			<CppCompile Include="DclEhLibDataDriversB160.cpp">
+				<BuildOrder>5</BuildOrder>
+				<BuildOrder>20</BuildOrder>
+			</CppCompile>
+			<ResFiles Include="DclEhLibDataDriversB160.res">
+				<ModuleName>DclEhLibDataDriversB160.res</ModuleName>
+				<BuildOrder>2</BuildOrder>
+				<BuildOrder>19</BuildOrder>
+			</ResFiles>
+			<PackageImport Include="dclib.bpi">
+				<BuildOrder>62</BuildOrder>
+				<BuildOrder>1</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="dclstd.bpi">
+				<BuildOrder>41</BuildOrder>
+				<BuildOrder>24</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="designdgm.bpi">
+				<BuildOrder>29</BuildOrder>
+				<BuildOrder>28</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="designide.bpi">
+				<BuildOrder>35</BuildOrder>
+				<BuildOrder>26</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="dsnap.bpi">
+				<BuildOrder>71</BuildOrder>
+				<BuildOrder>12</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="EhLibB160.bpi">
+				<BuildOrder>27</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="EhLibDataDriversB160.bpi">
+				<BuildOrder>28</BuildOrder>
+			</PackageImport>
+			<DelphiCompile Include="IBXDataDriverDesignEh.pas">
+				<BuildOrder>18</BuildOrder>
+				<BuildOrder>11</BuildOrder>
+			</DelphiCompile>
+			<PackageImport Include="ibxpress.bpi">
+				<BuildOrder>65</BuildOrder>
+				<BuildOrder>2</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="rtl.bpi">
+				<BuildOrder>8</BuildOrder>
+				<BuildOrder>21</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="vcl.bpi">
+				<BuildOrder>20</BuildOrder>
+				<BuildOrder>17</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="vcldb.bpi">
+				<BuildOrder>44</BuildOrder>
+				<BuildOrder>25</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="vcldbx.bpi">
+				<BuildOrder>59</BuildOrder>
+				<BuildOrder>0</BuildOrder>
+			</PackageImport>
+			<PackageImport Include="vclx.bpi">
+				<BuildOrder>32</BuildOrder>
+				<BuildOrder>29</BuildOrder>
+			</PackageImport>
+			<BuildConfiguration Include="Release">
+				<Key>Cfg_2</Key>
+				<CfgParent>Base</CfgParent>
+			</BuildConfiguration>
+			<BuildConfiguration Include="Base">
+				<Key>Base</Key>
+			</BuildConfiguration>
+			<BuildConfiguration Include="Debug">
+				<Key>Cfg_1</Key>
+				<CfgParent>Base</CfgParent>
+			</BuildConfiguration>
+		</ItemGroup>
+		<Import Condition="Exists('$(BDS)\Bin\CodeGear.Cpp.Targets')" Project="$(BDS)\Bin\CodeGear.Cpp.Targets"/>
+		<ProjectExtensions>
+			<Borland.Personality>CPlusPlusBuilder.Personality.12</Borland.Personality>
+			<Borland.ProjectType>CppPackage</Borland.ProjectType>
+			<BorlandProject>
+				<CPlusPlusBuilder.Personality>
+					<VersionInfo>
+						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
+						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
+						<VersionInfo Name="MajorVer">1</VersionInfo>
+						<VersionInfo Name="MinorVer">0</VersionInfo>
+						<VersionInfo Name="Release">0</VersionInfo>
+						<VersionInfo Name="Build">0</VersionInfo>
+						<VersionInfo Name="Debug">False</VersionInfo>
+						<VersionInfo Name="PreRelease">False</VersionInfo>
+						<VersionInfo Name="Special">False</VersionInfo>
+						<VersionInfo Name="Private">False</VersionInfo>
+						<VersionInfo Name="DLL">False</VersionInfo>
+						<VersionInfo Name="Locale">1049</VersionInfo>
+						<VersionInfo Name="CodePage">1251</VersionInfo>
+					</VersionInfo>
+					<VersionInfoKeys>
+						<VersionInfoKeys Name="CompanyName"/>
+						<VersionInfoKeys Name="FileDescription"/>
+						<VersionInfoKeys Name="FileVersion">5.6.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="InternalName"/>
+						<VersionInfoKeys Name="LegalCopyright"/>
+						<VersionInfoKeys Name="LegalTrademarks"/>
+						<VersionInfoKeys Name="OriginalFilename"/>
+						<VersionInfoKeys Name="ProductName"/>
+						<VersionInfoKeys Name="ProductVersion">5.6.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="Comments"/>
+					</VersionInfoKeys>
+					<ExcludedPackages>
+						<ExcludedPackages Name="c:\cbuilder6\Projects\Bpl\DclEhLibDataDriversB60.bpl">EhLib 5.6 DataDrivers</ExcludedPackages>
+					</ExcludedPackages>
+					<HistoryLists_hlIncludePath>
+						<HistoryLists_hlIncludePath Name="Count">1</HistoryLists_hlIncludePath>
+						<HistoryLists_hlIncludePath Name="Item0">..\Projects;$(BCB)\include;$(BCB)\include\vcl</HistoryLists_hlIncludePath>
+					</HistoryLists_hlIncludePath>
+					<HistoryLists_hlLibraryPath>
+						<HistoryLists_hlLibraryPath Name="Count">1</HistoryLists_hlLibraryPath>
+						<HistoryLists_hlLibraryPath Name="Item0">$(BCB)\Projects\Lib;..\Projects;$(BCB)\lib\obj;$(BCB)\lib</HistoryLists_hlLibraryPath>
+					</HistoryLists_hlLibraryPath>
+					<HistoryLists_hlDebugSourcePath>
+						<HistoryLists_hlDebugSourcePath Name="Count">1</HistoryLists_hlDebugSourcePath>
+						<HistoryLists_hlDebugSourcePath Name="Item0">$(BCB)\source\vcl</HistoryLists_hlDebugSourcePath>
+					</HistoryLists_hlDebugSourcePath>
+					<HistoryLists_hlConditionals>
+						<HistoryLists_hlConditionals Name="Count">1</HistoryLists_hlConditionals>
+						<HistoryLists_hlConditionals Name="Item0">_DEBUG</HistoryLists_hlConditionals>
+					</HistoryLists_hlConditionals>
+					<Debugging>
+						<Debugging Name="DebugSourceDirs">$(BCB)\source\vcl</Debugging>
+					</Debugging>
+					<Parameters>
+						<Parameters Name="RunParams"/>
+						<Parameters Name="Launcher"/>
+						<Parameters Name="UseLauncher">False</Parameters>
+						<Parameters Name="DebugCWD"/>
+						<Parameters Name="HostApplication"/>
+						<Parameters Name="RemoteHost"/>
+						<Parameters Name="RemotePath"/>
+						<Parameters Name="RemoteLauncher"/>
+						<Parameters Name="RemoteCWD"/>
+						<Parameters Name="RemoteDebug">False</Parameters>
+						<Parameters Name="RemoteParams"/>
+						<Parameters Name="UseRemoteLauncher">False</Parameters>
+						<Parameters Name="Debug Symbols Search Path"/>
+						<Parameters Name="LoadAllSymbols">True</Parameters>
+						<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+					</Parameters>
+					<Compiler>
+						<Compiler Name="ShowInfoMsgs">0</Compiler>
+						<Compiler Name="LinkDebugVcl">0</Compiler>
+						<Compiler Name="LinkCGLIB">0</Compiler>
+					</Compiler>
+					<CORBA>
+						<CORBA Name="AddServerUnit">1</CORBA>
+						<CORBA Name="AddClientUnit">1</CORBA>
+						<CORBA Name="PrecompiledHeaders">1</CORBA>
+					</CORBA>
+					<ProjectProperties>
+						<ProjectProperties Name="AutoShowDeps">False</ProjectProperties>
+						<ProjectProperties Name="ManagePaths">True</ProjectProperties>
+						<ProjectProperties Name="VerifyPackages">True</ProjectProperties>
+					</ProjectProperties>
+					<Source>
+						<Source Name="MainSource">DclEhLibDataDriversB160.cpp</Source>
+					</Source>
+				</CPlusPlusBuilder.Personality>
+				<Platforms>
+					<Platform value="OSX32">False</Platform>
+					<Platform value="Win32">True</Platform>
+				</Platforms>
+			</BorlandProject>
+			<ProjectFileVersion>12</ProjectFileVersion>
+		</ProjectExtensions>
+		<Import Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')" Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj"/>
+	</Project>

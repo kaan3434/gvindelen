@@ -1,0 +1,54 @@
+package EhLibDataDrivers160;
+
+{$R *.res}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$ENDIF IMPLICITBUILDING}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl,
+  vcl,
+  dbrtl,
+  vcldb,
+  adortl,
+  bdertl,
+  ibxpress,
+  dbexpress,
+  EhLib160,
+  FIBPlus2011;
+
+contains
+  IBXDataDriverEh in 'IBXDataDriverEh.pas',
+  ADODataDriverEh in 'ADODataDriverEh.pas',
+  BDEDataDriverEh in 'BDEDataDriverEh.pas',
+  EhLibBDE in 'EhLibBDE.pas',
+  DBXDataDriverEh in 'DBXDataDriverEh.pas',
+  EhLibADO in 'EhLibADO.Pas',
+  EhLibCDS in 'EhLibCDS.pas',
+  EhLibDBX in 'EhLibDBX.Pas',
+  EhLibIBX in 'EhLibIBX.pas',
+  pFIBDataDriverEh in 'pFIBDataDriverEh.pas';
+
+end.
