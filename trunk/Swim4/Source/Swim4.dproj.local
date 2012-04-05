@@ -1,9 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.423,D:\Мои документы\RAD Studio\Projects\Unit1.pas=D:\Swim4\uFormMain.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.734,=D:\Swim4\Source\ABOUT.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.074,D:\Swim4\Source\Unit1.dfm=D:\Swim4\Source\uDmSwim.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.423,D:\Swim4\uFormMain.pas=D:\Мои документы\RAD Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.423,D:\Swim4\uFormMain.dfm=D:\Мои документы\RAD Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.828,=D:\Swim4\Source\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.074,D:\Swim4\Source\Unit1.pas=D:\Swim4\Source\uDmSwim.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.407,=D:\Мои документы\RAD Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.423,D:\Мои документы\RAD Studio\Projects\Unit1.dfm=D:\Swim4\uFormMain.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.157,D:\Мои документы\RAD Studio\Projects\Project1.dproj=D:\Swim4\Swim4.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.157,D:\Swim4\Swim4.dproj=D:\Мои документы\RAD Studio\Projects\Project1.dproj</Transaction>
   </Transactions>
 </BorlandProject>

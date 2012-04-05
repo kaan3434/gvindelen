@@ -16,19 +16,23 @@ type
     actMngRibbon: TActionManager;
     RibbonPageScaner: TRibbonPage;
     RibbonApplicationMenuBar1: TRibbonApplicationMenuBar;
-    RibbonGroupScannerBookers: TRibbonGroup;
     actScanAllBooker: TAction;
     RibbonPage1: TRibbonPage;
     imgListRibbon: TImageList;
-    Action1: TAction;
-    Button1: TButton;
     imgListRibbonLarge: TImageList;
+    tbViewerBookers: TRibbonGroup;
+    tbScannerBookers: TRibbonGroup;
+    actViewAll: TAction;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure actScanAllBookerExecute(Sender: TObject);
   private
     { Private declarations }
-    procedure CreateButtons(BookerSign: string; ImgPath: String);
+    procedure CreateButtons(aBookerSign: string; aImgPath: String);
+    function AppendPngToImageList(aImageList: TImageList;
+      aPngFileName: String): integer;
+    procedure AppendActionToGroup(aGroup: TRibbonGroup; aImageIndex: Integer;
+      aCaption: String);
   public
     { Public declarations }
   end;
@@ -52,39 +56,58 @@ begin
   actScanAllBooker.ImageIndex:= actScanAllBooker.ImageIndex + 1;
 end;
 
-procedure TForm1.CreateButtons(BookerSign: string; ImgPath: string);
+function TForm1.AppendPngToImageList(aImageList: TImageList; aPngFileName: String): integer;
 var
-  act: TAction;
-  actClientItem: TActionClientItem;
-  ImgIndex: integer;
   png: TPngImage;
-  bmp: TBitmap;
+  Bmp: TBitMap;
 begin
-  ImgIndex:= imgListRibbon.Count;
+  Result:= aImageList.Count;
   png := TPngImage.Create;
   try
-    png.LoadFromFile(ImgPath);
-    bmp:= TBitmap.Create;
-    png.AssignTo(bmp);
-    bmp.AlphaFormat:=afIgnored;
-    imgListRibbon.Add(bmp, nil);
+    png.LoadFromFile(aPngFileName);
+    Bmp:= TBitmap.Create;
+    try
+      Bmp.Width:= aImageList.Width;
+      Bmp.Height:= aImageList.Height;
+      Bmp.Canvas.StretchDraw(Rect(0,0, aImageList.Width, aImageList.Height), png);
+      Bmp.AlphaFormat:=afIgnored;
+      aImageList.Add(Bmp, nil);
+    finally
+      Bmp.Free;
+    end;
   finally
     png.Free;
   end;
-  actClientItem:= RibbonGroupScannerBookers.Items.Add;
+end;
+
+procedure TForm1.AppendActionToGroup(aGroup: TRibbonGroup; aImageIndex: Integer; aCaption: String);
+var
+  actClientItem: TActionClientItem;
+  act: TAction;
+begin
+  actClientItem:= aGroup.Items.Add;
   with actClientItem do
   begin
     act:= TAction.Create(Self);
     Action := act;
     act.AutoCheck:= true;
     act.OnExecute:= actScanAllBooker.OnExecute;
-    act.Caption:= BookerSign;
+    act.Caption:= aCaption;
     act.Visible:= true;
-    act.Hint:= BookerSign;
-    act.ImageIndex:= ImgIndex;
+    act.ImageIndex:= aImageIndex;
     CommandStyle:= csButton;
     (actClientItem.CommandProperties as TButtonProperties).ButtonSize:= bsLarge;
   end;
+end;
+
+procedure TForm1.CreateButtons(aBookerSign: string; aImgPath: string);
+var
+  ImgIndex: integer;
+begin
+  ImgIndex:= AppendPngToImageList(imgListRibbon, aImgPath);
+  AppendPngToImageList(imgListRibbonLarge, aImgPath);
+  AppendActionToGroup(tbScannerBookers, ImgIndex, aBookerSign);
+  AppendActionTogroup(tbViewerBookers, ImgIndex, aBookerSign);
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
