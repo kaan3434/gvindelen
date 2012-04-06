@@ -1,0 +1,953 @@
+<!doctype html public "-//w3c//dtd html 4.0 Transitional//en">
+<html>
+<head>
+  <title>InterBase Data Access Components</title>
+
+<style>
+body {
+  overflow: hidden; 
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+  background: #ffffff; 
+  color: #000000;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 70%;
+  width: 100%;
+  }
+p
+  {
+  margin: .5em 0em .5em 0em;
+  }
+ol, ul
+  {
+  margin-top: .5em; 
+  }
+li
+  {
+  margin-bottom: .5em;
+  }
+ul p, ol p, dl p
+  {
+  margin-left: 0em;
+  }
+blockquote.dxOverload
+  {
+  margin: .5em 1.5em .5em 1.5em;
+  }
+h1, h2, h3, h4
+  {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  margin-bottom: .4em; 
+  margin-top: 1em;
+  font-weight: bold;
+  }
+h1
+  {
+  font-size: 120%;
+  margin-top: 0em;
+  }
+h2
+  {
+  font-size: 130%;
+  }
+h3
+  {
+  font-size: 115%;
+  }
+h4
+  {
+  font-size: 100%;
+  }
+.dxH1, .dxH2, .dxH3, .dxH4
+  {
+  margin-left: -18px; 
+  }
+A
+  {
+  color: #0000FF;
+  }
+A:link
+  {
+  color: #0000FF;
+  }
+A:active
+  {
+  color: #000080;
+  }
+A:visited
+  {
+  color: #800080;
+  }
+A:hover
+  {
+  color: #FF0000;
+  }
+pre
+  {
+  font-family: Courier New;
+  font-size: 9pt;
+  color: #000060;
+  margin-top: 0px;
+  }
+code, p.example, p.sourcecode, table.sourcecode, tr.sourcecode, td.sourcecode
+  {
+  font-family: Courier New;
+  font-size: 9pt;
+  color: #000060;
+  }
+div#pagetop {
+  margin: 0px;
+  padding: 0px;
+  background-color: #99ccff;   
+  height: 44;
+  width: 100%;
+  border-bottom: 1px solid #999999;
+  }
+div#pagebody {
+  margin: 0px 0px 0px 0px;
+  padding: 5px 10px 0px 22px;
+  height: 90%;
+  width: 100%;
+  overflow: auto;
+  background-color: #FFFFFF;
+  vertical-align: top;
+  }
+table#BannerTable
+  {
+  width: 100%;
+  height: 100%;
+  border-collapse:collapse;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  }
+table#BannerTable td
+  {
+  padding-left: 8px;
+  padding-right: 8px;
+  }
+tr#BannerTopRow
+  {
+  font-style: italic;
+  font-size: 70%;
+  }
+tr#Banner2ndRow
+  {
+  font-weight: bold;
+  font-size: 80%;
+  }
+table.filtereditemlisttable, table.xmldoctable
+  {
+  width: 95%; 
+  margin-top: .6em;
+  margin-bottom: .3em;
+  border-width: 1px 1px 0px 0px;
+  border-style: solid;
+  border-color: #999999;
+  background-color: #999999; 
+  font-size: 100%;
+  border-collapse:collapse;
+  }
+table.filtereditemlisttable th, table.filtereditemlisttable td, table.xmldoctable th, table.xmldoctable td
+  { 
+  border-style: solid; 
+  border-width: 0px 0px 1px 1px;
+  border-style: solid;
+  border-color: #999999;
+  padding: 4px 6px;
+  text-align: left;
+  vertical-align: top;
+  }
+table.filtereditemlisttable th, table.xmldoctable th
+  { 
+  background: #cccccc; 
+  vertical-align: bottom;
+  }
+table.filtereditemlisttable td, table.xmldoctable td
+  {
+  background-color: #ffffff;
+  vertical-align: top;
+  }
+</style>
+
+<script>
+
+var Engine;
+var enOpera = 'Opera';
+var enIE = 'IE';
+var enGecko = 'Gecko';
+
+function TestEngine()
+{
+  if (document.all) {
+    if (window.opera) {
+      Engine = enOpera;
+    }
+    else {
+      Engine = enIE;
+    }
+  }
+  else {
+    Engine = enGecko;
+  }
+}
+
+
+function AdjustContentSize()
+{
+  var cDiv = document.getElementById("pagebody");
+  if ((Engine == enGecko)||(Engine == enOpera))//amend padding
+    {
+      var w = document.body.clientWidth;
+      cDiv.style.width = w - 32;
+    }
+  var h = document.body.clientHeight;
+  var diff = 44;
+  if ((Engine == enGecko)||(Engine == enOpera)) diff = diff + 6;
+  cDiv.style.height = h - diff;
+}
+
+function Startup()
+{
+  //add startup code here
+}
+</script>
+
+</head>
+
+
+<body onresize="AdjustContentSize()" onload="Startup()">
+
+<div id="pagetop">
+  <table id="BannerTable">
+    <tr id="BannerTopRow">
+      <td>InterBase Data Access Components</td>
+      <td align="right">ibdac@devart.com</td>
+    </tr>
+    <tr id="Banner2ndRow">
+      <td>History</td>
+      <td>&nbsp;</td>
+    </tr>
+  </table>
+</div>
+
+<div id="pagebody">
+
+<br><p><b>4.1.4 28-Dec-11</b></p>
+<ul>
+  <li>The UniqueFieldIndexSeparator global variable is added
+  <li>Bug with assertion failure at proccesing the cached data is fixed
+  <li>Bug with Delphi IDE hanging at closing in case of using DBMonitor is fixed
+  <li>Bug with freeing memory in Lazarus is fixed
+  <li>Bug with executing the queries with parameters in Delphi 5 is fixed
+  <li>Several bugs with 64-bit application development are fixed
+  <li>Several bugs in design-time editors are fixed
+  <li>Bug with query containing 'UNION' clause that is generated for the QueryRecCount option is fixed
+</ul>
+
+<br><p><b>4.1.3 23-Nov-11</b></p>
+<ul>
+  <li>Update 2 for RAD Studio XE2, Delphi XE2, and C++Builder XE2 is now required
+  <li>Mac OS X in RAD Studio XE2 is supported
+  <li>FireMonkey support is improved
+  <li>Lazarus 0.9.30.2 and FPC 2.4.4 are supported
+  <li>Mac OS X in Lazarus is supported
+  <li>Linux x64 in Lazarus is supported
+  <li>FreeBSD in Lazarus is supported
+  <li>Bug with query containing 'WITH' clause that is generated for the QueryRecCount option is fixed
+  <li>Bug with AV failure on freeing TIBCQuery is fixed
+  <li>Bug with memory leak in TDALoader is fixed
+  <li>Problem with receiving DateTime parameter for DBMonitor in Delphi 2009 and higher is fixed
+</ul>
+
+<br><p><b>4.0.2 10-Oct-11</b></p>
+<ul>
+  <li>Bug with compilation for Linux in Lazarus is fixed
+  <li>Bug with processing parameters values of which are of the SqlTimestamp type is fixed
+  <li>Bug with the QueryRecCount option queries containing ';' delimiter in query is fixed
+</ul>
+
+<br><p><b>4.0.1 15-Sep-11</b></p>
+<ul>
+  <li>Embarcadero RAD Studio XE2 is supported
+  <li>Application development for 64-bit Windows is supported
+  <li>FireMonkey application development platform is supported 
+  <li>Support of master/detail relationship for TVirtualTable is added 
+  <li>OnProgress event in TVirtualTable is added 
+  <li>TDADataSetOptions.SetEmptyStrToNull property that allows inserting NULL value instead of empty string is added
+  <li>TIBCDataSetOptions.SetDomainNames property to enable setting TIBCFieldDesc.DomainName for fields is added
+  <li>TIBCLoader.RowsPerBatch property to specify the number of INSERT queries to load in a single batch is added
+  <li>Bug with AV failure on fetching BLOB fields is fixed
+</ul>
+
+<br><p><b>3.60.0.24 19-Jul-11</b></p>
+<ul>
+  <li>Bug with assertion failure on using master/detail relationship with TClientDataset is fixed
+  <li>Bug in TCustomDADataSet.PSGetKeyFields method when in dataset persistent fields was created is fixed
+  <li>Bug with showing Unicode symbols in error message is fixed
+  <li>Bug with processing calculated fields is fixed
+  <li>Bug with calculating fields size for Unicode and Utf8 fields is fixed
+  <li>Bug with memory leak on assign BLOB fields when UseUnicode is True is fixed
+</ul>
+
+<br><p><b>3.60.0.23 15-Jun-11</b></p>
+<ul>
+  <li>TIBCDataSetOptions.PrepareUpdateSQL property for preparing update queries automatically before execution is added
+  <li>Possibility to load data in TVirtualTable without recreating persistent fields is added
+  <li>Working in design time editor of the TVirtualTable component is improved
+  <li>Loading files opened by other applications is improved
+  <li>Bug with processing key fields on record posting is fixed
+  <li>Several bugs with design-time editors for Lazarus are fixed
+  <li>Bug with getting server version for InterBase 10.0 and higher is fixed
+  <li>Bug with processing transactions on application closing is fixed
+</ul>
+
+<br><p><b>3.60.0.22 28-Apr-11</b></p>
+<ul>
+  <li>Lazarus 0.9.30 and FPC 2.4.2 is supported
+  <li>TIBCLoader.InsertMode property to allow using "UPDATE OR INSERT INTO" syntax for loading data is added
+  <li>Possibility to assign Handle to TIBCConnection is added
+  <li>Bug in bookmark validity check is fixed
+  <li>Bug with getting fields of primary key is fixed
+  <li>Bug with processing Unicode in BLOB parameters is fixed
+  <li>Bug with Source Edition installation is fixed
+</ul>
+
+<br><p><b>3.50.0.21 10-Mar-11</b></p>
+<ul>
+  <li>Delphi & C++Builder XE Starter Edition supported
+  <li>Fixed registration procedure of Borland SQL Monitor when TIBCSQLMonitor is created at runtime
+  <li>Fixed bug in TIBCScript with parsing script
+  <li>Fixed bug with getting database info for 64-bit OS
+</ul>
+
+<br><p><b>3.50.0.20 26-Jan-11</b></p>
+<ul>
+  <li>Fixed bug with processing transaction when error arises in the Open method
+  <li>Fixed bug with AV failure on processing string fields when UseUnicode is True and Charset is set to 'UTF8'
+  <li>Fixed bug with AV failure on processing BLOB parameters
+</ul>
+
+<br><p><b>3.50.0.19 08-Dec-10</b></p>
+<ul>
+  <li>Added calling the BeforeExecute event for the Open and Refresh dataset operations
+  <li>Added TGDSDatabaseInfo.IsEncrypted and TGDSDatabaseInfo.IsEUAActive properties
+  <li>Changed behaviour when TCustomIBCDataSet.GeneratorMode = gmPost: now value from generator is not used if user inputs any value into key field
+  <li>Now the UTF8 charset is used instead of UNICODE_FSS, when TIBCConnectionOptions.UseUnicode is True and Charset is set to 'UTF8'
+  <li>Avoided bug of Firebird client library with freezing when fatal error is raised in TIBCAlerter
+  <li>Fixed bug in the Refresh method when connection is lost
+  <li>Fixed bug with refreshing record for Master-Detail datasets
+  <li>Fixed bug with creating updating tables list for nested queries
+</ul>
+
+<br><p><b>3.50.0.18 04-Nov-10</b></p>
+<ul>
+  <li>Added checking that dataset is open on calling the TDataSet.Locate method
+  <li>Added the ClientLibrary property to the TfrxIBDACDatabase class
+  <li>Fixed bug with decoding data on loading XML
+  <li>Fixed bug in Migration Wizard with adding unnecessary spaces
+  <li>Fixed bug with TIBCRestoreService
+  <li>Fixed bug with processing RETURNING keyword for InterBase
+  <li>Fixed bug with calling the TIBCTransaction.OnError event 
+  <li>Fixed bug with AV failure in TIBCAlerter
+  <li>Fixed bug with assigning parameters values to TfrxIBDACDatabase
+</ul>
+
+<br><p><b>3.50.0.17 13-Sep-10</b></p>
+<ul>
+  <li>Embarcadero RAD Studio XE suppored 
+  <li>Fixed bug with the LIKE keyword in the TDataSet.Filter property
+  <li>Fixed bug with filling default expression for fields in the design mode for inactive dataset
+  <li>Fixed bug in TIBCAlerter
+</ul>
+
+<br><p><b>3.10.0.16 13-Aug-10</b></p>
+<ul>
+  <li>Changed the LocateEx method behavior: now LocateEx centers records equal to Locate
+  <li>Added the OnBeforeExecute event
+  <li>Fixed bug in Migration Wizard with converting units in the UTF8 and UTF16 encoding
+  <li>Fixed bug with RefreshRecord and numbers with floating point
+  <li>Fixed bug in Migration Wizard with converting TIBScript to TIBCScript
+</ul>
+
+<br><p><b>3.10.0.15 24-Jun-10</b></p>
+<ul>
+  <li>Added ability to lock records in the CachedUpdate mode
+  <li>Added overloaded declaration of the ApplyUpdates method to choose update kind
+  <li>Fixed bug with quote that first character inside quoted string for the Filter property
+  <li>Fixed bug in TCRBatchMove with processing RecordCount
+  <li>Fixed bug in TIBCLoader for Delphi 2010 with loading blob fields
+  <li>Fixed bug in TIBCScript with parsing script
+</ul>
+
+<br><p><b>3.10.0.14 26-May-10</b></p>
+<ul>
+  <li>Fixed bug with keeping of field default value
+  <li>Fixed bug with using stored procedure in SELECT statement
+  <li>Fixed bug with treating integer fields as TBooleanField when the domain name contains "BOOLEAN"
+  <li>Fixed bug with AV failure in TIBCAlerter
+</ul>
+
+<br><p><b>3.10.0.13 09-Apr-10</b></p>
+<ul>
+  <li>Fixed bug with comparing Date field values on optimistic locking
+  <li>Fixed bug in the AddWhere, DeleteWhere, SetOrderBy, and GetOrderBy methods for Tables
+  <li>Fixed bug with calculating RecNo in CachedUpdates mode
+  <li>Fixed bug with getting Database Info
+  <li>Fixed bug with "Insert into Table () values ()" when all fields are empty
+  <li>Fixed bug with processing fields that have the Array of Decimal type with scale <> 0
+  <li>Fixed bug with processing TIBCTable.OrderFields that contains keywords
+  <li>Fixed bug with updating array fields when dbMonitor is used
+</ul>
+
+<br><p><b>3.10.0.12 04-Mar-10</b></p>
+<ul>
+  <li>Added ability to send call stack information to dbMonitor component
+  <li>Fixed bug with refreshing record when using master/detail relationship
+  <li>Fixed bug with LocalUpdate in the CachedUpdates mode
+  <li>Fixed bug with DBMonitor for C++ Builder 6
+  <li>Fixed bug with inserting/editing string fields when UseUnicode is True
+  <li>Fixed bug with reading blobs when DeferredBlobRead and UseUnicode is True
+  <li>Fixed bug with prcessing the SET TERM statement in TIBCScript
+  <li>Fixed bug with the SizeInBytes parameter in TIBCBackupServices
+</ul>
+
+<br><p><b>3.10.0.11 26-Jan-10</b></p>
+<ul>
+<li>Added OnStart, OnCommit, OnRollback events to TDATransaction
+<li>Added SQLTypeEx property
+<li>Problem with using TLargeintField in master/detail fixed
+<li>Bug with refreshing record when RefreshOptions.roBeforeEdit is set and LockMode = lmPessimistic fixed
+<li>Bug with writing large Unicode BLOBs fixed
+<li>Bug with Unicode BLOBs and DeferredBlobRead fixed
+<li>Bug with setting SQLDialect on CreateDatabase fixed
+<li>Memory overrun leak with ftString output parameters fixed
+</ul>
+
+<br><p><b>3.10.0.10 01-Dec-09</b></p>
+<ul>
+<li>Added support for dbMonitor 3
+<li>Bug with updating table, that has field name, representing a valid hexadecimal number, fixed
+<li>Bug with updating field value with preceding spaces when TrimFixedChar or TrimVarChar = True fixed
+<li>Bug with executing large file in UTF-8 format fixed
+<li>Bug with ExecuteNext and BLOB parameters fixed
+</ul>
+
+<br><p><b>3.10.0.9 12-Nov-09</b></p>
+<ul>
+<li>Added support for Trace and nBackup services of Firebird 2.5
+<li>Now setting the SetFieldsReadOnly option to False makes all fields not read-only (default changed to True)
+<li>Now Required flag is set for UpdatingTable fields only
+<li>Bug with detecting parameter size for MBCS strings fixed
+<li>Problem with detecting slash with text after it as a delimiter in TDAScript fixed
+<li>Bug with SetOrderBy and SetWhere when there is no space before ORDER or WHERE fixed
+<li>Bug with executing large file in Unicode format fixed
+<li>Access violation in TIBCAlerter when registering more than 15 events fixed
+</ul>
+
+<br><p><b>3.10.0.8 13-Oct-09</b></p>
+<ul>
+<li>Added support for BATCH START and BATCH EXECUTE commands in TIBCScript
+<li>Now the AssignConnect method copies transaction state
+<li>Memory leak on reading array fields fixed
+<li>Bug with locating records using the LocateEx method and the lxNearest option fixed
+<li>Bug with AV failure in MemData fixed
+<li>Bug with SQL Generator in design-time fixed
+<li>Problem with help registration under RAD Studio 2010 fixed
+<li>Problem with loading DataSet Manager under RAD Studio 2010 fixed
+</ul>
+
+<br><p><b>3.10.0.7 10-Sep-09</b></p>
+<ul>
+<li>Embarcadero RAD Studio 2010 suppored
+<li>Now the subdetail is refreshed before the AfterRefresh event of the detail is called
+</ul>
+
+<br><p><b>3.00.0.6 01-Sep-09</b></p>
+<ul>
+<li>Added support for using different client libraries simultaneously
+<li>Added thread-safety to the Connections list
+<li>Now the value from the master dataset has priority over the DefaultExpression value
+<li>Bug with not unlocking record in the CachedUpdates mode if no fields were changed, fixed
+<li>Bug with parsing TDAScript.Statements fixed
+<li>Bug with TIBCAlerter registering only first event under Delphi 2009 fixed
+</ul>
+
+<br><p><b>3.00.0.4 24-Jun-09</b></p>
+<ul>
+<li>Bug with local sorting in CachedUpdates mode fixed
+<li>Bug with raising exceptions on locating records when IndexFieldNames is set, fixed
+<li>Bug with calculating connection count in Disconnected mode fixed
+<li>Bug with calling the OnError event on connection failure when Pooling is enabled, fixed
+<li>Bug with macros in TDAScript fixed
+<li>Bug with database name containing multibyte characters fixed
+<li>Problem with default values with leading blanks fixed
+<li>Problem with QueryRecCount option and FROM keyword inside a field list fixed
+<li>Access violation on assigning value to TIBCTransaction.Active property fixed
+</ul>
+
+<br><p><b>3.00.0.3 27-May-09</b></p>
+<ul>
+<li>Added the Disconnected property to TCustomDADataSet
+<li>Added distinction between empty string and null value when saving/loading string fields in TVirtualTable
+<li>Bug with the GotoCurrent method fixed
+<li>Bug with LocalMasterDetail and Prepare method fixed
+<li>Bug with FullRefresh and macros fixed
+<li>Bug with UseUnicode and TrimFixedChar=False fixed
+<li>Added support for TQuery.DataSource property in BDE Migration Wizard
+</ul>
+
+<br><p><b>3.00.0.2 02-Apr-09</b></p>
+<ul>
+<li><b>TIBCLoader component</b>
+<p>serves for fast loading of data to the database. For Firebird 2.0 and higher it combines INSERT statements in one EXECUTE BLOCK statement to speed up loading.</p>
+<li><b>InterBase services components</b>
+<p>allow to backup and restore database, configure server parameters and security.</p>
+<li>Added support for Free Pascal under Linux
+<li>Added NoPreconnect property to TIBCScript for executing CONNECT and CREATE DATABASE commands
+<li>Bug with DetailDelay and refreshing closed dataset fixed
+<li>Bug with detecting DBMonitor on 64-bit Windows fixed
+<li>Bug with not calling UnregisterClient for internal command of dataset fixed
+<li>Bug with refreshing record when RefreshOptions.roBeforeEdit is set and LockMode = lmImmediate fixed
+<li>Bug with TIBCStoredProc using incorrect transaction fixed
+<li>Bug with ftWideString parameters when UseUnicode=False fixed
+</ul>
+
+<br><p><b>2.70.0.45 26-Feb-09</b></p>
+<ul>
+<li>Added RowsInserted, RowsUpdated, and RowsDeleted properties for using with statements like UPDATE OR INSERT
+<li>Bug with not working CachedUpdates in TVirtualTable fixed
+<li>Bug with suppressing errors in TVirtualTable.LoadFromFile fixed
+<li>Problem with restoring current row after refresh fixed
+<li>Bug when statements, executed on TClientDataSet.ApplyUpdates, were not shown in DBMonitor, fixed
+<li>Access violation on the TClientDataSet.ApplyUpdates call fixed
+<li>Bug in Delphi 2006 and above with the BcdCompare function avoided 
+<li>Bug with decoding Unicode surrogate pairs fixed
+<li>Bug with field names starting with RET_ fixed
+</ul>
+
+<br><p><b>2.70.0.44 06-Jan-09</b></p>
+<ul>
+<li>Fixed bug with treating some string elements as equal by CompareString
+</ul>
+
+<br><p><b>2.70.0.43 09-Dec-08</b></p>
+<ul>
+<li>Added DEFAULT_VALUE and DESCRIPTION columns to TIBCMetaData
+<li>Bug with not using UpdateTransaction in EmptyTable and DeleteTable of TIBCTable fixed
+<li>Bug with setting the Required flag for NUMERIC fields fixed
+</ul>
+
+<br><p><b>2.70.0.42 19-Nov-08</b></p>
+<ul>
+<li>Bug with field names containing '.' fixed
+<li>Bug with assertion failure on editing components in design time for Delphi 5 fixed
+<li>Several bugs in DataSet Manager fixed
+<li>Bug in Migration Wizard with converting binary forms in Delphi 2009 fixed
+<li>Added calling the TfrxReport.OnBeforeConnect event when TfrxDACDatabase is connecting
+<li>Bug with name compatibility with ReportBuilder fixed
+</ul>
+
+<br><p><b>2.70.0.41 23-Oct-08</b></p>
+<ul>
+  <li>Delphi 2009 and C++Builder 2009 supported 
+  <li>Extended Unicode support for Delphi 2007 added (special Unicode build) 
+  <li>Free Pascal 2.2 supported 
+  <li>Powerful design-time editors implemented in Lazarus 
+  <li>Completed with more comprehensive structured Help 
+</ul>
+
+<br><p><b>2.50.0.39 22-Sep-08</b></p>
+<ul>
+  <li>Added DescribeParams option that provides automatic parameters describing when a statement is prepared
+  <li>Improved working with master/detail relationship when LocalMasterDetail=True
+  <li>Bug with access violation on getting OldValue for BLOB fields fixed
+  <li>Bug with the IsNull property for output string parameters fixed
+  <li>Bug with parsing RETURNING clause fixed
+</ul>
+
+<br><p><b>2.50.0.37 21-Aug-08</b></p>
+<ul>
+<li>Bug with adding #0 to the end of Unicode BLOB values fixed
+<li>Bug with string output parameters fixed
+<li>Access violation on calling TClientDataSet.ApplyUpdates fixed
+</ul>
+
+<br><p><b>2.50.0.36 11-Jul-08</b></p>
+<ul>
+  <li>Added support of NOT LIKE keyword in the TDataSet.Filter property
+  <li>Improved working with master/detail on inserting new records
+  <li>Several bugs when working with inactive datasets fixed
+  <li>Bug with filtering by TLargeIntField fixed
+  <li>Bug with calling the OnError event when LocalFailover is set to True fixed
+  <li>Bug with setting the Database property fixed
+  <li>Bug with not using UpdateTransaction for TClientDataSet.ApplyUpdates fixed
+  <li>Added ability to call Code Editor from component editors
+</ul>
+
+<br><p><b>2.50.0.35 11-Jun-08</b></p>
+<ul>
+  <li>Bug with the SetOrderBy method fixed
+  <li>Bug with AV failure on assigning the OnFilterRecord event handler fixed
+  <li>Bug with determining primary key fields fixed
+  <li>Bug with generating update SQL with IS NULL in the WHERE clause at design-time fixed
+  <li>Bug with ptUnknown parameter values loss after execute fixed
+</ul>
+
+<br><p><b>2.50.0.34 23-May-08</b></p>
+<ul>
+  <li>Added compatibility with UniDAC
+  <li>Improved support of default field values 
+  <li>The new component for metadata receiving added
+  <li>Improved work with master/detail
+  <li>Bug with fetching strings from database with the NONE character set fixed
+  <li>Bug with interpreting empty string parameters as NULL fixed
+</ul>
+
+<br><p><b>2.20.2.15 04-Apr-08</b></p>
+<ul>
+ <li>Bug with locating records using the LocateEx method and the lxNext option fixed
+ <li>Access violation on local sorting fixed
+ <li>Bug with executing scripts from files larger than 2GB fixed
+ <li>Access violation on fetching strings with multibyte character set fixed
+</ul>
+
+<br><p><b>2.20.2.14 18-Feb-08</b></p>
+<ul>
+ <li>Enhanced local sorting with new options (DefaultSortType option, BIN sort type in IndexFieldNames)
+ <li>Added support for SQLInsert, SQLUpdate, SQLDelete properties for updating with TDataSetProvider
+ <li>Improved bookmarks comparison
+ <li>Bug with corrupting BLOB fields on CancelUpdates method call fixed
+ <li>Bug with KeepDesignConnected option when Connection is not set for a dataset fixed
+ <li>Bug with accessing persistent BLOB fields in closed dataset fixed
+</ul>
+
+<br><p><b>2.20.1.13 09-Jan-08</b></p>
+<ul>
+ <li>Added EnableMemos option that enables creating TMemoField and TWideMemoField for text BLOBs
+ <li>Added support for BLOBs with UTF8 character set
+ <li>Bug in master/detail for shifting columns count in the detail dataset fixed
+ <li>Several bugs with records location fixed
+ <li>Bug with TCRBatchMove whose source dataset does not reflect actual record count in the RecordCount property fixed
+ <li>Problem with querying key fields on opening dataset fixed
+ <li>Problem with re-querying key and data fields after refresh in AutoClose mode fixed
+</ul>
+
+<br><p><b>2.20.0.12 14-Nov-07</b></p>
+<ul>
+ <li>Added support for TVariantField in VirtualTable 
+ <li>Added ability to upgrade IBDAC without uninstallation of previous IBDAC builds 
+ <li>Corrected behaviour DMLRefresh to refresh all fields
+ <li>Bug with deletions of manually added macros on assigning their values fixed
+ <li>Bug in TIBCTransaction.IsolationLevel design time editor fixed
+ <li>Bug with incorrect execution of SET TERM by TIBCScript fixed
+ <li>Now an exception is raised when uaFail is assigned to UpdateAction in OnUpdateRecord event handler
+ <li>Bug with second script execution after the first execution failed with an exception fixed 
+ <li>Bug with parsing numbers followed by parameters whose names consist of digits fixed 
+ <li>Bug with locating variant values in TVirtualTable fixed 
+</ul>
+
+<br><p><b>2.20.0.11 27-Sep-07</b></p>
+<ul>
+ <li>CodeGear RAD Studio 2007 supported
+ <li>Added ability to treat integer fields as TBooleanField when the domain name contains "BOOLEAN"
+ <li>Added ability to send the DataSetChange event after dataset open
+ <li>Optimized memory utilization when loading XML files by the TVirtualTable.LoadFromFile method
+ <li>Corrected behavior of RefreshRecord method to use an active update transaction
+ <li>Bug with fetching Unicode fields fixed
+ <li>Bug with updating unmodified BLOB fields using automatic SQL generation fixed 
+ <li>Bug with AV when using calculated fields fixed
+ <li>Bug with commiting updates in CachedUpdates mode fixed
+ <li>Bug with Disconnected Model and Pooling fixed
+ <li>Bug with using the Filter property for FindFirst and similar methods when Filtered is False fixed
+ <li>Bug with calling First after changing UpdateRecordTypes in Edit mode fixed
+ <li>Bug with save/load data to/from XML fixed 
+ <li>Assert with TCRBatchMove and BLOB fields fixed
+ <li>Improved color schema of syntax higlighting with SynEdit
+ <li>Avoided design-time bug with UniSynEdit fixed
+</ul>
+
+<br><p><b>2.10.0.10 02-Aug-07</b></p>
+<ul>
+ <li>Bug with ARRAY fields modification fixed
+ <li>Bug with invalid length of calculated string fields fixed
+ <li>Bug with fixed calculated string fields fixed
+ <li>Bug with comment statements in IBCScript fixed
+ <li>Bug with Pooling and Local Failover fixed
+ <li>Bug with "Invalid Variant Type" exception under Windows 2000 when TDataSet.Refresh is called fixed
+ <li>Bug with performance penalty when processing lookup and calculated fields fixed
+ <li>Bug with PSGetDefaultOrder method freezing for queries with complicated ORDER BY clauses fixed
+ <li>Bug in TCRBatchMove with mapping fields by name when Fields count and FieldDefs count are not equal fixed
+ <li>Bug with adding fields in TVirtualTable fixed
+ <li>Bug with field names quotation in CRDBGrid fixed
+ <li>Problem with DBMonitor integration under Windows Vista Ultimate fixed
+</ul>
+
+<br><p><b>2.10.0.9 12-Jun-07</b></p>
+<ul>
+ <li>C++Builder 2007 supported 
+ <li>DLL demo added
+ <li>Bug with refreshing record in detail dataset fixed
+ <li>Bug with raising exceptions when locating records on filtered recordsets fixed
+ <li>Bug with the BaseSQL property set to an empty string after assigning macro values fixed
+ <li>Bug with incorrect registry key used by connect dialog to save/load the Server value fixed
+ <li>Added ability to customize information view about fields in DataSetManager
+ <li>Performance of some operations in DataSet Manager improved
+ <li>Minor bugs in DataSet Manager fixed
+</ul>
+
+
+<br><p><b>2.00.0.7 16-May-07</b></p>
+
+<ul>
+<li> Added threads demo to the IBDAC demo project
+<li> Support for rmReconnectExecute failover action with SQL statements execution added
+<li> Ability to drag datasets between connections in group by connections mode in DataSet Manager added
+<li> Ability to assign DataSource and DataField properties of DevExpress DB-aware controls automatically in DataSet Manager added
+<li> Extended abilities of assigning default controls for datasets and fields in DataSet Manager
+<li> Bug with case-sensive field name quotation fixed
+<li> Bug with milliseconds truncation in TIME and TIMESTAMP values fixed
+<li> Bug with AV failure after second call to CommitUpdates when there are skipped records in cache fixed
+<li> Bug with complex fields modification in Disconnected Model with Pooling fixed
+<li> Bug with double quoting of field names in automatically generated SQL commands fixed
+<li> Bug with "DisposeBuf failed" exception on updating string fields in CachedUpdates mode fixed
+<li> Minor bugs with installation for C++Builder and Delphi 2007 fixed
+<li> Bug with displaying values of ftTime and ftDateTime parameters in debug window fixed
+<li> Bug with loading DataSet Manager package in a localized IDE fixed
+<li> Fixed bug in the IBCDataAdapter component with reading BLOB fields 
+<li> Minor bugs in DataSet Manager fixed
+</ul>
+
+<br><p><b>2.00.0.6 20-Apr-07</b></p>
+
+<ul>
+<li> FastScript v1.9 support added 
+<li> Support for DevExpress controls in DataSet Manager added
+<li> Bug with parameters updating fixed 
+<li> Bug with QuoteNames option in TIBCTable fixed
+<li> Bug with TIBConnection parameters assignment fixed
+<li> Access violation with deleting records in CachedUpdates mode fixed
+<li> Bug when detail DataSet is refreshed on switching master DataSet to Edit mode fixed
+<li> Bug in SQL Generator with generating REFRESH statements for detail DataSet fixed
+<li> Bug with setting RecNo property for filtered datasets fixed
+<li> Bug with PSGetTableName returning incorrect value after changing the SQL property fixed
+<li> Bug with calling TDataSet.Edit for master DataSet in CachedUpdates mode fixed 
+<li> Bug with filter expression that contains several consecutive left brackets fixed
+<li> Access violation when loading DataSet Manager package under Delphi 2007 and Windows Vista fixed
+<li> Bug with DataSet Manager when IDE freezes on loading a form with a large quantity of datasets fixed
+<li> Bug with executing parametrized queries in Detail dataset from design-time editor fixed
+<li> Bug with displaying invalid object property type in object inspector fixed
+<li> Bug with loading files in TIBCScript editor fixed
+<li> Bug with calling design-time editors of TDADataSource descendants by double click fixed
+<li> Bug with SQL Generator in design time fixed 
+<li> Bug with trimming SQL texts in design-time editors fixed 
+<li> Bug with creating components from Developer Tools database explorer window fixed
+<li> Minor bugs in installation fixed 
+</ul>
+
+<br><p><b>2.00.0.5 06-Apr-07</b></p>
+
+<ul>
+<li> Support for context sensitive help in BDS added
+<li> Support for sending events in Firebird 2 with TIBCAlerter added
+<li> Bug with Locate on ordered data fixed
+<li> Bug with case-sensitive sorting fixed
+<li> Bug with empty default field expression fixed
+<li> Bug with setting RecNo property for filtered datasets fixed
+<li> Bug with overloading IBCConnection.ApplyUpadtes fixed
+<li> Bug with XmlTextReader.Eof property under C++Builder fixed
+<li> DataSet Manager stability improved
+<li> Minor bugs in installation fixed
+</ul>
+
+<br><p><b>2.00.0.4 22-Mar-07</b></p>
+
+<i>New functionality:</i>
+<ul>
+  <li>Delphi 2007 for Win32 supported
+  <li>Disconnected model for working offline and automatically connecting and disconnecting supported
+  <li>Local failover for detecting connection loss and implicitly reexecuting some operations supported
+  <li>Added DataSet Manager to control project datasets
+  <li>New TCRBatchMove component for transferring data between all types of TDataSet descendants added
+  <li>Data export and import to/from XML supported
+  <li>WideMemo field type in Delphi 2006 supported
+  <li>Support for sending messages to DBMonitor from any point of your program added
+</ul>
+
+<i>Support for more InterBase/Firebird server functionality:</i>
+<ul>
+  <li>RETURNING clause in the INSERT SQL statement (Firebird 2 server only) supported
+  <li>EXECUTE BLOCK syntax (Firebird 2 server only) supported
+  <li>Automatic updates by DB_Key unique field (Firebird 2 server only) supported
+  <li>Default values in stored procedures supported
+</ul>
+
+<i>Extensions and improvements to existing functionality:</i>
+<ul>
+  <li>General performance improved
+  <li>Master/detail functionality extensions:
+  <ul>
+    <li>Local master/detail relationship support added
+    <li>Master/detail relationship in CachedUpdates mode support added
+  </ul>
+  <li>Connection pool functionality improvements:
+  <ul>
+    <li>Efficiency significantly improved
+    <li>API for draining the connection pool added
+  </ul>
+  <li>TIBCScript component improvements:
+  <ul>
+    <li>Support for executing individual statements in scripts added
+    <li>Support for executing huge scripts stored in files with dynamic loading added
+    <li>Ability to use standard ISQL tool syntax added
+  </ul>
+  <li>Greatly increased performance of applying updates in CachedUpdates mode
+  <li>Working with calculated and lookup fields improvements:
+  <ul>
+    <li>Local sorting and filtering added
+    <li>Record location speed increased
+    <li>Improved working with lookup fields
+  </ul>
+  <li>Ability to customize update commands by attaching external components to TOraUpdateSQL objects added
+  <li>Ability to include all fields in automatically generated update SQLs added
+</ul>
+
+<i>Usability improvements:</i>
+<ul>
+  <li>Syntax highlighting in design-time editors added
+  <li>Completely restructured and clearer demo projects
+</ul>
+
+<br><p><b>1.10.0.15 16-Feb-07</b></p>
+<ul>
+  <li>FastReport 4 support added
+  <li>Editor for the MasterFields property of TCustomDADataset in C++Builder added
+  <li>Bug with the IndexFieldNames property not working for detail dataset in master/detail link fixed
+  <li>Bug with reading and writing Unicode CLOB through TBlobStream on computers with multibyte character set fixed
+  <li>Bug with Unicode parameters fixed
+  <li>Bug with UTF8 to UTF16 conversion fixed
+  <li>Bug with CLR Unicode fetch fixed 
+</ul>
+
+<br><p><b>1.10.0.14 12-Jan-07</b></p>
+<ul>
+  <li>Ability to make Master/Detail relationship by TBytesField added
+  <li>Support for Array type in TIBCSQLMonitor added
+  <li>Bug with Fast Query Builder support fixed
+  <li>Bug with EOL conversion in output parameters fixed
+  <li>Bug with ConvertEOL option fixed
+  <li>Bug with updating InterBase Array by slices fixed
+  <li>Bug with output streamed BLOB parameters fixed 
+  <li>Bug with BLOB parameters without live connection fixed
+  <li>Bug in BDE Migration Wizard with replacing DatabaseName property fixed
+</ul>
+
+<br><p><b>1.10.0.13 05-Dec-06</b></p>
+<ul>
+  <li>Bug with memory leaks fixed
+  <li>Bug with predefined InsertSQL and Firebird 2 generator values fixed
+  <li>Bug with fetching Unicode strings fixed
+  <li>Bug with transaction control commands in TIBCScript fixed
+  <li>Bug with TraceFlags in DASQLMonitor fixed (D16224)
+  <li>Bug with TDAParam.AsDate property fixed (D16213)
+  <li>Bug with wrong value of the StatementTypes variable in the BeforeUpdateExecute event fixed
+  <li>Bug with AV failure when modifying VirtualTable data in design time fixed
+</ul>
+
+<br><p><b>1.10.0.12 31-Oct-06</b></p>
+<ul>
+  <li>Bug with ParamType property not set for BLOB parameters fixed
+  <li>Bug with automatic Lock statement generation fixed
+  <li>Bug with automatic Refresh statement generation fixed
+  <li>Bug with updating not-NULL empty string fields fixed
+  <li>Bug with VARCHAR parameter's value trimming fixed
+  <li>Bug with comparing Unicode strings fixed
+  <li>Big with RefreshRecord in CachedUpdates mode fixed
+  <li>Bug with BeforeDisconnect event lost in design time fixed
+  <li>Bug with mouse wheeling in FilterBar and Search bar of CRDBGrid fixed (15675)
+  <li>Bug with debug mode in design time fixed
+  <li>Bug with SmartRefresh Help fixed
+</ul>
+
+<br><p><b>1.10.0.11 29-Sep-06</b></p>
+<ul>
+  <li>Support for ReportBuilder added
+  <li>Support for InfoPower added
+  <li>Bug with detecting TWideStringField modification fixed
+  <li>Bug with connection pooling fixed
+  <li>Bug with BDE, IBX Migration Wizard fixed
+</ul>
+
+<br><p><b>1.10.0.10 28-Aug-06</b></p>
+<ul>
+  <li>Support for Professional editions of Turbo Delphi, Turbo Delphi for .NET, Turbo C++ added
+  <li>Support for macros names in which first symbol is digit added
+  <li>Capability to use quoted field names in IndexFieldNames property added (D10091)
+  <li>Bug with setting TCustomIBCDataSet.UpdatingTable fixed
+  <li>Bug with automatic detail field value generation fixed (12886)
+  <li>Bug with canceling edit on record with BLOB fields fixed
+  <li>Bug with FindKey method when the primary key has field of type Int64 fixed (D12558)
+  <li>Bug with filtering DateTime fields when filter expression format differs from one in local system fixed (D12823)
+  <li>Bugs with parsing macros fixed
+  <li>Bug with automatic LockSQL generation fixed (13494)
+  <li>Bug with automatic UpdateSQL generation fixed
+  <li>Bug with TrimVarChar fixed
+  <li>Bug with WideString lookup fields size fixed
+  <li>Bug with loading wide strings in TVirtualTable fixed
+  <li>Bug with MIDAS demo fixed
+</ul>
+
+<br><p><b>1.00.1.9 06-Jul-06</b></p>
+<ul>
+  <li>Support for default field values improved
+  <li>Midas demo project added
+  <li>Performance of SaveToFile and LoadFromFile functions in TVirtualTable improved (12435)
+  <li>Bug with memory leaks in IBDAC fixed
+  <li>Bug with changing BLOB parameters type fixed (12416)
+  <li>Bug with using calculated and lookup fields in Master/Detail relationship fixed
+  <li>Bug with design time editor for Detail dataset in Master/Detail relationship fixed (12021, M11914)
+  <li>Bug with AutoClose and DefaultValues options of TCustomIBCDataSet class fixed
+  <li>Bug with TIBCScript.Transaction with DDL statements fixed
+  <li>Bug with wrong line number in DAScript.EndLine property fixed(12015)
+  <li>Bug with TIBCTable.OrderFields fixed
+  <li>Bug with filtering empty strings fixed (S12329)
+  <li>Bug with modifying FieldDefs in TVirtualTable fixed
+  <li>Bug in TVirtualTable Editor fixed
+</ul>
+
+<br><p><b>1.00.1.8 31-May-06</b></p>
+<ul>
+  <li>Bug with DBSQLDialect with InterBase 5.6 fixed
+  <li>Bug with memory leak in TCustomDADataSet fixed (11636)
+  <li>Bug with TIBCConnectionOptions creation fixed
+  <li>Bug with Master-Detail linked by parameters fixed
+  <li>Bug with calling Parameter Editor from Object Inspector fixed (11671)
+</ul>
+
+<br><p><b>1.00.1.7 18-May-06</b></p>
+<ul>
+  <li>IBDAC is now compatible with ODAC, SDAC and MyDAC
+</ul>
+
+<br><p><b>1.00.0.6 12-May-06</b></p>
+<ul>
+  <li>InterBase Array type help improved
+  <li>Bug with date and time fields on Kylix fixed
+  <li>Bug with Kylix demos compatibility fixed
+</ul>
+
+<br><p><b>1.00.0.5 10-May-06</b></p>
+<ul>
+  <li>IBDAC release version
+</ul>
+
+
+<!-- end content -->
+
+<p>&nbsp;</p><p>&nbsp;</p><hr size=1><p>&copy; 1997-2011 Devart. All rights reserved.</p>
+</div>
+
+<script>
+TestEngine();
+AdjustContentSize();
+</script>
+</body>
+</html>

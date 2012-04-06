@@ -1,0 +1,63 @@
+object FetchForm: TFetchForm
+  Left = 396
+  Height = 129
+  Top = 205
+  Width = 306
+  HorzScrollBar.Page = 305
+  VertScrollBar.Page = 128
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'Loading'
+  ClientHeight = 129
+  ClientWidth = 306
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  FormStyle = fsStayOnTop
+  KeyPreview = True
+  OnKeyDown = FormKeyDown
+  OnShow = FormShow
+  Position = poMainFormCenter
+  object Label1: TLabel
+    Left = 8
+    Height = 14
+    Top = 61
+    Width = 287
+    Caption = 'Press Cancel button to interrupt loading operation.'
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentColor = False
+  end
+  object Panel1: TPanel
+    Left = 102
+    Height = 24
+    Top = 93
+    Width = 84
+    BevelOuter = bvNone
+    ClientHeight = 24
+    ClientWidth = 84
+    Color = clGreen
+    ParentColor = False
+    TabOrder = 0
+    object btCancel: TSpeedButton
+      Left = 1
+      Height = 22
+      Top = 1
+      Width = 82
+      Caption = 'Cancel'
+      Color = clBtnFace
+      Flat = True
+      NumGlyphs = 0
+      Transparent = False
+      OnClick = btCancelClick
+    end
+  end
+  object ProgressBar: TProgressBar
+    Left = 8
+    Height = 16
+    Top = 25
+    Width = 287
+    Max = 100
+    TabOrder = 1
+  end
+end

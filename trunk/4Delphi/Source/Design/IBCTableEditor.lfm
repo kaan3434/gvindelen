@@ -1,0 +1,14 @@
+inherited IBCTableEditorForm: TIBCTableEditorForm
+  Left = 66
+  Top = 87
+  inherited BtnPanel: TPanel
+    inherited imCorner: TImage
+    end
+    inherited btOk: TBitBtn
+    end
+    inherited btCancel: TBitBtn
+    end
+    inherited btnDataEditor: TBitBtn
+    end
+  end
+end

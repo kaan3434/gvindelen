@@ -1,0 +1,253 @@
+inherited IBCConnectionEditorForm: TIBCConnectionEditorForm
+  Left = 237
+  Height = 311
+  Top = 169
+  Caption = 'IBCConnectionEditorForm'
+  ClientHeight = 311
+  OnCloseQuery = FormCloseQuery
+  OnHide = FormHide
+  OnKeyPress = FormKeyPress
+  OnShow = FormShow
+  inherited BtnPanel: TPanel
+    Top = 270
+    inherited imCorner: TImage
+    end
+    inherited btOk: TBitBtn
+      OnClick = SaveClick
+    end
+    inherited btCancel: TBitBtn
+      OnClick = CloseClick
+    end
+  end
+  inherited PageControl: TPageControl
+    Height = 262
+    OnChange = PageControlChange
+    OnPageChanged = PageControlChange
+    inherited shConnect: TTabSheet
+      ClientHeight = 236
+      inherited shRed: TShape
+        Top = 205
+      end
+      inherited shYellow: TShape
+        Top = 205
+      end
+      inherited shGreen: TShape
+        Top = 205
+      end
+      inherited Panel: TPanel
+        Height = 180
+        ClientHeight = 180
+        inherited lbUsername: TLabel
+        end
+        inherited lbPassword: TLabel
+        end
+        inherited lbServer: TLabel
+        end
+        object lbDatabase: TLabel[3]
+          Left = 16
+          Height = 14
+          Top = 152
+          Width = 47
+          Caption = 'Database'
+          ParentColor = False
+        end
+        object lbProtocol: TLabel[4]
+          Left = 16
+          Height = 14
+          Top = 119
+          Width = 40
+          Caption = 'Protocol'
+          ParentColor = False
+        end
+        inherited edServer: TComboBox[5]
+          MaxLength = -1
+          OnChange = edServerChange
+          OnGetItems = edServerDropDown
+          OnExit = edServerExit
+          OnKeyUp = edServerKeyUp
+        end
+        inherited edUsername: TEdit[6]
+          OnChange = edUsernameChange
+          OnExit = edServerExit
+        end
+        inherited edPassword: TEdit[7]
+          OnChange = edPasswordChange
+        end
+        object edDatabase: TComboBox[8]
+          Left = 104
+          Height = 21
+          Top = 148
+          Width = 153
+          ItemHeight = 13
+          MaxLength = -1
+          OnChange = edDatabaseChange
+          OnGetItems = edDatabaseDropDown
+          TabOrder = 4
+        end
+        object edProtocol: TComboBox[9]
+          Left = 104
+          Height = 21
+          Top = 115
+          Width = 153
+          ItemHeight = 13
+          MaxLength = -1
+          OnChange = edProtocolChange
+          Style = csDropDownList
+          TabOrder = 3
+        end
+      end
+      inherited btConnect: TButton
+        Top = 200
+        OnClick = btConnectClick
+      end
+      inherited btDisconnect: TButton
+        Top = 200
+        OnClick = btDisconnectClick
+      end
+      inherited cbLoginPrompt: TCheckBox
+        OnClick = cbLoginPromptClick
+      end
+    end
+    inherited shInfo: TTabSheet
+      ClientHeight = 236
+      inherited meInfo: TMemo
+        Height = 218
+      end
+    end
+    inherited shAbout: TTabSheet
+      ClientHeight = 236
+      OnMouseMove = shAboutMouseMove
+      inherited Label1: TLabel
+        Width = 340
+        Caption = 'InterBase Data Access Components'
+      end
+      inherited Label2: TLabel
+      end
+      inherited lbVersion: TLabel
+      end
+      inherited Label3: TLabel
+      end
+      inherited Label5: TLabel
+      end
+      inherited Label6: TLabel
+      end
+      inherited lbWeb: TLabel
+        Width = 113
+        Caption = 'www.devart.com/ibdac'
+        OnClick = lbWebClick
+        OnMouseMove = lbWebMouseMove
+      end
+      inherited lbMail: TLabel
+        Width = 91
+        Caption = 'ibdac@devart.com'
+        OnClick = lbMailClick
+        OnMouseMove = lbMailMouseMove
+      end
+      inherited lbIDE: TLabel
+      end
+      inherited imPeng: TImage
+      end
+      inherited lbEdition: TLabel
+      end
+    end
+    object shOptions: TTabSheet[3]
+      Caption = '&Options'
+      ClientHeight = 236
+      ClientWidth = 429
+      object lbClientLibrary: TLabel
+        Left = 16
+        Height = 14
+        Top = 82
+        Width = 61
+        Caption = 'Client library'
+        ParentColor = False
+      end
+      object lbCharset: TLabel
+        Left = 16
+        Height = 14
+        Top = 51
+        Width = 39
+        Caption = 'Charset'
+        ParentColor = False
+      end
+      object lbRole: TLabel
+        Left = 16
+        Height = 14
+        Top = 20
+        Width = 22
+        Caption = 'Role'
+        ParentColor = False
+      end
+      object edClientLibrary: TEdit
+        Left = 104
+        Height = 21
+        Top = 80
+        Width = 293
+        OnChange = edClientLibraryChange
+        TabOrder = 2
+      end
+      object btClientLibrary: TBitBtn
+        Left = 399
+        Height = 21
+        Top = 80
+        Width = 17
+        Glyph.Data = {
+          FE000000424DFE0000000000000076000000280000000D000000110000000100
+          0400000000008800000000000000000000001000000000000000000000000000
+          8000008000000080800080000000800080008080000080808000C0C0C0000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+          F000FFFFFFFFFFFFF000FFFFFFFFFFFFF000FFFFFFFFFFFFF000FFF0FF0FF0FF
+          F000FFFFFFFFFFFFF000FFFFFFFFFFFFF000FFFFFFFFFFFFF000FFFFFFFFFFFF
+          F000FFFFFFFFFFFFF000FFFFFFFFFFFFF000FFFFFFFFFFFFF000FFFFFFFFFFFF
+          F000FFFFFFFFFFFFF000FFFFFFFFFFFFF000FFFFFFFFFFFFF000FFFFFFFFFFFF
+          F000
+        }
+        NumGlyphs = 0
+        OnClick = btClientLibraryClick
+        TabOrder = 3
+      end
+      object edCharset: TComboBox
+        Left = 104
+        Height = 21
+        Top = 48
+        Width = 313
+        ItemHeight = 13
+        MaxLength = -1
+        OnChange = edCharsetChange
+        OnGetItems = edCharsetDropDown
+        TabOrder = 1
+      end
+      object edRole: TEdit
+        Left = 105
+        Height = 21
+        Top = 16
+        Width = 312
+        OnChange = edRoleChange
+        TabOrder = 0
+      end
+      object gbParams: TGroupBox
+        Left = 8
+        Height = 124
+        Top = 104
+        Width = 409
+        Caption = 'Params '
+        ClientHeight = 106
+        ClientWidth = 405
+        TabOrder = 4
+        object meParams: TMemo
+          Left = 10
+          Height = 90
+          Top = 7
+          Width = 384
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          OnExit = meParamsExit
+          TabOrder = 0
+        end
+      end
+    end
+  end
+  inherited btClose: TButton
+    Top = 279
+    OnClick = SaveClick
+  end
+end

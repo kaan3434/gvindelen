@@ -1,0 +1,63 @@
+
+//////////////////////////////////////////////////
+//  InterBase Data Access Components
+//  Copyright © 1998-2011 Devart. All right reserved.
+//  IBDAC Package for Delphi 12
+//////////////////////////////////////////////////
+
+package dclibdac120;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'Devart InterBase Data Access Components'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+{$DEFINE IBDAC}
+
+requires
+  ibdac120,
+  dcldb,
+  dcldac120,
+  designide,
+  ibdacvcl120;
+
+contains
+  IBCReg in '..\Design\IBCReg.pas',
+  IBCDesign in '..\Design\IBCDesign.pas',
+  IBCMenu in '..\Design\IBCMenu.pas',
+  IBCAbout in '..\Design\IBCAbout.pas',
+  IBCAlerterEditor in '..\Design\IBCAlerterEditor.pas',
+  IBCConnectionEditor in '..\Design\IBCConnectionEditor.pas',
+  IBCTransactionEditor in '..\Design\IBCTransactionEditor.pas',
+  IBCQueryEditor in '..\Design\IBCQueryEditor.pas',
+  IBCSQLEditor in '..\Design\IBCSQLEditor.pas',
+  IBCTableEditor in '..\Design\IBCTableEditor.pas',
+  IBCTableSQLFrame in '..\Design\IBCTableSQLFrame.pas',
+  IBCStoredProcEditor in '..\Design\IBCStoredProcEditor.pas',
+  IBCParamsFrame in '..\Design\IBCParamsFrame.pas',
+  IBCSPCallFrame in '..\Design\IBCSPCallFrame.pas',
+  IBCUpdateSQLEditor in '..\Design\IBCUpdateSQLEditor.pas',
+  IBCSQLGeneratorFrame in '..\Design\IBCSQLGeneratorFrame.pas',
+  IBCDesignUtils in '..\Design\IBCDesignUtils.pas';
+
+end.

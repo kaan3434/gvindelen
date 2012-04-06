@@ -1,0 +1,197 @@
+inherited LongStringsFrame: TLongStringsFrame
+  Height = 277
+  Width = 564
+  Align = alClient
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Height = 2
+    Top = 182
+    Width = 564
+    Align = alTop
+    ResizeAnchor = akTop
+  end
+  object ToolBar: TPanel
+    Height = 26
+    Width = 564
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 26
+    ClientWidth = 564
+    TabOrder = 0
+    object Panel1: TPanel
+      Height = 26
+      Width = 499
+      BevelOuter = bvNone
+      ClientHeight = 26
+      ClientWidth = 499
+      Color = 6369932
+      ParentColor = False
+      TabOrder = 0
+      object btClose: TSpeedButton
+        Left = 87
+        Height = 24
+        Top = 1
+        Width = 85
+        Caption = 'Close'
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+        Transparent = False
+        OnClick = btCloseClick
+      end
+      object btOpen: TSpeedButton
+        Left = 1
+        Height = 24
+        Top = 1
+        Width = 85
+        Caption = 'Open'
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+        Transparent = False
+        OnClick = btOpenClick
+      end
+      object DBNavigator: TDBNavigator
+        Left = 173
+        Height = 24
+        Top = 1
+        Width = 240
+        BevelOuter = bvNone
+        ClientHeight = 24
+        ClientWidth = 240
+        Color = clBtnFace
+        DataSource = DataSource
+        Flat = True
+        ParentColor = False
+        TabOrder = 0
+      end
+      object Panel5: TPanel
+        Left = 414
+        Height = 24
+        Top = 1
+        Width = 84
+        BevelOuter = bvNone
+        ClientHeight = 24
+        ClientWidth = 84
+        ParentColor = False
+        TabOrder = 1
+        object cbLongStrings: TCheckBox
+          Left = 5
+          Height = 19
+          Top = 4
+          Width = 82
+          Caption = 'LongStrings'
+          OnClick = cbLongStringsClick
+          TabOrder = 0
+        end
+      end
+    end
+  end
+  object meComments: TDBMemo
+    Height = 67
+    Top = 210
+    Width = 564
+    Align = alClient
+    DataField = 'VAL'
+    DataSource = DataSource
+    Lines.Strings = (
+      'meComments'
+    )
+    ScrollBars = ssVertical
+    TabOrder = 1
+  end
+  object Panel2: TPanel
+    Height = 26
+    Top = 184
+    Width = 564
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 26
+    ClientWidth = 564
+    TabOrder = 2
+    object Panel4: TPanel
+      Height = 26
+      Width = 229
+      BevelOuter = bvNone
+      ClientHeight = 26
+      ClientWidth = 229
+      Color = 6369932
+      ParentColor = False
+      TabOrder = 0
+      object btClear: TSpeedButton
+        Left = 153
+        Height = 24
+        Top = 1
+        Width = 75
+        Caption = 'Clear'
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+        Transparent = False
+        OnClick = btClearClick
+      end
+      object btLoad: TSpeedButton
+        Left = 1
+        Height = 24
+        Top = 1
+        Width = 75
+        Caption = 'Load from file'
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+        Transparent = False
+        OnClick = btLoadClick
+      end
+      object btSave: TSpeedButton
+        Left = 77
+        Height = 24
+        Top = 1
+        Width = 75
+        Caption = 'Save to file'
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+        Transparent = False
+        OnClick = btSaveClick
+      end
+    end
+  end
+  object DBGrid1: TDBGrid
+    Height = 156
+    Top = 26
+    Width = 564
+    Align = alTop
+    DataSource = DataSource
+    FixedColor = clBtnFace
+    FixedHotColor = cl3DLight
+    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+    OptionsExtra = [dgeAutoColumns, dgeCheckboxColumn]
+    ParentColor = False
+    TabOrder = 3
+    TabStop = True
+    TitleFont.Height = -11
+    TitleFont.Name = 'Tahoma'
+  end
+  object DataSource: TDatasource
+    DataSet = IBCQuery
+    left = 288
+    top = 64
+  end
+  object OpenDialog: TOpenDialog
+    Title = 'Open'
+    left = 264
+    top = 219
+  end
+  object SaveDialog: TSaveDialog
+    Title = 'Save As'
+    left = 296
+    top = 219
+  end
+  object IBCQuery: TIBCQuery
+    SQL.Strings = (
+      'SELECT * FROM IbDAC_Long_char'
+    )
+    left = 230
+    top = 45
+  end
+end

@@ -1,0 +1,464 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="/"/>
+    <Version Value="6"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=".exe"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+      <Language Value=""/>
+      <CharSet Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="39">
+      <Unit0>
+        <Filename Value="IbDacDemo.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <CursorPos X="9" Y="22"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="Base/DacDemo.inc"/>
+        <CursorPos X="1" Y="26"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="Base/IbDacDemoForm.pas"/>
+        <ComponentName Value="IbDacForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceFilename Value="Base/IbDacDemoForm.lrs"/>
+        <UnitName Value="IbDacDemoForm"/>
+        <CursorPos X="1" Y="13"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="../../../Source/IBDACVcl.pas"/>
+        <UnitName Value="IbDacVcl"/>
+        <CursorPos X="33" Y="15"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="../../../../Dac/Demos/Win32/DacDemo/Base/DemoForm.pas"/>
+        <ComponentName Value="DemoForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="DemoForm"/>
+        <CursorPos X="22" Y="655"/>
+        <TopLine Value="641"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="Base/IbDacAbout.pas"/>
+        <ComponentName Value="IbDacAboutForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceFilename Value="Base/IbDacAbout.lrs"/>
+        <UnitName Value="IbDacAbout"/>
+        <CursorPos X="12" Y="16"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="Base/ParamType.pas"/>
+        <ComponentName Value="ParamTypeForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceFilename Value="Base/ParamType.lrs"/>
+        <UnitName Value="ParamType"/>
+        <CursorPos X="3" Y="13"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="Alerter/Alerter.pas"/>
+        <ComponentName Value="AlerterFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="Alerter/Alerter.lrs"/>
+        <UnitName Value="Alerter"/>
+        <CursorPos X="3" Y="12"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="Arrays/Arrays.pas"/>
+        <ComponentName Value="ArraysFrame"/>
+        <HasResources Value="True"/>
+        <ResourceFilename Value="Arrays/Arrays.lrs"/>
+        <UnitName Value="Arrays"/>
+        <CursorPos X="45" Y="21"/>
+        <TopLine Value="3"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="CachedUpdates/CachedUpdates.pas"/>
+        <ComponentName Value="CachedUpdatesFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="CachedUpdates/CachedUpdates.lrs"/>
+        <UnitName Value="CachedUpdates"/>
+        <CursorPos X="3" Y="20"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="CachedUpdates/CachedUpdates.lfm"/>
+        <CursorPos X="22" Y="360"/>
+        <TopLine Value="344"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="LFM"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="CachedUpdates/UpdateAction.pas"/>
+        <ComponentName Value="UpdateActionForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceFilename Value="CachedUpdates/UpdateAction.lrs"/>
+        <UnitName Value="UpdateAction"/>
+        <CursorPos X="3" Y="13"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="ConnectDialog/ConnectDialog.pas"/>
+        <ComponentName Value="ConnectDialogFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="ConnectDialog/ConnectDialog.lrs"/>
+        <UnitName Value="ConnectDialog"/>
+        <CursorPos X="3" Y="13"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="ConnectDialog/InheritedConnectForm.pas"/>
+        <ComponentName Value="fmInheritedConnect"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceFilename Value="ConnectDialog/InheritedConnectForm.lrs"/>
+        <UnitName Value="InheritedConnectForm"/>
+        <CursorPos X="3" Y="12"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="ConnectDialog/MyConnectForm.pas"/>
+        <ComponentName Value="fmMyConnect"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceFilename Value="ConnectDialog/MyConnectForm.lrs"/>
+        <UnitName Value="MyConnectForm"/>
+        <CursorPos X="3" Y="13"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="ConnectDialog/MyConnectForm.lfm"/>
+        <CursorPos X="18" Y="8"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="LFM"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="FilterAndIndex/FilterAndIndex.pas"/>
+        <ComponentName Value="FilterAndIndexFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="FilterAndIndex/FilterAndIndex.lrs"/>
+        <UnitName Value="FilterAndIndex"/>
+        <CursorPos X="1" Y="13"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="FilterAndIndex/FilterAndIndex.lfm"/>
+        <CursorPos X="44" Y="287"/>
+        <TopLine Value="265"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="LFM"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="LongStrings/LongStrings.pas"/>
+        <ComponentName Value="LongStringsFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="LongStrings/LongStrings.lrs"/>
+        <UnitName Value="LongStrings"/>
+        <CursorPos X="3" Y="13"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="MasterDetail/MasterDetail.pas"/>
+        <ComponentName Value="MasterDetailFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="MasterDetail/MasterDetail.lrs"/>
+        <UnitName Value="MasterDetail"/>
+        <CursorPos X="3" Y="13"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="MasterDetail/MasterDetail.lfm"/>
+        <CursorPos X="52" Y="257"/>
+        <TopLine Value="228"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="LFM"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="Query/Query.pas"/>
+        <ComponentName Value="QueryFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="Query/Query.lrs"/>
+        <UnitName Value="Query"/>
+        <CursorPos X="3" Y="13"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="Sql/Sql.pas"/>
+        <ComponentName Value="SqlFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="Sql/Sql.lrs"/>
+        <UnitName Value="Sql"/>
+        <CursorPos X="3" Y="13"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="StoredProc/StoredProc.pas"/>
+        <ComponentName Value="StoredProcFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="StoredProc/StoredProc.lrs"/>
+        <UnitName Value="StoredProc"/>
+        <CursorPos X="3" Y="13"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="Table/Table.pas"/>
+        <ComponentName Value="TableFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="Table/Table.lrs"/>
+        <UnitName Value="Table"/>
+        <CursorPos X="1" Y="13"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="TextBlob/TextBlob.pas"/>
+        <ComponentName Value="TextBlobFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="TextBlob/TextBlob.lrs"/>
+        <UnitName Value="TextBlob"/>
+        <CursorPos X="7" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="UpdateSQL/UpdateSQL.pas"/>
+        <ComponentName Value="UpdateSQLFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="UpdateSQL/UpdateSQL.lrs"/>
+        <UnitName Value="UpdateSQL"/>
+        <CursorPos X="3" Y="13"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="../../../../../../Lazarus/lcl/include/application.inc"/>
+        <CursorPos X="40" Y="351"/>
+        <TopLine Value="324"/>
+        <UsageCount Value="10"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="../../../Source/IBCClasses.pas"/>
+        <UnitName Value="IBCClasses"/>
+        <CursorPos X="27" Y="864"/>
+        <TopLine Value="851"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="../../../../Dac/Source/DAScript.pas"/>
+        <UnitName Value="DAScript"/>
+        <CursorPos X="35" Y="832"/>
+        <TopLine Value="810"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="../../../Source/IBC.pas"/>
+        <UnitName Value="IBC"/>
+        <CursorPos X="1" Y="3397"/>
+        <TopLine Value="3378"/>
+        <UsageCount Value="10"/>
+        <Bookmarks Count="1">
+          <Item0 X="29" Y="3394" ID="3"/>
+        </Bookmarks>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="../../../../../../Lazarus/fpc/2.2.0/source/packages/fcl-db/src/db.pas"/>
+        <UnitName Value="db"/>
+        <CursorPos X="23" Y="1938"/>
+        <TopLine Value="1936"/>
+        <UsageCount Value="10"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="../../../../../../Lazarus/lcl/interfaces/win32/interfaces.pp"/>
+        <UnitName Value="Interfaces"/>
+        <CursorPos X="10" Y="43"/>
+        <TopLine Value="10"/>
+        <UsageCount Value="10"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="../../../../../../Lazarus/lcl/forms.pp"/>
+        <ComponentName Value="Frame"/>
+        <HasResources Value="True"/>
+        <UnitName Value="Forms"/>
+        <CursorPos X="3" Y="1577"/>
+        <TopLine Value="1559"/>
+        <UsageCount Value="10"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="../../../Source/IBCArray.pas"/>
+        <UnitName Value="IBCArray"/>
+        <CursorPos X="38" Y="403"/>
+        <TopLine Value="380"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="Loader/Loader.pas"/>
+        <ComponentName Value="LoaderFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="Loader/Loader.lrs"/>
+        <UnitName Value="Loader"/>
+        <CursorPos X="4" Y="126"/>
+        <TopLine Value="85"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="Loader/Fetch.pas"/>
+        <ComponentName Value="FetchForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Fetch"/>
+        <CursorPos X="20" Y="9"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit36>
+      <Unit37>
+        <Filename Value="../../../../Dac/Source/MemData.pas"/>
+        <UnitName Value="MemData"/>
+        <CursorPos X="3" Y="1264"/>
+        <TopLine Value="1241"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="../../../../Dac/Source/Dac.inc"/>
+        <CursorPos X="1" Y="239"/>
+        <TopLine Value="214"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit38>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <SearchPaths>
+      <IncludeFiles Value="Base/;../../../../Dac/Source/;../../../Source/"/>
+      <OtherUnitFiles Value="../../../../Dac/Demos/Win32/DacDemo/Base/;../../../../Dac/Demos/Win32/DacDemo/VirtualTable/;Base/;VirtualTable/;Alerter/;Arrays/;CachedUpdates/;ConnectDialog/;FilterAndIndex/;Loader/;LongStrings/;MasterDetail/;Query/;Sql/;StoredProc/;Table/;TextBlob/;UpdateSQL/;../../../../Dac/Source/;../../../Source/"/>
+      <ObjectPath Value="../IbDacDemo/ConnectDialog/"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <SyntaxMode Value="Delphi"/>
+        <IncludeAssertionCode Value="True"/>
+      </SyntaxOptions>
+    </Parsing>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="2">
+      <Item1>
+        <Name Value="ECodetoolError"/>
+      </Item1>
+      <Item2>
+        <Name Value="EFOpenError"/>
+      </Item2>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

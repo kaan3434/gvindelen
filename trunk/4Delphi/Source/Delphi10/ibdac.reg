@@ -1,0 +1,9 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Borland\BDS\4.0\Known Packages]
+"[IDEPATH4]bin\\dclibdac100.bpl"="Devart InterBase Data Access Components"
+"[IDEPATH4]bin\\ibdacvcl100.bpl"="Devart InterBase Data Access GUI related Components"
+
+[HKEY_CURRENT_USER\Software\Devart\IBDAC]
+"D10"="[INSTALLDIR]"
+

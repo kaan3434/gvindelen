@@ -1,0 +1,211 @@
+inherited LoaderFrame: TLoaderFrame
+  Height = 270
+  Width = 621
+  Align = alClient
+  ClientHeight = 270
+  ClientWidth = 621
+  TabOrder = 0
+  DesignLeft = 308
+  DesignTop = 193
+  object Panel2: TPanel[0]
+    Height = 64
+    Width = 621
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 64
+    ClientWidth = 621
+    TabOrder = 0
+    object ToolBar: TPanel
+      Left = 1
+      Height = 62
+      Top = 1
+      Width = 586
+      BevelOuter = bvNone
+      ClientHeight = 62
+      ClientWidth = 586
+      Color = 6369932
+      ParentColor = False
+      TabOrder = 0
+      object btOpen: TSpeedButton
+        Left = 1
+        Height = 24
+        Top = 1
+        Width = 85
+        Caption = 'Open'
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+        Transparent = False
+        OnClick = btOpenClick
+      end
+      object btClose: TSpeedButton
+        Left = 87
+        Height = 24
+        Top = 1
+        Width = 85
+        Caption = 'Close'
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+        Transparent = False
+        OnClick = btCloseClick
+      end
+      object btLoad: TSpeedButton
+        Left = 173
+        Height = 24
+        Top = 1
+        Width = 85
+        Caption = 'Load'
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+        Transparent = False
+        OnClick = btLoadClick
+      end
+      object btDeleteAll: TSpeedButton
+        Left = 259
+        Height = 24
+        Top = 1
+        Width = 85
+        Caption = 'Delete All'
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+        Transparent = False
+        OnClick = btDeleteAllClick
+      end
+      object DBNavigator: TDBNavigator
+        Left = 345
+        Height = 24
+        Top = 1
+        Width = 240
+        BevelOuter = bvNone
+        ClientHeight = 24
+        ClientWidth = 240
+        Color = clBtnFace
+        DataSource = DataSource
+        Flat = True
+        ParentColor = False
+        TabOrder = 0
+      end
+      object Panel1: TPanel
+        Left = 1
+        Height = 35
+        Top = 26
+        Width = 171
+        BevelOuter = bvNone
+        ClientHeight = 35
+        ClientWidth = 171
+        ParentColor = False
+        TabOrder = 1
+        object Label1: TLabel
+          Left = 6
+          Height = 13
+          Top = 14
+          Width = 49
+          Caption = 'Load rows'
+          ParentColor = False
+        end
+        object edRows: TEdit
+          Left = 66
+          Height = 21
+          Top = 10
+          Width = 87
+          TabOrder = 0
+          Text = '1000'
+        end
+      end
+      object Panel3: TPanel
+        Left = 173
+        Height = 35
+        Top = 26
+        Width = 412
+        BevelOuter = bvNone
+        ClientHeight = 35
+        ClientWidth = 412
+        ParentColor = False
+        TabOrder = 2
+        object rgEvent: TRadioGroup
+          Left = 9
+          Height = 32
+          Top = -1
+          Width = 225
+          AutoFill = True
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.TopBottomSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsScaleChilds
+          ChildSizing.ShrinkVertical = crsScaleChilds
+          ChildSizing.Layout = cclLeftToRightThenTopToBottom
+          ChildSizing.ControlsPerLine = 2
+          ClientHeight = 14
+          ClientWidth = 221
+          Columns = 2
+          Items.Strings = (
+            'GetColumnData'
+            'PutData'
+          )
+          OnClick = rgEventClick
+          TabOrder = 0
+        end
+      end
+    end
+  end
+  object DBGrid: TDBGrid[1]
+    Height = 206
+    Top = 64
+    Width = 621
+    Align = alClient
+    DataSource = DataSource
+    FixedColor = clBtnFace
+    FixedHotColor = cl3DLight
+    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+    OptionsExtra = [dgeAutoColumns, dgeCheckboxColumn]
+    ParentColor = False
+    TabOrder = 1
+    TitleFont.Height = -11
+    TitleFont.Name = 'Tahoma'
+  end
+  object DataSource: TDatasource[2]
+    DataSet = Query
+    left = 440
+    top = 64
+  end
+  object Query: TIBCQuery[3]
+    Connection = IbDacForm.IBCConnection
+    SQL.Strings = (
+      'SELECT * FROM IBDAC_Loaded ORDER BY CODE'
+    )
+    Options.ComplexArrayFields = False
+    AfterOpen = QueryAfterOpen
+    BeforeClose = QueryBeforeClose
+    AfterRefresh = QueryAfterOpen
+    left = 408
+    top = 64
+  end
+  object IBCLoader: TIBCLoader[4]
+    Connection = IbDacForm.IBCConnection
+    TableName = 'IBDAC_Loaded'
+    Columns = <    
+      item
+        Name = 'CODE'
+        FieldType = ftInteger
+      end    
+      item
+        Name = 'DBL'
+        FieldType = ftFloat
+      end    
+      item
+        Name = 'STR'
+        Size = 50
+      end    
+      item
+        Name = 'DAT'
+        FieldType = ftDate
+      end>
+    OnGetColumnData = IBCLoaderGetColumnData
+    left = 408
+    top = 96
+  end
+end

@@ -1,0 +1,212 @@
+inherited StoredProcFrame: TStoredProcFrame
+  Height = 270
+  Width = 601
+  Align = alClient
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Height = 3
+    Top = 220
+    Width = 601
+    Align = alTop
+    AutoSnap = False
+    ResizeAnchor = akTop
+  end
+  object DBGrid: TDBGrid
+    Height = 47
+    Top = 223
+    Width = 601
+    Align = alClient
+    DataSource = DataSource
+    FixedColor = clBtnFace
+    FixedHotColor = cl3DLight
+    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+    OptionsExtra = [dgeAutoColumns, dgeCheckboxColumn]
+    ParentColor = False
+    TabOrder = 1
+    TabStop = True
+    TitleFont.Height = -11
+    TitleFont.Name = 'Tahoma'
+  end
+  object ToolBar: TPanel
+    Height = 50
+    Width = 601
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 50
+    ClientWidth = 601
+    TabOrder = 0
+    object Panel1: TPanel
+      Height = 25
+      Width = 431
+      BevelOuter = bvNone
+      ClientHeight = 25
+      ClientWidth = 431
+      Color = 6369932
+      ParentColor = False
+      TabOrder = 0
+      object btClose: TSpeedButton
+        Left = 87
+        Height = 24
+        Top = 1
+        Width = 85
+        Caption = 'Close'
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+        Transparent = False
+        OnClick = btCloseClick
+      end
+      object btOpen: TSpeedButton
+        Left = 1
+        Height = 24
+        Top = 1
+        Width = 85
+        Caption = 'Open'
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+        Transparent = False
+        OnClick = btOpenClick
+      end
+      object btExecute: TSpeedButton
+        Left = 173
+        Height = 24
+        Top = 1
+        Width = 85
+        Caption = 'Execute'
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+        Transparent = False
+        OnClick = btExecuteClick
+      end
+      object btPrepare: TSpeedButton
+        Left = 259
+        Height = 24
+        Top = 1
+        Width = 85
+        Caption = 'Prepare'
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+        Transparent = False
+        OnClick = btPrepareClick
+      end
+      object btUnPrepare: TSpeedButton
+        Left = 345
+        Height = 24
+        Top = 1
+        Width = 85
+        Caption = 'UnPrepare'
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+        Transparent = False
+        OnClick = btUnPrepareClick
+      end
+    end
+    object Panel2: TPanel
+      Height = 26
+      Top = 24
+      Width = 538
+      BevelOuter = bvNone
+      ClientHeight = 26
+      ClientWidth = 538
+      Color = 6369932
+      ParentColor = False
+      TabOrder = 1
+      object btParameters: TSpeedButton
+        Left = 259
+        Height = 24
+        Top = 1
+        Width = 85
+        Caption = 'Parameters'
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+        Transparent = False
+        OnClick = btParametersClick
+      end
+      object btGenerateSQL: TSpeedButton
+        Left = 345
+        Height = 24
+        Top = 1
+        Width = 85
+        Caption = 'Generate SQL'
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+        Transparent = False
+        OnClick = btGenerateSQLClick
+      end
+      object Panel3: TPanel
+        Left = 1
+        Height = 24
+        Top = 1
+        Width = 257
+        BevelOuter = bvNone
+        ClientHeight = 24
+        ClientWidth = 257
+        ParentColor = False
+        TabOrder = 0
+        object lbStoredProcName: TLabel
+          Left = 2
+          Height = 13
+          Top = 5
+          Width = 111
+          Caption = 'Stored procedure name'
+          ParentColor = False
+        end
+        object edStoredProcNames: TComboBox
+          Left = 117
+          Height = 21
+          Top = 1
+          Width = 136
+          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+          ItemHeight = 13
+          OnChange = edStoredProcNamesChange
+          OnDropDown = edStoredProcNamesDropDown
+          Style = csDropDownList
+          TabOrder = 0
+        end
+      end
+      object ToolPanel: TPanel
+        Left = 431
+        Height = 24
+        Top = 1
+        Width = 106
+        BevelOuter = bvNone
+        ClientHeight = 24
+        ClientWidth = 106
+        ParentColor = False
+        TabOrder = 1
+        object cbGenerateQuery: TCheckBox
+          Left = 8
+          Height = 19
+          Top = 3
+          Width = 99
+          Caption = 'Generate query'
+          TabOrder = 0
+        end
+      end
+    end
+  end
+  object meSQL: TMemo
+    Height = 170
+    Top = 50
+    Width = 601
+    Align = alTop
+    ReadOnly = True
+    ScrollBars = ssVertical
+    TabOrder = 2
+  end
+  object DataSource: TDatasource
+    DataSet = IBCStoredProc
+    left = 317
+    top = 67
+  end
+  object IBCStoredProc: TIBCStoredProc
+    left = 280
+    top = 65
+  end
+end

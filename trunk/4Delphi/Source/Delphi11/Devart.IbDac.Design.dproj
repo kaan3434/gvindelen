@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<ProjectGuid>{98749345-47b3-4f4f-89b5-d85b07d44b89}</ProjectGuid>
+		<MainSource>Devart.IbDac.Design.dpk</MainSource>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+		<DCC_DCCCompiler>DCCIL</DCC_DCCCompiler>
+		<DCC_DependencyCheckOutputName>Devart.IbDac.Design.dll</DCC_DependencyCheckOutputName>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<Version>7.0</Version>
+		<DCC_DebugInformation>False</DCC_DebugInformation>
+		<DCC_WriteableConstants>True</DCC_WriteableConstants>
+		<DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+		<DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+		<DCC_NameSpace>Devart.IbDac;Devart.Dac;Devart.IbDac.Design;Devart.Dac.Design</DCC_NameSpace>
+		<DCC_DcuOutput>.</DCC_DcuOutput>
+		<DCC_ObjOutput>.</DCC_ObjOutput>
+		<DCC_HppOutput>.</DCC_HppOutput>
+		<DCC_DcpOutput>.</DCC_DcpOutput>
+		<DCC_UnitSearchPath>..\Design;.\;..\Net;..\;..\..\..\Common\Source\Net;..\..\..\Common\Source;..\..\..\Common\Source\Delphi11;D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0;D:\Program Files\CodeGear\RAD Studio\5.0\bin;D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0;d:\program files\borland\bds\4.0\bin;D:\Projects\Delphi\Common\Source\delphi11;D:\Projects\Delphi\IbDac\Source\Delphi11</DCC_UnitSearchPath>
+		<DCC_ResourcePath>..\Design;.\;..\Net;..\;..\..\..\Common\Source\Net;..\..\..\Common\Source;..\..\..\Common\Source\Delphi11;D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0;D:\Program Files\CodeGear\RAD Studio\5.0\bin;D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0;d:\program files\borland\bds\4.0\bin;D:\Projects\Delphi\Common\Source\delphi11;D:\Projects\Delphi\IbDac\Source\Delphi11</DCC_ResourcePath>
+		<DCC_IncludePath>..\Design;.\;..\Net;..\;..\..\..\Common\Source\Net;..\..\..\Common\Source;..\..\..\Common\Source\Delphi11;D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0;D:\Program Files\CodeGear\RAD Studio\5.0\bin;D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0;d:\program files\borland\bds\4.0\bin;D:\Projects\Delphi\Common\Source\delphi11;D:\Projects\Delphi\IbDac\Source\Delphi11</DCC_IncludePath>
+		<DCC_Define>IBDAC;RELEASE</DCC_Define>
+		<DCC_SYMBOL_DEPRECATED>False</DCC_SYMBOL_DEPRECATED>
+		<DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
+		<DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
+		<DCC_BplOutput>.</DCC_BplOutput>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<Version>7.0</Version>
+		<DCC_DebugInformation>False</DCC_DebugInformation>
+		<DCC_WriteableConstants>True</DCC_WriteableConstants>
+		<DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+		<DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+		<DCC_NameSpace>Devart.IbDac;Devart.Dac;Devart.IbDac.Design;Devart.Dac.Design</DCC_NameSpace>
+		<DCC_DebugInfoInExe>True</DCC_DebugInfoInExe>
+		<DCC_DebugVN>True</DCC_DebugVN>
+		<DCC_DcuOutput>.</DCC_DcuOutput>
+		<DCC_ObjOutput>.</DCC_ObjOutput>
+		<DCC_HppOutput>.</DCC_HppOutput>
+		<DCC_DcpOutput>.</DCC_DcpOutput>
+		<DCC_UnitSearchPath>..\Design;.\;..\Net;..\;..\..\..\Common\Source\Net;..\..\..\Common\Source;..\..\..\Common\Source\Delphi11;D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0;D:\Program Files\CodeGear\RAD Studio\5.0\bin</DCC_UnitSearchPath>
+		<DCC_ResourcePath>..\Design;.\;..\Net;..\;..\..\..\Common\Source\Net;..\..\..\Common\Source;..\..\..\Common\Source\Delphi11;D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0;D:\Program Files\CodeGear\RAD Studio\5.0\bin</DCC_ResourcePath>
+		<DCC_IncludePath>..\Design;.\;..\Net;..\;..\..\..\Common\Source\Net;..\..\..\Common\Source;..\..\..\Common\Source\Delphi11;D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0;D:\Program Files\CodeGear\RAD Studio\5.0\bin</DCC_IncludePath>
+		<DCC_Define>IBDAC</DCC_Define>
+		<DCC_SYMBOL_DEPRECATED>False</DCC_SYMBOL_DEPRECATED>
+		<DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
+		<DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
+		<DCC_Platform>x86</DCC_Platform>
+		<DCC_BplOutput>.</DCC_BplOutput>
+	</PropertyGroup>
+	<ProjectExtensions>
+		<Borland.Personality>DelphiDotNet.Personality</Borland.Personality>
+		<Borland.ProjectType>Package</Borland.ProjectType>
+		<BorlandProject>
+			<BorlandProject><DelphiDotNet.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><Package_Options><Package_Options Name="PackageDescription">Devart InterBase Data Access Components</Package_Options><Package_Options Name="ImplicitBuild">False</Package_Options><Package_Options Name="DesigntimeOnly">True</Package_Options><Package_Options Name="RuntimeOnly">False</Package_Options></Package_Options><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">4</VersionInfo><VersionInfo Name="MinorVer">1</VersionInfo><VersionInfo Name="Release">4</VersionInfo><VersionInfo Name="Build">5000</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">4.1.4.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">4.1.4.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">Devart.IbDac.Design.dpk</Source></Source></DelphiDotNet.Personality></BorlandProject></BorlandProject>
+	</ProjectExtensions>
+	<ItemGroup>
+		<Reference Include="..\..\..\Common\Source\delphi11\Devart.Dac.Design.dll">
+			<AssemblyName>Devart.Dac.Design</AssemblyName>
+			<CopyLocal>False</CopyLocal>
+			<Version>6.10.1.4010</Version>
+			<HintPath>..\..\..\Common\Source\delphi11\Devart.Dac.Design.dll</HintPath>
+			<AssemblyTag>..\..\..\Common\Source\delphi11\Devart.Dac.Design.dll</AssemblyTag>
+			<LinkUnits>False</LinkUnits>
+		</Reference>
+		<Reference Include="..\..\..\Common\Source\delphi11\Devart.Dac.dll">
+			<AssemblyName>Devart.Dac</AssemblyName>
+			<CopyLocal>False</CopyLocal>
+			<Project>{90F92537-A5EA-4E18-9C2B-BA191E1242E4}</Project>
+			<Version>6.10.1.5010</Version>
+			<HintPath>..\..\..\Common\Source\delphi11\Devart.Dac.dll</HintPath>
+			<AssemblyTag>..\..\..\Common\Source\delphi11\Devart.Dac.dll</AssemblyTag>
+			<LinkUnits>False</LinkUnits>
+		</Reference>
+		<Reference Include="Devart.IbDac.dll">
+			<AssemblyName>Devart.IbDac</AssemblyName>
+			<CopyLocal>False</CopyLocal>
+			<Project>{63E4B3E1-BB45-4AFA-8F9B-42806D30695A}</Project>
+			<Version>2.10.0.5010</Version>
+			<HintPath>Devart.IbDac.dll</HintPath>
+			<AssemblyTag>Devart.IbDac</AssemblyTag>
+			<LinkUnits>False</LinkUnits>
+		</Reference>
+		<Reference Include="D:\Program Files\CodeGear\RAD Studio\5.0\bin\Borland.Studio.ToolsAPI.dll">
+			<AssemblyName>Borland.Studio.ToolsAPI</AssemblyName>
+			<CopyLocal>False</CopyLocal>
+			<Version>10.0.4143.0</Version>
+			<HintPath>D:\Program Files\CodeGear\RAD Studio\5.0\bin\Borland.Studio.ToolsAPI.dll</HintPath>
+			<AssemblyTag>D:\Program Files\CodeGear\RAD Studio\5.0\bin\Borland.Studio.ToolsAPI.dll</AssemblyTag>
+			<LinkUnits>False</LinkUnits>
+		</Reference>
+		<Reference Include="D:\Program Files\CodeGear\RAD Studio\5.0\bin\Borland.Studio.Vcl.Design.dll">
+			<AssemblyName>Borland.Studio.Vcl.Design</AssemblyName>
+			<CopyLocal>False</CopyLocal>
+			<Version>10.0.4143.0</Version>
+			<HintPath>D:\Program Files\CodeGear\RAD Studio\5.0\bin\Borland.Studio.Vcl.Design.dll</HintPath>
+			<AssemblyTag>D:\Program Files\CodeGear\RAD Studio\5.0\bin\Borland.Studio.Vcl.Design.dll</AssemblyTag>
+			<LinkUnits>False</LinkUnits>
+		</Reference>
+		<Reference Include="D:\Program Files\CodeGear\RAD Studio\5.0\bin\Borland.Vcl.Design.DbRtl.dll">
+			<AssemblyName>Borland.Vcl.Design.DbRtl</AssemblyName>
+			<CopyLocal>False</CopyLocal>
+			<Version>10.0.4143.0</Version>
+			<HintPath>D:\Program Files\CodeGear\RAD Studio\5.0\bin\Borland.Vcl.Design.DbRtl.dll</HintPath>
+			<AssemblyTag>D:\Program Files\CodeGear\RAD Studio\5.0\bin\Borland.Vcl.Design.DbRtl.dll</AssemblyTag>
+			<LinkUnits>False</LinkUnits>
+		</Reference>
+		<Reference Include="D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0\Borland.Vcl.dll">
+			<AssemblyName>Borland.Vcl</AssemblyName>
+			<Version>10.0.4143.0</Version>
+			<HintPath>D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0\Borland.Vcl.dll</HintPath>
+			<AssemblyTag>D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0\Borland.Vcl.dll</AssemblyTag>
+			<LinkUnits>False</LinkUnits>
+		</Reference>
+		<Reference Include="D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0\Borland.VclBdeRtl.dll">
+			<AssemblyName>Borland.VclBdeRtl</AssemblyName>
+			<Version>10.0.4143.0</Version>
+			<HintPath>D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0\Borland.VclBdeRtl.dll</HintPath>
+			<AssemblyTag>D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0\Borland.VclBdeRtl.dll</AssemblyTag>
+			<LinkUnits>False</LinkUnits>
+		</Reference>
+		<Reference Include="D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0\Borland.VclDbCtrls.dll">
+			<AssemblyName>Borland.VclDbCtrls</AssemblyName>
+			<Version>10.0.4143.0</Version>
+			<HintPath>D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0\Borland.VclDbCtrls.dll</HintPath>
+			<AssemblyTag>D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0\Borland.VclDbCtrls.dll</AssemblyTag>
+			<LinkUnits>False</LinkUnits>
+		</Reference>
+		<Reference Include="D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0\Borland.VclRtl.dll">
+			<AssemblyName>Borland.VclRtl</AssemblyName>
+			<Version>10.0.4143.0</Version>
+			<HintPath>D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0\Borland.VclRtl.dll</HintPath>
+			<AssemblyTag>D:\Program Files\Common Files\CodeGear Shared\RAD Studio\Shared Assemblies\5.0\Borland.VclRtl.dll</AssemblyTag>
+			<LinkUnits>False</LinkUnits>
+		</Reference>
+	</ItemGroup>
+	<ItemGroup>
+		<DelphiCompile Include="Devart.IbDac.Design.dpk">
+			<MainSource>MainSource</MainSource>
+		</DelphiCompile>
+		<DCCReference Include="..\Net\Devart.IbDac.Design.IBCAbout.pas"/>
+		<DCCReference Include="..\Net\Devart.IbDac.Design.IBCAlerterEditor.pas"/>
+		<DCCReference Include="..\Net\Devart.IbDac.Design.IBCConnectionEditor.pas"/>
+		<DCCReference Include="..\Net\Devart.IbDac.Design.IBCDesign.pas"/>
+		<DCCReference Include="..\Net\Devart.IbDac.Design.IBCDesignUtils.pas"/>
+		<DCCReference Include="..\Net\Devart.IbDac.Design.IBCMenu.pas"/>
+		<DCCReference Include="..\Net\Devart.IbDac.Design.IBCParamsFrame.pas"/>
+		<DCCReference Include="..\Net\Devart.IbDac.Design.IBCQueryEditor.pas"/>
+		<DCCReference Include="..\Net\Devart.IbDac.Design.IBCReg.pas"/>
+		<DCCReference Include="..\Net\Devart.IbDac.Design.IBCSPCallFrame.pas"/>
+		<DCCReference Include="..\Net\Devart.IbDac.Design.IBCSQLEditor.pas"/>
+		<DCCReference Include="..\Net\Devart.IbDac.Design.IBCSQLGeneratorFrame.pas"/>
+		<DCCReference Include="..\Net\Devart.IbDac.Design.IBCStoredProcEditor.pas"/>
+		<DCCReference Include="..\Net\Devart.IbDac.Design.IBCTableEditor.pas"/>
+		<DCCReference Include="..\Net\Devart.IbDac.Design.IBCTableSQLFrame.pas"/>
+		<DCCReference Include="..\Net\Devart.IbDac.Design.IBCTransactionEditor.pas"/>
+		<DCCReference Include="..\Net\Devart.IbDac.Design.IBCUpdateSQLEditor.pas"/>
+	</ItemGroup>
+	<Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets"/>
+</Project>

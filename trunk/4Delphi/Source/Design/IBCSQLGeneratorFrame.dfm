@@ -1,0 +1,2 @@
+inherited IBCSQLGeneratorFrame: TIBCSQLGeneratorFrame
+end

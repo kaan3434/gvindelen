@@ -1,0 +1,86 @@
+LazarusResources.Add('TTextBlobFrame','FORMDATA',[
+  'TPF0'#14'TTextBlobFrame'#13'TextBlobFrame'#6'Height'#3#132#1#5'Width'#3#211#2
+  +#5'Align'#7#8'alClient'#0#9'TSplitter'#9'Splitter1'#6'Cursor'#7#8'crVSplit'#6
+  +'Height'#2#2#3'Top'#3#211#0#5'Width'#3#211#2#5'Align'#7#5'alTop'#12'ResizeAn'
+  +'chor'#7#5'akTop'#0#0#7'TDBGrid'#6'DBGrid'#6'Height'#3#160#0#3'Top'#2'3'#5'W'
+  +'idth'#3#211#2#5'Align'#7#5'alTop'#10'DataSource'#7#10'DataSource'#10'FixedC'
+  +'olor'#7#9'clBtnFace'#13'FixedHotColor'#7#9'cl3DLight'#7'Options'#11#9'dgEdi'
+  +'ting'#8'dgTitles'#11'dgIndicator'#14'dgColumnResize'#12'dgColumnMove'#10'dg'
+  +'ColLines'#10'dgRowLines'#6'dgTabs'#21'dgAlwaysShowSelection'#15'dgConfirmDe'
+  +'lete'#14'dgCancelOnExit'#0#12'OptionsExtra'#11#14'dgeAutoColumns'#17'dgeChe'
+  +'ckboxColumn'#0#11'ParentColor'#8#8'TabOrder'#2#0#7'TabStop'#9#16'TitleFont.'
+  +'Height'#2#245#14'TitleFont.Name'#6#6'Tahoma'#0#0#7'TDBMemo'#10'meComments'#6
+  +'Height'#2'o'#3'Top'#3#21#1#5'Width'#3#211#2#5'Align'#7#8'alClient'#9'DataFi'
+  +'eld'#6#3'VAL'#10'DataSource'#7#10'DataSource'#13'Lines.Strings'#1#6#10'meCo'
+  +'mments'#0#10'ScrollBars'#7#10'ssVertical'#8'TabOrder'#2#1#0#0#6'TPanel'#6'P'
+  +'anel1'#6'Height'#2'3'#5'Width'#3#211#2#5'Align'#7#5'alTop'#10'BevelOuter'#7
+  +#6'bvNone'#12'ClientHeight'#2'3'#11'ClientWidth'#3#211#2#8'TabOrder'#2#2#0#6
+  +'TPanel'#6'Panel2'#6'Height'#2#26#5'Width'#3#158#1#10'BevelOuter'#7#6'bvNone'
+  +#12'ClientHeight'#2#26#11'ClientWidth'#3#158#1#5'Color'#4#140'2a'#0#11'Paren'
+  +'tColor'#8#8'TabOrder'#2#0#0#12'TSpeedButton'#7'btClose'#4'Left'#2'W'#6'Heig'
+  +'ht'#2#24#3'Top'#2#1#5'Width'#2'U'#7'Caption'#6#5'Close'#5'Color'#7#9'clBtnF'
+  +'ace'#4'Flat'#9#9'NumGlyphs'#2#0#11'Transparent'#8#7'OnClick'#7#12'btCloseCl'
+  +'ick'#0#0#12'TSpeedButton'#6'btOpen'#4'Left'#2#1#6'Height'#2#24#3'Top'#2#1#5
+  +'Width'#2'U'#7'Caption'#6#4'Open'#5'Color'#7#9'clBtnFace'#4'Flat'#9#9'NumGly'
+  +'phs'#2#0#11'Transparent'#8#7'OnClick'#7#11'btOpenClick'#0#0#12'TDBNavigator'
+  +#11'DBNavigator'#4'Left'#3#173#0#6'Height'#2#24#3'Top'#2#1#5'Width'#3#240#0
+  +#10'BevelOuter'#7#6'bvNone'#12'ClientHeight'#2#24#11'ClientWidth'#3#240#0#5
+  +'Color'#7#9'clBtnFace'#10'DataSource'#7#10'DataSource'#4'Flat'#9#11'ParentCo'
+  +'lor'#8#8'TabOrder'#2#0#0#0#0#6'TPanel'#6'Panel3'#6'Height'#2#25#3'Top'#2#26
+  +#5'Width'#3'0'#1#10'BevelOuter'#7#6'bvNone'#12'ClientHeight'#2#25#11'ClientW'
+  +'idth'#3'0'#1#5'Color'#4#140'2a'#0#11'ParentColor'#8#8'TabOrder'#2#1#0#12'TS'
+  +'peedButton'#12'btCopyRecord'#4'Left'#2#1#6'Height'#2#24#5'Width'#2'd'#7'Cap'
+  +'tion'#6#10'CopyRecord'#5'Color'#7#9'clBtnFace'#4'Flat'#9#9'NumGlyphs'#2#0#11
+  +'Transparent'#8#7'OnClick'#7#17'btCopyRecordClick'#0#0#12'TSpeedButton'#13'b'
+  +'tCopyRecord1'#4'Left'#2'f'#6'Height'#2#24#5'Width'#2'd'#7'Caption'#6#14'Cop'
+  +'yRecord Alt'#5'Color'#7#9'clBtnFace'#4'Flat'#9#9'NumGlyphs'#2#0#11'Transpar'
+  +'ent'#8#7'OnClick'#7#18'btCopyRecord1Click'#0#0#12'TSpeedButton'#13'btCopyRe'
+  +'cord2'#4'Left'#3#203#0#6'Height'#2#24#5'Width'#2'd'#7'Caption'#6#15'CopyRec'
+  +'ord More'#5'Color'#7#9'clBtnFace'#4'Flat'#9#9'NumGlyphs'#2#0#11'Transparent'
+  +#8#7'OnClick'#7#18'btCopyRecord2Click'#0#0#0#0#6'TPanel'#8'ToolBar1'#6'Heigh'
+  +'t'#2'@'#3'Top'#3#213#0#5'Width'#3#211#2#5'Align'#7#5'alTop'#10'BevelOuter'#7
+  +#6'bvNone'#12'ClientHeight'#2'@'#11'ClientWidth'#3#211#2#8'TabOrder'#2#3#0#6
+  +'TLabel'#6'Label1'#4'Left'#2#4#6'Height'#2#15#3'Top'#2#31#5'Width'#2'c'#7'Ca'
+  +'ption'#6#16'Blob properties:'#11'Font.Height'#2#244#9'Font.Name'#6#6'Tahoma'
+  +#10'Font.Style'#11#6'fsBold'#0#11'ParentColor'#8#0#0#6'TLabel'#11'lbBlobProp'
+  +'s'#4'Left'#2#4#6'Height'#2#14#3'Top'#2'/'#5'Width'#2'8'#7'Caption'#6#11'lbB'
+  +'lobProps'#11'ParentColor'#8#7'Visible'#8#0#0#6'TPanel'#6'Panel4'#6'Height'#2
+  +#26#5'Width'#3'\'#2#10'BevelOuter'#7#6'bvNone'#12'ClientHeight'#2#26#11'Clie'
+  +'ntWidth'#3'\'#2#5'Color'#4#140'2a'#0#11'ParentColor'#8#8'TabOrder'#2#0#0#12
+  +'TSpeedButton'#7'btClear'#4'Left'#3#173#0#6'Height'#2#24#3'Top'#2#1#5'Width'
+  +#2'U'#7'Caption'#6#5'Clear'#5'Color'#7#9'clBtnFace'#4'Flat'#9#9'NumGlyphs'#2
+  +#0#11'Transparent'#8#7'OnClick'#7#12'btClearClick'#0#0#12'TSpeedButton'#6'bt'
+  +'Load'#4'Left'#2#1#6'Height'#2#24#3'Top'#2#1#5'Width'#2'U'#7'Caption'#6#14'L'
+  +'oad from file'#5'Color'#7#9'clBtnFace'#4'Flat'#9#9'NumGlyphs'#2#0#11'Transp'
+  +'arent'#8#7'OnClick'#7#12'btLoad1Click'#0#0#12'TSpeedButton'#6'btSave'#4'Lef'
+  +'t'#2'W'#6'Height'#2#24#3'Top'#2#1#5'Width'#2'U'#7'Caption'#6#12'Save to fil'
+  +'e'#5'Color'#7#9'clBtnFace'#4'Flat'#9#9'NumGlyphs'#2#0#11'Transparent'#8#7'O'
+  +'nClick'#7#11'btSaveClick'#0#0#6'TPanel'#6'Panel5'#4'Left'#3#3#1#6'Height'#2
+  +#24#3'Top'#2#1#5'Width'#3'X'#1#10'BevelOuter'#7#6'bvNone'#12'ClientHeight'#2
+  +#24#11'ClientWidth'#3'X'#1#11'ParentColor'#8#8'TabOrder'#2#0#0#9'TCheckBox'
+  +#12'cbCacheBlobs'#4'Left'#3#1#1#6'Height'#2#19#3'Top'#2#3#5'Width'#2'V'#7'Ca'
+  +'ption'#6#11'Cache Blobs'#7'OnClick'#7#17'cbCacheBlobsClick'#8'TabOrder'#2#0
+  +#0#0#9'TCheckBox'#13'cbDefBlobRead'#4'Left'#2#24#6'Height'#2#19#3'Top'#2#3#5
+  +'Width'#2''#7'Caption'#6#18'Deferred BLOB Read'#7'OnClick'#7#18'cbDefBlobRe'
+  +'adClick'#8'TabOrder'#2#1#0#0#9'TCheckBox'#15'cbStreamedBlobs'#4'Left'#3#153
+  ,#0#6'Height'#2#19#3'Top'#2#3#5'Width'#2'd'#7'Caption'#6#14'Streamed Blobs'#7
+  +'OnClick'#7#20'cbStreamedBlobsClick'#8'TabOrder'#2#2#0#0#0#0#0#11'TOpenDialo'
+  +'g'#10'OpenDialog'#5'Title'#6#4'Open'#10'InitialDir'#6#1'.'#4'left'#3#132#0#3
+  +'top'#3#163#0#0#0#11'TSaveDialog'#10'SaveDialog'#5'Title'#6#7'Save As'#10'In'
+  +'itialDir'#6#1'.'#4'left'#3#172#0#3'top'#3#163#0#0#0#9'TIBCQuery'#8'IBCQuery'
+  +#11'SQL.Strings'#1#6#29'SELECT * FROM IBDAC_BLOB_TEXT'#0#10'AfterClose'#7#18
+  +'IBCQueryAfterClose'#9'AfterPost'#7#19'IBCQueryAfterScroll'#11'AfterScroll'#7
+  +#19'IBCQueryAfterScroll'#4'left'#3#133#0#3'top'#2'Z'#0#0#9'TIBCQuery'#14'quI'
+  +'nsertRecord'#11'SQL.Strings'#1#6#27'INSERT INTO IBDAC_BLOB_TEXT'#6#20'  (CO'
+  +'DE, TITLE, VAL)'#6#6'VALUES'#6#23'  (:CODE, :TITLE, :VAL)'#0#4'left'#3#203#0
+  +#3'top'#2'Z'#9'ParamData'#14#1#8'DataType'#7#9'ftInteger'#4'Name'#6#4'CODE'#9
+  +'ParamType'#7#7'ptInput'#0#1#8'DataType'#7#8'ftString'#4'Name'#6#5'TITLE'#9
+  +'ParamType'#7#7'ptInput'#0#1#8'DataType'#7#6'ftBlob'#4'Name'#6#3'VAL'#0#0#0#0
+  +#9'TIBCQuery'#12'quCopyRecord'#11'SQL.Strings'#1#6'.INSERT INTO IBDAC_BLOB_T'
+  +'EXT (Code, Title, Val)'#6'1SELECT &CodeNew, Title, Val FROM IBDAC_BLOB_TEXT'
+  +' '#6#21'  WHERE Code = :Code;'#0#4'left'#3#233#0#3'top'#2'Z'#9'ParamData'#14
+  +#1#8'DataType'#7#9'ftInteger'#4'Name'#6#4'Code'#0#0#9'MacroData'#14#1#4'Name'
+  +#6#7'CodeNew'#0#0#0#0#11'TDatasource'#10'DataSource'#7'DataSet'#7#8'IBCQuery'
+  +#4'left'#3#133#0#3'top'#2'x'#0#0#14'TIBCStoredProc'#14'spSelectRecord'#4'lef'
+  +'t'#3#175#0#3'top'#2'Z'#0#0#0
+]);

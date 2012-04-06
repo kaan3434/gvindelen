@@ -1,0 +1,206 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{79b5aec3-91f8-4d0c-9b7c-cf7b8a7e0806}</ProjectGuid>
+    <MainSource>IbDacDemo_VclNet.dpr</MainSource>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <DCC_EnabledPackages>true</DCC_EnabledPackages>
+    <DCC_DCCCompiler>DCCIL</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>IbDacDemo_VclNet.exe</DCC_DependencyCheckOutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_Optimize>False</DCC_Optimize>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_NameSpace>Borland.Vcl</DCC_NameSpace>
+    <DCC_DebugInfoInExe>True</DCC_DebugInfoInExe>
+    <DCC_DebugVN>True</DCC_DebugVN>
+    <DCC_UnitSearchPath>Base;ConnectDialog</DCC_UnitSearchPath>
+    <DCC_ResourcePath>Base;ConnectDialog</DCC_ResourcePath>
+    <DCC_IncludePath>Base;ConnectDialog</DCC_IncludePath>
+    <DCC_Define>RELEASE</DCC_Define>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_Optimize>False</DCC_Optimize>
+    <DCC_NameSpace>Borland.Vcl</DCC_NameSpace>
+    <DCC_DebugInfoInExe>True</DCC_DebugInfoInExe>
+    <DCC_DebugVN>True</DCC_DebugVN>
+    <DCC_UnitSearchPath>Base;ConnectDialog</DCC_UnitSearchPath>
+    <DCC_ResourcePath>Base;ConnectDialog</DCC_ResourcePath>
+    <DCC_IncludePath>Base;ConnectDialog</DCC_IncludePath>
+    <DCC_Define>DEBUG</DCC_Define>
+    <DCC_Platform>x86</DCC_Platform>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>DelphiDotNet.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+<BorlandProject xmlns=""> <DelphiDotNet.Personality>   <Parameters>
+      <Parameters Name="UseLauncher">False</Parameters>
+      <Parameters Name="LoadAllSymbols">True</Parameters>
+      <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+    </Parameters>
+    <VersionInfo>
+      <VersionInfo Name="IncludeVerInfo">False</VersionInfo>
+      <VersionInfo Name="AutoIncBuild">False</VersionInfo>
+      <VersionInfo Name="MajorVer">1</VersionInfo>
+      <VersionInfo Name="MinorVer">0</VersionInfo>
+      <VersionInfo Name="Release">0</VersionInfo>
+      <VersionInfo Name="Build">0</VersionInfo>
+      <VersionInfo Name="Debug">False</VersionInfo>
+      <VersionInfo Name="PreRelease">False</VersionInfo>
+      <VersionInfo Name="Special">False</VersionInfo>
+      <VersionInfo Name="Private">False</VersionInfo>
+      <VersionInfo Name="DLL">False</VersionInfo>
+      <VersionInfo Name="Locale">1049</VersionInfo>
+      <VersionInfo Name="CodePage">1251</VersionInfo>
+    </VersionInfo>
+    <VersionInfoKeys>
+      <VersionInfoKeys Name="CompanyName"></VersionInfoKeys>
+      <VersionInfoKeys Name="FileDescription"></VersionInfoKeys>
+      <VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
+      <VersionInfoKeys Name="InternalName"></VersionInfoKeys>
+      <VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys>
+      <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
+      <VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys>
+      <VersionInfoKeys Name="ProductName"></VersionInfoKeys>
+      <VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
+      <VersionInfoKeys Name="Comments"></VersionInfoKeys>
+    </VersionInfoKeys>
+    <Source>
+      <Source Name="MainSource">IbDacDemo_VclNet.dpr</Source>
+    </Source>
+  </DelphiDotNet.Personality> </BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <ItemGroup>
+    <Reference Include="$(SystemRoot)\Microsoft.NET\Framework\v2.0.50727\System.Drawing.dll">
+      <AssemblyName>System.Drawing</AssemblyName>
+      <Version>2.0.0.0</Version>
+      <HintPath>$(SystemRoot)\Microsoft.NET\Framework\v2.0.50727\System.Drawing.dll</HintPath>
+      <AssemblyTag>$(SystemRoot)\Microsoft.NET\Framework\v2.0.50727\System.Drawing.dll</AssemblyTag>
+      <LinkUnits>False</LinkUnits>
+    </Reference>
+    <Reference Include="Borland.Delphi.dll">
+      <AssemblyName>Borland.Delphi</AssemblyName>
+      <HintPath>Borland.Delphi.dll</HintPath>
+      <AssemblyTag>Borland.Delphi</AssemblyTag>
+      <LinkUnits>False</LinkUnits>
+    </Reference>
+    <Reference Include="Borland.Vcl.dll">
+      <AssemblyName>Borland.Vcl</AssemblyName>
+      <HintPath>Borland.Vcl.dll</HintPath>
+      <AssemblyTag>Borland.Vcl</AssemblyTag>
+      <LinkUnits>False</LinkUnits>
+    </Reference>
+    <Reference Include="Borland.VclDbRtl.dll">
+      <AssemblyName>Borland.VclDbRtl</AssemblyName>
+      <HintPath>Borland.VclDbRtl.dll</HintPath>
+      <AssemblyTag>Borland.VclDbRtl</AssemblyTag>
+      <LinkUnits>False</LinkUnits>
+    </Reference>
+    <Reference Include="Borland.VclRtl.dll">
+      <AssemblyName>Borland.VclRtl</AssemblyName>
+      <HintPath>Borland.VclRtl.dll</HintPath>
+      <AssemblyTag>Borland.VclRtl</AssemblyTag>
+      <LinkUnits>False</LinkUnits>
+    </Reference>
+    <Reference Include="Devart.IbDac.dll">
+      <AssemblyName>Devart.IbDac</AssemblyName>
+      <HintPath>Devart.IbDac.dll</HintPath>
+      <AssemblyTag>Devart.IbDac</AssemblyTag>
+      <LinkUnits>False</LinkUnits>
+    </Reference>
+    <Reference Include="Devart.Dac.dll">
+      <AssemblyName>Devart.Dac</AssemblyName>
+      <Version>6.20.0.5011</Version>
+      <LinkUnits>False</LinkUnits>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <DelphiCompile Include="IbDacDemo_VclNet.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+    <DCCReference Include="..\..\..\..\Common\Demos\Win32\DacDemo\Base\CategoryFrame.pas" />
+    <DCCReference Include="..\..\..\..\Common\Demos\Win32\DacDemo\Base\DemoBase.pas" />
+    <DCCReference Include="..\..\..\..\Common\Demos\Win32\DacDemo\Base\DemoForm.pas">
+      <Form>DemoForm</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\..\..\Common\Demos\Win32\DacDemo\Base\DemoFrame.pas">
+      <Form>DemoFrame</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\..\..\Common\Demos\Win32\DacDemo\Base\HtmlConsts.pas" />
+    <DCCReference Include="..\..\..\..\Common\Demos\Win32\DacDemo\VirtualTable\VTable.pas">
+      <Form>VirtualTableFrame</Form>
+    </DCCReference>
+    <DCCReference Include="Alerter\Alerter.pas">
+      <Form>AlerterFrame</Form>
+    </DCCReference>
+    <DCCReference Include="Arrays\Arrays.pas">
+      <Form>ArraysFrame</Form>
+    </DCCReference>
+    <DCCReference Include="Base\IbDacAbout.pas">
+      <Form>IbDacAboutForm</Form>
+    </DCCReference>
+    <DCCReference Include="Base\IbDacDemoForm.pas">
+      <Form>IbDacForm</Form>
+    </DCCReference>
+    <DCCReference Include="Base\ParamType.pas">
+      <Form>ParamTypeForm</Form>
+    </DCCReference>
+    <DCCReference Include="BlobPictures\BlobPictures.pas">
+      <Form>BlobPicturesFrame</Form>
+    </DCCReference>
+    <DCCReference Include="CachedUpdates\CachedUpdates.pas">
+      <Form>CachedUpdates</Form>
+    </DCCReference>
+    <DCCReference Include="CachedUpdates\UpdateAction.pas">
+      <Form>UpdateActionForm</Form>
+    </DCCReference>
+    <DCCReference Include="ConnectDialog\ConnectDialog.pas">
+      <Form>ConnectDialogFrame</Form>
+    </DCCReference>
+    <DCCReference Include="CRDBGrid\CRDBGrid.pas">
+      <Form>CRDBGridFrame</Form>
+    </DCCReference>
+    <DCCReference Include="DB_Key\DB_Key.pas">
+      <Form>DB_KeyFrame</Form>
+    </DCCReference>
+    <DCCReference Include="FilterAndIndex\FilterAndIndex.pas">
+      <Form>FilterAndIndexFrame</Form>
+    </DCCReference>
+    <DCCReference Include="LongStrings\LongStrings.pas">
+      <Form>LongStringsFrame</Form>
+    </DCCReference>
+    <DCCReference Include="MasterDetail\MasterDetail.pas">
+      <Form>MasterDetailFrame</Form>
+    </DCCReference>
+    <DCCReference Include="Query\Query.pas">
+      <Form>QueryFrame</Form>
+    </DCCReference>
+    <DCCReference Include="Sql\Sql.pas">
+      <Form>SqlFrame</Form>
+    </DCCReference>
+    <DCCReference Include="StoredProc\StoredProc.pas">
+      <Form>StoredProcFrame</Form>
+    </DCCReference>
+    <DCCReference Include="Table\Table.pas">
+      <Form>TableFrame</Form>
+    </DCCReference>
+    <DCCReference Include="TextBlob\TextBlob.pas">
+      <Form>TextBlobFrame</Form>
+    </DCCReference>
+    <DCCReference Include="Threads\Threads.pas">
+      <Form>ThreadsFrame</Form>
+    </DCCReference>
+    <DCCReference Include="Threads\ThreadsData.pas">
+      <Form>ThreadsDataModule</Form>
+    </DCCReference>
+    <DCCReference Include="UpdateSQL\UpdateSQL.pas">
+      <Form>UpdateSQLFrame</Form>
+    </DCCReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+</Project>
