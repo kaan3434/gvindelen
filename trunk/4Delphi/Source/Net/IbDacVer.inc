@@ -1,1 +1,0 @@
-{$I ..\IbDacVer.inc}

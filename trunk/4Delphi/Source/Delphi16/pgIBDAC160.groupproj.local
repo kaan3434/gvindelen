@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<BorlandProject>
-	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.681,D:\Мои документы\RAD Studio\Projects\ProjectGroup1.groupproj=D:\4Delphi\DevArt\IBDAC\Source\Delphi16\pgIBDAC160.groupproj</Transaction>
-  </Transactions>
-	<Default.Personality>
-		<Projects ActiveProject="D:\4Delphi\DevArt\IBDAC\Source\Delphi16\ibdacfmx160.dproj"/>
-	</Default.Personality>
-</BorlandProject>
