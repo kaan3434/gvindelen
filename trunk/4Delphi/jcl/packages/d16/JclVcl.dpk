@@ -1,0 +1,56 @@
+package JclVcl;
+{$R *.res}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$DEFINITIONINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $61A80}
+{$DEFINE DEBUG}
+{$DEFINE BCB}
+{$DEFINE BCB}
+{$DEFINE WIN32}
+{$DEFINE CONDITIONALEXPRESSIONS}
+{$DEFINE RELEASE}
+{$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'JEDI Code Library VCL package'}
+{$LIBSUFFIX '160'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl,
+  vcl,
+  vclimg,
+  Jcl;
+
+contains
+  JclPrint in '..\..\source\vcl\JclPrint.pas',
+  JclGraphUtils in '..\..\source\vcl\JclGraphUtils.pas',
+  JclGraphics in '..\..\source\vcl\JclGraphics.pas',
+  JclFont in '..\..\source\vcl\JclFont.pas',
+  JclOpenDialogHooks in '..\..\source\vcl\JclOpenDialogHooks.pas',
+  JclOpenDialogFavorites in '..\..\source\vcl\JclOpenDialogFavorites.pas',
+  JclVclResources in '..\..\source\vcl\JclVclResources.pas',
+  JclVersionControl in '..\..\source\vcl\JclVersionControl.pas',
+  JclVersionCtrlCVSImpl in '..\..\source\vcl\JclVersionCtrlCVSImpl.pas',
+  JclVersionCtrlGITImpl in '..\..\source\vcl\JclVersionCtrlGITImpl.pas',
+  JclVersionCtrlSVNImpl in '..\..\source\vcl\JclVersionCtrlSVNImpl.pas';
+
+end.
