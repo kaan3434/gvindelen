@@ -149,18 +149,20 @@ begin
     mtblOrderItems.Post;
   mtblOrderItems.Tag:= 1;
   try
+    Saved:= False;
     For i:= 0 to ndOrderItems.NodeCount - 1 do
     begin
       ndOrderItem:= ndOrderItems[i];
       OrderItemId:= GetXmlAttrValue(ndOrderItem, 'ID');
       mtblOrderItems.Locate('ORDERITEM_ID', OrderItemId, []);
       BatchMoveFields2(ndOrderItem, mtblOrderItems,
-        'MAGAZINE_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR;NAME_RUS;STATUS_ID', true);
+        'ARTICLE_ID;KIND_RUS;STATE_ID;WEIGHT;STATUS_FLAG_LIST=FLAG_SIGN_LIST', false);
       BatchMoveFields2(ndOrderItem, mtblOrderItems,
-        'ARTICLE_ID;KIND_RUS;STATE_ID;WEIGHT', false);
+        'MAGAZINE_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR;NAME_RUS;STATUS_ID', true);
       dmOtto.ActionExecute(trnWrite, ndOrderItem);
       dmOtto.ObjectGet(ndOrderItem, OrderItemId, trnWrite);
     end;
+    Saved:= True;
   finally
     mtblOrderItems.Tag:= 0;
   end;

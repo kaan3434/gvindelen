@@ -70,9 +70,8 @@ inherited FrameOrder: TFrameOrder
       Left = 104
       Top = 48
       Width = 241
-      Height = 19
+      Height = 21
       EditButtons = <>
-      Flat = True
       KeyField = 'PRODUCT_ID'
       ListField = 'PRODUCT_NAME'
       ListSource = dsProducts
@@ -83,9 +82,8 @@ inherited FrameOrder: TFrameOrder
       Left = 104
       Top = 72
       Width = 242
-      Height = 19
+      Height = 21
       EditButtons = <>
-      Flat = True
       KeyField = 'TAXPLAN_ID'
       ListField = 'TAXPLAN_NAME'
       ListSource = dsTaxPlans

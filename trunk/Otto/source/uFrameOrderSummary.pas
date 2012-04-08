@@ -151,6 +151,11 @@ var
   OrderCode: string;
   ndOrderMoney: TXmlNode;
 begin
+  if GetXmlAttrValue(ndOrder, 'ADRESS_ID') = null then
+  begin
+    ShowMessage('Не указан адрес клиента');
+    Exit;
+  end;
   SetXmlAttr(ndOrder, 'BYR2EUR', dmOtto.SettingGet(trnRead, 'BYR2EUR'));
   if not AttrExists(ndOrder, 'ORDER_CODE') then
   begin

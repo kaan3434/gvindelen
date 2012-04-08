@@ -25,7 +25,7 @@ type
     lblPasportIssued: TLabel;
     edPassportIssuer: TLabeledEdit;
     rgReturnKind: TRadioGroup;
-    edtBonus: TDBNumberEditEh;
+    edBonus: TDBNumberEditEh;
     lblBonus: TLabel;
     procedure rgReturnKindClick(Sender: TObject);
   private

@@ -105,9 +105,9 @@ inherited FrameAdress: TFrameAdress
       end
       object dedStreetName: TDBEditEh
         Tag = 4
-        Left = 144
+        Left = 128
         Top = 40
-        Width = 105
+        Width = 145
         Height = 21
         EditButtons = <>
         TabOrder = 2
@@ -209,14 +209,13 @@ inherited FrameAdress: TFrameAdress
         Tag = 4
         Left = 80
         Top = 40
-        Width = 169
-        Height = 19
+        Width = 193
+        Height = 21
         EditButtons = <
           item
             Style = ebsEllipsisEh
             Width = 16
           end>
-        Flat = True
         TabOrder = 1
         Visible = True
         OnEnter = SetKeyLayout
@@ -227,7 +226,7 @@ inherited FrameAdress: TFrameAdress
         Tag = 4
         Left = 80
         Top = 64
-        Width = 167
+        Width = 193
         Height = 21
         EditButtons = <>
         TabOrder = 2
@@ -238,7 +237,7 @@ inherited FrameAdress: TFrameAdress
       object dedRegionName: TDBEditEh
         Left = 80
         Top = 88
-        Width = 169
+        Width = 193
         Height = 21
         TabStop = False
         Color = clBtnFace

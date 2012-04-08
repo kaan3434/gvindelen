@@ -37,6 +37,7 @@ type
     ndClient: TXmlNode;
     ndOrderTaxs: TXmlNode;
     ndOrderTax: TXmlNode;
+    ndOrderMoneys: TXmlNode;
     ndAccount: TXmlNode;
     frmOrderItems: TFrameOrderItems;
     frmOrder: TFrameOrder;
@@ -77,6 +78,7 @@ begin
   ndClient:= ndOrder.NodeFindOrCreate('CLIENT');
   ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
   ndOrderTaxs:= ndOrder.NodeFindOrCreate('ORDERTAXS');
+  ndOrderMoneys:= ndOrder.NodeFindOrCreate('ORDERMONEYS');
   ndAccount:= ndClient.NodeFindOrCreate('ACCOUNT');
 end;
 
@@ -116,6 +118,7 @@ begin
   dmOtto.ObjectGet(ndPlace, GetXmlAttrValue(ndAdress, 'PLACE_ID'), trnRead);
   dmOtto.OrderItemsGet(ndOrderItems, OrderId, trnRead);
   dmOtto.OrderTaxsGet(ndOrderTaxs, OrderId, trnRead);
+  dmOtto.OrderMoneysGet(ndOrderMoneys, OrderId, trnRead);
 end;
 
 
@@ -209,7 +212,11 @@ begin
   inherited;
   if Tag = 1 then Exit;
   if wzForm.ActivePage = wzIPageOrderItems then
-    frmOrderItems.Write
+  begin
+    frmOrderItems.Write;
+    if not frmOrderItems.Saved then
+      ToPage:= wzIPageOrderItems;
+  end
   else
   if wzForm.ActivePage = wzIPageOrder then
     frmOrder.Write

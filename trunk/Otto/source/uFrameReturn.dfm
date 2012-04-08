@@ -109,7 +109,7 @@ inherited FrameMoneyBack: TFrameMoneyBack
       Width = 72
       Height = 13
       Caption = #1057#1091#1084#1084#1072' '#1073#1086#1085#1091#1089#1072
-      FocusControl = edtBonus
+      FocusControl = edBonus
     end
     object edBelPostBarCode: TLabeledEdit
       Left = 16
@@ -151,7 +151,7 @@ inherited FrameMoneyBack: TFrameMoneyBack
       EditLabel.Caption = #1053#1072#1080#1084#1077#1085#1086#1074#1072#1085#1080#1077' '#1086#1088#1075#1072#1085#1080#1079#1072#1094#1080#1080' '#1074#1099#1076#1072#1074#1096#1077#1081' '#1076#1086#1082#1091#1084#1077#1085#1090
       TabOrder = 3
     end
-    object edtBonus: TDBNumberEditEh
+    object edBonus: TDBNumberEditEh
       Left = 664
       Top = 40
       Width = 73

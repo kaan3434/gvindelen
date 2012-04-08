@@ -28,6 +28,7 @@ type
     function DetectCaption(aNode: TXmlNode; aCaption: String): string;
   public
     { Public declarations }
+    Saved: Boolean;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure InitData; virtual;
@@ -35,7 +36,7 @@ type
     procedure OpenTables; virtual;
     function isValid: Boolean; virtual;
     procedure Read; virtual;
-    procedure Write; virtual; 
+    procedure Write; virtual;
     procedure UpdateCaptions; virtual;
   end;
 
@@ -140,7 +141,6 @@ end;
 
 procedure TFrameBase1.Write;
 begin
-//  if not trnWrite.Active then trnWrite.StartTransaction;
 end;
 
 end.
