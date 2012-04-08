@@ -1,36 +1,87 @@
-object DataModule1: TDataModule1
+object dmSwim: TdmSwim
   OldCreateOrder = False
   OnCreate = DataModuleCreate
   Height = 494
   Width = 765
-  object dbSwim: TIBDatabase
-    DatabaseName = 'D:\Swim4\Data\SWIM.FDB'
-    Params.Strings = (
+  object dbSwim: TpFIBDatabase
+    Connected = True
+    DBName = 'D:\Swim4\Data\SWIM.FDB'
+    DBParams.Strings = (
       'user_name=SYSDBA'
-      'password=masterkey'
-      'lc_ctype=UTF8')
-    LoginPrompt = False
-    DefaultTransaction = trnWrite
-    ServerType = 'IBServer'
-    Left = 32
-    Top = 24
+      'lc_ctype=UTF8'
+      'sql_role_name=ADMIN'
+      'password=masterkey')
+    SQLDialect = 3
+    Timeout = 0
+    LibraryName = 'fbclient.dll'
+    AliasName = 'Swim4'
+    WaitForRestoreConnect = 0
+    Left = 48
+    Top = 40
   end
-  object trnWrite: TIBTransaction
-    AllowAutoStart = False
+  object trnRead: TpFIBTransaction
+    Active = True
     DefaultDatabase = dbSwim
-    DefaultAction = TARollback
-    Left = 96
-    Top = 24
+    TimeoutAction = TARollback
+    TRParams.Strings = (
+      'read'
+      'nowait'
+      'rec_version'
+      'read_committed')
+    TPBMode = tpbDefault
+    Left = 48
+    Top = 104
   end
-  object qrySwim: TIBQuery
+  object trnWrite: TpFIBTransaction
+    DefaultDatabase = dbSwim
+    TimeoutAction = TARollback
+    TRParams.Strings = (
+      'write'
+      'nowait'
+      'rec_version'
+      'read_committed')
+    TPBMode = tpbDefault
+    Left = 48
+    Top = 168
+  end
+  object qrySwims: TpFIBDataSet
+    SelectSQL.Strings = (
+      'SELECT'
+      '    SWIM_ID,'
+      '    EVENT_ID,'
+      '    EVENT_DTM,'
+      '    ASPORT_ID,'
+      '    ASPORT_NAME,'
+      '    ATOURNIR_ID,'
+      '    ATOURNIR_NAME,'
+      '    COUNTRY_SIGN,'
+      '    AGAMER1_ID,'
+      '    AGAMER1_NAME,'
+      '    AGAMER2_ID,'
+      '    AGAMER2_NAME,'
+      '    BET1_ID,'
+      '    BETTYPE1_ID,'
+      '    BETTYPE1_SIGN,'
+      '    BET1_VALUE,'
+      '    BET1_KOEF,'
+      '    BOOKER1_ID,'
+      '    BOOKER1_NAME,'
+      '    VALUTE1_SIGN,'
+      '    BET2_ID,'
+      '    BETTYPE2_ID,'
+      '    BETTYPE2_SIGN,'
+      '    BET2_VALUE,'
+      '    BET2_KOEF,'
+      '    BOOKER2_ID,'
+      '    BOOKER2_NAME,'
+      '    VALUTE2_SIGN'
+      'FROM'
+      '    V_SWIMS ')
+    Active = True
+    Transaction = trnRead
     Database = dbSwim
-    Transaction = trnWrite
-    Left = 160
-    Top = 24
-  end
-  object dsSwim: TDataSource
-    DataSet = qrySwim
-    Left = 224
-    Top = 24
+    UpdateTransaction = trnWrite
+    Left = 176
+    Top = 48
   end
 end

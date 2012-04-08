@@ -92,7 +92,7 @@
 				<FormType>dfm</FormType>
 			</DCCReference>
 			<DCCReference Include="uDmSwim.pas">
-				<Form>DataModule1</Form>
+				<Form>dmSwim</Form>
 				<FormType>dfm</FormType>
 				<DesignClass>TDataModule</DesignClass>
 			</DCCReference>

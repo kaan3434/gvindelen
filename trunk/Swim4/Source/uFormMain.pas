@@ -8,7 +8,8 @@ uses
   Vcl.RibbonLunaStyleActnCtrls, Vcl.Ribbon,
   Vcl.ImgList, Vcl.ActnCtrls, Vcl.ToolWin, Vcl.ActnMenus,
   Vcl.RibbonActnMenus, Data.Bind.EngExt, Vcl.Bind.DBEngExt, Data.Bind.Components,
-  Vcl.StdCtrls, Vcl.ExtCtrls;
+  Vcl.StdCtrls, Vcl.ExtCtrls, DBGridEhGrouping, Vcl.ComCtrls, GridsEh, DBGridEh,
+  Data.DB;
 
 type
   TForm1 = class(TForm)
@@ -23,6 +24,10 @@ type
     tbViewerBookers: TRibbonGroup;
     tbScannerBookers: TRibbonGroup;
     actViewAll: TAction;
+    DBGridEh1: TDBGridEh;
+    StatusBar1: TStatusBar;
+    ProgressBar1: TProgressBar;
+    dsSwims: TDataSource;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure actScanAllBookerExecute(Sender: TObject);
@@ -44,7 +49,7 @@ implementation
 
 {$R *.dfm}
 uses
-  GvFile, PngImage;
+  GvFile, PngImage, uDmSwim;
 
 procedure TForm1.actScanAllBookerExecute(Sender: TObject);
 begin

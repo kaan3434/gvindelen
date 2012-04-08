@@ -4,14 +4,14 @@ interface
 
 uses
   System.SysUtils, System.Classes, pFIBDatabase, FIBDatabase, IBDatabase,
-  Data.DB, IBCustomDataSet, IBQuery;
+  Data.DB, IBCustomDataSet, IBQuery, FIBDataSet, pFIBDataSet;
 
 type
-  TDataModule1 = class(TDataModule)
-    dbSwim: TIBDatabase;
-    trnWrite: TIBTransaction;
-    qrySwim: TIBQuery;
-    dsSwim: TDataSource;
+  TdmSwim = class(TDataModule)
+    dbSwim: TpFIBDatabase;
+    trnRead: TpFIBTransaction;
+    trnWrite: TpFIBTransaction;
+    qrySwims: TpFIBDataSet;
     procedure DataModuleCreate(Sender: TObject);
   private
     { Private declarations }
@@ -20,7 +20,7 @@ type
   end;
 
 var
-  DataModule1: TDataModule1;
+  dmSwim: TdmSwim;
 
 implementation
 
@@ -28,7 +28,7 @@ implementation
 
 {$R *.dfm}
 
-procedure TDataModule1.DataModuleCreate(Sender: TObject);
+procedure TdmSwim.DataModuleCreate(Sender: TObject);
 begin
   dbSwim.Connected:= true;
 end;
