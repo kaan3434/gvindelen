@@ -1,0 +1,63 @@
+package JvDBDesign;
+{$R *.res}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $4A180000}
+{$DEFINE DEBUG}
+{$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'JVCL Database Components'}
+{$LIBSUFFIX '160'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  JvCoreDesign,
+  JvDlgs,
+  JvDB,
+  JvStdCtrls,
+  JvSystem,
+  JvCore,
+  JvControls,
+  Jcl,
+  JclVcl,
+  rtl,
+  designide,
+  dcldb,
+  vcl,
+  dbrtl,
+  vcldb,
+  vclx,
+  dclstd;
+
+contains
+  JvSelectDataSetForm in '..\..\design\JvSelectDataSetForm.pas' {JvSelectDataSetForm},
+  JvCsvDataEditor in '..\..\design\JvCsvDataEditor.pas',
+  JvCsvDataForm in '..\..\design\JvCsvDataForm.pas' {JvCsvDefStrDialog},
+  JvDBActnResForm in '..\..\design\JvDBActnResForm.pas',
+  JvDBMemDatasetEditor in '..\..\design\JvDBMemDatasetEditor.pas',
+  JvDBReg in '..\..\design\JvDBReg.pas',
+  JvDBEditors in '..\..\design\JvDBEditors.pas',
+  JvDBGridExportEditors in '..\..\design\JvDBGridExportEditors.pas',
+  JvDBGridEditors in '..\..\design\JvDBGridEditors.pas',
+  JvDBGridControlsEditorForm in '..\..\design\JvDBGridControlsEditorForm.pas' {frmJvDBGridControlsEditor};
+
+end.

@@ -1,0 +1,50 @@
+package JvPascalInterpreterDesign;
+{$R *.res}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $4D030000}
+{$DEFINE RELEASE}
+{$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'JVCL Interpreter Components'}
+{$LIBSUFFIX '160'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  JvPascalInterpreter,
+  JvCoreDesign,
+  JvCustom,
+  JvStdCtrls,
+  JvSystem,
+  Jcl,
+  rtl,
+  designide,
+  dclstd,
+  vcl,
+  vclx,
+  vcldb,
+  bdertl;
+
+contains
+  JvPascalInterpreterReg in '..\..\design\JvPascalInterpreterReg.pas';
+
+end.
