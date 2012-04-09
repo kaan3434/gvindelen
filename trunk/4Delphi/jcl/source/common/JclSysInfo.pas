@@ -196,7 +196,9 @@ function GetLocalComputerName: string;
 function GetLocalUserName: string;
 {$IFDEF MSWINDOWS}
 function GetUserDomainName(const CurUser: string): string;
+{$IFDEF D16}
 function GetWorkGroupName: WideString;
+{$ENDIF}
 {$ENDIF MSWINDOWS}
 function GetDomainName: string;
 {$IFDEF MSWINDOWS}
@@ -2300,6 +2302,7 @@ begin
   end;
 end;
 
+{$IFDEF D16}
 function GetWorkGroupName: WideString;
 var
   WkstaInfo: PByte;
@@ -2311,6 +2314,7 @@ begin
   Result := WideString(PWideChar(WkstaInfo100^.wki100_langroup));
   NetApiBufferFree(Pointer(WkstaInfo));
 end;
+{$ENDIF}
 
 {$ENDIF MSWINDOWS}
 function GetDomainName: string;
