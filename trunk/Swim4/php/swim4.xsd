@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--Created with Liquid XML Studio Developer Edition 9.0.11.3078 (http://www.liquid-technologies.com)-->
+<xs:schema elementFormDefault="qualified" targetNamespace="swm" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:simpleType name="koefType">
+        <xs:restriction base="xs:decimal">
+            <xs:fractionDigits value="3" />
+            <xs:totalDigits value="5" />
+            <xs:minInclusive value="1" />
+            <xs:maxExclusive value="100" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="valueForaType">
+        <xs:restriction base="xs:decimal">
+            <xs:fractionDigits value="1" />
+            <xs:totalDigits value="3" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="valueTotalType">
+        <xs:restriction base="xs:decimal">
+            <xs:fractionDigits value="1" />
+            <xs:totalDigits value="4" />
+            <xs:minInclusive value="0" />
+            <xs:maxExclusive value="1000" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="koefFora">
+        <xs:simpleContent>
+            <xs:extension base="koefType">
+                <xs:attribute name="Value" type="valueForaType" use="required" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="koefTotal">
+        <xs:simpleContent>
+            <xs:extension base="koefType">
+                <xs:attribute name="Value" type="valueTotalType" use="required" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="eventType">
+        <xs:sequence>
+            <xs:element name="Win1" type="koefType" minOccurs="0" />
+            <xs:element name="Win2" type="koefType" minOccurs="0" />
+            <xs:element name="Draw" type="koefType" minOccurs="0" />
+            <xs:element name="NoLose1" type="koefType" minOccurs="0" />
+            <xs:element name="NoLose2" type="koefType" minOccurs="0" />
+            <xs:element name="NoDraw" type="koefType" minOccurs="0" />
+            <xs:element xmlns:q1="swm" name="TotalLo" type="q1:koefTotal" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element xmlns:q2="swm" name="TotalHi" type="q2:koefTotal" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element xmlns:q3="swm" name="Fora1" type="q3:koefFora" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element xmlns:q4="swm" name="Fora2" type="q4:koefFora" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="Date" type="xs:dateTime" use="required" />
+        <xs:attribute name="Gamer1Name" type="xs:string" use="required" />
+        <xs:attribute name="Gamer2Name" type="xs:string" use="required" />
+    </xs:complexType>
+    <xs:complexType name="tournirType">
+        <xs:sequence>
+            <xs:element name="Event" xmlns:q1="swm" type="q1:eventType" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="TournirName" type="xs:string" use="required" />
+    </xs:complexType>
+    <xs:complexType name="sportType">
+        <xs:sequence>
+            <xs:element name="Tournir" xmlns:q2="swm" type="q2:tournirType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="SportName" type="xs:string" use="required" />
+    </xs:complexType>
+    <xs:complexType name="scanType">
+        <xs:sequence>
+            <xs:element name="Sport" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension xmlns:q3="swm" base="q3:sportType" />
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Id" type="xs:int" use="required" />
+        <xs:attribute name="Date" type="xs:dateTime" use="required" />
+    </xs:complexType>
+    <xs:element name="Scan" xmlns:q4="swm" type="q4:scanType" />
+</xs:schema>
