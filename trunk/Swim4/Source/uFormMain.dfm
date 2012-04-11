@@ -32,9 +32,6 @@ object Form1: TForm1
         Caption = 'Viewer'
         Page = RibbonPage1
       end>
-    TabIndex = 1
-    ExplicitTop = -6
-    ExplicitWidth = 758
     DesignSize = (
       779
       143)
@@ -44,15 +41,14 @@ object Form1: TForm1
       OptionItems = <>
       RecentItems = <>
     end
-    object RibbonPageScaner: TRibbonPage
+    object RibbonPage1: TRibbonPage
       Left = 0
       Top = 50
       Width = 778
       Height = 93
-      Caption = 'Scanner'
-      Index = 0
-      ExplicitWidth = 869
-      object tbScannerBookers: TRibbonGroup
+      Caption = 'Viewer'
+      Index = 1
+      object tbViewerBookers: TRibbonGroup
         Left = 4
         Top = 3
         Width = 50
@@ -62,15 +58,14 @@ object Form1: TForm1
         GroupIndex = 0
       end
     end
-    object RibbonPage1: TRibbonPage
+    object RibbonPageScaner: TRibbonPage
       Left = 0
       Top = 50
       Width = 778
       Height = 93
-      Caption = 'Viewer'
-      Index = 1
-      ExplicitWidth = 869
-      object tbViewerBookers: TRibbonGroup
+      Caption = 'Scanner'
+      Index = 0
+      object tbScannerBookers: TRibbonGroup
         Left = 4
         Top = 3
         Width = 50
@@ -113,9 +108,6 @@ object Form1: TForm1
     Width = 779
     Height = 19
     Panels = <>
-    ExplicitLeft = 320
-    ExplicitTop = 400
-    ExplicitWidth = 0
   end
   object ProgressBar1: TProgressBar
     Left = 0
@@ -124,9 +116,6 @@ object Form1: TForm1
     Height = 17
     Align = alBottom
     TabOrder = 3
-    ExplicitLeft = 184
-    ExplicitTop = 360
-    ExplicitWidth = 150
   end
   object actMngRibbon: TActionManager
     ActionBars = <
@@ -191,7 +180,6 @@ object Form1: TForm1
       Category = 'Scanner'
       Caption = 'All'
       ImageIndex = 0
-      OnExecute = actScanAllBookerExecute
     end
     object actViewAll: TAction
       Category = 'Viewer'
@@ -205,7 +193,7 @@ object Form1: TForm1
     Left = 520
     Top = 8
     Bitmap = {
-      494C010101000900280010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
+      494C0101010009002C0010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000101010F010101170101011A0101
       011A0101011A0101011A0101011A0101011A0101011A0101011A0101011A0101
@@ -351,7 +339,7 @@ object Form1: TForm1
     Left = 432
     Top = 8
     Bitmap = {
-      494C010101000900200020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010101000900240020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000101010F0101010F010101170101
       01170101011A0101011A0101011A0101011A0101011A0101011A0101011A0101
@@ -891,5 +879,13 @@ object Form1: TForm1
     DataSet = dmSwim.qrySwims
     Left = 592
     Top = 208
+  end
+  object HTTPRIO1: THTTPRIO
+    HTTPWebNode.UseUTF8InHeader = True
+    HTTPWebNode.InvokeOptions = [soIgnoreInvalidCerts, soAutoCheckAccessPointViaUDDI]
+    HTTPWebNode.WebNodeOptions = []
+    Converter.Options = [soSendMultiRefObj, soTryAllSchema, soRootRefNodesToBody, soCacheMimeResponse, soUTF8EncodeXML]
+    Left = 328
+    Top = 8
   end
 end

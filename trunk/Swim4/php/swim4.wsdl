@@ -1,123 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--Created with Liquid XML Studio Developer Edition 9.0.11.3078 (http://www.liquid-technologies.com)-->
-<definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://example.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" name="BookerScaner" targetNamespace="http://example.com/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+<definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://example.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" name="ScanBooker" targetNamespace="" xmlns="http://schemas.xmlsoap.org/wsdl/">
     <types>
-        <xs:schema xmlns:tns="http://schemas.xmlsoap.org/wsdl/" xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="swm">
-            <element name="InputType">
-                <complexType>
-                    <sequence>
-                        <element name="BookerSign">
-                            <simpleType>
-                                <restriction base="string">
-                                    <enumeration value="bwin" />
-                                    <enumeration value="marathon" />
-                                    <enumeration value="betcity" />
-                                    <enumeration value="olymp" />
-                                    <enumeration value="plusminus" />
-                                </restriction>
-                            </simpleType>
-                        </element>
-                        <element name="ScanId" type="integer" />
-                    </sequence>
-                </complexType>
-            </element>
-            <simpleType name="KoefType">
-                <restriction base="decimal">
-                    <fractionDigits value="3" />
-                    <totalDigits value="5" />
-                    <minExclusive value="1" />
-                    <maxExclusive value="100" />
-                </restriction>
-            </simpleType>
-            <complexType name="KoefForaType">
-                <simpleContent>
-                    <extension xmlns:q1="swm" base="q1:KoefType">
-                        <attribute name="Value">
-                            <simpleType>
-                                <restriction base="decimal">
-                                    <fractionDigits value="1" />
-                                    <totalDigits value="4" />
-                                    <maxExclusive value="1000" />
-                                    <minExclusive value="-1000" />
-                                </restriction>
-                            </simpleType>
-                        </attribute>
-                    </extension>
-                </simpleContent>
-            </complexType>
-            <complexType name="KoefTotalType">
-                <simpleContent>
-                    <extension xmlns:q2="swm" base="q2:KoefType">
-                        <attribute name="Value" use="required">
-                            <simpleType>
-                                <restriction base="decimal">
-                                    <fractionDigits value="1" />
-                                    <totalDigits value="4" />
-                                    <minInclusive value="0" />
-                                    <maxExclusive value="1000" />
-                                </restriction>
-                            </simpleType>
-                        </attribute>
-                    </extension>
-                </simpleContent>
-            </complexType>
-            <complexType name="EventType">
-                <sequence>
-                    <element xmlns:q3="swm" minOccurs="0" name="Win1" type="q3:KoefType" />
-                    <element xmlns:q4="swm" minOccurs="0" name="Win2" type="q4:KoefType" />
-                    <element xmlns:q5="swm" minOccurs="0" name="Draw" type="q5:KoefType" />
-                    <element xmlns:q6="swm" minOccurs="0" name="NoLose1" type="q6:KoefType" />
-                    <element xmlns:q7="swm" minOccurs="0" name="NoLose2" type="q7:KoefType" />
-                    <element xmlns:q8="swm" minOccurs="0" name="NoDraw" type="q8:KoefType" />
-                    <element xmlns:q9="swm" minOccurs="0" maxOccurs="unbounded" name="Fora1" type="q9:KoefForaType" />
-                    <element xmlns:q10="swm" minOccurs="0" maxOccurs="unbounded" name="Fora2" type="q10:KoefForaType" />
-                    <element xmlns:q1="swm" minOccurs="0" maxOccurs="unbounded" name="TotalLo" type="q1:KoefTotalType" />
-                    <element xmlns:q2="swm" minOccurs="0" maxOccurs="unbounded" name="TotalHi" type="q2:KoefTotalType" />
-                </sequence>
-            </complexType>
-            <xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" name="TournirType">
-                <sequence>
-                    <element xmlns:q1="swm" maxOccurs="unbounded" name="Event" type="q1:EventType" />
-                </sequence>
-                <attribute name="TournirName" type="string" use="required" />
-            </xs:complexType>
-            <xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" name="SportType">
-                <sequence>
-                    <element xmlns:q2="swm" minOccurs="0" maxOccurs="unbounded" name="Tournir" type="q2:TournirType" />
-                </sequence>
-                <attribute name="SportName" type="string" use="required" />
-            </xs:complexType>
-            <xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" name="ScanType">
-                <sequence>
-                    <element xmlns:q3="swm" minOccurs="0" maxOccurs="unbounded" name="Sport" type="q3:SportType" />
-                </sequence>
-                <attribute name="Id" type="int" use="required" />
-                <attribute name="Date" type="dateTime" use="required" />
-            </xs:complexType>
-            <element name="OutputType">
-                <complexType>
-                    <sequence>
-                        <element xmlns:q4="swm" name="output" type="q4:ScanType" />
-                    </sequence>
-                </complexType>
-            </element>
-        </xs:schema>
+        <xs:schema xmlns:tns="http://schemas.xmlsoap.org/wsdl/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="swm" />
     </types>
     <message name="NewInputMessage">
-        <part name="InputMessagePart" element="tns:InputType" />
+        <part xmlns:q1="swm" name="booker" type="xs:string" />
     </message>
     <message name="NewOutputMessage">
-        <part name="OutputMessagePart" element="tns:OutputType" />
+        <part xmlns:q2="swm" name="xml" type="xs:string" />
     </message>
-    <portType name="NewPortType">
-        <operation name="NewOperation">
+    <portType name="ScanBookerPortType">
+        <operation name="GetLine">
             <input message="tns:NewInputMessage" />
             <output message="tns:NewOutputMessage" />
         </operation>
     </portType>
-    <binding name="NewBinding" type="tns:NewPortType">
-        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
-        <operation name="NewOperation">
+    <binding name="ScanBookerBinding" type="ScanBookerPortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="GetLine">
             <soap:operation soapAction="" />
             <input>
                 <soap:body use="literal" />
@@ -127,9 +28,9 @@
             </output>
         </operation>
     </binding>
-    <service name="NewService">
-        <port name="NewPort" binding="tns:NewBinding">
-            <soap:address location="" />
+    <service name="ScanBooker">
+        <port name="ScanBookerPort" binding="ScanBookerBinding">
+            <soap:address location="http://localhost:8080/server.php" />
         </port>
     </service>
 </definitions>
