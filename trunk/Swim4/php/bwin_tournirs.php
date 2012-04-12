@@ -45,7 +45,7 @@ function extract_league($Html) {
   extract_league($Html, $xml);
   if ($debug) file_put_contents($Leagues . "league.xml", $xml->asXML());
 
-  foreach($xml->Scan->League as $league)
+  foreach($xml->Scan->League as $league) {}
 
   
   

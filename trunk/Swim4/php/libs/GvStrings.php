@@ -75,6 +75,31 @@ function copy_be($Html, $Begin, $End, $Contain1=null, $Contain2=null, $Contain3=
   return (null);
 }
 
+function copy_between($Html, $Begin, $End, $Contain1=null, $Contain2=null, $Contain3=null) {
+  $Begin = prepare_ereg_param($Begin);
+  $BArr = spliti($Begin, $Html);
+  for ($i=1, $m=count($BArr); $i<$m; $i++) {
+    $s = $BArr[$i];
+    $PSE = stripos($s, $End);
+    if ($PSE === false) continue;
+    $RSt = substr($s, 0, $PSE);
+    if ($Contain1) {
+      $PSC1 = stripos($RSt, $Contain1);
+      if ($PSC1 === false) continue;
+      if ($Contain2) {
+        $PSC2 = stripos($RSt, $Contain2, $PSC1+strlen($Contain1));
+        if ($PSC2 === false) continue;
+        if ($Contain3) {
+          $PSC3 = stripos($RSt, $Contain3, $PSC2+strlen($Contain2));
+          if ($PSC3 === false) continue;
+        }
+      }
+    }
+    return ($RSt);
+  }
+  return (null);
+}
+
 function replace_all_contain($Html, $Begin, $End, $New, $Contain) {
   $Result = array();  
   $Begin = prepare_ereg_param($Begin);
@@ -205,6 +230,10 @@ function implode_hash($glue, $Hash, $c = null) {
     foreach ($Hash as $name => $value) $DataArr[] = $name.'='.$c.$value.$c;
   }
   return implode($glue, $DataArr);
+}
+
+function similar_to($subject, $patterns) {
+  return preg_match("/($patterns)/imsU", $subject, $matches);
 }
 
 ?>
