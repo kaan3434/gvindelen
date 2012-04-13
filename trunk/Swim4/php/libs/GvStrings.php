@@ -75,6 +75,14 @@ function copy_be($Html, $Begin, $End, $Contain1=null, $Contain2=null, $Contain3=
   return (null);
 }
 
+function take_be(&$Html, $Begin, $End, $Contain1=null, $Contain2=null, $Contain3=null) {
+  $result = copy_be($Html, $Begin, $End, $Contain1, $Contain2, $Contain3);
+  $parts = explode($result, $Html, 2);
+//  $Html = str_replace($result, '', $Html);
+  $Html = implode('', $parts);
+  return $result;
+}    
+
 function copy_between($Html, $Begin, $End, $Contain1=null, $Contain2=null, $Contain3=null) {
   $Begin = prepare_ereg_param($Begin);
   $BArr = spliti($Begin, $Html);
@@ -234,6 +242,22 @@ function implode_hash($glue, $Hash, $c = null) {
 
 function similar_to($subject, $patterns) {
   return preg_match("/($patterns)/imsU", $subject, $matches);
+}
+
+function decode_month_name($month_name) {
+  $month_no_eng = index_of(strtolower($month_name), 
+                    array('january', 'february', 'march', 'april', 'may', 'june', 
+                          'july', 'august', 'september', 'october', 'november', 'december'));
+  $month_no_rus = index_of(strtolower($month_name), 
+                    array('января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 
+                          'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'));
+  if ($month_no_eng) {
+    return $month_no_eng+1;  
+  } elseif ($month_no_rus)  {
+    return $month_no_rus+1;  
+  } else {    
+    return false;
+  }
 }
 
 ?>

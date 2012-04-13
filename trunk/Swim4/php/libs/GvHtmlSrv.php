@@ -26,6 +26,7 @@ function kill_tag_bound($Html, $Tag) {
   foreach ($Tags as $t) {
     $Html = str_ireplace("<$t>", '', $Html);
     $Html = str_ireplace("</$t>", '', $Html);
+    $Html = str_ireplace("<$t/>", '', $Html);
 //    $Html = delete_all($Html, "<$t ", '>');
   }
   $Html = preg_replace("/<($Tag) [^>]*>/imsU", '', $Html);

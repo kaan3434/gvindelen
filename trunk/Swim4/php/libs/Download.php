@@ -236,11 +236,7 @@ function download_page($Url, $Method="GET", $Referer="", $PostData="") {
   return $Html;
 } 
 
-function download_curl($Url, $Method="GET", $Proxy=null, $Referer="", $PostHash=null, $ResponseFileName=null) {
-  $PostData = array();
-  if ($PostHash) {
-    foreach ($PostHash as $key => $value) $PostData[] = $key.'='.$value;
-  }
+function download_curl($Url, $Method="GET", $Proxy=null, $Referer="", $PostHash=null) {
   try {
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -251,6 +247,15 @@ function download_curl($Url, $Method="GET", $Proxy=null, $Referer="", $PostHash=
     if ($Proxy) {
       curl_setopt($curl, CURLOPT_PROXY, $Proxy);
     }
+    if ($Method == "POST") {
+      curl_setopt($curl, CURLOPT_POST, 1);
+      curl_setopt($curl, CURLOPT_POSTFIELDS, implode_hash("\r\n", $PostHash));
+    }
+    
+    $URI= parse_url($Url);
+    curl_setopt($curl, CURLOPT_COOKIEFILE, "cookies/".$URI['host'].".txt"); //Из какого файла читать
+    curl_setopt($curl, CURLOPT_COOKIEJAR, "cookies/".$URI['host'].".txt"); //В какой файл записывать
+    
     $Html = curl_exec($curl);   
     $curlError = curl_error($curl);
     curl_close($curl);
