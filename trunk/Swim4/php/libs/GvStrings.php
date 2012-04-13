@@ -190,7 +190,7 @@ function delete_all($Html, $Begin, $End, $Contain1=null, $Contain2=null, $Contai
    return replace_all($Html, $Begin, $End, '', $Contain1, $Contain2, $Contain3);
 }
 
-function extract_tags($Html, $Begin, $End, $Separator='', $Contain1=null, $Contain2=null, $Contain3=null) {
+function extract_all_tags($Html, $Begin, $End, $Contain1=null, $Contain2=null, $Contain3=null) {
   $Result = array();
   $Begin = prepare_ereg_param($Begin);
   $BArr = spliti($Begin, $Html);
@@ -216,11 +216,11 @@ function extract_tags($Html, $Begin, $End, $Separator='', $Contain1=null, $Conta
     }
     $i++;
   }
-  if (count($Result) > 0) {
-    return (implode($Separator, $Result));
-  } else {
-    return (null);
-  }
+  return $Result;
+}
+
+function extract_tags($Html, $Begin, $End, $Separator='', $Contain1=null, $Contain2=null, $Contain3=null) {
+  return implode($Separator, extract_all_tags($Html, $Begin, $End, $Contain1, $Contain2, $Contain3));
 }
 
 function index_of($needle, $haystack) {                // conversion of JavaScripts most awesome
@@ -233,11 +233,28 @@ function index_of($needle, $haystack) {                // conversion of JavaScri
 }
 
 function implode_hash($glue, $Hash, $c = null) {
-  $DataArr = array();
   if ($Hash) {
     foreach ($Hash as $name => $value) $DataArr[] = $name.'='.$c.$value.$c;
   }
   return implode($glue, $DataArr);
+}
+
+function file_put_hash($filename, $hash_array) {
+  $str = implode_hash("\r\n", $hash_array);
+  file_put_contents($filename, $str);
+}
+
+function file_get_hash($filename) {
+  $hash = array();
+  try {
+    $pair_array = array();
+    $pair_array = explode("\r\n", file_get_contents($filename));
+    foreach($pair_array as $pair) {
+      list($name, $value) = explode('=', $pair, 2);
+      $hash[$name] = $value;
+    }
+  } catch (Exception $e) {}
+  return $hash;
 }
 
 function similar_to($subject, $patterns) {

@@ -47,34 +47,39 @@ function decode_time($str) {
   return array($hour, $minute);
 }
 
-function extract_gamer_koef($html) {
-  $html = kill_tag_bound($html, 'div|wbr|tr');
-  $gamer_name = delete_all(take_be($html, '<td', '</td>'), '<', '>');
-  $koef = delete_all(copy_be($html, '<td', '</td>'), '<', '>');
-  return array($gamer_name, $koef);
+function extract_label_koef($html) {
+  $html = kill_tag_bound($html, 'div|tr');
+  $label = delete_all(copy_be($html, '<td', '</td>', 'label'), '<', '>');
+  $koef = delete_all(copy_be($html, '<td', '</td>', 'odd'), '<', '>');
+  return array($label, $koef);
 }
 
 function event_find_or_create(&$tournir_node, $datetime, $gamer1_name, $gamer2_name) {
    foreach($tournir_node as $event_node) {
-     if (((string)$event_node['Gamer1_Name'] == $gamer1_name) and ((string)$event_node['Gamer2_Name'] == $gamer2_name)) 
+     if (((string)$event_node['Gamer1_Name'] == $gamer1_name) and ((string)$event_node['Gamer1_Name'] == $gamer1_name))
        return $event_node;
    }
-   $event_node = $tournir_node->addChild('Event');
+   $event_node = $tournir_node->addChild('Event', $event_id);
    $event_node->addAttribute('DateTime', date('Y-m-d\TH:i:s', $datetime));
    $event_node->addAttribute('Gamer1_Name', $gamer1_name);
    $event_node->addAttribute('Gamer2_Name', $gamer2_name);
    return $event_node;
 }
 
-function extract_bets_12(&$tournir_node, $html) {
+function extract_bets_1x2(&$tournir_node, $html) {
   $tournir_id = (string)$tournir_node['Id'];
   $html = kill_space($html);
   $html = numbering_tag($html, 'tr');
   $html = extract_numbered_tags($html, 'tr', "\r\n", 'class');
   $html = kill_property($html, 'TagNo');
   $table_rows = explode("\r\n", $html);
-//  file_put_contents("lines/bwin/$tournir_id.12.html", $html);  
+  file_put_contents("lines/bwin/$tournir_id.12.html", $html);  
   foreach($table_rows as $row) {
+    $gamer1_name = null;
+    $gamer2_name = null;
+    $win1_koef = null;
+    $win2_koef = null;
+    $draw_koef = null;
     $header = copy_be($row, '<tr', '>');
     $row_class_name = extract_property_values($header, 'class', null);
     if ($row_class_name == 'topbar') { // разбираем дату
@@ -86,18 +91,34 @@ function extract_bets_12(&$tournir_node, $html) {
       $time = copy_between($time, '>', '<');
       list($hour, $minute) = decode_time($time);
       $event_datetime = mktime($hour, $minute, 0, $month_no, $day_no, $year_no);
-      // берем первую табличку
-      list($gamer1_name, $win1_koef) = extract_gamer_koef(take_be($row, '<table', '</table>'));
-      list($gamer2_name, $win2_koef) = extract_gamer_koef(take_be($row, '<table', '</table>'));
+      $tables = extract_all_tags($row, '<table', '</table>');
+      foreach($tables as $table) {
+        list($label, $koef) = extract_label_koef($table);
+        if ($label == 'X') {
+          $draw_koef = $koef;
+        } elseif (!$gamer1_name) {
+          $gamer1_name = $label;
+          $win1_koef = $koef; 
+        } else {
+          $gamer2_name = $label;
+          $win2_koef = $koef;
+        }
+      }
       $event_node = event_find_or_create($tournir_node, mktime($hour, $minute, 0, $month_no, $day_no, $year_no), $gamer1_name, $gamer2_name);
-      $event_node->addChild('Win1', $win1_koef);
-      $event_node->addChild('Win2', $win2_koef);
+      if ($win1_koef) $event_node->addChild('Win1', $win1_koef);
+      if ($draw_koef) $event_node->addChild('Draw', $draw_koef);
+      if ($win2_koef) $event_node->addChild('Win2', $win2_koef);
     }
   }
 }
 
-function extract_bets_total(&$tournir_node, $html) {
+function extract_bets_foratotal(&$tournir_node, $html) {
+  $i = 0;
   $tournir_id = (string)$tournir_node['Id'];
+  $filename_headers = "phrases/bwin/total_headers.txt";
+  $filename_labels = "phrases/bwin/total_labels.txt";
+  $phrases_headers = file_get_hash($filename_headers);
+  $phrases_labels = file_get_hash($filename_labels);
   $html = kill_space($html);
   $html = numbering_tag($html, 'tr');
   $html = extract_numbered_tags($html, 'tr', "\r\n", 'class');
@@ -105,35 +126,81 @@ function extract_bets_total(&$tournir_node, $html) {
   $table_rows = explode("\r\n", $html);
   file_put_contents("lines/bwin/$tournir_id.Total.html", $html);  
   foreach($table_rows as $row) {
+    $modifier = null;
     $header = copy_be($row, '<tr', '>');
     $row_class_name = extract_property_values($header, 'class', null);
     if ($row_class_name == 'topbar') { // разбираем дату
       $row = copy_between($row, '<h3>', '</h3>');
       list($day_no, $month_no, $year_no) = decode_date($row);
-    } elseif ($row_class_name == 'def') {// игроки + время
-      if (preg_match('/<h4>(.+) - (.+) - (\d{1,2}:\d\d (PM|AM))<\/h4>/i', $row, $matches)) {
-        $gamer1_name = $matches[1];
-        $gamer2_name = $matches[2];
-        list($hour, $minute) = decode_time($matches[3]);
-        $event_node = event_find_or_create($tournir_node, mktime($hour, $minute, 0, $month_no, $day_no, $year_no), $gamer1_name, $gamer2_name);
-      } elseif (preg_match('/<h5>(.+)<\/h5>/i', $row, $matches)){
-          
+    } elseif (in_array($row_class_name, array('def', 'alt'))) {// игроки + время
+      if (preg_match('/<td.*>(<h4>)*?(.+) - (.+) - (\d{1,2}:\d\d (PM|AM))(<\/h4>)*?</Ui', $row, $matches)) {
+        $gamer1_name = $matches[2];
+        $gamer2_name = $matches[3];
+        list($hour, $minute) = decode_time($matches[4]);
+      } elseif (preg_match('/<td.*>(<h5>)*?(.+)(<\/h5>)*?</iU', $row, $matches)){
+        $phrase = $matches[2];
+        $bettype = null;
+        $phrase = str_ireplace($gamer1_name, 'Gamer1', $phrase);
+        $phrase = str_ireplace($gamer2_name, 'Gamer2', $phrase);
+        if (!$bettype = $phrases_headers[$phrase]) {
+          $bettype = 'Unknown';
+          $phrases_headers[$phrase] = $bettype;
+          $phrases_headers_modified = true;
+        }
       }
-    } elseif ($row_class_name == 'normal') { // основная ставка
+    } elseif (($row_class_name == 'normal') and ($bettype)) {  // основная ставка
+      if (!in_array($bettype, array('Ignore', 'Unknown'))) { // игнорируемые типы?
+        $tables = extract_all_tags($row, '<table', '</table>');
+        foreach($tables as $table) {
+          list($label, $koef) = extract_label_koef($table);
+          $modifier = null;
+          // если тип коэффициентов - Fora
+          if ($bettype == 'Fora') {
+            if (stripos(' '.$label, $gamer1_name)) {
+              $modifier = '1';
+            } elseif (stripos(' '.$label, $gamer2_name)) {
+              $modifier = '2';
+            }
+            if ($modifier) {
+              $event_node = event_find_or_create($tournir_node, mktime($hour, $minute, 0, $month_no, $day_no, $year_no), $gamer1_name, $gamer2_name);
+              $bet_node = $event_node->addChild($bettype.$modifier, $koef);
+              preg_match('/ ([\+\-]+\d+[\.\,]*\d*)/', $label, $matches);
+              $bet_node->addAttribute('Value', strtr($matches[1], ',', '.'));
+            }
+          } else {
+            // подбираем формат фразы метки
+            if (!$modifier = $phrases_labels[$label]) {
+              $modifier = 'Unknown';
+              $phrases_labels[$label] = $modifier;
+              $phrases_labels_modified = true;
+            }
+            if (!in_array($modifier, array('Ignore', 'Unknown'))) { // игнорируемый лабел
+              $event_node = event_find_or_create($tournir_node, mktime($hour, $minute, 0, $month_no, $day_no, $year_no), $gamer1_name, $gamer2_name);
+              $bet_node = $event_node->addChild($bettype.$modifier, $koef);
+              if (preg_match('/[\d\.]+/i', $label, $matches)) $bet_node->addAttribute('Value', strtr($matches[0], ',', '.'));
+            }
+          }
+        }  
+      }
     }
+    $i++;
   }
+  if ($phrases_headers_modified) file_put_hash($filename_headers, $phrases_headers);
+  if ($phrases_labels_modified) file_put_hash($filename_labels, $phrases_labels);
 }
   
 function extract_bets(&$tournir_node, $html, $category_id) {
   $tournir_id = (string)$tournir_node['Id'];
+  $html = str_ireplace('<wbr/>', '', $html);
   $html = numbering_tag($html, 'div');
   $html = extract_numbered_tags($html, 'div', "", "bet-list");
   $html = extract_numbered_tags($html, 'div', "", "dsBodyContent");
   $html = extract_numbered_tags($html, 'div', "", "ControlContent");
-  if ($category_id == 33) {
-    extract_bets_12($tournir_node, $html);
-  } elseif ($category_id == 36) {
-    extract_bets_total($tournir_node, $html);
+    
+  if (in_array($category_id, array(33))) {
+    extract_bets_1x2($tournir_node, $html);
+  } elseif (in_array($category_id, array(36))) {
+    extract_bets_foratotal($tournir_node, $html);
   }
   file_put_contents("lines/bwin/$tournir_id.$category_id.bet.html", $html);  
 }
