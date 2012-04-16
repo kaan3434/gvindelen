@@ -74,7 +74,7 @@ function decode_time($str) {
 function extract_label_koef($html) {
   $html = kill_tag_bound($html, 'div|tr');
   $label = delete_all(copy_be($html, '<td', '</td>', 'label'), '<', '>');
-  $koef = delete_all(copy_be($html, '<td', '</td>', 'odd'), '<', '>');
+  $koef = delete_all(copy_be($html, '<td', '</td>', '\'odd\''), '<', '>');
   return array($label, $koef);
 }
 
@@ -90,7 +90,7 @@ function event_find_or_create(&$tournir_node, $datetime, $gamer1_name, $gamer2_n
    return $event_node;
 }
 
-function extract_bets_1x2(&$tournir_node, $html, $sport_sign, $tournir_id) {
+function extract_bets_1x2(&$tournir_node, $html, $sport_sign, $tournir_id, $category_id) {
   $tournir_id = (string)$tournir_node['Id'];
   $html = kill_space($html);
   $html = numbering_tag($html, 'tr');
@@ -114,27 +114,135 @@ function extract_bets_1x2(&$tournir_node, $html, $sport_sign, $tournir_id) {
       $time = copy_between($time, '>', '<');
       list($hour, $minute) = decode_time($time);
       $tables = extract_all_tags($row, '<table', '</table>');
+
       foreach($tables as $table) {
         list($label, $koef) = extract_label_koef($table);
         if ($label == 'X') {
           $draw_koef = $koef;
         } elseif (!$gamer1_name) {
-          $gamer1_name = $label;
+          $gamer1_name = utf8_to_ansi_ce($label);
           $win1_koef = $koef; 
         } else {
-          $gamer2_name = $label;
+          $gamer2_name = utf8_to_ansi_ce($label);
           $win2_koef = $koef;
         }
       }
       $event_node = event_find_or_create($tournir_node, mktime($hour, $minute, 0, $month_no, $day_no, $year_no), $gamer1_name, $gamer2_name);
-      if ($win1_koef) $event_node->addChild('Match_Win_Gamer1', $win1_koef);
-      if ($draw_koef) $event_node->addChild('Match_Draw', $draw_koef);
-      if ($win2_koef) $event_node->addChild('Match_Win_Gamer2', $win2_koef);
+      if ($win1_koef) {
+        $bet_node = $event_node->addChild('Bet');
+        $bet_node->addAttribute('Period', 'Match');
+        $bet_node->addAttribute('Gamer', 1);
+        $bet_node->addAttribute('Modifier', 'Win');
+        $bet_node->addAttribute('Koef', $win1_koef);
+      }  
+      if ($draw_koef) {
+        $bet_node = $event_node->addChild('Bet');
+        $bet_node->addAttribute('Period', 'Match');
+        $bet_node->addAttribute('Modifier', 'Draw');
+        $bet_node->addAttribute('Koef', $draw_koef);
+      }  
+      if ($win2_koef) {
+        $bet_node = $event_node->addChild('Bet');
+        $bet_node->addAttribute('Period', 'Match');
+        $bet_node->addAttribute('Gamer', 2);
+        $bet_node->addAttribute('Modifier', 'Win');
+        $bet_node->addAttribute('Koef', $win2_koef);
+      }
     }
   }
 }
 
-function extract_bets_foratotal(&$tournir_node, $html, $sport_sign, $tournir_id) {
+function extract_bets_noannotated(&$tournir_node, $html, $sport_sign, $tournir_id, $category_id) {
+  $filename_headers = "phrases/bwin/$sport_sign.headers.txt";
+  $filename_labels = "phrases/bwin/$sport_sign.labels.txt";
+  $phrases_headers = file_get_hash($filename_headers);
+  $phrases_labels = file_get_hash($filename_labels);
+  $html = kill_space($html);
+  $html = numbering_tag($html, 'tr');
+  $table_rows = extract_all_numbered_tags($html, 'tr', 'class');
+//  file_put_contents("lines/bwin/$tournir_id.Total.html", $html);  
+  foreach($table_rows as $row) {
+    $row = kill_property($row, 'TagNo');
+    $header = copy_be($row, '<tr', '>');
+    $row_class_name = extract_property_values($header, 'class', null);
+    if ($row_class_name == 'topbar') { // разбираем дату
+      $row = copy_between($row, '<h3>', '</h3>');
+      list($day_no, $month_no, $year_no) = decode_date($row);
+    } elseif (in_array($row_class_name, array('def', 'alt'))) {// заголовок
+      if (preg_match('/<td.*>(<h5>)*?(.+)(<\/h5>)*?</iU', $row, $matches)){
+        $phrase = $matches[2];
+        unset($bettype);
+        $bettype_str = $phrases_headers[$phrase];
+        if ($bettype_str) {
+          foreach(explode(';', $bettype_str) as $bet_pair) {
+            list($key, $value) = explode('=', $bet_pair);
+            $bettype[$key] = $value;
+          }
+        } else {    
+          $bettype['Modifier'] = 'Unknown';
+          $phrases_headers[$phrase] = 'Modifier=Unknown';
+          $phrases_headers_modified = true;
+        }
+      }
+    } elseif (($row_class_name == 'normal') and ($bettype)) {  // основная ставка
+      if (!in_array($bettype['Modifier'], array('Ignore', 'Unknown'))) {
+        $tables = extract_all_tags($row, '<table', '</table>');
+        $gamer1_name = null;
+        $gamer2_name = null;
+        foreach($tables as $table) {
+          list($label, $koef) = extract_label_koef($table);
+          if ($label == 'X') {
+            $draw_koef = $koef;
+          } elseif (!$gamer1_name) {
+            $gamer1_name = utf8_to_ansi_ce($label);
+            $win1_koef = $koef; 
+          } else {
+            $gamer2_name = utf8_to_ansi_ce($label);
+            $win2_koef = $koef;
+          }
+        }
+        $event_node = event_find_or_create($tournir_node, mktime(0, 0, 0, $month_no, $day_no, $year_no), $gamer1_name, $gamer2_name);
+        if ($win1_koef) {
+          $bet_node = $event_node->addChild('Bet');
+          foreach($bettype as $key=>$value) {
+            $bet_node->addAttribute($key, $value);
+          }
+          $bet_node->addAttribute('Modifier', 'Win');
+          $bet_node->addAttribute('Gamer', 1);
+          $bet_node->addAttribute('Koef', $win1_koef);
+        }  
+        if ($draw_koef) {
+          $bet_node = $event_node->addChild('Bet');
+          foreach($bettype as $key=>$value) $bet_node->addAttribute($key, $value);
+          $bet_node->addAttribute('Modifier', 'Draw');
+          $bet_node->addAttribute('Koef', $draw_koef);
+        }  
+        if ($win2_koef) {
+          $bet_node = $event_node->addChild('Bet');
+          if ($bettype['Kind'] = 'Handicap') $bettype['Value'] = -$bettype['Value'];
+          foreach($bettype as $key=>$value) $bet_node->addAttribute($key, $value);
+          $bet_node->addAttribute('Modifier', 'Win');
+          $bet_node->addAttribute('Gamer', 2);
+          $bet_node->addAttribute('Koef', $win2_koef);
+        }
+      }
+    }
+    $i++;
+  }
+  // отбираем новые и складываем их в новый файл
+  if ($phrases_headers_modified) {
+    $file_hash = file_get_hash($filename_headers);
+    foreach($file_hash as $key=>$value) unset($phrases_headers[$key]);
+    file_put_hash($filename_headers.'.new', $phrases_headers+file_get_hash($filename_headers.'.new'));
+  }
+  if ($phrases_labels_modified) {
+    $file_hash = file_get_hash($filename_labels);
+    foreach($file_hash as $key=>$value) unset($phrases_labels[$key]);
+    file_put_hash($filename_labels.'.new', $phrases_labels+file_get_hash($filename_labels.'.new'));
+  }
+}
+
+function extract_bets_foratotal(&$tournir_node, $html, $sport_sign, $tournir_id, $category_id) {
   $i = 0;
   $filename_headers = "phrases/bwin/$sport_sign.headers.txt";
   $filename_labels = "phrases/bwin/$sport_sign.labels.txt";
@@ -146,48 +254,60 @@ function extract_bets_foratotal(&$tournir_node, $html, $sport_sign, $tournir_id)
 //  file_put_contents("lines/bwin/$tournir_id.Total.html", $html);  
   foreach($table_rows as $row) {
     $row = kill_property($row, 'TagNo');
-    $modifier = null;
     $header = copy_be($row, '<tr', '>');
     $row_class_name = extract_property_values($header, 'class', null);
     if ($row_class_name == 'topbar') { // разбираем дату
       $row = copy_between($row, '<h3>', '</h3>');
       list($day_no, $month_no, $year_no) = decode_date($row);
     } elseif (in_array($row_class_name, array('def', 'alt'))) {// игроки + время
-      if (preg_match('/<td.*>(<h4>)*?(.+) - (.+) - (\d{1,2}:\d\d (PM|AM))(<\/h4>)*?</Ui', $row, $matches)) {
-        $gamer1_name = $matches[2];
-        $gamer2_name = $matches[3];
+      if (preg_match('/<td.*>(<h4>)*?(.+) - (.+) - (\d{1,2}:\d\d (PM|AM))(.*?)(<\/h4>)*?</Ui', $row, $matches)) {
+        $gamer1_name = utf8_to_ansi_ce($matches[2]);
+        $gamer2_name = utf8_to_ansi_ce($matches[3]);
         list($hour, $minute) = decode_time($matches[4]);
       } elseif (preg_match('/<td.*>(<h5>)*?(.+)(<\/h5>)*?</iU', $row, $matches)){
-        $phrase = $matches[2];
-        $bettype = null;
-        $phrase = str_ireplace($gamer1_name, '1', $phrase);
-        $phrase = str_ireplace($gamer2_name, '2', $phrase);
-        if (!$bettype = $phrases_headers[$phrase]) {
-          $bettype = 'Unknown';
-          $phrases_headers[$phrase] = $bettype;
+        $phrase = utf8_to_ansi_ce($matches[2]);
+        unset($bettype);
+        $phrase = str_ireplace($gamer1_name, 'Gamer1', $phrase);
+        $phrase = str_ireplace($gamer2_name, 'Gamer2', $phrase);
+        $bettype_str = $phrases_headers[$phrase];
+        if ($bettype_str) {
+          foreach(explode(';', $bettype_str) as $bet_pair) {
+            list($key, $value) = explode('=', $bet_pair);
+            $bettype[$key] = $value;
+          }
+        } else {    
+          $bettype['Modifier'] = 'Unknown';
+          $phrases_headers[$phrase] = 'Modifier=Unknown';
           $phrases_headers_modified = true;
         }
       }
     } elseif (($row_class_name == 'normal') and ($bettype)) {  // основная ставка
-      if (!in_array($bettype, array('Ignore', 'Unknown'))) { // игнорируемые типы?
+      if (!in_array($bettype['Modifier'], array('Ignore', 'Unknown'))) {
         $tables = extract_all_tags($row, '<table', '</table>');
         foreach($tables as $table) {
           list($label, $koef) = extract_label_koef($table);
-          $modifier = null;
-          $label = str_ireplace($gamer1_name, '1', $label);
-          $label = str_ireplace($gamer2_name, '2', $label);
-          if (preg_match('/ ([\+\-]?\d+[\.\,]*\d*)/', $label, $matches)) $value = $matches[1];
+          $label = str_ireplace($gamer1_name, 'Gamer1', $label);
+          $label = str_ireplace($gamer2_name, 'Gamer2', $label);
           // подбираем формат фразы метки
-          if (!$modifier = $phrases_labels[$label]) {
-            $modifier = 'Unknown';
-            $phrases_labels[$label] = $modifier;
+          $modifier = $phrases_labels[$label];
+          if ($modifier) {
+            foreach(explode(';', $modifier) as $bet_pair) {
+              list($key, $value) = explode('=', $bet_pair);
+              $bettype[$key] = $value;
+            }
+          } else {    
+            $bettype['Modifier'] = 'Unknown';
+            $phrases_labels[$label] = 'Modifier=Unknown';
             $phrases_labels_modified = true;
           }
-          if (!in_array($modifier, array('Ignore', 'Unknown'))) { // игнорируемый лабел
+          if (!in_array($bettype['Modifier'], array('Ignore', 'Unknown'))) {
             $event_node = event_find_or_create($tournir_node, mktime($hour, $minute, 0, $month_no, $day_no, $year_no), $gamer1_name, $gamer2_name);
-            $bet_node = $event_node->addChild($bettype.$modifier, $koef);
-            if ($value) $bet_node->addAttribute('Value', strtr($value, ',', '.'));
-          }
+            $bet_node = $event_node->addChild('Bet');
+            foreach($bettype as $key=>$value) $bet_node->addAttribute($key, $value);
+            $bet_node->addAttribute('Koef', $koef);
+          }                
+          unset($bettype['Modifier']);
+          
         }  
       }
     }
@@ -214,15 +334,18 @@ function extract_bets(&$tournir_node, $html, $sport_sign, $tournir_id, $category
   $html = extract_numbered_tags($html, 'div', "", "ControlContent");
     
   if (in_array($category_id, array(33,25))) {
-    if ($html <> '') extract_bets_1x2($tournir_node, $html, $sport_sign, $tournir_id);
-  } elseif (in_array($category_id, array(35,36,524))) {
-    if ($html <> '') extract_bets_foratotal($tournir_node, $html, $sport_sign, $tournir_id);
+    if ($html <> '') extract_bets_1x2($tournir_node, $html, $sport_sign, $tournir_id, $category_id);
+  } elseif (in_array($category_id, array(28,30))) {
+    if ($html <> '') extract_bets_noannotated($tournir_node, $html, $sport_sign, $tournir_id, $category_id);  
+  } elseif (in_array($category_id, array(35,36,524, 31,190,266,271,1228))) {
+    if ($html <> '') extract_bets_foratotal($tournir_node, $html, $sport_sign, $tournir_id, $category_id);
   }
-  file_put_contents("lines/bwin/$sport_sign.$tournir_id.$category_id.html", $html);  
+//  file_put_contents("lines/bwin/$sport_sign.$tournir_id.$category_id.html", $html);  
 }
 
-function to_be_continue($html) {
-  return false;
+function to_be_continue($html, $next_page) {
+  $html = copy_be($html, '<a', '>', 'pagingGotoItem', "currentPage=$next_page");
+  return $html <> '';
 }
   
 function bwin_get_bets(&$tournir_node, $sport_sign, $tournir_id, $categories, $debug = null) {
@@ -239,7 +362,7 @@ function bwin_get_bets(&$tournir_node, $sport_sign, $tournir_id, $categories, $d
       $url= "$host/betviewiframe.aspx?sorting=leaguedate&categoryIDs=$category_id&bv=bb&leagueIDs=$tournir_id";
       $html = download_or_load($debug, $file_name, $url, "GET", $proxy, "$host/$sport_sign?ShowDays=168");
       extract_bets($tournir_node, $html, $sport_sign, $tournir_id, $category_id);
-    } while (to_be_continue($html));
+    } while (to_be_continue($html, $current_page+1));
   }
   
   if ($debug) file_put_contents($league_path."$tournir_id.xml", $tournir_node->asXML());
@@ -254,13 +377,15 @@ function bwin_get_events(&$tournir_node, $sport_sign, $tournir_id, $debug) {
                        );
   } elseif ($sport_sign == 'football') {
     $categories = array(  25 //3Way
-                       ,  28 //3Way Handicap
-                       ,  30 //Halftime result
-                       ,  31 //Number of goals?
+                       // annodated
                        , 190 //Double chance
+                       ,  31 //Number of goals?
                        , 266 //Corners
                        , 271 //Yellow/Red cards
                        ,1228 //Odd/Even
+                       // noannotated
+                       ,  28 //3Way Handicap
+                       ,  30 //Halftime result
                        );
   } 
   bwin_get_bets($tournir_node, $sport_sign, $tournir_id, $categories, $debug);
@@ -282,6 +407,6 @@ function bwin_load_sport($sport_sign) {
   unset($xml);
 }
     
-//  bwin_load_sport('tennis');
+  bwin_load_sport('tennis');
   bwin_load_sport('football');
 ?>
