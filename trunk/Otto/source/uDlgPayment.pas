@@ -16,6 +16,8 @@ type
     lblByr2Eur: TLabel;
     actDialog: TActionList;
     actOk: TAction;
+    memAnnotate: TMemo;
+    lblAnnotate: TLabel;
     procedure actOkUpdate(Sender: TObject);
     procedure actOkExecute(Sender: TObject);
   private

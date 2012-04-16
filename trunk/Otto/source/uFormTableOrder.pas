@@ -209,6 +209,7 @@ begin
     begin
       Amount_BYR:= DlgManualPayment.edtAmountEur.Value;
       Byr2Eur:= DlgManualPayment.edtByr2Eur.Value;
+      Annotate:= DlgManualPayment.mem
       trnWrite.StartTransaction;
       try
         if GetXmlAttrValue(ndClient, 'ACCOUNT_ID') = null then
@@ -223,7 +224,8 @@ begin
         end;
         dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_PAYMENTIN',
           XmlAttrs2Vars(ndOrder, 'ORDER_ID=ID;ID=ACCOUNT_ID',
-          Value2Vars(Amount_BYR, 'AMOUNT_BYR')));
+          Value2Vars(Amount_BYR, 'AMOUNT_BYR'
+          Value2Vars(Annotate,))));
         trnWrite.Commit;
       except
         on E:Exception do
