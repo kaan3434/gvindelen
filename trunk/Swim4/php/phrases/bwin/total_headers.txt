@@ -1,6 +1,0 @@
-How many games will be played in the first set?=Set1Total
-How many games will be played in the match?=Total
-How many games will Gamer1 win in the match?=Gamer1Total
-Who will win the most games in the match? (player handicap)=Fora
-Will number of games played in the match be odd or even?=Ignore
-How many games will Gamer2 win in the match?=Gamer2Total

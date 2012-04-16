@@ -34,8 +34,7 @@ function kill_tag_bound($Html, $Tag) {
 }
 
 function kill_property($Html, $Property) {
-  $Html = preg_replace("/[ \t]($Property)=(\'.*\'|\".*\"|(?-U:[#0-9a-z%_]+))/imsU", '', $Html);
-  return ($Html);
+  return preg_replace("/[ \t]($Property)=(\'.*\'|\".*\"|(?-U:[#0-9a-z%_]+))/imsU", '', $Html);
 }
 
 function kill_property_value_exclude($Html, $Property, $ExclValues) {
@@ -142,14 +141,18 @@ function extract_numbered_tag($Html, $TagName, $TagNo) {
    return (copy_be($Html, "<$TagName\tTagNo=\"$TagName$TagNo\"", "</$TagName\tTagNo=\"$TagName$TagNo\">"));
 }
 
-function extract_numbered_tags($Html, $TagName, $Separator, $Contain1="", $Contain2="", $Contain3="") {
-  $Tags = explode("\r\n", extract_tags($Html, "<$TagName\tTagNo=", ">", "\r\n", $Contain1, $Contain2, $Contain3));
+function extract_all_numbered_tags($Html, $TagName, $Contain1="", $Contain2="", $Contain3="") {
+  $Tags = extract_all_tags($Html, "<$TagName\tTagNo=", ">", $Contain1, $Contain2, $Contain3);
   $Result= array();
   foreach ($Tags as $tag) {
     $TagNo = extract_tagno($tag, $TagName);
     $Result[] = extract_numbered_tag($Html, $TagName, $TagNo);
   }
-  return (implode($Separator, $Result));
+  return $Result;
+}
+
+function extract_numbered_tags($Html, $TagName, $Separator, $Contain1="", $Contain2="", $Contain3="") {
+  return implode($Separator, extract_all_numbered_tags($Html, $TagName, $Contain1, $Contain2, $Contain3));
 }
 
 function numbering_tag_count($Html, $TagName, &$TagNo) {

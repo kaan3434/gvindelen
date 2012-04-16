@@ -70,11 +70,10 @@ function extract_bets_1x2(&$tournir_node, $html) {
   $tournir_id = (string)$tournir_node['Id'];
   $html = kill_space($html);
   $html = numbering_tag($html, 'tr');
-  $html = extract_numbered_tags($html, 'tr', "\r\n", 'class');
-  $html = kill_property($html, 'TagNo');
-  $table_rows = explode("\r\n", $html);
-  file_put_contents("lines/bwin/$tournir_id.12.html", $html);  
+  $table_rows = extract_all_numbered_tags($html, 'tr', 'class');
+//  file_put_contents("lines/bwin/$tournir_id.12.html", $html);  
   foreach($table_rows as $row) {
+    $row = kill_property($row, 'TagNo');
     $gamer1_name = null;
     $gamer2_name = null;
     $win1_koef = null;
@@ -90,7 +89,6 @@ function extract_bets_1x2(&$tournir_node, $html) {
       $time = copy_be($row, '<td', '</td>', 'leftcell minwidth');
       $time = copy_between($time, '>', '<');
       list($hour, $minute) = decode_time($time);
-      $event_datetime = mktime($hour, $minute, 0, $month_no, $day_no, $year_no);
       $tables = extract_all_tags($row, '<table', '</table>');
       foreach($tables as $table) {
         list($label, $koef) = extract_label_koef($table);
@@ -105,9 +103,9 @@ function extract_bets_1x2(&$tournir_node, $html) {
         }
       }
       $event_node = event_find_or_create($tournir_node, mktime($hour, $minute, 0, $month_no, $day_no, $year_no), $gamer1_name, $gamer2_name);
-      if ($win1_koef) $event_node->addChild('Win1', $win1_koef);
-      if ($draw_koef) $event_node->addChild('Draw', $draw_koef);
-      if ($win2_koef) $event_node->addChild('Win2', $win2_koef);
+      if ($win1_koef) $event_node->addChild('Match_Win1', $win1_koef);
+      if ($draw_koef) $event_node->addChild('Match_Draw', $draw_koef);
+      if ($win2_koef) $event_node->addChild('Match_Win2', $win2_koef);
     }
   }
 }
@@ -115,17 +113,16 @@ function extract_bets_1x2(&$tournir_node, $html) {
 function extract_bets_foratotal(&$tournir_node, $html) {
   $i = 0;
   $tournir_id = (string)$tournir_node['Id'];
-  $filename_headers = "phrases/bwin/total_headers.txt";
-  $filename_labels = "phrases/bwin/total_labels.txt";
+  $filename_headers = "phrases/bwin/headers.txt";
+  $filename_labels = "phrases/bwin/labels.txt";
   $phrases_headers = file_get_hash($filename_headers);
   $phrases_labels = file_get_hash($filename_labels);
   $html = kill_space($html);
   $html = numbering_tag($html, 'tr');
-  $html = extract_numbered_tags($html, 'tr', "\r\n", 'class');
-  $html = kill_property($html, 'TagNo');
-  $table_rows = explode("\r\n", $html);
-  file_put_contents("lines/bwin/$tournir_id.Total.html", $html);  
+  $table_rows = extract_all_numbered_tags($html, 'tr', 'class');
+//  file_put_contents("lines/bwin/$tournir_id.Total.html", $html);  
   foreach($table_rows as $row) {
+    $row = kill_property($row, 'TagNo');
     $modifier = null;
     $header = copy_be($row, '<tr', '>');
     $row_class_name = extract_property_values($header, 'class', null);
@@ -140,8 +137,8 @@ function extract_bets_foratotal(&$tournir_node, $html) {
       } elseif (preg_match('/<td.*>(<h5>)*?(.+)(<\/h5>)*?</iU', $row, $matches)){
         $phrase = $matches[2];
         $bettype = null;
-        $phrase = str_ireplace($gamer1_name, 'Gamer1', $phrase);
-        $phrase = str_ireplace($gamer2_name, 'Gamer2', $phrase);
+        $phrase = str_ireplace($gamer1_name, '1', $phrase);
+        $phrase = str_ireplace($gamer2_name, '2', $phrase);
         if (!$bettype = $phrases_headers[$phrase]) {
           $bettype = 'Unknown';
           $phrases_headers[$phrase] = $bettype;
@@ -154,31 +151,19 @@ function extract_bets_foratotal(&$tournir_node, $html) {
         foreach($tables as $table) {
           list($label, $koef) = extract_label_koef($table);
           $modifier = null;
-          // если тип коэффициентов - Fora
-          if ($bettype == 'Fora') {
-            if (stripos(' '.$label, $gamer1_name)) {
-              $modifier = '1';
-            } elseif (stripos(' '.$label, $gamer2_name)) {
-              $modifier = '2';
-            }
-            if ($modifier) {
-              $event_node = event_find_or_create($tournir_node, mktime($hour, $minute, 0, $month_no, $day_no, $year_no), $gamer1_name, $gamer2_name);
-              $bet_node = $event_node->addChild($bettype.$modifier, $koef);
-              preg_match('/ ([\+\-]+\d+[\.\,]*\d*)/', $label, $matches);
-              $bet_node->addAttribute('Value', strtr($matches[1], ',', '.'));
-            }
-          } else {
-            // подбираем формат фразы метки
-            if (!$modifier = $phrases_labels[$label]) {
-              $modifier = 'Unknown';
-              $phrases_labels[$label] = $modifier;
-              $phrases_labels_modified = true;
-            }
-            if (!in_array($modifier, array('Ignore', 'Unknown'))) { // игнорируемый лабел
-              $event_node = event_find_or_create($tournir_node, mktime($hour, $minute, 0, $month_no, $day_no, $year_no), $gamer1_name, $gamer2_name);
-              $bet_node = $event_node->addChild($bettype.$modifier, $koef);
-              if (preg_match('/[\d\.]+/i', $label, $matches)) $bet_node->addAttribute('Value', strtr($matches[0], ',', '.'));
-            }
+          $label = str_ireplace($gamer1_name, '1', $label);
+          $label = str_ireplace($gamer2_name, '2', $label);
+          if (preg_match('/ ([\+\-]?\d+[\.\,]*\d*)/', $label, $matches)) $value = $matches[1];
+          // подбираем формат фразы метки
+          if (!$modifier = $phrases_labels[$label]) {
+            $modifier = 'Unknown';
+            $phrases_labels[$label] = $modifier;
+            $phrases_labels_modified = true;
+          }
+          if (!in_array($modifier, array('Ignore', 'Unknown'))) { // игнорируемый лабел
+            $event_node = event_find_or_create($tournir_node, mktime($hour, $minute, 0, $month_no, $day_no, $year_no), $gamer1_name, $gamer2_name);
+            $bet_node = $event_node->addChild($bettype.$modifier, $koef);
+            if ($value) $bet_node->addAttribute('Value', strtr($value, ',', '.'));
           }
         }  
       }
@@ -198,11 +183,11 @@ function extract_bets(&$tournir_node, $html, $category_id) {
   $html = extract_numbered_tags($html, 'div', "", "ControlContent");
     
   if (in_array($category_id, array(33))) {
-    extract_bets_1x2($tournir_node, $html);
+    if ($html <> '') extract_bets_1x2($tournir_node, $html);
   } elseif (in_array($category_id, array(36))) {
-    extract_bets_foratotal($tournir_node, $html);
+    if ($html <> '') extract_bets_foratotal($tournir_node, $html);
   }
-  file_put_contents("lines/bwin/$tournir_id.$category_id.bet.html", $html);  
+  file_put_contents("lines/bwin/$tournir_id.$category_id.html", $html);  
 }
 
 function to_be_continue($html) {
@@ -235,20 +220,35 @@ function scan_line_bwin(&$sport_node, $categories, $debug = null) {
   
   if ($debug) file_put_contents($league_path."league.xml", $sport_node->asXML());
 }
+
+
 ?>
 <?php
 //  $booker = 'bwin';
 //  require "bwin_xml.php";
   $debug = 1;
-  $sport_sign = 'tennis';
     
-  $xml = new SimpleXMLElement("<Scan/>");
-  $sport_node = $xml->addChild("Sport", $sport_sign);
-    
-  scan_line_bwin($sport_node, array(33,36), $debug);
+  $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><Scan/>');
+
+  $sport_node = $xml->addChild("Sport", 'tennis');
+  scan_line_bwin($sport_node, array(  33 //2Way - Who will win? 
+                                   ,  35 //Set related bets
+                                   ,  36 //Number of games
+                                   , 524 //Tie breaks
+                                   ), $debug);
+  $sport_node = $xml->addChild("Sport", 'football');
+  scan_line_bwin($sport_node, array(  25 //3Way
+                                   ,  28 //3Way Handicap
+                                   ,  30 //Halftime result
+                                   ,  31 //Number of goals?
+                                   , 190
+                                   , 266
+                                   , 271),$debug);
+  
   
   $league_path = "lines/$booker/$sport_node.";
   
   file_put_contents($league_path."league.xml", $xml->asXML());
+
   print $xml->asXML();
 ?>
