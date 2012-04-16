@@ -407,7 +407,7 @@ function download_or_load($debug, $file_name, $url, $method, $proxy, $referer=nu
       $html = file_get_contents($file_name);
     }
   } else {
-    $html = download($url, $method, $proxy, $referer, $post_hash);
+    $html = download_curl($url, $method, $proxy, $referer, $post_hash);
   }    
   return $html;
 }

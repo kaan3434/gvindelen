@@ -3,27 +3,51 @@
   require "libs/GvStrings.php";
   require "libs/GvHtmlSrv.php";
   require "libs/utf2win.php";
-  $booker = 'bwin';
-  $host = 'https://www.bwin.com';
   
 function extract_league(&$sport_node, $html) {
   $html = kill_space($html);
-  $html = extract_tags($html, '<a href=\'betsnew.aspx?leagueids=', '</a>', "\r\n");
-  $tournirs = explode("\r\n", $html);
-  foreach($tournirs as $tournir) {
-    $tournir_name = copy_between($tournir, '>', '</a');
-    preg_match('/(.+) \((\d+)\)$/m', $tournir_name, $matches);
-    $tournir_name = $matches[1];
-    // бракуем турниры
-    if (!similar_to($tournir_name, '.+ - live$')) {
+  $html = extract_tags($html, '<noscript>', '</noscript>', '', 'sportNavigationRegionExpandedNew');
+  $html = str_ireplace('<div class="leftnav">', '@@@<div class="leftnav">', $html);
+  $html = numbering_tag($html, 'div');
+  $regions = explode('@@@', $html);
+  unset($regions[0]);
+  foreach($regions as $region) {
+    // получаем название региона
+    $region_name = copy_be($region, '<a', '</a>', 'sportsNavigationArrowButtonNew');
+    $region_name = copy_between($region_name, '>', '</a');
+    $tournirs = extract_all_tags($region, '<a href=\'betsnew.aspx?leagueids=', '</a>');
+    foreach($tournirs as $tournir) {
+      $tournir_name = copy_between($tournir, '>', '</a');
+      preg_match('/(.+) \((\d+)\)$/m', $tournir_name, $matches);
+      $tournir_name = $matches[1];
+      // бракуем турниры
       $tournir_node = $sport_node->addChild('Tournir', $tournir_name);
-
       $league = copy_be($tournir, '<a', '>', 'leagueids');
       $league_id = copy_between($league, 'leagueids=', "'");
       $tournir_node->addAttribute('Id', $league_id);
+      $tournir_node->addAttribute('Region_Name', $region_name);
     }
   }
 }
+
+function bwin_get_tournirs(&$sport_node, $sport_sign, $debug=null) {
+  $host = 'https://www.bwin.com';
+  $booker = 'bwin';
+  if (file_exists('proxy.txt')) $proxy = file_get_contents('proxy.txt');
+  $league_path = "lines/$booker/$sport_sign.";
+  
+  // получаем перечень турниров
+  $file_name = $league_path."league.html";
+  $html = download_or_load($debug, $file_name, "$host/$sport_sign?ShowDays=168", "GET", $proxy, "");
+  extract_league($sport_node, $html);
+  if ($debug) file_put_contents($league_path."league.xml", $sport_node->asXML());
+}
+
+
+
+
+
+
 
 function decode_date($str) {
   if (preg_match('/(\w+) (\d{1,2}), (\d{4})/i', $str, $matches)) { //MMM DD, YYYY
@@ -66,7 +90,7 @@ function event_find_or_create(&$tournir_node, $datetime, $gamer1_name, $gamer2_n
    return $event_node;
 }
 
-function extract_bets_1x2(&$tournir_node, $html) {
+function extract_bets_1x2(&$tournir_node, $html, $sport_sign, $tournir_id) {
   $tournir_id = (string)$tournir_node['Id'];
   $html = kill_space($html);
   $html = numbering_tag($html, 'tr');
@@ -103,18 +127,17 @@ function extract_bets_1x2(&$tournir_node, $html) {
         }
       }
       $event_node = event_find_or_create($tournir_node, mktime($hour, $minute, 0, $month_no, $day_no, $year_no), $gamer1_name, $gamer2_name);
-      if ($win1_koef) $event_node->addChild('Match_Win1', $win1_koef);
+      if ($win1_koef) $event_node->addChild('Match_Win_Gamer1', $win1_koef);
       if ($draw_koef) $event_node->addChild('Match_Draw', $draw_koef);
-      if ($win2_koef) $event_node->addChild('Match_Win2', $win2_koef);
+      if ($win2_koef) $event_node->addChild('Match_Win_Gamer2', $win2_koef);
     }
   }
 }
 
-function extract_bets_foratotal(&$tournir_node, $html) {
+function extract_bets_foratotal(&$tournir_node, $html, $sport_sign, $tournir_id) {
   $i = 0;
-  $tournir_id = (string)$tournir_node['Id'];
-  $filename_headers = "phrases/bwin/headers.txt";
-  $filename_labels = "phrases/bwin/labels.txt";
+  $filename_headers = "phrases/bwin/$sport_sign.headers.txt";
+  $filename_labels = "phrases/bwin/$sport_sign.labels.txt";
   $phrases_headers = file_get_hash($filename_headers);
   $phrases_labels = file_get_hash($filename_labels);
   $html = kill_space($html);
@@ -170,85 +193,95 @@ function extract_bets_foratotal(&$tournir_node, $html) {
     }
     $i++;
   }
-  if ($phrases_headers_modified) file_put_hash($filename_headers, $phrases_headers);
-  if ($phrases_labels_modified) file_put_hash($filename_labels, $phrases_labels);
+  // отбираем новые и складываем их в новый файл
+  if ($phrases_headers_modified) {
+    $file_hash = file_get_hash($filename_headers);
+    foreach($file_hash as $key=>$value) unset($phrases_headers[$key]);
+    file_put_hash($filename_headers.'.new', $phrases_headers+file_get_hash($filename_headers.'.new'));
+  }
+  if ($phrases_labels_modified) {
+    $file_hash = file_get_hash($filename_labels);
+    foreach($file_hash as $key=>$value) unset($phrases_labels[$key]);
+    file_put_hash($filename_labels.'.new', $phrases_labels+file_get_hash($filename_labels.'.new'));
+  }
 }
   
-function extract_bets(&$tournir_node, $html, $category_id) {
-  $tournir_id = (string)$tournir_node['Id'];
+function extract_bets(&$tournir_node, $html, $sport_sign, $tournir_id, $category_id) {
   $html = str_ireplace('<wbr/>', '', $html);
   $html = numbering_tag($html, 'div');
   $html = extract_numbered_tags($html, 'div', "", "bet-list");
   $html = extract_numbered_tags($html, 'div', "", "dsBodyContent");
   $html = extract_numbered_tags($html, 'div', "", "ControlContent");
     
-  if (in_array($category_id, array(33))) {
-    if ($html <> '') extract_bets_1x2($tournir_node, $html);
-  } elseif (in_array($category_id, array(36))) {
-    if ($html <> '') extract_bets_foratotal($tournir_node, $html);
+  if (in_array($category_id, array(33,25))) {
+    if ($html <> '') extract_bets_1x2($tournir_node, $html, $sport_sign, $tournir_id);
+  } elseif (in_array($category_id, array(35,36,524))) {
+    if ($html <> '') extract_bets_foratotal($tournir_node, $html, $sport_sign, $tournir_id);
   }
-  file_put_contents("lines/bwin/$tournir_id.$category_id.html", $html);  
+  file_put_contents("lines/bwin/$sport_sign.$tournir_id.$category_id.html", $html);  
 }
 
 function to_be_continue($html) {
   return false;
 }
   
-function scan_line_bwin(&$sport_node, $categories, $debug = null) {
-  global $host, $booker;
+function bwin_get_bets(&$tournir_node, $sport_sign, $tournir_id, $categories, $debug = null) {
+  $booker = 'bwin';
+  $host = 'https://www.bwin.com';
   if (file_exists('proxy.txt')) $proxy = file_get_contents('proxy.txt');
-  $league_path = "lines/$booker/$sport_node.";
-  
-  // получаем перечень турниров
-  $file_name = $league_path."league.html";
-  $html = download_or_load($debug, $file_name, "$host/$sport_node?ShowDays=168", "GET", $proxy, "");
-  extract_league($sport_node, $html);
+  $league_path = "lines/$booker/$sport_sign.";
   
   foreach($categories as $category_id) {
-    foreach($sport_node as $tournir_node) {
-      $tournir_id = (string)$tournir_node['Id'];
-      $current_page = 0;
-      do {
-        $current_page++;
-        $file_name = $league_path."$tournir_id.$category_id.$current_page.html";
-        $url= "$host/betviewiframe.aspx?sorting=leaguedate&categoryIDs=$category_id&bv=bb&leagueIDs=$tournir_id";
-        $html = download_or_load($debug, $file_name, $url, "GET", $proxy, "$host/$sport_node?ShowDays=168");
-        extract_bets($tournir_node, $html, $category_id);
-      } while (to_be_continue($html));
-    }
+    $current_page = 0;
+    do {
+      $current_page++;
+      $file_name = $league_path."$tournir_id.$category_id.$current_page.html";
+      $url= "$host/betviewiframe.aspx?sorting=leaguedate&categoryIDs=$category_id&bv=bb&leagueIDs=$tournir_id";
+      $html = download_or_load($debug, $file_name, $url, "GET", $proxy, "$host/$sport_sign?ShowDays=168");
+      extract_bets($tournir_node, $html, $sport_sign, $tournir_id, $category_id);
+    } while (to_be_continue($html));
   }
   
-  if ($debug) file_put_contents($league_path."league.xml", $sport_node->asXML());
+  if ($debug) file_put_contents($league_path."$tournir_id.xml", $tournir_node->asXML());
+}
+
+function bwin_get_events(&$tournir_node, $sport_sign, $tournir_id, $debug) {
+  if ($sport_sign == 'tennis') {
+    $categories = array(  33 //2Way - Who will win? 
+                       ,  35 //Set related bets
+                       ,  36 //Number of games
+                       , 524 //Tie breaks
+                       );
+  } elseif ($sport_sign == 'football') {
+    $categories = array(  25 //3Way
+                       ,  28 //3Way Handicap
+                       ,  30 //Halftime result
+                       ,  31 //Number of goals?
+                       , 190 //Double chance
+                       , 266 //Corners
+                       , 271 //Yellow/Red cards
+                       ,1228 //Odd/Even
+                       );
+  } 
+  bwin_get_bets($tournir_node, $sport_sign, $tournir_id, $categories, $debug);
 }
 
 
 ?>
 <?php
-//  $booker = 'bwin';
-//  require "bwin_xml.php";
+function bwin_load_sport($sport_sign) {
+  $booker = 'bwin';
+  $host = 'https://www.bwin.com';
   $debug = 1;
-    
   $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><Scan/>');
-
-  $sport_node = $xml->addChild("Sport", 'tennis');
-  scan_line_bwin($sport_node, array(  33 //2Way - Who will win? 
-                                   ,  35 //Set related bets
-                                   ,  36 //Number of games
-                                   , 524 //Tie breaks
-                                   ), $debug);
-  $sport_node = $xml->addChild("Sport", 'football');
-  scan_line_bwin($sport_node, array(  25 //3Way
-                                   ,  28 //3Way Handicap
-                                   ,  30 //Halftime result
-                                   ,  31 //Number of goals?
-                                   , 190
-                                   , 266
-                                   , 271),$debug);
-  
-  
-  $league_path = "lines/$booker/$sport_node.";
-  
-  file_put_contents($league_path."league.xml", $xml->asXML());
-
+  $sport_node = $xml->addChild("Sport", $sport_sign);
+  bwin_get_tournirs($sport_node, $sport_sign, $debug);
+  foreach($sport_node as $tournir_node) bwin_get_events($tournir_node, $sport_sign, $tournir_node['Id'], $debug);
+  file_put_contents("lines/$booker/$sport_sign.xml", $xml->asXML());
   print $xml->asXML();
+  unset($xml);
+}
+    
+//  bwin_load_sport('tennis');
+  bwin_load_sport('football');
 ?>
