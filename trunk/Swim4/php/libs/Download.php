@@ -237,32 +237,45 @@ function download_page($Url, $Method="GET", $Referer="", $PostData="") {
 } 
 
 function download_curl($Url, $Method="GET", $Proxy=null, $Referer="", $PostHash=null) {
+  $URI= parse_url($Url);
+  $cookiehost = $URI['host'];
   try {
     $curl = curl_init();
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_HEADER, 0);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curl, CURLOPT_HEADER, true);
     curl_setopt($curl, CURLOPT_URL, $Url);
     curl_setopt($curl, CURLOPT_USERAGENT, 'User-Agent=Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.6) Gecko/2009011913 Firefox/3.0.6 (.NET CLR 3.5.30729)');
     curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+    if ($Referer) curl_setopt($curl, CURLOPT_REFERER, $Referer);
+    curl_setopt($curl, CURLINFO_HEADER_OUT, true);
+    
+    if (file_exists("cookies/$cookiehost.txt")) {
+      $cookie = str_replace("\r\n", '; ', urldecode(file_get_contents("cookies/$cookiehost.txt")));
+      curl_setopt($curl, CURLOPT_COOKIE, $cookie);
+    }
+    
     if ($Proxy) {
       curl_setopt($curl, CURLOPT_PROXY, $Proxy);
     }
     if ($Method == "POST") {
-      curl_setopt($curl, CURLOPT_POST, 1);
+      curl_setopt($curl, CURLOPT_POST, true);
       curl_setopt($curl, CURLOPT_POSTFIELDS, implode_hash("\r\n", $PostHash));
     }
     
-    $URI= parse_url($Url);
-    curl_setopt($curl, CURLOPT_COOKIEFILE, "cookies/".$URI['host'].".txt"); //Из какого файла читать
-    curl_setopt($curl, CURLOPT_COOKIEJAR, "cookies/".$URI['host'].".txt"); //В какой файл записывать
-    
-    $Html = curl_exec($curl);   
+    $data = curl_exec($curl);   
     $curlError = curl_error($curl);
+    if ($Proxy) list($header, $data) = explode("\r\n\r\n", $data, 2);
+    while (substr($data, 0, 4) == 'HTTP') {
+      list($header, $data) = explode("\r\n\r\n", $data, 2);
+      update_cookies($Url, $header);
+    }
+
     curl_close($curl);
   } catch (E_NOTICE $e) {
       echo "Notice raised: " . $e->getMessage();
   }
-  return $Html;
+  return $data;
 }
 
 function download($Url, $Method="GET", $Referer="", $PostHash=null, $ResponseFileName=null) {
