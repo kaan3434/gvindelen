@@ -234,7 +234,7 @@ function index_of($needle, $haystack) {                // conversion of JavaScri
 
 function implode_hash($glue, $Hash, $c = null) {
   if ($Hash) {
-    foreach ($Hash as $name => $value) $DataArr[] = $name.'='.$c.$value.$c;
+    foreach ($Hash as $name => $value) $DataArr[] = str_replace('=', '&eq;', $name).'='.$c.$value.$c;
   }
   return implode($glue, $DataArr);
 }
@@ -251,7 +251,7 @@ function file_get_hash($filename) {
     $pair_array = explode("\r\n", file_get_contents($filename));
     foreach($pair_array as $pair) {
       list($name, $value) = explode('=', $pair, 2);
-      $hash[$name] = $value;
+      $hash[str_replace('&eq;', '=', $name)] = $value;
     }
   } catch (Exception $e) {}
   return $hash;

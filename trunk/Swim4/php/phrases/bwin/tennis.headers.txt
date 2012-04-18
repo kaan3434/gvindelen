@@ -1,10 +1,10 @@
-Will there be a tie-break in the first set?=Period=Set1;Subject=TieBreak
-Will there be a tie-break in the match?=Period=Match;Subject=TieBreak
 How many games will be played in the first set?=Period=Set1;Subject=Game;Kind=Total
 How many games will be played in the match?=Period=Match;Subject=Game;Kind=Total
 How many games will Gamer2 win in the first set?=Period=Set1;Gamer=2;Subject=Game;Kind=Total
 How many games will Gamer2 win in the match?=Modifier=Period=Match;Gamer=2;Subject=Game;Kind=Total
-Will number of games played in the match be odd or even?=Period=Match;Subject=Game;Kind=Total
-Who will win the most games in the match? (player handicap)=Period=Match;Subject=Game;Kind=Fora
 Set bet=Modifier=Ignore
 Who will win the first set ?=Period=Set1;Kind=Win
+Who will win the most games in the match? (player handicap)=Period=Match;Subject=Game;Kind=Fora
+Will number of games played in the match be odd or even?=Period=Match;Subject=Game;Kind=Total
+Will there be a tie-break in the first set?=Period=Set1;Subject=TieBreak
+Will there be a tie-break in the match?=Period=Match;Subject=TieBreak

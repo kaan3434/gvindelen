@@ -35,11 +35,6 @@ function olymp_get_tournirs(&$sport_node, $sport_sign, $debug=null) {
 }
 
 
-
-
-
-
-
 function decode_datetime($str) {
   preg_match('/(\d{1,2})\/(\d{2}) (\d{1,2}):(\d\d)/i', $str, $matches);
   $day_no = $matches[1];
@@ -83,7 +78,7 @@ function add_bet(&$event_node, $attrs) {
 }
 
 function extract_main_bets(&$tournir_node, $html, $sport_sign, $tournir_id) {
-  $subjects_file = "phrases/olymp/$sport_sign.subjects.txt";
+  $subjects_file = "phrases/olymp/subjects.txt";
   $subjects = file_get_hash($subjects_file);
   $event_id = extract_property_values(copy_be($html, '<ul', '>', 'rel'), 'rel', '');
   $html = kill_tag_bound($html, 'u');
@@ -102,23 +97,23 @@ function extract_main_bets(&$tournir_node, $html, $sport_sign, $tournir_id) {
 
   if ($cells[9] <> '') {
     preg_match('/\(([\+\-]*?)(.+?)\)<br\/>(.+?)/iU', $cells[9], $matches);
-    if ($matches[1] == '') $matches[1] = '+';
+    if (($matches[1] == '') and ($matches[2] <> '0')) $matches[1] = '+';
     add_bet($event_node, 'Period=Match;Kind=Fora;Value='.$matches[1].$matches[2].';Modifier=Win;Gamer=1;Koef='.$matches[3]);
   }
   if ($cells[10] <> '') {
     preg_match('/\(([\+\-]*?)(.+?)\)<br\/>(.+?)/iU', $cells[10], $matches);
-    if ($matches[1] == '') $matches[1] = '+';
+    if (($matches[1] == '') and ($matches[2] <> '0')) $matches[1] = '+';
     add_bet($event_node, 'Period=Match;Kind=Fora;Value='.$matches[1].$matches[2].';Modifier=Win;Gamer=2;Koef='.$matches[3]);
   }
   if ($cells[12] <> '') {
     $value = $cells[11];
     if (!strpos($value, '.')) $value = $value+0.5;
-    add_bet($event_node, 'Period=Match;'.$subjects['MatchTotal'].';Kind=Total;Value='.$value.';Modifier=Under;Koef='.$cells[12]);
+    add_bet($event_node, 'Period=Match;'.$subjects[$sport_sign].';Kind=Total;Value='.$value.';Modifier=Under;Koef='.$cells[12]);
   }
   if ($cells[13] <> '') { 
     $value = $cells[11];
     if (!strpos($value, '.')) $value = $value-0.5;
-    add_bet($event_node, 'Period=Match;'.$subjects['MatchTotal'].';Kind=Total;Value='.$value.';Modifier=Over;Koef='.$cells[13]);
+    add_bet($event_node, 'Period=Match;'.$subjects[$sport_sign].';Kind=Total;Value='.$value.';Modifier=Over;Koef='.$cells[13]);
   }
 }
 
@@ -133,6 +128,7 @@ function extract_extra_bets(&$tournir_node, $html, $sport_sign, $tournir_id) {
   foreach($table_rows as $row) {
     $row = kill_property($row, 'TagNo');
     $event_id = extract_property_values(copy_be($html, '<ul', '>', 'rel'), 'rel', '');
+    $event_node = event_find($tournir_node, $event_id);
     $phrase = copy_be($row, '<h2', '</h2>');
     $phrase = copy_between($phrase, '>', '<');
     unset($bettype);
@@ -151,6 +147,8 @@ function extract_extra_bets(&$tournir_node, $html, $sport_sign, $tournir_id) {
       $bets = extract_all_tags($row, '<li', '</li>', 'rel');
       foreach($bets as $bet) {
         list($label, $koef) = extract_label_koef($bet);
+        $label = str_ireplace((string)$event_node['Gamer1_Name'], 'Gamer1', $label);
+        $label = str_ireplace((string)$event_node['Gamer2_Name'], 'Gamer2', $label);
         $modifier = $phrases_labels[$label];
         if ($modifier) {
           foreach(explode(';', $modifier) as $bet_pair) {
@@ -163,7 +161,6 @@ function extract_extra_bets(&$tournir_node, $html, $sport_sign, $tournir_id) {
           $phrases_labels_modified = true;
         }
         if (!in_array($bettype['Modifier'], array('Ignore', 'Unknown'))) {
-          $event_node = event_find($tournir_node, $event_id);
           $bet_node = $event_node->addChild('Bet');
           foreach($bettype as $key=>$value) $bet_node->addAttribute($key, $value);
           $bet_node->addAttribute('Koef', $koef);

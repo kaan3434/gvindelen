@@ -1,47 +1,19 @@
-Even=Modifier=Even
-Odd=Modifier=Odd
-Over 1,5=Modifier=Over;Value=1.5
-Under 1,5=Modifier=Under;Value=1.5
-Over 2,5=Modifier=Over;Value=2.5
-Under 2,5=Modifier=Under;Value=2.5
-Over 3,5=Modifier=Over;Value=3.5
-Under 3,5=Modifier=Under;Value=3.5
-Over 4,5=Modifier=Over;Value=4.5
-Under 4,5=Modifier=Under;Value=4.5
-Over 0,5=Modifier=Over;Value=0.5
-Under 0,5=Modifier=Under;Value=0.5
-Over 11,5=Modifier=Over;Value=11.5
-Under 11,5=Modifier=Under;Value=11.5
-Over 9,5=Modifier=Over;Value=9.5
-Under 9,5=Modifier=Under;Value=9.5
-Over 5,5=Modifier=Over;Value=5.5
-Under 5,5=Modifier=Under;Value=5.5
-Over 10,5=Modifier=Over;Value=10.5
-Under 10,5=Modifier=Under;Value=10.5
-1 or X=Gamer=1;Modifier=NoLose
-X or 2=Gamer=2;Modifier=NoLose
 1 or 2=Modifier=NoDraw
-3 or more=Modifier=Over;Value=2.5
-8 or more Goals=Modifier=Over;Value=7.5
-5 or more=Modifier=Over;Value=4.5
-No red card=Modifier=Under;Value=0.5
+1 or X=Gamer=1;Modifier=NoLose
 1=Modifier=Ignore
-2 or more Red Cards=Modifier=Over;Value=1.5
-Gamer1=Gamer=1
-Equal number of yellow cards=Modifier=Ignore
-Gamer2=Gamer=2
-Both at the same time=Modifier=Ignore
-No yellow card=Modifier=Ignore
 1st half=Modifier=Ignore
-2nd half=Modifier=Ignore
-More corners 1st half=Modifier=Ignore
-Equal number of corners=Modifier=Ignore
-More corners 2nd half=Modifier=Ignore
-Gamer1 or X=Gamer=1;Modifier=NoLose
-X or Gamer2=Gamer=2;Modifier=NoLose
-Gamer1 or Gamer2=Modifier=NoDraw
-No goal=Modifier=Under;Value=0.5
+2 or more Red Cards=Modifier=Over;Value=1.5
 2=Modifier=Ignore
+2nd half=Modifier=Ignore
+3 or more=Modifier=Over;Value=2.5
+3=Modifier=Ignore
+4=Modifier=Ignore
+5 or more=Modifier=Over;Value=4.5
+8 or more Goals=Modifier=Over;Value=7.5
+Both at the same time=Modifier=Ignore
+Equal number of corners=Modifier=Ignore
+Equal number of yellow cards=Modifier=Ignore
+Even=Modifier=Even
 Exactly 1 Goal=Modifier=Ignore
 Exactly 2 Goals=Modifier=Ignore
 Exactly 3 Goals=Modifier=Ignore
@@ -49,9 +21,37 @@ Exactly 4 Goals=Modifier=Ignore
 Exactly 5 Goals=Modifier=Ignore
 Exactly 6 Goals=Modifier=Ignore
 Exactly 7 Goals=Modifier=Ignore
-3=Modifier=Ignore
-4=Modifier=Ignore
+Gamer1 or Gamer2=Modifier=NoDraw
+Gamer1 or X=Gamer=1;Modifier=NoLose
+Gamer1=Gamer=1
+Gamer2=Gamer=2
+More corners 1st half=Modifier=Ignore
+More corners 2nd half=Modifier=Ignore
+No goal=Modifier=Under;Value=0.5
+No red card=Modifier=Under;Value=0.5
+No yellow card=Modifier=Ignore
+Odd=Modifier=Odd
+Over 0,5=Modifier=Over;Value=0.5
+Over 1,5=Modifier=Over;Value=1.5
+Over 10,5=Modifier=Over;Value=10.5
+Over 11,5=Modifier=Over;Value=11.5
+Over 2,5=Modifier=Over;Value=2.5
+Over 3,5=Modifier=Over;Value=3.5
+Over 4,5=Modifier=Over;Value=4.5
+Over 5,5=Modifier=Over;Value=5.5
 Over 6,5=Modifier=Over;Value=6.5
-Under 6,5=Modifier=Under;Value=6.5
 Over 7,5=Modifier=Over;Value=7.5
+Over 9,5=Modifier=Over;Value=9.5
+Under 0,5=Modifier=Under;Value=0.5
+Under 1,5=Modifier=Under;Value=1.5
+Under 10,5=Modifier=Under;Value=10.5
+Under 11,5=Modifier=Under;Value=11.5
+Under 2,5=Modifier=Under;Value=2.5
+Under 3,5=Modifier=Under;Value=3.5
+Under 4,5=Modifier=Under;Value=4.5
+Under 5,5=Modifier=Under;Value=5.5
+Under 6,5=Modifier=Under;Value=6.5
 Under 7,5=Modifier=Under;Value=7.5
+Under 9,5=Modifier=Under;Value=9.5
+X or 2=Gamer=2;Modifier=NoLose
+X or Gamer2=Gamer=2;Modifier=NoLose

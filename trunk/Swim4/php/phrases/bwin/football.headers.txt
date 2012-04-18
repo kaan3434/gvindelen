@@ -1,44 +1,11 @@
+1st Half Goal Kicks odd/even=Modifier=Period=Half1;Subject=GoalKick;Kind=Total
+2nd Half Over/Under goals 3,5=Period=Half2;Subject=Goal;Kind=Total;Value=3.5
+Double chance=Period=Match;Kind=DoubleChance
+Halftime double chance=Period=Half1;Kind=DoubleChance
 Handicap 0:1=Period=Match;Kind=Handicap;Value=-1
 Handicap 0:2=Period=Match;Kind=Handicap;Value=-2
 Handicap 1:0=Period=Match;Kind=Handicap;Value=1
 Handicap 2:0=Period=Match;Kind=Handicap;Value=2
-Will the number of corner kicks be odd or even?=Period=Match;Subject=Corner;Kind=Total
-Will the number of free kicks be odd or even?=Period=Match;Subject=FreeKick;Kind=Total
-Will the number of free kicks in the 1st half be odd or even?=Period=Half1;Subject=FreeKick;Kind=Total
-How many yellow cards will be awarded in the 1st half?=Period=Half1;Subject=YellowCard;Kind=Total
-How many yellow cards will be awarded in the 2nd half?=Period=Half2;Subject=YellowCard;Kind=Total
-How many yellow cards will be awarded in the match? (regular time)=Period=Match;Subject=YellowCard;Kind=Total
-How many yellow cards will Team 1 receive in the first half?=Period=Half1;Subject=YellowCard;Kind=Total;Gamer=1
-How many yellow cards will Team 1 receive in the second half?=Period=Half1;Subject=YellowCard;Kind=Total;Gamer=1
-How many yellow cards will Team 1 receive?=Period=Match;Subject=YellowCard;Kind=Total;Gamer=1
-How many yellow cards will Team 2 receive in the first half?=Period=Half1;Subject=YellowCard;Kind=Total;Gamer=2
-How many yellow cards will Team 2 receive in the second half?=Period=Half2;Subject=YellowCard;Kind=Total;Gamer=2
-How many yellow cards will Team 2 receive?=Period=Match;Subject=YellowCard;Kind=Total;Gamer=2
-Which team will be awarded the 1st corner?=Modifier=Ignore
-Which team will be awarded the first corner in the 2nd half?=Modifier=Ignore
-Which team will be awarded the last corner?=Modifier=Ignore
-Which team will be awarded the most corners?=Modifier=Ignore
-Which team will have 3 corners first in the 2nd half?=Modifier=Ignore
-Which team will have 3 corners first in the match?=Modifier=Ignore
-Which team will have the most corners in the 2nd half?=Modifier=Ignore
-Which team will have the with most corners in the 1st half?=Modifier=Ignore
-Double chance=Period=Match;Kind=DoubleChance
-Halftime double chance=Period=Half1;Kind=DoubleChance
-Which team will collect the most yellow cards in the 2nd half?=Modifier=Ignore
-Which team will receive the 1st red card?=Modifier=Ignore
-Which team will receive the 1st yellow card in the 2nd half?=Modifier=Ignore
-Which team will receive the 1st yellow card?=Modifier=Ignore
-Which team will receive the most yellow cards in the first half?=Modifier=Ignore
-Which team will receive the most yellow cards?=Modifier=Ignore
-Will more yellow cards be awarded in the 1st or 2nd half?=Modifier=Ignore
-Will the number of offsides be odd or even?=Periodr=Match;Subject=OffSide;Kind=Total
-Will the number of offsides calls in the 1st half be odd or even?=Period=Half1;Subject=OffSide;Kind=Total
-Will the number of throw-ins be odd or even?=Period=Match;Subject=ThrowIns;Kind=Total
-Will the number of throw-ins in the 1st half be odd or even?=Period=Half1;Subject=ThrowIns;Kind=Total
-Will the number of yellow cards be odd or even?=Period=Match;Subject=YellowCard;Kind=Total
-Will the number of yellow cards in the 1st half be odd or even?=Period=Half1;Subject=YellowCard;Kind=Total
-Will the total number of corners in the 1st half be odd or even?=Period=Half1;Subject=Corner;Kind=Total
-How many red cards will be awarded in the match?=Period=Match;Subject=RedCard;Kind=Total
 How many corners will be awarded in the 1st half?=Period=Half1;Subject=Corner;Kind=Total
 How many corners will be awarded in the 2nd half?=Period=Half2;Subject=Corner;Kind=Total
 How many corners will be awarded in the match (regular time)?=Period=RegularTime;Subject=Corner;Kind=Total
@@ -48,19 +15,52 @@ How many corners will Team 1 be awarded?=Period=Match;Subject=Corner;Kind=Total;
 How many corners will Team 2 be awarded in the 1st half?=Period=Half1;Subject=Corner;Kind=Total;Gamer=2
 How many corners will Team 2 be awarded in the 2nd half?=Period=Half2;Subject=Corner;Kind=Total;Gamer=2
 How many corners will Team 2 be awarded?=Period=Match;Subject=Corner;Kind=Total;Gamer=2
-Will there be more corners in the 1st or 2nd half?=Modifier=Ignore
-Will the number of goal kicks be odd or even?=Period=Match;Subject=GoalKick;Kind=Total
-1st Half Goal Kicks odd/even=Modifier=Period=Half1;Subject=GoalKick;Kind=Total
 How many goals will be scored in the 1st half?=Period=Half1;Subject=Goal;Kind=Total
 How many goals will be scored in the 2nd half?=Period=Half2;Subject=Goal;Kind=Total
+How many goals will be scored?=Period=Match;Subject=Goal;Kind=Total
 How many goals will Team 1 score in the 1st half?=Period=Half1;Subject=Goal;Kind=Total;Gamer=1
 How many goals will Team 1 score in the 2nd half?=Period=Half2;Subject=Goal;Kind=Total;Gamer=1
 How many goals will Team 1 score?=Period=Match;Subject=Goal;Kind=Total;Gamer=1
 How many goals will Team 2 score in the 1st half?=Period=Half1;Subject=Goal;Kind=Total;Gamer=2
 How many goals will Team 2 score in the 2nd half?=Period=Half2;Subject=Goal;Kind=Total;Gamer=2
 How many goals will Team 2 score?=Period=Match;Subject=Goal;Kind=Total;Gamer=2
+How many red cards will be awarded in the match?=Period=Match;Subject=RedCard;Kind=Total
+How many yellow cards will be awarded in the 1st half?=Period=Half1;Subject=YellowCard;Kind=Total
+How many yellow cards will be awarded in the 2nd half?=Period=Half2;Subject=YellowCard;Kind=Total
+How many yellow cards will be awarded in the match? (regular time)=Period=Match;Subject=YellowCard;Kind=Total
+How many yellow cards will Team 1 receive in the first half?=Period=Half1;Subject=YellowCard;Kind=Total;Gamer=1
+How many yellow cards will Team 1 receive in the second half?=Period=Half1;Subject=YellowCard;Kind=Total;Gamer=1
+How many yellow cards will Team 1 receive?=Period=Match;Subject=YellowCard;Kind=Total;Gamer=1
+How many yellow cards will Team 2 receive in the first half?=Period=Half1;Subject=YellowCard;Kind=Total;Gamer=2
+How many yellow cards will Team 2 receive in the second half?=Period=Half2;Subject=YellowCard;Kind=Total;Gamer=2
+How many yellow cards will Team 2 receive?=Period=Match;Subject=YellowCard;Kind=Total;Gamer=2
+Result at half-time=Modifier=Ignore
+Which team will be awarded the 1st corner?=Modifier=Ignore
+Which team will be awarded the first corner in the 2nd half?=Modifier=Ignore
+Which team will be awarded the last corner?=Modifier=Ignore
+Which team will be awarded the most corners?=Modifier=Ignore
+Which team will collect the most yellow cards in the 2nd half?=Modifier=Ignore
+Which team will have 3 corners first in the 2nd half?=Modifier=Ignore
+Which team will have 3 corners first in the match?=Modifier=Ignore
+Which team will have the most corners in the 2nd half?=Modifier=Ignore
+Which team will have the with most corners in the 1st half?=Modifier=Ignore
+Which team will receive the 1st red card?=Modifier=Ignore
+Which team will receive the 1st yellow card in the 2nd half?=Modifier=Ignore
+Which team will receive the 1st yellow card?=Modifier=Ignore
+Which team will receive the most yellow cards in the first half?=Modifier=Ignore
+Which team will receive the most yellow cards?=Modifier=Ignore
+Will more yellow cards be awarded in the 1st or 2nd half?=Modifier=Ignore
+Will the number of corner kicks be odd or even?=Period=Match;Subject=Corner;Kind=Total
+Will the number of free kicks be odd or even?=Period=Match;Subject=FreeKick;Kind=Total
+Will the number of free kicks in the 1st half be odd or even?=Period=Half1;Subject=FreeKick;Kind=Total
+Will the number of goal kicks be odd or even?=Period=Match;Subject=GoalKick;Kind=Total
 Will the number of goals scored be odd or even? (No goal counts as even)=Period=Match;Subject=Goal;Kind=Total
 Will the number of goals scored in the 1st half be odd or even? (No Goal counts as Even)=Period=Half1;Subject=Goal;Kind=Total
-2nd Half Over/Under goals 3,5=Period=Half2;Subject=Goal;Kind=Total;Value=3.5
-How many goals will be scored?=Period=Match;Subject=Goal;Kind=Total
-Result at half-time=Modifier=Ignore
+Will the number of offsides be odd or even?=Periodr=Match;Subject=OffSide;Kind=Total
+Will the number of offsides calls in the 1st half be odd or even?=Period=Half1;Subject=OffSide;Kind=Total
+Will the number of throw-ins be odd or even?=Period=Match;Subject=ThrowIns;Kind=Total
+Will the number of throw-ins in the 1st half be odd or even?=Period=Half1;Subject=ThrowIns;Kind=Total
+Will the number of yellow cards be odd or even?=Period=Match;Subject=YellowCard;Kind=Total
+Will the number of yellow cards in the 1st half be odd or even?=Period=Half1;Subject=YellowCard;Kind=Total
+Will the total number of corners in the 1st half be odd or even?=Period=Half1;Subject=Corner;Kind=Total
+Will there be more corners in the 1st or 2nd half?=Modifier=Ignore
