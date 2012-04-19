@@ -2,18 +2,42 @@
 <!--Created with Liquid XML Studio Developer Edition 9.0.11.3078 (http://www.liquid-technologies.com)-->
 <definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://example.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" name="ScanBooker" targetNamespace="" xmlns="http://schemas.xmlsoap.org/wsdl/">
     <types>
-        <xs:schema xmlns:tns="http://schemas.xmlsoap.org/wsdl/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="swm" />
+        <xs:schema xmlns:tns="http://schemas.xmlsoap.org/wsdl/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="swm">
+            <complexType name="SportRequestType">
+                <sequence>
+                    <element name="BookerSign" type="string" />
+                    <element name="SportSign" type="string" />
+                </sequence>
+            </complexType>
+            <complexType name="TournirRequestType">
+                <sequence>
+                    <element name="BookerSign" type="string" />
+                    <element name="SportSign" type="string" />
+                    <element name="TournirId" type="string" />
+                </sequence>
+            </complexType>
+        </xs:schema>
     </types>
-    <message name="NewInputMessage">
-        <part xmlns:q1="swm" name="booker" type="xs:string" />
-    </message>
-    <message name="NewOutputMessage">
+    <message name="xmlData">
         <part xmlns:q2="swm" name="xml" type="xs:string" />
     </message>
+    <message name="SportRequest">
+        <part xmlns:q1="swm" name="RequestData" type="q1:SportRequestType" />
+    </message>
+    <message name="TournirRerquest">
+        <part xmlns:q2="swm" name="RequestData" type="q2:TournirRequestType" />
+    </message>
     <portType name="ScanBookerPortType">
-        <operation name="GetLine">
-            <input message="tns:NewInputMessage" />
-            <output message="tns:NewOutputMessage" />
+        <operation name="getBookers">
+            <output message="xmlData" />
+        </operation>
+        <operation name="getTournirs">
+            <input message="SportRequest" />
+            <output name="tournirXml" message="xmlData" />
+        </operation>
+        <operation name="getEvents">
+            <input message="TournirRerquest" />
+            <output message="xmlData" />
         </operation>
     </portType>
     <binding name="ScanBookerBinding" type="ScanBookerPortType">
