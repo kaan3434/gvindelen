@@ -336,9 +336,6 @@ inherited FormTableClients: TFormTableClients
       end>
     Bitmap = {}
   end
-  inherited trnNSI: TpFIBTransaction
-    Active = True
-  end
   object qryAccountMovements: TpFIBDataSet [8]
     SelectSQL.Strings = (
       'SELECT'
@@ -352,7 +349,6 @@ inherited FormTableClients: TFormTableClients
       'where ao.account_id = :account_id'
       '  '
       'order by accoper_dtm desc')
-    Active = True
     Transaction = trnNSI
     Database = dmOtto.dbOtto
     DataSource = dsMain
@@ -380,7 +376,6 @@ inherited FormTableClients: TFormTableClients
       '    ORDERS '
       'WHERE '
       '    CLIENT_ID = :CLIENT_ID')
-    Active = True
     Transaction = trnNSI
     Database = dmOtto.dbOtto
     DataSource = dsMain

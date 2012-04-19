@@ -179,7 +179,7 @@ inherited FormTableOrders: TFormTableOrders
             Top = 0
             Width = 778
             Height = 198
-            ActivePage = tsHistory
+            ActivePage = tsOrderItems
             Align = alClient
             TabOrder = 0
             object tsOrderAttrs: TTabSheet
@@ -240,7 +240,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdOrderItems: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 728
+                Width = 770
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True

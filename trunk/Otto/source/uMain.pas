@@ -143,6 +143,8 @@ type
     actExportPrePacklist: TAction;
     btnPrePackList: TTBXItem;
     frxInvoice: TfrxReport;
+    btnCleanUp: TTBXItem;
+    actDBClean: TAction;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -178,6 +180,7 @@ type
     procedure actProcessInfo2PayExecute(Sender: TObject);
     procedure actExportToSiteExecute(Sender: TObject);
     procedure actExportPrePacklistExecute(Sender: TObject);
+    procedure actDBCleanExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -745,6 +748,11 @@ end;
 procedure TMainForm.actExportPrePacklistExecute(Sender: TObject);
 begin
   ExportPrePackList(trnWrite);
+end;
+
+procedure TMainForm.actDBCleanExecute(Sender: TObject);
+begin
+  dmOtto.CleanUp
 end;
 
 end.

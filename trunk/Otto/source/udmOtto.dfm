@@ -7,12 +7,12 @@ object dmOtto: TdmOtto
   Height = 405
   Width = 624
   object dbOtto: TpFIBDatabase
-    Connected = True
     DBName = 'localhost:D:\otto\Data\otto_ppz.fdb'
     DBParams.Strings = (
       'lc_ctype=CYRL'
-      'user_name=sysdba'
-      'password=masterkey')
+      'user_name=SYSDBA'
+      'password=masterkey'
+      'sql_role_name=')
     DefaultTransaction = trnAutonomouse
     DefaultUpdateTransaction = trnAutonomouse
     SQLDialect = 3
@@ -111,7 +111,6 @@ object dmOtto: TdmOtto
     Top = 176
   end
   object trnAutonomouse: TpFIBTransaction
-    Active = True
     DefaultDatabase = dbOtto
     TimeoutAction = TARollback
     TRParams.Strings = (
@@ -288,167 +287,17 @@ object dmOtto: TdmOtto
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
     PreviewOptions.MDIChild = True
+    PreviewOptions.Modal = False
     PreviewOptions.Zoom = 1.000000000000000000
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 40998.100363171300000000
     ReportOptions.LastChange = 40998.137294224540000000
     ScriptLanguage = 'PascalScript'
-    ScriptText.Strings = (
-      
-        'procedure qryNotifiesNOTIFY_TEXTOnBeforePrint(Sender: TfrxCompon' +
-        'ent);'
-      'begin'
-      '  case <qryNotifies."NOTIFY_CLASS"> of'
-      '    '#39'I'#39': TMemo(Sender).Color := $0080FF80;     '
-      '    '#39'W'#39': TMemo(Sender).Color := $0098FFFF;           '
-      '    '#39'E'#39': TMemo(Sender).Color := $008080FF;'
-      '  end;                  '
-      'end;'
-      ''
-      'begin'
-      
-        '  if <MessageId> = null then set('#39'MessageId'#39', '#39'71134'#39');         ' +
-        '                                                                ' +
-        '                                       '
-      'end.')
+    ShowProgress = False
+    StoreInDFM = False
     Left = 344
     Top = 248
-    Datasets = <
-      item
-        DataSet = frxProtocol.qryNotifies
-        DataSetName = 'qryNotifies'
-      end>
-    Variables = <
-      item
-        Name = ' User'
-        Value = Null
-      end
-      item
-        Name = 'MessageId'
-        Value = Null
-      end>
-    Style = <>
-    object Data: TfrxDataPage
-      Height = 1000.000000000000000000
-      Width = 1000.000000000000000000
-      object qryNotifies: TfrxFIBQuery
-        UserName = 'qryNotifies'
-        CloseDataSource = True
-        BCDToCurrency = False
-        IgnoreDupParams = False
-        Params = <
-          item
-            Name = 'MessageId'
-            DataType = ftInteger
-            Expression = '<MessageId>'
-          end>
-        SQL.Strings = (
-          'SELECT * '
-          '  FROM NOTIFIES '
-          '  WHERE MESSAGE_ID = :MessageId                          '
-          '  ORDER BY NOTIFY_ID')
-        pLeft = 192
-        pTop = 68
-        Parameters = <
-          item
-            Name = 'MessageId'
-            DataType = ftInteger
-            Expression = '<MessageId>'
-          end>
-      end
-    end
-    object Page1: TfrxReportPage
-      PaperWidth = 210.000000000000000000
-      PaperHeight = 297.000000000000000000
-      PaperSize = 9
-      LeftMargin = 10.000000000000000000
-      RightMargin = 10.000000000000000000
-      TopMargin = 10.000000000000000000
-      BottomMargin = 10.000000000000000000
-      object MasterData1: TfrxMasterData
-        Height = 22.677180000000000000
-        Top = 102.047310000000000000
-        Width = 718.110700000000000000
-        DataSet = frxProtocol.qryNotifies
-        DataSetName = 'qryNotifies'
-        RowCount = 0
-        Stretched = True
-        object qryNotifiesNOTIFY_CLASS: TfrxMemoView
-          Width = 18.897650000000000000
-          Height = 18.897650000000000000
-          OnBeforePrint = 'qryNotifiesNOTIFY_TEXTOnBeforePrint'
-          ShowHint = False
-          StretchMode = smMaxHeight
-          DataField = 'NOTIFY_CLASS'
-          DataSet = frxProtocol.qryNotifies
-          DataSetName = 'qryNotifies'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -13
-          Font.Name = 'Arial'
-          Font.Style = []
-          Frame.Typ = [ftRight, ftBottom]
-          HAlign = haCenter
-          Memo.UTF8 = (
-            '[qryNotifies."NOTIFY_CLASS"]')
-          ParentFont = False
-        end
-        object qryNotifiesNOTIFY_TEXT: TfrxMemoView
-          Left = 18.897650000000000000
-          Width = 699.213050000000000000
-          Height = 18.897650000000000000
-          ShowHint = False
-          StretchMode = smMaxHeight
-          DataSet = frxProtocol.qryNotifies
-          DataSetName = 'qryNotifies'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -13
-          Font.Name = 'Arial'
-          Font.Style = []
-          Frame.Typ = [ftBottom]
-          Memo.UTF8 = (
-            '[qryNotifies."NOTIFY_TEXT"]')
-          ParentFont = False
-        end
-      end
-      object PageHeader1: TfrxPageHeader
-        Height = 22.677180000000000000
-        Top = 18.897650000000000000
-        Width = 718.110700000000000000
-        object qryNotifiesNOTIFY_DTM: TfrxMemoView
-          Width = 377.953000000000000000
-          Height = 18.897650000000000000
-          ShowHint = False
-          DataSet = frxProtocol.qryNotifies
-          DataSetName = 'qryNotifies'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -13
-          Font.Name = 'Arial'
-          Font.Style = []
-          Memo.UTF8 = (
-            '[qryNotifies."NOTIFY_DTM"]')
-          ParentFont = False
-        end
-        object Memo1: TfrxMemoView
-          Left = 623.622450000000000000
-          Width = 94.488250000000000000
-          Height = 18.897650000000000000
-          ShowHint = False
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -13
-          Font.Name = 'Arial'
-          Font.Style = []
-          HAlign = haCenter
-          Memo.UTF8 = (
-            #1057#1027#1057#8218#1057#1026'. [Page#] '#1056#1105#1056#183' [TotalPages#]')
-          ParentFont = False
-        end
-      end
-    end
   end
   object frxFIBComponents1: TfrxFIBComponents
     DefaultDatabase = dbOtto

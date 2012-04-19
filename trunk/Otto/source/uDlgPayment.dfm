@@ -1,6 +1,6 @@
 object DlgManualPayment: TDlgManualPayment
-  Left = 403
-  Top = 120
+  Left = 637
+  Top = 313
   BorderStyle = bsDialog
   Caption = 'Dialog'
   ClientHeight = 186
@@ -24,7 +24,7 @@ object DlgManualPayment: TDlgManualPayment
   object lblAmountEur: TLabel
     Left = 16
     Top = 16
-    Width = 58
+    Width = 63
     Height = 13
     Caption = #1057#1091#1084#1084#1072', EUR'
     FocusControl = edtAmountEur
@@ -32,7 +32,7 @@ object DlgManualPayment: TDlgManualPayment
   object lblByr2Eur: TLabel
     Left = 160
     Top = 16
-    Width = 78
+    Width = 81
     Height = 13
     Caption = #1050#1091#1088#1089' BYR->EUR'
     FocusControl = edtByr2Eur
@@ -40,7 +40,7 @@ object DlgManualPayment: TDlgManualPayment
   object lblAnnotate: TLabel
     Left = 16
     Top = 64
-    Width = 61
+    Width = 63
     Height = 13
     Caption = #1055#1088#1080#1084#1077#1095#1072#1085#1080#1077
     FocusControl = memAnnotate
@@ -54,7 +54,7 @@ object DlgManualPayment: TDlgManualPayment
     Anchors = [akTop, akRight]
     Default = True
     ModalResult = 1
-    TabOrder = 0
+    TabOrder = 3
   end
   object CancelBtn: TButton
     Left = 257
@@ -65,7 +65,7 @@ object DlgManualPayment: TDlgManualPayment
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 1
+    TabOrder = 4
   end
   object edtAmountEur: TDBNumberEditEh
     Left = 16
@@ -74,7 +74,7 @@ object DlgManualPayment: TDlgManualPayment
     Height = 21
     DisplayFormat = '### ##0.00'
     EditButtons = <>
-    TabOrder = 2
+    TabOrder = 0
     Visible = True
   end
   object edtByr2Eur: TDBNumberEditEh
@@ -85,7 +85,7 @@ object DlgManualPayment: TDlgManualPayment
     DecimalPlaces = 0
     DisplayFormat = '### ##0'
     EditButtons = <>
-    TabOrder = 3
+    TabOrder = 1
     Visible = True
   end
   object memAnnotate: TMemo
@@ -93,9 +93,7 @@ object DlgManualPayment: TDlgManualPayment
     Top = 80
     Width = 225
     Height = 89
-    Lines.Strings = (
-      'memAnnotate')
-    TabOrder = 4
+    TabOrder = 2
   end
   object actDialog: TActionList
     Left = 96

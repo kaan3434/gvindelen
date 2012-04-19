@@ -48,7 +48,7 @@ begin
 
     ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
       'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
-      [sl[4], VarArrayOf([Dimension, sl[5]]), VarArrayOf(['BUNDLING', 'ACCEPTREQUEST', 'ACCEPTED'])]);
+      [sl[4], VarArrayOf([Dimension, sl[5]]), VarArrayOf(['BUNDLING', 'ACCEPTREQUEST', 'ACCEPTED', 'PREPACKED'])]);
     if ndOrderItem <> nil then
     begin
       OrderItemId:= GetXmlAttrValue(ndOrderItem, 'ID');

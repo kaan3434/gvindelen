@@ -117,6 +117,7 @@ type
     procedure StepProgress;
     procedure ShowProtocol(aTransaction: TpFIBTransaction;
       aMessageId: Integer);
+    procedure CleanUp;
     property UserName: string read FUserName;
   end;
 
@@ -925,6 +926,18 @@ begin
   frxProtocol.LoadFromFile(Path['FastReport']+'protocol.fr3');
   frxProtocol.Variables.Variables['MessageId']:= aMessageId;
   frxProtocol.ShowReport;
+end;
+
+procedure TdmOtto.CleanUp;
+begin
+  trnAutonomouse.StartTransaction;
+  try
+    spTemp.StoredProcName:= 'DB_CLEANUP';
+    spTemp.ExecProc;
+    trnAutonomouse.Commit;
+  finally
+    trnAutonomouse.Rollback;
+  end;
 end;
 
 initialization

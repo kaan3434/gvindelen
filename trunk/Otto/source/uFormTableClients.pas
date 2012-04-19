@@ -61,6 +61,7 @@ var
   Xml: TNativeXml;
   ndClient: TXmlNode;
   DlgManualPayment: TDlgManualPayment;
+  Annotate: string;
 begin
   DlgManualPayment:= TDlgManualPayment.Create(self);
   try
@@ -70,6 +71,7 @@ begin
       Amount_Eur:= DlgManualPayment.edtAmountEur.Value;
       Byr2Eur:= DlgManualPayment.edtByr2Eur.Value;
       Xml:= TNativeXml.CreateName('CLIENT');
+      Annotate:= DlgManualPayment.memAnnotate.Lines.Text;
       ndClient:= Xml.Root;
       try
         trnWrite.StartTransaction;
@@ -87,7 +89,8 @@ begin
             AccountId:= qryMain['ACCOUNT_ID'];
           dmOtto.ActionExecute(trnWrite, 'ACCOUNT','ACCOUNT_MANUALDEBIT',
             Value2Vars(Amount_EUR, 'AMOUNT_EUR',
-            Value2Vars(Byr2Eur, 'BYR2EUR')), AccountId);
+            Value2Vars(Byr2Eur, 'BYR2EUR',
+            Value2Vars(Annotate, 'ANNOTATE'))), AccountId);
           trnWrite.Commit;
         except
           on E:Exception do
@@ -115,6 +118,7 @@ var
   Xml: TNativeXml;
   ndClient: TXmlNode;
   DlgManualPayment: TDlgManualPayment;
+  Annotate: string;
 begin
   DlgManualPayment:= TDlgManualPayment.Create(self);
   try
@@ -123,6 +127,7 @@ begin
     begin
       Amount_Eur:= DlgManualPayment.edtAmountEur.Value;
       Byr2Eur:= DlgManualPayment.edtByr2Eur.Value;
+      Annotate:= DlgManualPayment.memAnnotate.Lines.Text;
       Xml:= TNativeXml.CreateName('CLIENT');
       ndClient:= Xml.Root;
       try
@@ -141,7 +146,8 @@ begin
             AccountId:= qryMain['ACCOUNT_ID'];
           dmOtto.ActionExecute(trnWrite, 'ACCOUNT','ACCOUNT_MANUALCREDIT',
             Value2Vars(Amount_EUR, 'AMOUNT_EUR',
-            Value2Vars(Byr2Eur, 'BYR2EUR')), AccountId);
+            Value2Vars(Byr2Eur, 'BYR2EUR',
+            Value2Vars(Annotate, 'ANNOTATE'))), AccountId);
           trnWrite.Commit;
         except
           on E:Exception do

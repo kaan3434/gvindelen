@@ -191,6 +191,7 @@ var
   Xml: TNativeXml;
   ndOrder, ndClient: TXmlNode;
   DlgManualPayment: TDlgManualPayment;
+  Annotate: string;
 begin
   DlgManualPayment:= TDlgManualPayment.Create(self);
   Xml:= TNativeXml.CreateName('ORDER');
@@ -209,7 +210,7 @@ begin
     begin
       Amount_BYR:= DlgManualPayment.edtAmountEur.Value;
       Byr2Eur:= DlgManualPayment.edtByr2Eur.Value;
-      Annotate:= DlgManualPayment.mem
+      Annotate:= DlgManualPayment.memAnnotate.Lines.Text;
       trnWrite.StartTransaction;
       try
         if GetXmlAttrValue(ndClient, 'ACCOUNT_ID') = null then
@@ -224,8 +225,8 @@ begin
         end;
         dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_PAYMENTIN',
           XmlAttrs2Vars(ndOrder, 'ORDER_ID=ID;ID=ACCOUNT_ID',
-          Value2Vars(Amount_BYR, 'AMOUNT_BYR'
-          Value2Vars(Annotate,))));
+          Value2Vars(Amount_BYR, 'AMOUNT_BYR',
+          Value2Vars(Annotate, 'ANNOTATE'))));
         trnWrite.Commit;
       except
         on E:Exception do
