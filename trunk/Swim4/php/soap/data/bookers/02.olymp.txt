@@ -1,0 +1,4 @@
+Id=2
+Sign=olymp
+Url=https://olympbet.com
+Name=Olymp

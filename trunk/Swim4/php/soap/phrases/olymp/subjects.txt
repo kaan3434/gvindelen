@@ -1,0 +1,2 @@
+soccer=Subject=Goal
+tennis=Subject=Game

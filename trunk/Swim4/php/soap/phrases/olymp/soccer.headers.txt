@@ -1,0 +1,25 @@
+Голы (чет/нечет)=Period=Match;Subject=Goal;Kind=Total
+Голы=Period=Match;Subject=Goal
+Двойноe условие=Modifier=Ignore
+Дополнительные форы=Period=Match;Kind=Fora
+Замeны=Modifier=Ignore
+Инд. тоталы=Kind=Total
+Нарушения=Period=Match
+Первое=Modifier=Ignore
+Первый гол=Modifier=Ignore
+Показатели игроков=Modifier=Ignore
+Последний гол=Modifier=Ignore
+Прeдупреждения=Kind=Total
+Результативность таймов=Modifier=Ignore
+Счет=Modifier=Ignore
+Счёт=Modifier=Ignore
+Таймы=Modifier=Ignore
+Тайм/матч=Modifier=Ignore
+Тотал=Period=Match;Subject=Goal;Kind=Total
+Точные тоталы=Modifier=Ignore
+Точный счет 1-го тайма=Modifier=Ignore
+Угловые инд.=Period=Match;Subject=Corner;Kind=Total
+Углoвые=Subject=Corner;Kind=Total
+1-й тайм=Period=Half1
+2-й тайм=Period=Half2
+Taймы=Modifier=Ignore

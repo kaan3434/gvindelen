@@ -1,5 +1,5 @@
 <?php
 
-  $client = new SoapClient("http://localhost:8080/soap/swim4.wsdl"); 
+  $client = new SoapClient("http://localhost:8080/soap/Scan.wsdl"); 
   print($client->getBookers()); 
 ?>

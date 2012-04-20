@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Created with Liquid XML Studio Developer Edition 9.0.11.3078 (http://www.liquid-technologies.com)-->
+<definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://example.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" name="Scan" targetNamespace="http://example.com/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+    <types>
+        <xs:schema xmlns:tns="http://schemas.xmlsoap.org/wsdl/" xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://example.com/" />
+    </types>
+    <message name="TournirsRequestMessage">
+        <part name="BookerSignPart" type="xs:string" />
+        <part name="SportSignPart" type="xs:string" />
+    </message>
+    <message name="XmlOutputMessage">
+        <part name="xmlData" type="xs:string" />
+    </message>
+    <message name="SportsRequestMessage">
+        <part name="BookerSignPart" type="xs:string" />
+    </message>
+    <message name="EventRequestMessage">
+        <part name="BookerSignPart" type="xs:string" />
+        <part name="SportSignPart" type="xs:string" />
+        <part name="EventIdPart" type="xs:string" />
+    </message>
+    <message name="BookerRequestMessage" />
+    <portType name="ScanPortType">
+        <operation name="getBookers">
+            <output message="tns:XmlOutputMessage" />
+            <input message="tns:BookerRequestMessage" />
+        </operation>
+        <operation name="getSports">
+            <input message="tns:SportsRequestMessage" />
+            <output message="tns:XmlOutputMessage" />
+        </operation>
+        <operation name="getTournirs">
+            <input message="tns:TournirsRequestMessage" />
+            <output message="tns:XmlOutputMessage" />
+        </operation>
+        <operation name="getEvents">
+            <input message="tns:EventRequestMessage" />
+            <output message="tns:XmlOutputMessage" />
+        </operation>
+    </portType>
+    <binding name="ScanBinding" type="tns:ScanPortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="getBookers">
+            <soap:operation soapAction="" />
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="getSports">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="getTournirs">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="getEvents">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+    </binding>
+    <service name="ScanService">
+        <port name="ScanPort" binding="tns:ScanBinding">
+            <soap:address location="http://localhost:8080/soap/ScanBooker.php" />
+        </port>
+    </service>
+</definitions>
