@@ -6,10 +6,15 @@
             <complexType name="SportRequestType">
                 <sequence>
                     <element name="BookerSign" type="string" />
-                    <element name="SportSign" type="string" />
                 </sequence>
             </complexType>
             <complexType name="TournirRequestType">
+                <sequence>
+                    <element name="BookerSign" type="string" />
+                    <element name="SportSign" type="string" />
+                </sequence>
+            </complexType>
+            <complexType name="EventRequestType">
                 <sequence>
                     <element name="BookerSign" type="string" />
                     <element name="SportSign" type="string" />
@@ -19,30 +24,61 @@
         </xs:schema>
     </types>
     <message name="xmlData">
-        <part xmlns:q2="swm" name="xml" type="xs:string" />
+        <part xmlns:q2="swm" name="xmlResponse" type="xs:string" />
     </message>
     <message name="SportRequest">
-        <part xmlns:q1="swm" name="RequestData" type="q1:SportRequestType" />
+        <part xmlns:q1="swm" name="SportRequestData" type="q1:SportRequestType" />
     </message>
-    <message name="TournirRerquest">
-        <part xmlns:q2="swm" name="RequestData" type="q2:TournirRequestType" />
+    <message name="EventRerquest">
+        <part xmlns:q2="swm" name="EventRequestData" type="q2:EventRequestType" />
+    </message>
+    <message name="TournirRequest">
+        <part xmlns:q1="swm" name="TournirRequestData" type="q1:TournirRequestType" />
     </message>
     <portType name="ScanBookerPortType">
         <operation name="getBookers">
             <output message="xmlData" />
         </operation>
-        <operation name="getTournirs">
+        <operation name="getSports">
             <input message="SportRequest" />
+            <output message="xmlData" />
+        </operation>
+        <operation name="getTournirs">
+            <input message="TournirRequest" />
             <output name="tournirXml" message="xmlData" />
         </operation>
         <operation name="getEvents">
-            <input message="TournirRerquest" />
+            <input message="EventRerquest" />
             <output message="xmlData" />
         </operation>
     </portType>
     <binding name="ScanBookerBinding" type="ScanBookerPortType">
         <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
-        <operation name="GetLine">
+        <operation name="getBookers">
+            <soap:operation soapAction="" />
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="getSports">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="getTournirs">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output name="tournirXml">
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="getEvents">
             <soap:operation soapAction="" />
             <input>
                 <soap:body use="literal" />
@@ -54,7 +90,7 @@
     </binding>
     <service name="ScanBooker">
         <port name="ScanBookerPort" binding="ScanBookerBinding">
-            <soap:address location="http://localhost:8080/server.php" />
+            <soap:address location="localhost:8080/soap/server.php" />
         </port>
     </service>
 </definitions>

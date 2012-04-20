@@ -1,4 +1,5 @@
 <?php
-  $client = new SoapClient("swim4.wsdl"); 
-  print($client->getLine("bwin1")); 
+
+  $client = new SoapClient("http://localhost:8080/soap/swim4.wsdl"); 
+  print($client->getBookers()); 
 ?>

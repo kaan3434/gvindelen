@@ -1,0 +1,2 @@
+tennis=Теннис
+football=Футбол
