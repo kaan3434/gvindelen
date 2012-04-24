@@ -120,6 +120,7 @@ begin
   qryAccountMovements.Open;
   qryHistory.Open;
   qryNextStatus.Open;
+  tlBarNsiActions.Visible:= dmOtto.isAdminRole;
 end;
 
 procedure TFormTableOrders.grdMainDblClick(Sender: TObject);

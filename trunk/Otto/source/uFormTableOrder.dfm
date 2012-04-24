@@ -1,6 +1,6 @@
 inherited FormTableOrders: TFormTableOrders
-  Left = 285
-  Top = 123
+  Left = 328
+  Top = 162
   Caption = #1047#1072#1103#1074#1082#1080
   OnCreate = FormCreate
   PixelsPerInch = 96
@@ -31,16 +31,18 @@ inherited FormTableOrders: TFormTableOrders
   end
   inherited pnlMain: TJvPanel
     inherited grBoxMain: TJvGroupBox
+      Caption = #1047#1072#1103#1074#1082#1080
       inherited grdMain: TDBGridEh
         AllowedOperations = [alopDeleteEh]
         IndicatorTitle.ShowDropDownSign = True
         Options = [dgTitles, dgIndicator, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
-        OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghMultiSortMarking, dghEnterAsTab, dghIncSearch, dghRowHighlight, dghColumnResize, dghHotTrack, dghExtendVertLines]
+        OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghMultiSortMarking, dghEnterAsTab, dghIncSearch, dghRowHighlight, dghDblClickOptimizeColWidth, dghColumnResize, dghHotTrack, dghExtendVertLines]
         ReadOnly = True
         RowDetailPanel.Active = True
         RowDetailPanel.Height = 200
         STFilter.InstantApply = True
         STFilter.Visible = True
+        SumList.Active = True
         OnDblClick = grdMainDblClick
         OnFillSTFilterListValues = grdMainFillSTFilterListValues
         OnGetCellParams = grdMainGetCellParams
@@ -56,6 +58,7 @@ inherited FormTableOrders: TFormTableOrders
           item
             EditButtons = <>
             FieldName = 'ORDER_CODE'
+            Footer.ValueType = fvtCount
             Footers = <>
             Title.Alignment = taCenter
             Title.Caption = #1047#1072#1103#1074#1082#1072
@@ -590,7 +593,7 @@ inherited FormTableOrders: TFormTableOrders
       '    orders.STATUS_ID,'
       '    statuses.STATUS_NAME,'
       '    statuses.STATUS_SIGN,'
-      '    orders.STATUS_DTM,'
+      '    --orders.STATUS_DTM,'
       '    v_order_summary.cost_eur,'
       '    v_order_summary.cost_byr,'
       '    orders.bar_code,'
@@ -771,6 +774,9 @@ inherited FormTableOrders: TFormTableOrders
         Background = clWindow
       end>
     Bitmap = {}
+  end
+  inherited trnNSI: TpFIBTransaction
+    Active = True
   end
   object qryOrderAttrs: TpFIBDataSet
     SelectSQL.Strings = (

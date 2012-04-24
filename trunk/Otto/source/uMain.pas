@@ -84,7 +84,7 @@ type
     actHelpAbout1: TAction;
     trnWrite: TpFIBTransaction;
     actProcessMessages: TAction;
-    sMenu2: TTBXSubmenuItem;
+    subImportActions: TTBXSubmenuItem;
     btn4: TTBXItem;
     btn5: TTBXItem;
     btn6: TTBXItem;
@@ -609,9 +609,14 @@ begin
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
+var
+  i: Integer;
 begin
   verInfo.Filename := ParamStr(0);
   Caption:= Format('PPZ2 Builds:%s/%s %s', [verInfo.GetBuildOnly, dmOtto.Build, dmOtto.UserName]);
+  for i:= 0 to tbrMain.Items.Count -1 do
+    if tbrMain.Items[i].GroupIndex = 1 then
+      tbrMain.Items[i].Visible:= dmOtto.isAdminRole;
 end;
 
 procedure TMainForm.scrptUpdateExecuteError(Sender: TObject; StatementNo,

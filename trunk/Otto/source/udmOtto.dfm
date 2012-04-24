@@ -10,9 +10,8 @@ object dmOtto: TdmOtto
     DBName = 'localhost:D:\otto\Data\otto_ppz.fdb'
     DBParams.Strings = (
       'lc_ctype=CYRL'
-      'user_name=SYSDBA'
-      'password=masterkey'
-      'sql_role_name=')
+      'user_name=sysdba'
+      'password=masterkey')
     DefaultTransaction = trnAutonomouse
     DefaultUpdateTransaction = trnAutonomouse
     SQLDialect = 3

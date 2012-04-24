@@ -51,6 +51,8 @@ type
     { Private declarations }
     FUserName: string;
     FPassword: string;
+    FRole: string;
+    function isAdminRoleGet: boolean;
   public
     { Public declarations }
     Build: Variant;
@@ -119,6 +121,7 @@ type
       aMessageId: Integer);
     procedure CleanUp;
     property UserName: string read FUserName;
+    property isAdminRole: boolean read isAdminRoleGet;
   end;
 
 var
@@ -206,10 +209,11 @@ begin
     end;
     FUserName:= dbOtto.DBParams.Values['user_name'];
     FPassword:= dbOtto.DBParams.Values['password'];
+    FRole:= dbOtto.QueryValue('select current_role from rdb$database', 0);
     BackupFileName:= Format('%s%s_%s_Dayly.fbk',
       [Path['Backup'], FormatDateTime('YYYYMMDD', Date),
        FillFront(IntToStr(dmOtto.Build), 6, '0')]);
-    if not FileExists(BackupFileName) then
+    if isAdminRole and (not FileExists(BackupFileName)) then
     try
       dbOtto.Close;
       try
@@ -938,6 +942,11 @@ begin
   finally
     trnAutonomouse.Rollback;
   end;
+end;
+
+function TdmOtto.isAdminRoleGet: boolean;
+begin
+  result:= FRole = 'RDB$ADMIN';
 end;
 
 initialization

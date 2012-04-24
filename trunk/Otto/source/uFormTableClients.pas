@@ -51,6 +51,7 @@ begin
   qryMain.Open;
   qryAccountMovements.Open;
   qryClientOrders.Open;
+  tlBarNsiActions.Visible:= dmOtto.isAdminRole;
 end;
 
 procedure TFormTableClients.actAccountManualDebitExecute(Sender: TObject);

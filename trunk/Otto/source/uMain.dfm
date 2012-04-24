@@ -22,8 +22,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 837
-    Height = 47
+    Width = 829
+    Height = 49
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -37,9 +37,10 @@ object MainForm: TMainForm
         DisplayMode = nbdmImageAndText
         Layout = tbxlGlyphTop
       end
-      object sMenu2: TTBXSubmenuItem
+      object subImportActions: TTBXSubmenuItem
         Caption = #1042#1093#1086#1076#1103#1097#1080#1077
         DisplayMode = nbdmImageAndText
+        GroupIndex = 1
         ImageIndex = 8
         Layout = tbxlGlyphTop
         Options = [tboDropdownArrow]
@@ -72,6 +73,7 @@ object MainForm: TMainForm
       object subExportActions: TTBXSubmenuItem
         Caption = #1048#1089#1093#1086#1076#1103#1097#1080#1077
         DisplayMode = nbdmImageAndText
+        GroupIndex = 1
         ImageIndex = 3
         Layout = tbxlGlyphTop
         Options = [tboDropdownArrow]
@@ -113,6 +115,7 @@ object MainForm: TMainForm
         Action = actImportArticles
         Caption = #1050#1072#1090#1072#1083#1086#1075#1080
         DisplayMode = nbdmImageAndText
+        GroupIndex = 1
         Layout = tbxlGlyphTop
       end
       object btn3: TTBXItem
@@ -125,6 +128,7 @@ object MainForm: TMainForm
       object tbSubMenuNSI: TTBXSubmenuItem
         Caption = #1057#1087#1088#1072#1074#1086#1095#1085#1080#1082#1080
         DisplayMode = nbdmImageAndText
+        GroupIndex = 1
         ImageIndex = 6
         Layout = tbxlGlyphTop
         Options = [tboDropdownArrow]
@@ -162,6 +166,7 @@ object MainForm: TMainForm
       object subMenuSystem: TTBXSubmenuItem
         Caption = #1059#1090#1080#1083#1080#1090#1099
         DisplayMode = nbdmImageAndText
+        GroupIndex = 1
         ImageIndex = 13
         Layout = tbxlGlyphTop
         Options = [tboDropdownArrow]
@@ -181,6 +186,7 @@ object MainForm: TMainForm
       object btn11: TTBXItem
         Action = actSetByr2Eur
         DisplayMode = nbdmImageAndText
+        GroupIndex = 1
         Layout = tbxlGlyphTop
       end
       object sMenu1: TTBXSubmenuItem
@@ -193,22 +199,23 @@ object MainForm: TMainForm
       object btnReturn: TTBXItem
         Action = actReturn
         DisplayMode = nbdmImageAndText
+        GroupIndex = 1
         Layout = tbxlGlyphTop
       end
     end
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 436
-    Width = 837
+    Top = 432
+    Width = 829
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object pbMain: TProgressBar
     Left = 0
-    Top = 419
-    Width = 837
+    Top = 415
+    Width = 829
     Height = 17
     Align = alBottom
     TabOrder = 1
