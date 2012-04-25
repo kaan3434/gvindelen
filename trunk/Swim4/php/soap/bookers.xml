@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Bookers>
+  <Booker Id="1" Sign="bwin" Url="https://bwin.com" Name="BWin">
+    <Sports>
+      <Sport Sign="tennis" Name="Теннис"/>
+      <Sport Sign="football" Name="Футбол"/>
+    </Sports>
+  </Booker>
+  <Booker Id="2" Sign="olymp" Url="https://olympbet.com" Name="Olymp">
+    <Sports>
+      <Sport Sign="tennis" Name="Теннис"/>
+      <Sport Sign="soccer" Name="Футбол"/>
+    </Sports>
+  </Booker>
+</Bookers>

@@ -4,26 +4,44 @@
     <types>
         <xs:schema xmlns:tns="http://schemas.xmlsoap.org/wsdl/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://example.com/">
             <complexType name="BookerType">
+                <attribute name="Id" type="integer" use="required" />
+                <attribute name="Sign" use="required">
+                    <simpleType>
+                        <restriction base="string">
+                            <whiteSpace value="collapse" />
+                        </restriction>
+                    </simpleType>
+                </attribute>
+                <attribute name="Url" type="anyURI" />
+                <attribute name="Name" type="string" />
+            </complexType>
+            <complexType name="BookersType">
+                <sequence minOccurs="0" maxOccurs="unbounded">
+                    <element xmlns:q1="http://example.com/" minOccurs="0" maxOccurs="unbounded" name="Booker" type="q1:BookerType" />
+                </sequence>
+            </complexType>
+            <complexType name="BookersResponseType">
+                <sequence>
+                    <element xmlns:q1="http://example.com/" name="Bookers" type="q1:BookersType" />
+                </sequence>
+            </complexType>
+            <complexType name="SportType">
                 <simpleContent>
                     <extension base="string">
-                        <attribute name="Id" type="integer" use="required" />
-                        <attribute name="Sign" use="required">
-                            <simpleType>
-                                <restriction base="string">
-                                    <whiteSpace value="collapse" />
-                                </restriction>
-                            </simpleType>
-                        </attribute>
-                        <attribute name="Url" type="anyURI" />
-                        <attribute name="Name" type="string" />
+                        <attribute name="Sign" type="string" use="required" />
+                        <attribute name="Name" type="string" use="required" />
                     </extension>
                 </simpleContent>
             </complexType>
-            <complexType name="BookersType">
-                <sequence maxOccurs="unbounded">
-                    <element xmlns:q1="http://example.com/" name="Booker" type="q1:BookerType" />
+            <complexType name="SportsType">
+                <sequence>
+                    <element xmlns:q2="http://example.com/" minOccurs="0" maxOccurs="unbounded" name="Sport" type="q2:SportType" />
                 </sequence>
-                <attribute name="UserSign" type="string" />
+            </complexType>
+            <complexType name="SportsResponseType">
+                <sequence>
+                    <element xmlns:q3="http://example.com/" name="Sports" type="q3:SportsType" />
+                </sequence>
             </complexType>
         </xs:schema>
     </types>
@@ -42,16 +60,19 @@
         <part name="SportSignPart" type="xs:string" />
         <part name="EventIdPart" type="xs:string" />
     </message>
-    <message name="BookerRequestMessage">
+    <message name="BookersRequestMessage">
         <part name="UserSign" type="xs:string" />
     </message>
-    <message name="BookerResponseMessage">
-        <part name="Bookers" type="tns:BookersType" />
+    <message name="BookersResponseMessage">
+        <part name="BookersResponse" type="tns:BookersResponseType" />
+    </message>
+    <message name="SportsResponseMessage">
+        <part name="SportsResponsePart" type="tns:SportsResponseType" />
     </message>
     <portType name="ScanPortType">
         <operation name="getSports">
             <input message="tns:SportsRequestMessage" />
-            <output message="tns:XmlOutputMessage" />
+            <output message="tns:SportsResponseMessage" />
         </operation>
         <operation name="getTournirs">
             <input message="tns:TournirsRequestMessage" />
@@ -62,8 +83,8 @@
             <output message="tns:XmlOutputMessage" />
         </operation>
         <operation name="getBookers">
-            <input message="tns:BookerRequestMessage" />
-            <output message="tns:BookerResponseMessage" />
+            <input message="tns:BookersRequestMessage" />
+            <output message="tns:BookersResponseMessage" />
         </operation>
     </portType>
     <binding name="ScanBinding" type="tns:ScanPortType">

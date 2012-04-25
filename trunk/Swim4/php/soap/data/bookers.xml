@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Root>
+  <Bookers>
+    <Booker Id="1" Sign="bwin" Url="https://bwin.com" Name="BWin"/>
+    <Booker Id="2" Sign="olymp" Url="https://olympbet.com" Name="Olymp"/>
+  </Bookers>
+</Root>
