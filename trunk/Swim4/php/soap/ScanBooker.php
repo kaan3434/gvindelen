@@ -22,10 +22,11 @@ function xml2array($xml) {
 function getBookers ($user_sign) {
 //  $xml = simplexml_load_file("data/bookers.xml");
 //  $out = xml2array($xml);
-  $booker = array('Booker'=>'123123');
-  //array('_'=>'8767', 'Id'=>"1", 'Sign'=>'bwin'));
-  $bookers = array(0=>$booker);
-  $out = array('Bookers'=>$bookers);
+  $bookers[] = array('Booker'=>array('Id'=>"1", 'Sign'=>'bwin'));
+  $bookers[] = array('Booker'=>array('Id'=>"1", 'Sign'=>'bwin'));
+  $bookers[] = array('UserSign'=>$user_sign);
+   $out = array('Bookers'=>$bookers);
+  //$response = array('Response'=>$out);
   return $out;
 }
 

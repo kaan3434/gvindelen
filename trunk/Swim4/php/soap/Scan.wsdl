@@ -22,7 +22,15 @@
             </complexType>
             <complexType name="BookersResponseType">
                 <sequence>
-                    <element xmlns:q1="http://example.com/" name="Bookers" type="q1:BookersType" />
+                    <element xmlns:q1="http://example.com/" name="Bookers">
+                        <complexType>
+                            <complexContent mixed="false">
+                                <extension base="q1:BookersType">
+                                    <attribute name="UserSign" type="string" />
+                                </extension>
+                            </complexContent>
+                        </complexType>
+                    </element>
                 </sequence>
             </complexType>
             <complexType name="SportType">
