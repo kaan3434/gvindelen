@@ -42,7 +42,8 @@ uses
   uDlgPayment in 'uDlgPayment.pas' {DlgManualPayment},
   uFrameReturn in 'uFrameReturn.pas' {FrameMoneyBack},
   uParseLiefer in 'uParseLiefer.pas',
-  uExportReturns in 'uExportReturns.pas';
+  uExportReturns in 'uExportReturns.pas',
+  uExportCancellation in 'uExportCancellation.pas';
 
 {$R *.res}
 

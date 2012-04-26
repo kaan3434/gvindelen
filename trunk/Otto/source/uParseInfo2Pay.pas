@@ -39,9 +39,6 @@ begin
       dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
       SetXmlAttr(ndOrder, 'BYR2EUR', dmOtto.SettingGet(aTransaction, 'BYR2EUR', aOnDate));
       SetXmlAttr(ndOrder, 'PACKLIST_NO', sl[1]);
-      // если ауфтрак еще не присвоен, сохраняем его на заявке
-      if GetXmlAttrValue(ndOrder, 'AUFTRAG_ID') <> sl[6] then
-        SetXmlAttr(ndOrder, 'AUFTRAG_ID', sl[6]);
       dmOtto.ActionExecute(aTransaction, ndOrder, 'PREPACKED');
       dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
 
@@ -60,6 +57,7 @@ begin
         OrderItemId:= GetXmlAttrValue(ndOrderItem, 'ID');
         if GetXmlAttrValue(ndOrderItem, 'ORDERITEM_INDEX') = null then
           SetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX', sl[7]);
+        MergeXmlAttr(ndOrderItem, 'AUFTRAG_ID', sl[6]);
 
         SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', sl[3]);
 

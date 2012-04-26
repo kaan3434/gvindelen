@@ -26,7 +26,7 @@ begin
     Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
     Line.Add(CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5));
     Line.Add('300');
-    Line.Add(GetXmlAttr(ndOrder, 'AUFTRAG_ID'));
+    Line.Add(GetXmlAttr(ndOrderItem, 'AUFTRAG_ID'));
     Line.Add(GetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX'));
     Line.Add(GetXmlAttr(ndOrderItem, 'ARTICLE_CODE'));
     Line.Add(dmOtto.Recode('ARTICLE', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION')));

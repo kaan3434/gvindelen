@@ -42,7 +42,6 @@ inherited FormTableOrders: TFormTableOrders
         RowDetailPanel.Height = 200
         STFilter.InstantApply = True
         STFilter.Visible = True
-        SumList.Active = True
         OnDblClick = grdMainDblClick
         OnFillSTFilterListValues = grdMainFillSTFilterListValues
         OnGetCellParams = grdMainGetCellParams
@@ -774,9 +773,6 @@ inherited FormTableOrders: TFormTableOrders
         Background = clWindow
       end>
     Bitmap = {}
-  end
-  inherited trnNSI: TpFIBTransaction
-    Active = True
   end
   object qryOrderAttrs: TpFIBDataSet
     SelectSQL.Strings = (

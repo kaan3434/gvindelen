@@ -107,13 +107,13 @@ begin
   end;
 end;
 
-function GetBarCode(ndOrder: TXmlNode): string;
+function GetBarCode(ndOrder, ndProduct: TXmlNode): string;
 var
   Body: string;
 begin
   Body:= CopyLast(GetXmlAttr(ndOrder, 'PACKLIST_NO'), 3) +
          CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5);
-  Result:= 'CZ'+Body+CalcControlChar(Body)+'LT';
+  Result:= 'C'GetXmlAttr(ndProduct, 'BARCODE_SIGN')+Body+CalcControlChar(Body)+'LT';
 end;
 
 procedure ParseConsignmentLine300(aMessageId, LineNo: Integer;

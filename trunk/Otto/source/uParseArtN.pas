@@ -65,9 +65,7 @@ begin
             XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
             Value2Vars(LineNo, 'LINE_NO'))));
         end;
-
-        if GetXmlAttrValue(ndOrder, 'AUFTRAG_ID') = null then
-          SetXmlAttr(ndOrder, 'AUFTRAG_ID', sl[7]);
+        MergeXmlAttr(ndOrderItem, 'AUFTRAG_ID', sl[7]);
 
         dmOtto.ActionExecute(aTransaction, ndOrderItem);
         dmOtto.Notify(aMessageId,

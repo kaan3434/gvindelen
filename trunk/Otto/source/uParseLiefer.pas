@@ -35,13 +35,6 @@ begin
     begin
       ndOrder:= ndOrders.NodeNew('ORDER');
       dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
-      // если ауфтрак еще не присвоен, сохраняем его на заявке
-      if GetXmlAttrValue(ndOrder, 'AUFTRAG_ID') <> sl[3] then
-      begin
-        SetXmlAttr(ndOrder, 'AUFTRAG_ID', sl[3]);
-        dmOtto.ActionExecute(aTransaction, ndOrder);
-        dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
-      end;
 
       Dimension:= dmOtto.Recode('ARTICLE', 'DIMENSION', sl[6]);
 
@@ -58,6 +51,7 @@ begin
         ndOrderItem.ValueAsBool:= true;
         if GetXmlAttrValue(ndOrderItem, 'ORDERITEM_INDEX') = null then
           SetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX', sl[4]);
+        MergeXmlAttr(ndOrderItem, 'AUFTRAG_ID', sl[3]);
 
         SetXmlAttrAsMoney(ndOrderItem, 'NEW.PRICE_EUR', sl[9]);
 

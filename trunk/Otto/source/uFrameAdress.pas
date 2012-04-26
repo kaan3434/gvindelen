@@ -56,7 +56,9 @@ type
       Shift: TShiftState);
     procedure dedPlaceNameExit(Sender: TObject);
     procedure SetKeyLayout(Sender: TObject);
+    procedure AddressChanged(Sender: TObject; var Key: Char);
   private
+    FAddressModified: Boolean;
     function GetClientId: Integer;
     function GetOrderId: Integer;
     function GetAdressId: Integer;
@@ -285,6 +287,14 @@ begin
   grBoxClient.Caption:= DetectCaption(ndClient, 'Клиент');
   grBoxAdress.Caption:= DetectCaption(ndAdress, 'Адрес');
   grBoxPlace.Caption:= DetectCaption(ndPlace, 'Населенный пункт');
+end;
+
+procedure TFrameAdress.AddressChanged(Sender: TObject;
+  var Key: Char);
+begin
+  inherited;
+//  if GetXmlAttrValue(ndAdress, )
+//  FAddressModified:= True;
 end;
 
 end.

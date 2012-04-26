@@ -78,14 +78,7 @@ begin
       ndOrder.ValueAsBool:= True;
       SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', sl[8]);
       SetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX', sl[4]);
-
-      // если ауфтрак еще не присвоен, сохраняем его на заявке
-      if GetXmlAttrValue(ndOrder, 'AUFTRAG_ID') <> sl[3] then
-      begin
-        SetXmlAttr(ndOrder, 'AUFTRAG_ID', sl[3]);
-        dmOtto.ActionExecute(aTransaction, ndOrder);
-        dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
-      end;
+      SetXmlAttr(ndOrderItem, 'AUFTRAG_ID', sl[3]);
 
       if GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') <> GetXmlAttrAsMoney(ndOrderItem, 'COST_EUR') then
       begin

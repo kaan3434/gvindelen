@@ -165,7 +165,7 @@ begin
   end
   else
     dmOtto.ActionExecute(trnWrite, ndClient);
-  BatchMoveFields2(ndOrder, ndClient, 'CLIENT_ID=ID;ACCOUNT_ID', true);
+  BatchMoveFields2(ndOrder, ndClient, 'CLIENT_ID=ID;ACCOUNT_ID;LAST_NAME', true);
   dmOtto.ActionExecute(trnWrite, ndOrder);
   dmOtto.ObjectGet(ndAccount, AccountId, trnWrite);
   dmOtto.ObjectGet(ndClient, ClientId, trnWrite);

@@ -30,9 +30,10 @@ begin
     Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
     Line.Add(GetXmlAttr(ndOrder, 'PACKLIST_NO'));
     Line.Add(CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5));
-    Line.Add(CostByr);
+    Line.Add(CostByr+'.00');
     SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'PREPACKSENT');
     Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
+    Result:= ReplaceAll(Result, ';'#13#10, #13#10);
     dmOtto.ActionExecute(aTransaction, ndOrder);
   finally
     Line.Free;
