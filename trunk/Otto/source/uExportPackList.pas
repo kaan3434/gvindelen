@@ -87,7 +87,7 @@ begin
     tblCons['AUFEXT']:= CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5);
     tblCons['GRART']:= dmOtto.Recode('ARTICLE', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION'));
     tblCons['NAMEZAK']:= GetXmlAttr(ndOrderItem, 'NAME_RUS') + GetXmlAttr(ndOrderItem, 'KIND_RUS', ' ');
-    tblCons['FAMILY']:= GetXmlAttr(ndClient, 'LAST_NAME') +
+    tblCons['FAMILY']:= GetXmlAttr(ndOrder, 'LAST_NAME') +
                         GetXmlAttr(ndClient, 'FIRST_NAME', ' ') +
                         GetXmlAttr(ndClient, 'MID_NAME', ' ');
     tblCons['STREETRUS']:= GetAdress(ndAdress);
@@ -105,6 +105,12 @@ begin
     tblCons['SBORBYR']:= aTransaction.DefaultDatabase.QueryValue(
       'select round(cast(:cost_eur as money_eur) * cast(:byr2eur as value_integer), -1) from rdb$database',
       0, [GetXmlAttrValue(ndTaxSSbor, 'COST_EUR'), GetXmlAttrValue(ndOrder, 'BYR2EUR')], aTransaction);
+
+    if GetXmlAttrValue(ndProduct, 'PRODUCT_CODE') = 2 then // Наложенный платеж
+    begin
+      BatchMoveFields2(tblCons, ndOrder,
+        'VIDPLAT="1";INFOP=PACKLIST_NO;INFOPDATE=INVOICE_DT_0;COSTALLN=INVOICE_BYR_0');
+    end;
     tblCons.Post;
     tblConsPi3.Append;
     BatchMoveFields2(tblConsPi3, tblCons,

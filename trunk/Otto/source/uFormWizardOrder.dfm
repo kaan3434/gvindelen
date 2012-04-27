@@ -1,6 +1,6 @@
 inherited FormWizardOrder: TFormWizardOrder
-  Left = 153
-  Top = 57
+  Left = 487
+  Top = 277
   ActiveControl = btnClientPageFirst
   Caption = 'FormWizardOrder'
   OnCloseQuery = FormCloseQuery
@@ -32,8 +32,8 @@ inherited FormWizardOrder: TFormWizardOrder
       Panel.Visible = True
       VisibleButtons = [bkNext, bkCancel]
       DesignSize = (
-        1008
-        475)
+        1016
+        479)
       object btnClientPageFirst: TButton
         Left = 192
         Top = 104

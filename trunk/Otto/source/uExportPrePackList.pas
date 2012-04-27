@@ -15,7 +15,7 @@ function ExportOrder(aTransaction: TpFIBTransaction;
 var
   ndOrder: TXmlNode;
   Line: TStringList;
-  Byr2Eur, CostByr: Variant;
+  Byr2Eur, CostByr, CostEur: Variant;
 begin
   Result:= '';
   ndOrder:= ndOrders.NodeFindOrCreate('ORDER');
@@ -27,10 +27,18 @@ begin
       'from v_order_summary os '+
       'where os.order_id = :order_id',
       0, [aOrderId], aTransaction);
+    CostEur:= aTransaction.DefaultDatabase.QueryValue(
+      'select cost_eur '+
+      'from v_order_summary os '+
+      'where os.order_id = :order_id',
+      0, [aOrderId], aTransaction);
+
     Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
     Line.Add(GetXmlAttr(ndOrder, 'PACKLIST_NO'));
     Line.Add(CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5));
     Line.Add(CostByr+'.00');
+    SetXmlAttr(ndOrder, 'INVOICE_BYR_0', CostByr);
+    SetXmlAttr(ndOrder, 'INVOICE_EUR_0', CostEur);
     SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'PREPACKSENT');
     Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
     Result:= ReplaceAll(Result, ';'#13#10, #13#10);

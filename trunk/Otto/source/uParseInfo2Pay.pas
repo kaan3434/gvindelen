@@ -37,6 +37,7 @@ begin
       ndOrder:= ndOrders.NodeNew('ORDER');
       ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
       dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
+      SetXmlAttr(ndorder, 'INVOICE_DT_0', aOnDate);
       SetXmlAttr(ndOrder, 'BYR2EUR', dmOtto.SettingGet(aTransaction, 'BYR2EUR', aOnDate));
       SetXmlAttr(ndOrder, 'PACKLIST_NO', sl[1]);
       dmOtto.ActionExecute(aTransaction, ndOrder, 'PREPACKED');

@@ -25,6 +25,10 @@ type
     actAccountManualCredit: TAction;
     btnAccountUserDebit: TTBXItem;
     btnAccountUserCredit: TTBXItem;
+    tsAdresses: TTabSheet;
+    grdAdresses: TDBGridEh;
+    qryAdresses: TpFIBDataSet;
+    dsAdresses: TDataSource;
     procedure FormCreate(Sender: TObject);
     procedure actAccountManualDebitExecute(Sender: TObject);
     procedure actAccountManualCreditExecute(Sender: TObject);
@@ -51,6 +55,7 @@ begin
   qryMain.Open;
   qryAccountMovements.Open;
   qryClientOrders.Open;
+  qryAdresses.Open;
   tlBarNsiActions.Visible:= dmOtto.isAdminRole;
 end;
 

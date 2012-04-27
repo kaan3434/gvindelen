@@ -113,14 +113,14 @@ var
 begin
   Body:= CopyLast(GetXmlAttr(ndOrder, 'PACKLIST_NO'), 3) +
          CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5);
-  Result:= 'C'GetXmlAttr(ndProduct, 'BARCODE_SIGN')+Body+CalcControlChar(Body)+'LT';
+  Result:= GetXmlAttr(ndProduct, 'BARCODE_SIGN')+Body+CalcControlChar(Body)+'LT';
 end;
 
 procedure ParseConsignmentLine300(aMessageId, LineNo: Integer;
   sl: TStringList; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
   OrderId: Variant;
-  ndOrder: TXmlNode;
+  ndProduct, ndOrder: TXmlNode;
 begin
   OrderId:= aTransaction.DefaultDatabase.QueryValue(
     'select order_id from orders where order_code like ''_''||:order_code',
@@ -130,12 +130,18 @@ begin
     ndOrder:= ndOrders.NodeByAttributeValue('ORDER', 'ID', OrderId);
     if ndOrder <> nil then
     begin
+      ndProduct := ndOrder.NodeByName('PRODUCT');
+      if ndProduct = nil then
+      begin
+         ndProduct:= ndOrder.NodeNew('PRODUCT');
+         dmOtto.ObjectGet(ndProduct, GetXmlAttrValue(ndOrder, 'PRODUCT_ID'), aTransaction);
+      end;
       SetXmlAttr(ndOrder, 'WEIGHT', sl[6]);
       SetXmlAttrAsMoney(ndOrder, 'ITEMSCOST_EUR', sl[3]);
       SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'PACKED');
       BatchMoveFields2(ndOrder, ndOrders, 'PACKLIST_NO;PACKLIST_DT;PALETTE_NO');
       SetXmlAttr(ndOrder, 'PACKET_NO', sl[1]);
-      SetXmlAttr(ndOrder, 'BAR_CODE', GetBarCode(ndOrder));
+      SetXmlAttr(ndOrder, 'BAR_CODE', GetBarCode(ndOrder, ndProduct));
       ndOrder.Document.XmlFormat:= xfReadable;
       ndOrder.Document.SaveToFile('order.xml');
       try

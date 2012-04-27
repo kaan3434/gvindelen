@@ -20,6 +20,7 @@ inherited FormTableClients: TFormTableClients
   end
   inherited pnlMain: TJvPanel
     inherited grBoxMain: TJvGroupBox
+      Caption = #1050#1083#1080#1077#1085#1090#1099
       inherited grdMain: TDBGridEh
         OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghIncSearch, dghPreferIncSearch, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
         ReadOnly = True
@@ -31,36 +32,46 @@ inherited FormTableClients: TFormTableClients
             EditButtons = <>
             FieldName = 'CLIENT_ID'
             Footers = <>
+            Title.Alignment = taCenter
             Visible = False
           end
           item
             EditButtons = <>
             FieldName = 'LAST_NAME'
             Footers = <>
+            Title.Alignment = taCenter
+            Title.Caption = #1060#1072#1084#1080#1083#1080#1103
             Width = 150
           end
           item
             EditButtons = <>
             FieldName = 'FIRST_NAME'
             Footers = <>
+            Title.Alignment = taCenter
+            Title.Caption = #1048#1084#1103
             Width = 150
           end
           item
             EditButtons = <>
             FieldName = 'MID_NAME'
             Footers = <>
+            Title.Alignment = taCenter
+            Title.Caption = #1054#1090#1095#1077#1089#1090#1074#1086
             Width = 150
           end
           item
             EditButtons = <>
             FieldName = 'MOBILE_PHONE'
             Footers = <>
+            Title.Alignment = taCenter
+            Title.Caption = #1052#1086#1073#1080#1083#1100#1085#1099#1081
             Width = 100
           end
           item
             EditButtons = <>
             FieldName = 'ACCOUNT_ID'
             Footers = <>
+            Title.Alignment = taCenter
             Visible = False
           end
           item
@@ -69,24 +80,29 @@ inherited FormTableClients: TFormTableClients
             EditButtons = <>
             FieldName = 'REST_EUR'
             Footers = <>
+            Title.Alignment = taCenter
+            Title.Caption = #1041#1072#1083#1072#1085#1089
             Width = 80
           end
           item
             EditButtons = <>
             FieldName = 'TAXPLAN_ID'
             Footers = <>
+            Title.Alignment = taCenter
             Visible = False
           end
           item
             EditButtons = <>
             FieldName = 'STATUS_ID'
             Footers = <>
+            Title.Alignment = taCenter
             Visible = False
           end
           item
             EditButtons = <>
             FieldName = 'STATUS_NAME'
             Footers = <>
+            Title.Alignment = taCenter
             Width = 150
           end>
         inherited RowDetailData: TRowDetailPanelControlEh
@@ -95,9 +111,80 @@ inherited FormTableClients: TFormTableClients
             Top = 0
             Width = 765
             Height = 198
-            ActivePage = tsClientAccountMovements
+            ActivePage = tsClientOrders
             Align = alClient
             TabOrder = 0
+            object tsAdresses: TTabSheet
+              Caption = #1040#1076#1088#1077#1089#1072
+              ImageIndex = 2
+              object grdAdresses: TDBGridEh
+                Left = 0
+                Top = 0
+                Width = 757
+                Height = 170
+                Align = alClient
+                AutoFitColWidths = True
+                DataGrouping.GroupLevels = <>
+                DataSource = dsAdresses
+                Flat = True
+                FooterColor = clWindow
+                FooterFont.Charset = DEFAULT_CHARSET
+                FooterFont.Color = clWindowText
+                FooterFont.Height = -11
+                FooterFont.Name = 'MS Sans Serif'
+                FooterFont.Style = []
+                RowDetailPanel.Color = clBtnFace
+                TabOrder = 0
+                TitleFont.Charset = DEFAULT_CHARSET
+                TitleFont.Color = clWindowText
+                TitleFont.Height = -11
+                TitleFont.Name = 'MS Sans Serif'
+                TitleFont.Style = []
+                Columns = <
+                  item
+                    EditButtons = <>
+                    FieldName = 'PHONE_NUMBER'
+                    Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = #1043#1086#1088#1086#1076#1089#1082#1086#1081
+                    Width = 76
+                  end
+                  item
+                    EditButtons = <>
+                    FieldName = 'MOBILE_PHONE'
+                    Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = #1052#1086#1073#1080#1083#1100#1085#1099#1081
+                    Width = 70
+                  end
+                  item
+                    EditButtons = <>
+                    FieldName = 'PLACE_TEXT'
+                    Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = #1052#1077#1089#1090#1086' '#1078#1080#1090#1077#1083#1100#1089#1090#1074#1072
+                    Width = 200
+                  end
+                  item
+                    EditButtons = <>
+                    FieldName = 'ADRESS_TEXT'
+                    Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = #1040#1076#1088#1077#1089
+                    Width = 300
+                  end
+                  item
+                    EditButtons = <>
+                    FieldName = 'EMAIL'
+                    Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = 'E-mail'
+                    Width = 150
+                  end>
+                object RowDetailData: TRowDetailPanelControlEh
+                end
+              end
+            end
             object tsClientOrders: TTabSheet
               Caption = #1047#1072#1103#1074#1082#1080' '
               object grdClientOrders: TDBGridEh
@@ -106,6 +193,7 @@ inherited FormTableClients: TFormTableClients
                 Width = 757
                 Height = 170
                 Align = alClient
+                AutoFitColWidths = True
                 DataGrouping.GroupLevels = <>
                 DataSource = dsClientOrders
                 Flat = True
@@ -125,27 +213,7 @@ inherited FormTableClients: TFormTableClients
                 Columns = <
                   item
                     EditButtons = <>
-                    FieldName = 'ORDER_ID'
-                    Footers = <>
-                  end
-                  item
-                    EditButtons = <>
                     FieldName = 'ORDER_CODE'
-                    Footers = <>
-                  end
-                  item
-                    EditButtons = <>
-                    FieldName = 'PRODUCT_ID'
-                    Footers = <>
-                  end
-                  item
-                    EditButtons = <>
-                    FieldName = 'CLIENT_ID'
-                    Footers = <>
-                  end
-                  item
-                    EditButtons = <>
-                    FieldName = 'ADRESS_ID'
                     Footers = <>
                   end
                   item
@@ -155,13 +223,27 @@ inherited FormTableClients: TFormTableClients
                   end
                   item
                     EditButtons = <>
-                    FieldName = 'STATUS_ID'
+                    FieldName = 'PLACE_TEXT'
                     Footers = <>
+                    Width = 200
+                  end
+                  item
+                    EditButtons = <>
+                    FieldName = 'ADRESS_TEXT'
+                    Footers = <>
+                    Width = 200
+                  end
+                  item
+                    EditButtons = <>
+                    FieldName = 'STATUS_NAME'
+                    Footers = <>
+                    Width = 100
                   end
                   item
                     EditButtons = <>
                     FieldName = 'STATUS_DTM'
                     Footers = <>
+                    Width = 80
                   end>
                 object RowDetailData: TRowDetailPanelControlEh
                 end
@@ -336,6 +418,9 @@ inherited FormTableClients: TFormTableClients
       end>
     Bitmap = {}
   end
+  inherited trnNSI: TpFIBTransaction
+    Active = True
+  end
   object qryAccountMovements: TpFIBDataSet [8]
     SelectSQL.Strings = (
       'SELECT'
@@ -364,18 +449,23 @@ inherited FormTableClients: TFormTableClients
   object qryClientOrders: TpFIBDataSet [10]
     SelectSQL.Strings = (
       'SELECT'
-      '    ORDER_ID,'
-      '    ORDER_CODE,'
-      '    PRODUCT_ID,'
-      '    CLIENT_ID,'
-      '    ADRESS_ID,'
-      '    CREATE_DTM,'
-      '    STATUS_ID,'
-      '    STATUS_DTM'
-      'FROM'
-      '    ORDERS '
-      'WHERE '
-      '    CLIENT_ID = :CLIENT_ID')
+      '    o.ORDER_ID,'
+      '    o.ORDER_CODE,'
+      '    o.PRODUCT_ID,'
+      '    o.CLIENT_ID,'
+      '    o.ADRESS_ID,'
+      '    o.CREATE_DTM,'
+      '    o.STATUS_ID,'
+      '    o.STATUS_DTM,'
+      '    ca.place_text,'
+      '    ca.adress_text,'
+      '    s.status_name'
+      'from orders o'
+      '  inner join v_clientadress ca on (ca.adress_id = o.adress_id)'
+      '  inner join statuses s on (s.status_id = o.status_id)'
+      'where'
+      '    o.CLIENT_ID = :CLIENT_ID')
+    Active = True
     Transaction = trnNSI
     Database = dmOtto.dbOtto
     DataSource = dsMain
@@ -387,5 +477,38 @@ inherited FormTableClients: TFormTableClients
     DataSet = qryClientOrders
     Left = 816
     Top = 80
+  end
+  object qryAdresses: TpFIBDataSet
+    SelectSQL.Strings = (
+      'SELECT'
+      '    CLIENT_ID,'
+      '    FIO_TEXT,'
+      '    LAST_NAME,'
+      '    FIRST_NAME,'
+      '    MID_NAME,'
+      '    STATUS_ID,'
+      '    MOBILE_PHONE,'
+      '    EMAIL,'
+      '    PHONE_NUMBER,'
+      '    PLACE_ID,'
+      '    PLACE_TEXT,'
+      '    ADRESS_ID,'
+      '    ADRESS_TEXT'
+      'FROM'
+      '    V_CLIENTADRESS '
+      'WHERE'
+      '   CLIENT_ID = :CLIENT_ID')
+    Active = True
+    Transaction = dmOtto.trnAutonomouse
+    Database = dmOtto.dbOtto
+    DataSource = dsMain
+    Left = 761
+    Top = 133
+  end
+  object dsAdresses: TDataSource
+    AutoEdit = False
+    DataSet = qryAdresses
+    Left = 821
+    Top = 135
   end
 end
