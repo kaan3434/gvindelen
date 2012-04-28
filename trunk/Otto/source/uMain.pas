@@ -757,7 +757,7 @@ end;
 
 procedure TMainForm.actDBCleanExecute(Sender: TObject);
 begin
-  dmOtto.CleanUp
+  dmOtto.CleanUp;
 end;
 
 end.

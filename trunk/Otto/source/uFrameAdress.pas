@@ -293,8 +293,17 @@ procedure TFrameAdress.AddressChanged(Sender: TObject;
   var Key: Char);
 begin
   inherited;
-//  if GetXmlAttrValue(ndAdress, )
-//  FAddressModified:= True;
+  if GetXmlAttrValue(ndAdress, 'ID') <> null then
+  begin
+    if MessageDlg('Заменить адрес клиента?', mtConfirmation, mbOKCancel, 0) = mrOk then
+    begin
+      SetXmlAttr(ndOrder, 'ADRESS_ID', null);
+      SetXmlAttr(ndAdress, 'ID', null);
+      SetXmlAttr(ndAdress, 'PLACE_ID', null);
+      SetXmlAttr(ndPlace, 'ID', null);
+      UpdateCaptions;
+    end;
+  end;
 end;
 
 end.

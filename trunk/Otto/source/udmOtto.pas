@@ -8,7 +8,7 @@ uses
   FIBDataSet, pFIBDataSet, Variants, MemTableDataEh, IB_Services, 
   JvComponentBase, JvDesktopAlert, Dialogs, JvBaseDlg, Controls,
   gsFileVersionInfo, dbf, pFIBErrorHandler, FIB, frxExportXLS, frxClass,
-  frxExportPDF, frxFIBComponents;
+  frxExportPDF, frxFIBComponents, frxExportMail;
 
 type
   TdmOtto = class(TDataModule)
