@@ -12,7 +12,7 @@ function xml2array($xml) {
       $result[$element_name] = xml2array($child);
     }
   }
-  // åñëè åñòü çíà÷åíèå, òî íå ìîæåò áûòü àòðèáóòîâ
+  // ÐµÑÐ»Ð¸ ÐµÑÑ‚ÑŒ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ, Ñ‚Ð¾ Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ‚ Ð±Ñ‹Ñ‚ÑŒ Ð°Ñ‚Ñ€Ð¸Ð±ÑƒÑ‚Ð¾Ð²
   if ($xml['0']) {
     $result['0'] = (string) $xml['0'];
   } //else {
@@ -44,11 +44,11 @@ function getTournirs($booker_sign, $sport_sign) {
   if ($booker_sign == 'bwin') {
     require_once "bwin_xml.php";
     $booker = new bwin_booker();
-    $booker->getTournirs($tournirs_node, $sport_sign);
   } elseif ($booker_sign == 'olymp') {
     require_once "olymp_xml.php";
-    olymp_get_tournirs($tournirs_node, $sport_sign);
+    $booker = new olymp_booker();
   }
+  $booker->getTournirs($tournirs_node, $sport_sign);
   $out = xml2array($xml);
   return $out;
 }
@@ -59,26 +59,26 @@ function getEvents($booker_sign, $sport_sign, $tournir_id) {
   if ($booker_sign == 'bwin') {
     require_once "bwin_xml.php";
     $booker = new bwin_booker();
-    $booker->getEvents($events_node , $sport_sign, $tournir_id);
   } elseif ($booker_sign == 'olymp') {
     require_once "olymp_xml.php";
-    olymp_get_events($events_node , $sport_sign, $tournir_id);
+    $booker = new olymp_booker();
   }
+  $booker->getEvents($events_node , $sport_sign, $tournir_id);
   $out = xml2array($xml);
   return $out;
 }
   
   
-//  getBookers('123');
-//  print(getSports('bwin'));
-  //getTournirs('bwin', 'tennis');
-//  getEvents('bwin', 'tennis', 12675);
+  //getBookers('123');
+  //getSports('bwin');
+//  getTournirs('olymp', 'tennis');
+  //getEvents('olymp', 'tennis', '26.79cdd5dea2126f7cd6c6ba41df72a4c0');
   
   //exit;
 
 
   ini_set("soap.wsdl_cache_enabled", "0");
-  $server = new SoapServer("scan.wsdl");
+  $server = new SoapServer("Scan.wsdl");
   $server->addFunction("getBookers");
   $server->addFunction("getSports");
   $server->addFunction("getTournirs");

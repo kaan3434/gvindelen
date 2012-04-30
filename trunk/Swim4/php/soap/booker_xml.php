@@ -20,7 +20,7 @@ class booker_xml {
     }
   }
   
-  public function getLeaguePath(string $sport_sign) {
+  public function getLeaguePath($sport_sign) {
     return "lines/{$this->booker}/$sport_sign.";
   }
   

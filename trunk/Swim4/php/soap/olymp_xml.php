@@ -32,12 +32,12 @@ class olymp_booker extends booker_xml {
 
   public function getTournirs(&$sport_node, $sport_sign) {
     if (file_exists('proxy.txt')) $proxy = file_get_contents('proxy.txt');
-    $league_path = "lines/{$this->booker}/$sport_sign.";
+    $league_path = $this->getLeaguePath($sport_sign);
     
     // получаем перечень турниров
     $file_name = $league_path."league.html";
-    $html = download_or_load($debug, $file_name, "{$this->host}/$sport_sign-odds.html", "GET", $proxy, "");
-    extract_league($sport_node, $html);
+    $html = download_or_load($this->debug, $file_name, "{$this->host}/$sport_sign-odds.html", "GET", $proxy, "");
+    $this->extract_league($sport_node, $html);
     if ($this->debug) file_put_contents($league_path."league.xml", $sport_node->asXML());
   }
 
@@ -84,12 +84,12 @@ class olymp_booker extends booker_xml {
     $cells = extract_all_tags($html, '<li', '</li>');
     $i = 0;
     foreach($cells as $cell) $cells[$i++] = delete_all($cell, '<', '>', 'li');
-    list($day_no, $month_no, $year_no, $hour, $minute) = decode_datetime(str_ireplace('<br>', ' ', $cells[0]));
+    list($day_no, $month_no, $year_no, $hour, $minute) = $this->decode_datetime(str_ireplace('<br>', ' ', $cells[0]));
     list($gamer1_name, $gamer2_name) = explode('<br/>', $cells[2]);
-    $event_node = event_create($tournir_node, $event_id, mktime($hour, $minute, 0, $month_no, $day_no, $year_no), $gamer1_name, $gamer2_name);
-    if ($cells[3] <> '') $this->addBet($event_node, 'Period=Match;Gamer=1;Kind=Win;Koef='.$cells[3]);
-    if ($cells[4] <> '') $this->addBet($event_node, 'Period=Match;Modifier=Draw;Koef='.$cells[4]);
-    if ($cells[5] <> '') $this->addBet($event_node, 'Period=Match;Gamer=2;Modifier=Win;Koef='.$cells[5]);
+    $event_node = $this->event_create($tournir_node, $event_id, mktime($hour, $minute, 0, $month_no, $day_no, $year_no), $gamer1_name, $gamer2_name);
+    if ($cells[3] <> '') $this->addBet($event_node, 'Period=Match;Gamer=1;Kind=Win;Modifier=Win;Koef='.$cells[3]);
+    if ($cells[4] <> '') $this->addBet($event_node, 'Period=Match;Kind=Win;Modifier=Draw;Koef='.$cells[4]);
+    if ($cells[5] <> '') $this->addBet($event_node, 'Period=Match;Gamer=2;Kind=Win;Modifier=Win;Koef='.$cells[5]);
     if ($cells[6] <> '') $this->addBet($event_node, 'Period=Match;Kind=DoubleChance;Modifier=NoLose;Gamer=1;Koef='.$cells[6]);
     if ($cells[7] <> '') $this->addBet($event_node, 'Period=Match;Kind=DoubleChance;Modifier=NoDraw;Koef='.$cells[7]);
     if ($cells[8] <> '') $this->addBet($event_node, 'Period=Match;Kind=DoubleChance;Modifier=NoLose;Gamer=2;Koef='.$cells[8]);
@@ -97,26 +97,27 @@ class olymp_booker extends booker_xml {
     if ($cells[9] <> '') {
       preg_match('/\(([\+\-]*?)(.+?)\)<br\/>(.+?)/iU', $cells[9], $matches);
       if (($matches[1] == '') and ($matches[2] <> '0')) $matches[1] = '+';
-      add_bet($event_node, 'Period=Match;Kind=Fora;Value='.$matches[1].$matches[2].';Modifier=Win;Gamer=1;Koef='.$matches[3]);
+      $this->addBet($event_node, 'Period=Match;Kind=Fora;Value='.$matches[1].$matches[2].';Modifier=Win;Gamer=1;Koef='.$matches[3]);
     }
     if ($cells[10] <> '') {
       preg_match('/\(([\+\-]*?)(.+?)\)<br\/>(.+?)/iU', $cells[10], $matches);
       if (($matches[1] == '') and ($matches[2] <> '0')) $matches[1] = '+';
-      add_bet($event_node, 'Period=Match;Kind=Fora;Value='.$matches[1].$matches[2].';Modifier=Win;Gamer=2;Koef='.$matches[3]);
+      $this->addBet($event_node, 'Period=Match;Kind=Fora;Value='.$matches[1].$matches[2].';Modifier=Win;Gamer=2;Koef='.$matches[3]);
     }
     if ($cells[12] <> '') {
       $value = $cells[11];
       if (!strpos($value, '.')) $value = $value+0.5;
-      add_bet($event_node, 'Period=Match;'.$subjects[$sport_sign].';Kind=Total;Value='.$value.';Modifier=Under;Koef='.$cells[12]);
+      $this->addBet($event_node, 'Period=Match;'.$subjects[$sport_sign].';Kind=Total;Value='.$value.';Modifier=Under;Koef='.$cells[12]);
     }
     if ($cells[13] <> '') { 
       $value = $cells[11];
       if (!strpos($value, '.')) $value = $value-0.5;
-      add_bet($event_node, 'Period=Match;'.$subjects[$sport_sign].';Kind=Total;Value='.$value.';Modifier=Over;Koef='.$cells[13]);
+      $this->addBet($event_node, 'Period=Match;'.$subjects[$sport_sign].';Kind=Total;Value='.$value.';Modifier=Over;Koef='.$cells[13]);
     }
   }
 
   private function extract_extra_bets(&$tournir_node, $html, $sport_sign, $tournir_id) {
+    $i = 0;
     $phrases_headers = $this->getPhrasesHeaders($sport_sign);
     $phrases_labels = $this->getPhrasesLabels($sport_sign);
     $html = str_ireplace('<li><h2>', '<li class="extra"><h2>', $html);
@@ -125,7 +126,7 @@ class olymp_booker extends booker_xml {
     foreach($table_rows as $row) {
       $row = kill_property($row, 'TagNo');
       $event_id = extract_property_values(copy_be($html, '<ul', '>', 'rel'), 'rel', '');
-      $event_node = event_find($tournir_node, $event_id);
+      $event_node = $this->event_find($tournir_node, $event_id);
       $phrase = copy_be($row, '<h2', '</h2>');
       $phrase = copy_between($phrase, '>', '<');
       unset($bettype);
@@ -143,7 +144,7 @@ class olymp_booker extends booker_xml {
       if (!in_array($bettype['Modifier'], array('Ignore', 'Unknown'))) {
         $bets = extract_all_tags($row, '<li', '</li>', 'rel');
         foreach($bets as $bet) {
-          list($label, $koef) = extract_label_koef($bet);
+          list($label, $koef) = $this->extract_label_koef($bet);
           $label = str_ireplace((string)$event_node['Gamer1_Name'], 'Gamer1', $label);
           $label = str_ireplace((string)$event_node['Gamer2_Name'], 'Gamer2', $label);
           $modifier = $phrases_labels[$label];
@@ -187,7 +188,7 @@ class olymp_booker extends booker_xml {
     
     $file_name = $league_path."$tournir_id.html";
     $url="{$this->host}/engine.php?act=co&co=$tournir_id";
-    $html = download_or_load($debug, $file_name, $url, "GET", $proxy, "{$this->host}/$sport_sign-odds.html");
+    $html = download_or_load($this->debug, $file_name, $url, "GET", $proxy, "{$this->host}/$sport_sign-odds.html");
     $this->extract_bets($tournir_node, $html, $sport_sign, $tournir_id);
 
     if ($this->debug) file_put_contents($league_path."$tournir_id.xml", $tournir_node->asXML());

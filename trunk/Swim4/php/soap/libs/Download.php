@@ -414,13 +414,21 @@ function send_mail($from, $to, $subject, $message, $attach_filename=null) {
 function download_or_load($debug, $file_name, $url, $method, $proxy, $referer=null, $post_hash=null) {
   if ($debug) {
     if (!file_exists($file_name)) {
-      $html = download_curl($url, $method, $proxy, $referer, $post_hash);
+      if ($proxy) {
+        $html = download_curl($url, $method, $proxy, $referer, $post_hash);
+      } else {
+        $html = download($url, $method, $referer, $post_hash);
+      }
       file_put_contents($file_name, $html);
     } else {
       $html = file_get_contents($file_name);
     }
   } else {
-    $html = download_curl($url, $method, $proxy, $referer, $post_hash);
+    if ($proxy) {
+      $html = download_curl($url, $method, $proxy, $referer, $post_hash);
+    } else {
+      $html = download($url, $method, $referer, $post_hash);
+    }
   }    
   return $html;
 }

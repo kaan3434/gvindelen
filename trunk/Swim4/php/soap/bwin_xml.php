@@ -48,7 +48,8 @@ class bwin_booker extends booker_xml {
   
     // получаем перечень турниров
     $file_name = $league_path."league.html";
-    $html = download_or_load($this->debug, $file_name, "{$this->host}/$sport_sign?ShowDays=168", "GET", $proxy, "");
+    $url = "{$this->host}/$sport_sign?ShowDays=168";
+    $html = download_or_load($this->debug, $file_name, $url, "GET", $proxy, "");
     $this->extract_league($sport_node, $html);
     if ($this->debug) file_put_contents($league_path."league.xml", $sport_node->asXML());
   }
@@ -132,13 +133,13 @@ class bwin_booker extends booker_xml {
         }
         $event_node = $this->event_find_or_create($tournir_node, mktime($hour, $minute, 0, $month_no, $day_no, $year_no), $gamer1_name, $gamer2_name);
         if ($win1_koef) {
-          $this->addBet($event_node, "Period=Match;Gamer=1;Kind=Win;Koef=$win1_koef");
+          $this->addBet($event_node, "Period=Match;Gamer=1;Kind=Win;Modifier=Win;Koef=$win1_koef");
         }  
         if ($draw_koef) {
-          $this->addBet($event_node, "Period=Match;Kind=Total;Kind=Draw;Koef=$draw_koef");
+          $this->addBet($event_node, "Period=Match;Kind=Win;Modifier=Draw;Koef=$draw_koef");
         }  
         if ($win2_koef) {
-          $this->addBet($event_node, "Period=Match;Gamer=2;Kind=Win;Koef=$win2_koef");
+          $this->addBet($event_node, "Period=Match;Gamer=2;Kind=Win;Modifier=Win;Koef=$win2_koef");
         }
       }
     }
@@ -192,14 +193,14 @@ class bwin_booker extends booker_xml {
           }
           $event_node = $this->event_find_or_create($tournir_node, mktime(0, 0, 0, $month_no, $day_no, $year_no), $gamer1_name, $gamer2_name);
           if ($win1_koef) {
-            $this->addBet($event_node, implode_hash(';', $bettype).";Gamer=1;Koef=$win1_koef");
+            $this->addBet($event_node, 'Kind=Win;Modifier=Win;'.implode_hash(';', $bettype).";Gamer=1;Koef=$win1_koef");
           }  
           if ($draw_koef) {
-            $this->addBet($event_node, implode_hash(';', $bettype).";Kind=Draw;Koef=$draw_koef");
+            $this->addBet($event_node, 'Kind=Win;Modifier=Draw;'.implode_hash(';', $bettype).";Koef=$draw_koef");
           }  
           if ($win2_koef) {
             if ($bettype['Kind'] = 'Handicap') $bettype['Value'] = -$bettype['Value'];
-            $this->addBet($event_node, implode_hash(';', $bettype).";Gamer=2;Koef=$win2_koef");
+            $this->addBet($event_node, 'Kind=Win;Modifier=Win;'.implode_hash(';', $bettype).";Gamer=2;Koef=$win2_koef");
           }
         }
       }

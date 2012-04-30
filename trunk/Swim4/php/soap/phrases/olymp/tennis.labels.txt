@@ -1,0 +1,4 @@
+1-й сет - П1=Period=Set1;Gamer=1;Modifier=Win
+1-й сет - П2=Period=Set1;Gamer=2;Modifier=Win
+Тотал геймов: ЧЕТ=Modifier=Even
+Тотал геймов: НЕЧЕТ=Modifier=Odd
