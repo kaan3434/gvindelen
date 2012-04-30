@@ -1,4 +1,0 @@
-Id=1
-Sign=bwin
-Url=https://bwin.com
-Name=BWin
