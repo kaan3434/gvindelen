@@ -592,7 +592,7 @@ inherited FormTableOrders: TFormTableOrders
       '    orders.STATUS_ID,'
       '    statuses.STATUS_NAME,'
       '    statuses.STATUS_SIGN,'
-      '    --orders.STATUS_DTM,'
+      '    orders.STATUS_DTM,'
       '    v_order_summary.cost_eur,'
       '    v_order_summary.cost_byr,'
       '    orders.bar_code,'
