@@ -8,7 +8,7 @@ procedure ExportPackList(aTransaction: TpFIBTransaction);
 
 implementation
 uses
-  SysUtils, GvNativeXml, udmOtto, GvStr, Dbf, GvFile, uMain, Dialogs;
+  SysUtils, GvNativeXml, udmOtto, GvStr, Dbf, GvFile, uMain, Dialogs, GvVariant;
 
 function GetPlace(ndPlace: TXmlNode): string;
 begin
@@ -83,11 +83,11 @@ begin
     tblCons['KTNAME']:= Translit(
       GetXmlAttr(ndClient, 'FIRST_NAME') + ' '+
       Copy(GetXmlAttr(ndClient, 'MID_NAME'), 1, 1) + ' ' +
-      GetXmlAttr(ndClient, 'LAST_NAME'));
+      nvl(GetXmlAttrValue(ndOrder, 'LAST_NAME'), GetXmlAttrValue(ndClient, 'LAST_NAME')));
     tblCons['AUFEXT']:= CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5);
     tblCons['GRART']:= dmOtto.Recode('ARTICLE', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION'));
     tblCons['NAMEZAK']:= GetXmlAttr(ndOrderItem, 'NAME_RUS') + GetXmlAttr(ndOrderItem, 'KIND_RUS', ' ');
-    tblCons['FAMILY']:= GetXmlAttr(ndOrder, 'LAST_NAME') +
+    tblCons['FAMILY']:= nvl(GetXmlAttrValue(ndOrder, 'LAST_NAME'), GetXmlAttrValue(ndClient, 'LAST_NAME'))+
                         GetXmlAttr(ndClient, 'FIRST_NAME', ' ') +
                         GetXmlAttr(ndClient, 'MID_NAME', ' ');
     tblCons['STREETRUS']:= GetAdress(ndAdress);
