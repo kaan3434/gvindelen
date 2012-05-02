@@ -2,8 +2,8 @@ object Form1: TForm1
   Left = 488
   Top = 110
   Caption = 'Form1'
-  ClientHeight = 392
-  ClientWidth = 779
+  ClientHeight = 428
+  ClientWidth = 856
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,7 +18,7 @@ object Form1: TForm1
   object Ribbon: TRibbon
     Left = 0
     Top = 0
-    Width = 779
+    Width = 856
     Height = 143
     ActionManager = actMngRibbon
     ApplicationMenu.Menu = RibbonApplicationMenuBar1
@@ -33,7 +33,7 @@ object Form1: TForm1
         Page = RibbonPage1
       end>
     DesignSize = (
-      779
+      856
       143)
     StyleName = 'Ribbon - Luna'
     object RibbonApplicationMenuBar1: TRibbonApplicationMenuBar
@@ -44,7 +44,7 @@ object Form1: TForm1
     object RibbonPage1: TRibbonPage
       Left = 0
       Top = 50
-      Width = 778
+      Width = 855
       Height = 93
       Caption = 'Viewer'
       Index = 1
@@ -61,7 +61,7 @@ object Form1: TForm1
     object RibbonPageScaner: TRibbonPage
       Left = 0
       Top = 50
-      Width = 778
+      Width = 855
       Height = 93
       Caption = 'Scanner'
       Index = 0
@@ -79,8 +79,8 @@ object Form1: TForm1
   object DBGridEh1: TDBGridEh
     Left = 0
     Top = 143
-    Width = 779
-    Height = 213
+    Width = 856
+    Height = 249
     Align = alClient
     AutoFitColWidths = True
     DataGrouping.GroupLevels = <>
@@ -104,15 +104,15 @@ object Form1: TForm1
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 373
-    Width = 779
+    Top = 409
+    Width = 856
     Height = 19
     Panels = <>
   end
   object ProgressBar1: TProgressBar
     Left = 0
-    Top = 356
-    Width = 779
+    Top = 392
+    Width = 856
     Height = 17
     Align = alBottom
     TabOrder = 3
@@ -173,13 +173,14 @@ object Form1: TForm1
       end>
     LargeImages = imgListRibbonLarge
     Images = imgListRibbon
-    Left = 392
+    Left = 384
     Top = 8
     StyleName = 'Ribbon - Luna'
     object actScanAllBooker: TAction
       Category = 'Scanner'
       Caption = 'All'
       ImageIndex = 0
+      OnExecute = actScanAllBookerExecute
     end
     object actViewAll: TAction
       Category = 'Viewer'
@@ -190,7 +191,7 @@ object Form1: TForm1
   object imgListRibbon: TImageList
     ColorDepth = cd32Bit
     BkColor = clWhite
-    Left = 520
+    Left = 560
     Top = 8
     Bitmap = {
       494C0101010009002C0010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
@@ -336,7 +337,7 @@ object Form1: TForm1
     ColorDepth = cd32Bit
     Height = 32
     Width = 32
-    Left = 432
+    Left = 472
     Top = 8
     Bitmap = {
       494C010101000900240020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
@@ -876,16 +877,7 @@ object Form1: TForm1
   end
   object dsSwims: TDataSource
     AutoEdit = False
-    DataSet = dmSwim.qrySwims
     Left = 592
     Top = 208
-  end
-  object HTTPRIO1: THTTPRIO
-    HTTPWebNode.UseUTF8InHeader = True
-    HTTPWebNode.InvokeOptions = [soIgnoreInvalidCerts, soAutoCheckAccessPointViaUDDI]
-    HTTPWebNode.WebNodeOptions = []
-    Converter.Options = [soSendMultiRefObj, soTryAllSchema, soRootRefNodesToBody, soCacheMimeResponse, soUTF8EncodeXML]
-    Left = 328
-    Top = 8
   end
 end

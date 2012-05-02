@@ -11,7 +11,6 @@ type
     dbSwim: TpFIBDatabase;
     trnRead: TpFIBTransaction;
     trnWrite: TpFIBTransaction;
-    qrySwims: TpFIBDataSet;
     procedure DataModuleCreate(Sender: TObject);
   private
     { Private declarations }

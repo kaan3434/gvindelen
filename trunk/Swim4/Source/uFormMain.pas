@@ -9,7 +9,7 @@ uses
   Vcl.ImgList, Vcl.ActnCtrls, Vcl.ToolWin, Vcl.ActnMenus,
   Vcl.RibbonActnMenus, Data.Bind.EngExt, Vcl.Bind.DBEngExt, Data.Bind.Components,
   Vcl.StdCtrls, Vcl.ExtCtrls, DBGridEhGrouping, Vcl.ComCtrls, GridsEh, DBGridEh,
-  Data.DB, Soap.InvokeRegistry, Soap.Rio, Soap.SOAPHTTPClient;
+  Data.DB, Soap.InvokeRegistry, Soap.Rio, Soap.SOAPHTTPClient, ToolCtrlsEh;
 
 type
   TForm1 = class(TForm)
@@ -28,9 +28,9 @@ type
     StatusBar1: TStatusBar;
     ProgressBar1: TProgressBar;
     dsSwims: TDataSource;
-    HTTPRIO1: THTTPRIO;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure actScanAllBookerExecute(Sender: TObject);
   private
     { Private declarations }
     procedure CreateButtons(aBookerSign: string; aImgPath: String);
@@ -49,7 +49,7 @@ implementation
 
 {$R *.dfm}
 uses
-  GvFile, PngImage, uDmSwim;
+  GvFile, PngImage, uDmSwim, uWebServiceThread;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
@@ -78,6 +78,13 @@ begin
   finally
     png.Free;
   end;
+end;
+
+procedure TForm1.actScanAllBookerExecute(Sender: TObject);
+var
+  ScanThread: TWebServiceRequester;
+begin
+  ScanThread:= TWebServiceRequester.Create;
 end;
 
 procedure TForm1.AppendActionToGroup(aGroup: TRibbonGroup; aImageIndex: Integer; aCaption: String);
