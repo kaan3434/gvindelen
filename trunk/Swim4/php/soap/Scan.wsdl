@@ -3,79 +3,73 @@
 <definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://example.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" name="Scan" targetNamespace="http://example.com/" xmlns="http://schemas.xmlsoap.org/wsdl/">
     <types>
         <xs:schema xmlns:tns="http://schemas.xmlsoap.org/wsdl/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://example.com/">
-            <complexType name="BookerType">
+            <complexType name="TBooker">
                 <simpleContent>
                     <extension base="string">
-                        <attribute name="Id" type="string" />
-                        <attribute name="Sign">
+                        <attribute name="Id" type="integer" use="required" />
+                        <attribute name="Sign" use="required">
                             <simpleType>
                                 <restriction base="string">
                                     <whiteSpace value="collapse" />
                                 </restriction>
                             </simpleType>
                         </attribute>
-                        <attribute name="Name" type="string" />
+                        <attribute name="Title" type="string" use="required" />
                         <attribute name="Url" type="anyURI" />
                     </extension>
                 </simpleContent>
             </complexType>
-            <complexType name="BookersType">
+            <complexType name="TBookers">
                 <sequence minOccurs="0" maxOccurs="unbounded">
-                    <element xmlns:q1="http://example.com/" minOccurs="0" maxOccurs="unbounded" name="Booker" type="q1:BookerType" />
+                    <element xmlns:q1="http://example.com/" minOccurs="0" maxOccurs="unbounded" name="Booker" type="q1:TBooker" />
                 </sequence>
-                <attribute name="UserSign" type="string" />
             </complexType>
-            <complexType name="BookersResponseType">
+            <complexType name="TBookersResponse">
                 <sequence>
-                    <element xmlns:q1="http://example.com/" name="Bookers">
-                        <complexType>
-                            <complexContent mixed="false">
-                                <extension base="q1:BookersType">
-                                    <attribute name="UserSign" type="string" />
-                                </extension>
-                            </complexContent>
-                        </complexType>
-                    </element>
+                    <element xmlns:q1="http://example.com/" name="Bookers" type="q1:TBookers" />
                 </sequence>
             </complexType>
-            <complexType name="SportType">
+            <complexType name="TSport">
                 <simpleContent>
                     <extension base="string">
+                        <attribute name="Id" type="integer" use="required" />
                         <attribute name="Sign" type="string" use="required" />
-                        <attribute name="Name" type="string" use="required" />
+                        <attribute name="Title" type="string" use="required" />
+                        <attribute name="Url" type="anyURI" use="required" />
                     </extension>
                 </simpleContent>
             </complexType>
-            <complexType name="SportsType">
+            <complexType name="TSports">
                 <sequence minOccurs="0" maxOccurs="unbounded">
-                    <element xmlns:q2="http://example.com/" minOccurs="0" maxOccurs="unbounded" name="Sport" type="q2:SportType" />
+                    <element xmlns:q2="http://example.com/" minOccurs="0" maxOccurs="unbounded" name="Sport" type="q2:TSport" />
                 </sequence>
             </complexType>
-            <complexType name="SportsResponseType">
+            <complexType name="TSportsResponse">
                 <sequence>
-                    <element xmlns:q3="http://example.com/" name="Sports" type="q3:SportsType" />
+                    <element xmlns:q3="http://example.com/" name="Sports" type="q3:TSports" />
                 </sequence>
             </complexType>
-            <complexType name="TournirType">
+            <complexType name="TTournir">
                 <simpleContent>
                     <extension base="string">
                         <attribute name="Id" type="string" />
-                        <attribute name="Region_Name" type="string" />
-                        <attribute name="Name" type="string" use="required" />
+                        <attribute name="Region" type="string" />
+                        <attribute name="Title" type="string" use="required" />
+                        <attribute name="Url" type="anyURI" />
                     </extension>
                 </simpleContent>
             </complexType>
-            <complexType name="TournirsType">
+            <complexType name="TTournirs">
                 <sequence minOccurs="0" maxOccurs="unbounded">
-                    <element xmlns:q1="http://example.com/" minOccurs="0" maxOccurs="unbounded" name="Tournir" type="q1:TournirType" />
+                    <element xmlns:q1="http://example.com/" minOccurs="0" maxOccurs="unbounded" name="Tournir" type="q1:TTournir" />
                 </sequence>
             </complexType>
-            <complexType name="TournirResponseType">
+            <complexType name="TTournirsResponse">
                 <sequence>
-                    <element xmlns:q2="http://example.com/" name="Tournirs" type="q2:TournirsType" />
+                    <element xmlns:q2="http://example.com/" name="Tournirs" type="q2:TTournirs" />
                 </sequence>
             </complexType>
-            <complexType name="BetType">
+            <complexType name="TBet">
                 <simpleContent>
                     <extension base="anySimpleType">
                         <attribute name="Period" type="string" use="required" />
@@ -88,30 +82,30 @@
                     </extension>
                 </simpleContent>
             </complexType>
-            <complexType name="EventType">
+            <complexType name="TEvent">
                 <sequence minOccurs="0" maxOccurs="unbounded">
-                    <element xmlns:q3="http://example.com/" minOccurs="0" maxOccurs="unbounded" name="Bet" type="q3:BetType" />
+                    <element xmlns:q3="http://example.com/" minOccurs="0" maxOccurs="unbounded" name="Bet" type="q3:TBet" />
                 </sequence>
                 <attribute name="Id" type="string" />
                 <attribute name="DateTime" type="dateTime" />
                 <attribute name="Gamer1_Name" type="string" />
                 <attribute name="Gamer2_Name" type="string" />
             </complexType>
-            <complexType name="EventsType">
+            <complexType name="TEvents">
                 <sequence minOccurs="0" maxOccurs="unbounded">
-                    <element xmlns:q4="http://example.com/" minOccurs="0" maxOccurs="unbounded" name="Event" type="q4:EventType" />
+                    <element xmlns:q4="http://example.com/" minOccurs="0" maxOccurs="unbounded" name="Event" type="q4:TEvent" />
                 </sequence>
             </complexType>
-            <complexType name="EventsResponseType">
+            <complexType name="TEventsResponse">
                 <sequence>
-                    <element xmlns:q5="http://example.com/" name="Events" type="q5:EventsType" />
+                    <element xmlns:q5="http://example.com/" name="Events" type="q5:TEvents" />
                 </sequence>
             </complexType>
         </xs:schema>
     </types>
     <message name="TournirsRequestMessage">
         <part name="BookerSignPart" type="xs:string" />
-        <part name="SportSignPart" type="xs:string" />
+        <part name="SportIdPart" type="xs:string" />
     </message>
     <message name="EventsResponseMessage">
         <part name="EventsResponsePart" type="tns:EventsResponseType" />
@@ -121,41 +115,51 @@
     </message>
     <message name="EventRequestMessage">
         <part name="BookerSignPart" type="xs:string" />
-        <part name="SportSignPart" type="xs:string" />
-        <part name="EventIdPart" type="xs:string" />
+        <part name="SportIdPart" type="xs:integer" />
+        <part name="TournirIdPart" type="xs:string" />
+        <part name="TournirUrlPart" type="xs:anyURI" />
     </message>
     <message name="BookersRequestMessage">
         <part name="UserSign" type="xs:string" />
     </message>
     <message name="BookersResponseMessage">
-        <part name="BookersResponse" type="tns:BookersResponseType" />
+        <part name="BookersResponse" type="tns:TBookersResponse" />
     </message>
     <message name="SportsResponseMessage">
         <part name="SportsResponsePart" type="tns:SportsResponseType" />
     </message>
-    <message name="TournirResponseMessage">
+    <message name="TournirsResponseMessage">
         <part name="TournirResponse" type="tns:TournirResponseType" />
     </message>
     <portType name="ScanPortType">
+        <operation name="getBookers">
+            <input message="tns:BookersRequestMessage" />
+            <output message="tns:BookersResponseMessage" />
+        </operation>
         <operation name="getSports">
             <input message="tns:SportsRequestMessage" />
             <output message="tns:SportsResponseMessage" />
         </operation>
         <operation name="getTournirs">
             <input message="tns:TournirsRequestMessage" />
-            <output message="tns:TournirResponseMessage" />
+            <output message="tns:TournirsResponseMessage" />
         </operation>
         <operation name="getEvents">
             <input message="tns:EventRequestMessage" />
             <output message="tns:EventsResponseMessage" />
         </operation>
-        <operation name="getBookers">
-            <input message="tns:BookersRequestMessage" />
-            <output message="tns:BookersResponseMessage" />
-        </operation>
     </portType>
     <binding name="ScanBinding" type="tns:ScanPortType">
         <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="getBookers">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
         <operation name="getSports">
             <soap:operation soapAction="" />
             <input>
@@ -175,15 +179,6 @@
             </output>
         </operation>
         <operation name="getEvents">
-            <soap:operation soapAction="" />
-            <input>
-                <soap:body use="literal" />
-            </input>
-            <output>
-                <soap:body use="literal" />
-            </output>
-        </operation>
-        <operation name="getBookers">
             <soap:operation soapAction="" />
             <input>
                 <soap:body use="literal" />

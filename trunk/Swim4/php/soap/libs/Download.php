@@ -327,91 +327,9 @@ function download($Url, $Method="GET", $Referer="", $PostHash=null, $ResponseFil
   return $Html;
 }
 
-function is_email_exists($email){
-  list($prefix, $domain) = split("@", $email);
-  if(function_exists("getmxrr") && getmxrr($domain, $mxhosts)){
-    return true;
-  }
-  elseif (@fsockopen($domain, 25, $errno, $errstr, 5)){
-    return true;
-  }
-  else{
-    return false;
-  }
-}
+function download_or_load($debug, $file_name, $url, $method, $referer=null, $post_hash=null) {
+  if (file_exists('proxy.txt')) $proxy = file_get_contents('proxy.txt');
 
-
-function send_mail($from, $to, $subject, $message, $attach_filename=null) {
-  //create a boundary string. It must be unique
-  //so we use the MD5 algorithm to generate a random hash
-  $random_hash = md5(date('r', time()));
-  //define the headers we want passed. Note that they are separated with \r\n
-  $headers[] = "From: $from\r\nReply-To: $from";
-  //define the body of the message.
-
-  
-  if ($attach_filename) {
-    $headers[] = "Content-Type: multipart/mixed; boundary=\"PHP-mixed-".$random_hash."\"";
-    $email[] = "--PHP-mixed-$random_hash";
-    $email[] = "Content-Type: multipart/alternative; boundary=\"PHP-alt-$random_hash\"";
-    $email[] = null;
-    $email[] = "--PHP-alt-$random_hash";
-    $email[] = "Content-Type: text/plain; charset=\"iso-8859-1\"";
-    $email[] = "Content-Transfer-Encoding: 7bit";
-    $email[] = null;
-    $email[] = $message;
-    $email[] = null;
-    $email[] = "--PHP-alt-$random_hash";
-    $email[] = "Content-Type: text/html; charset=\"iso-8859-1\"";
-    $email[] = "Content-Transfer-Encoding: 7bit";
-    $email[] = null;
-    $email[] = $message;
-    $email[] = null;
-    $email[] = "--PHP-alt-$random_hash--";
-    $email[] = null;
-    //read the atachment file contents into a string,
-    //encode it with MIME base64,
-    //and split it into smaller chunks
-    $attach = basename($attach_filename);
-    $attachment = chunk_split(base64_encode(file_get_contents($attach_filename)));
-    $email[] = "--PHP-mixed-$random_hash";
-    $email[] = "Content-Type: application/zip; name=\"$attach\"";
-    $email[] = "Content-Transfer-Encoding: base64";
-    $email[] = "Content-Disposition: attachment";
-    $email[] = null;
-    $email[] = $attachment;
-    $email[] = null;
-    $email[] = "--PHP-mixed-$random_hash--";
-  } elseif (preg_match("|</.+?>|imsU", $message)) {
-    $headers[] = "Content-Type: multipart/alternative; boundary=\"PHP-alt-$random_hash\"";
-    $email[] = "--PHP-alt-$random_hash";
-    $email[] = "Content-Type: text/plain; charset=\"iso-8859-1\"";
-    $email[] = "Content-Transfer-Encoding: 7bit";
-    $email[] = null;
-    $email[] = $message;
-    $email[] = null;
-    $email[] = "--PHP-alt-$random_hash";
-    $email[] = "Content-Type: text/html; charset=\"iso-8859-1\"";
-    $email[] = "Content-Transfer-Encoding: 7bit";
-    $email[] = null;
-    $email[] = $message;
-    $email[] = null;
-    $email[] = "--PHP-alt-$random_hash--";
-  } else {
-    $email[] = "--PHP-alt-$random_hash";
-    $email[] = "Content-Type: text/plain; charset=\"iso-8859-1\"";
-    $email[] = "Content-Transfer-Encoding: 7bit";
-    $email[] = null;
-    $email[] = $message;
-    $email[] = null;
-    $email[] = "--PHP-alt-$random_hash--";
-  }
-  //send the email
-  $body = implode("\r\n", $email);
-  return @mail($to, $subject, $body, implode("\r\n", $headers));
-}
-
-function download_or_load($debug, $file_name, $url, $method, $proxy, $referer=null, $post_hash=null) {
   if ($debug) {
     if (!file_exists($file_name)) {
       if ($proxy) {

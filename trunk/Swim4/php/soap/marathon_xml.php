@@ -5,54 +5,37 @@
   require_once "libs/utf2win.php";
   require_once "booker_xml.php";
   
-class bwin_booker extends booker_xml {
+class marathon_booker extends booker_xml {
   
   function __construct() { 
-    $this->booker = 'bwin'; 
-    $this->host = 'https://www.bwin.com';
+    $this->booker = 'marathon'; 
+    $this->host = 'http://marathonbet.com';
     $this->debug = 1;
   }
   
-  public function extract_league(&$tournirs_node, $html) {
+  private function extract_league(&$tournirs_node, $html) {
     $html = kill_space($html);
-    $html = extract_tags($html, '<noscript>', '</noscript>', '', 'sportNavigationRegionExpandedNew');
-    $html = str_ireplace('<div class="leftnav">', '@@@<div class="leftnav">', $html);
-    $html = numbering_tag($html, 'div');
-    $regions = explode('@@@', $html);
-    unset($regions[0]);
-    foreach($regions as $region) {
-      // получаем название региона
-      $region_name = copy_be($region, '<a', '</a>', 'sportsNavigationArrowButtonNew');
-      $region_name = copy_between($region_name, '>', '</a');
-      $tournirs = extract_all_tags($region, '<a href=\'betsnew.aspx?leagueids=', '</a>');
-      foreach($tournirs as $tournir) {
-        $tournir_name = copy_between($tournir, '>', '</a');
-        preg_match('/(.+) \((\d+)\)$/m', $tournir_name, $matches);
-        $tournir_name = $matches[1];
-        // бракуем турниры
-        if (!preg_match('/(- live)/', $tournir_name)) {
-          $tournir_node = $tournirs_node->addChild('Tournir');
-          $league = copy_be($tournir, '<a', '>', 'leagueids');
-          $league_id = copy_between($league, 'leagueids=', "'");
-          $tournir_node->addAttribute('Id', $league_id);
-          $tournir_node->addAttribute('Region', $region_name);
-          $tournir_node->addAttribute('Title',  $tournir_name);
-        }
-      }
+    $tournirs = extract_all_tags($html, '<a', '</a>');
+    foreach ($tournirs as $tournir) {
+      $tournir = kill_tag($tournir, 'b');
+      $tournir_name = copy_be($tournir, '>', '</a');
+      $url = extract_property_values($tournir, href, '');
+      $tournir_node = $tournirs_node->addChild('Tournir');
+      $tournir_node->addAttribute('Title',  $tournir_name);
+      $tournir_node->addAttribute('Url', $url);
     }
   }
   
   public function getTournirs($sport_id) {
-    // Зачитываем настройку конторы
     $xml = parent::getTournirs($sport_id);
     $tournirs_node = $xml->addChild('Tournirs');
-
+    
     // получаем перечень турниров
-    $file_name = $this->league_path."league";
-    $url = $this->host.$this->sport_node['Url'];
+    $file_name = $this->league_path.".league";
+    $url = $this->host.$sport_node['Url'];
     $html = download_or_load($this->debug, $file_name.".html", $url, "GET", "");
-    $this->extract_league($tournirs_node, $html);
-    if ($this->debug) file_put_contents($file_name.".xml", $xml->asXML());
+    extract_league($sport_node, $html);
+    if ($this->debug) file_put_contents($file_name.".xml", $sport_node->asXML());
     return $xml;
   }
 
@@ -97,7 +80,8 @@ class bwin_booker extends booker_xml {
      return $event_node;
   }
 
-  private function extract_bets_1x2(&$tournir_node, $html, $sport_sign) {
+  private function extract_bets_1x2(&$tournir_node, $html, $sport_sign, $tournir_id, $category_id) {
+    $tournir_id = (string)$tournir_node['Id'];
     $html = kill_space($html);
     $html = numbering_tag($html, 'tr');
     $table_rows = extract_all_numbered_tags($html, 'tr', 'class');
@@ -146,7 +130,7 @@ class bwin_booker extends booker_xml {
     }
   }
 
-  private function extract_bets_noannotated(&$tournir_node, $html, $sport_sign) {
+  private function extract_bets_noannotated(&$tournir_node, $html, $sport_sign, $tournir_id, $category_id) {
     $phrases_headers = $this->getPhrasesHeaders($sport_sign);
     $phrases_labels = $this->getPhrasesLabels($sport_sign);
     $html = kill_space($html);
@@ -212,13 +196,14 @@ class bwin_booker extends booker_xml {
     if ($phrases_labels_modified) $this->putNewPhrasesLabels($phrases_labels, $sport_sign);
   }
 
-  private function extract_bets_foratotal(&$tournir_node, $html, $sport_sign) {
+  private function extract_bets_foratotal(&$tournir_node, $html, $sport_sign, $tournir_id, $category_id) {
     $i = 0;
     $phrases_headers = $this->getPhrasesHeaders($sport_sign);
     $phrases_labels = $this->getPhrasesLabels($sport_sign);
     $html = kill_space($html);
     $html = numbering_tag($html, 'tr');
     $table_rows = extract_all_numbered_tags($html, 'tr', 'class');
+  //  file_put_contents("lines/bwin/$tournir_id.Total.html", $html);  
     foreach($table_rows as $row) {
       $row = kill_property($row, 'TagNo');
       $header = copy_be($row, '<tr', '>');
@@ -282,19 +267,19 @@ class bwin_booker extends booker_xml {
     if ($phrases_labels_modified) $this->putNewPhrasesLabels($phrases_labels, $sport_sign);
   }
   
-  private function extract_bets(&$tournir_node, $html, $sport_sign, $tournir_id, $parse) {
+  private function extract_bets(&$tournir_node, $html, $sport_sign, $tournir_id, $category_id) {
     $html = str_ireplace('<wbr/>', '', $html);
     $html = numbering_tag($html, 'div');
     $html = extract_numbered_tags($html, 'div', "", "bet-list");
     $html = extract_numbered_tags($html, 'div', "", "dsBodyContent");
     $html = extract_numbered_tags($html, 'div', "", "ControlContent");
       
-    if ($parse == '1x2') {
-      if ($html <> '') $this->extract_bets_1x2($tournir_node, $html, $sport_sign);
-    } elseif ($parse == 'NoAnnotated') {
-      if ($html <> '') $this->extract_bets_noannotated($tournir_node, $html, $sport_sign);  
-    } elseif ($parse == 'Annotated') {
-      if ($html <> '') $this->extract_bets_foratotal($tournir_node, $html, $sport_sign);
+    if (in_array($category_id, array(33,25))) {
+      if ($html <> '') $this->extract_bets_1x2($tournir_node, $html, $sport_sign, $tournir_id, $category_id);
+    } elseif (in_array($category_id, array(28,30))) {
+      if ($html <> '') $this->extract_bets_noannotated($tournir_node, $html, $sport_sign, $tournir_id, $category_id);  
+    } elseif (in_array($category_id, array(35,36,524, 31,190,266,271,1228))) {
+      if ($html <> '') $this->extract_bets_foratotal($tournir_node, $html, $sport_sign, $tournir_id, $category_id);
     }
   }
 
@@ -303,28 +288,45 @@ class bwin_booker extends booker_xml {
     return $html <> '';
   }
     
-  private function getBets(&$tournir_node, $sport_id, $tournir_id) {
-    foreach($this->sport_node as $category_node) {
-      $category_id = $category_node['Id'];
-      $parse = $category_node['Parse'];
+  private function getBets(&$tournir_node, $sport_sign, $tournir_id, $categories) {
+    if (file_exists('proxy.txt')) $proxy = file_get_contents('proxy.txt');
+    $league_path = $this->getLeaguePath($sport_sign);
+    
+    foreach($categories as $category_id) {
       $current_page = 0;
       do {
         $current_page++;
-        $file_name = $this->league_path."$tournir_id.$category_id.$current_page.html";
+        $file_name = $league_path."$tournir_id.$category_id.$current_page.html";
         $url= "{$this->host}/betviewiframe.aspx?sorting=leaguedate&categoryIDs=$category_id&bv=bb&leagueIDs=$tournir_id";
-        $html = download_or_load($this->debug, $file_name, $url, "GET", "{$this->host}/$sport_sign?ShowDays=168");
-        $this->extract_bets($tournir_node, $html, $sport_node['Sign'], $tournir_id, $parse);
+        $html = download_or_load($this->debug, $file_name, $url, "GET", $proxy, "{$this->host}/$sport_sign?ShowDays=168");
+        $this->extract_bets($tournir_node, $html, $sport_sign, $tournir_id, $category_id);
       } while ($this->to_be_continue($html, $current_page+1));
     }
     
+    if ($this->debug) file_put_contents($league_path."$tournir_id.xml", $tournir_node->asXML());
   }
 
-  function getEvents($sport_id, $tournir_id, $tournir_url) {
-    $xml = parent::getEvents($sport_id, $tournir_id, $tournir_url);
-    $tournir_node = $xml->addChild('Tournir');
-    $this->getBets($tournir_node, $sport_id, $tournir_id);
-    if ($this->debug) file_put_contents($this->league_path."$tournir_id.xml", $xml->asXML());
-    return $xml;
+  function getEvents(&$tournir_node, $sport_sign, $tournir_id) {
+    if ($sport_sign == 'tennis') {
+      $categories = array(  33 //2Way - Who will win? 
+                         ,  35 //Set related bets
+                         ,  36 //Number of games
+                         , 524 //Tie breaks
+                         );
+    } elseif ($sport_sign == 'football') {
+      $categories = array(  25 //3Way
+                         // annodated
+                         , 190 //Double chance
+                         ,  31 //Number of goals?
+                         , 266 //Corners
+                         , 271 //Yellow/Red cards
+                         ,1228 //Odd/Even
+                         // noannotated
+                         ,  28 //3Way Handicap
+                         ,  30 //Halftime result
+                         );
+    } 
+    $this->getBets($tournir_node, $sport_sign, $tournir_id, $categories);
   }
 
 }

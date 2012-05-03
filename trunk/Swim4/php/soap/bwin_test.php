@@ -4,11 +4,17 @@
   
   $booker = new bwin_booker();
   
-  $filename = $booker->getLeaguePath('tennis');
-  file_put_contents("$filename.test", 'test');
-  $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><Root/>');
-  $tournirs_node = $xml->addChild('Tournirs');
-  $booker->getTournirs($tournirs_node, 'tennis');
+  $sports = $booker->getSports();
   
-  print $xml->asXML();
+  print $sports->asXML();
+
+  $tournirs = $booker->getTournirs(10);
+  
+  print $tournirs->asXML();
+  
+  $tournir_id = (string) $tournirs->Tournirs->Tournir[0]['Id'];
+  $events = $booker->getEvents(10, $tournir_id, null);
+  
+  print $events->asXML();
+  
 ?>

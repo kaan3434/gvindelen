@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Sports>
-  <Sport Sign="tennis" Name="Теннис"/>
-  <Sport Sign="soccer" Name="Футбол"/>
+  <Sport Id="10" Sign="tennis" Name="Теннис" Url="/tennis-odds.html"/>
+  <Sport Id="20" Sign="soccer" Name="Футбол" Url="/soccer-odds.html"/>
 </Sports>

@@ -3,7 +3,7 @@
   require_once "libs/GvStrings.php";
   require_once "libs/GvHtmlSrv.php";
   require_once "libs/utf2win.php";
-  require_once"booker_xml.php";
+  require_once "booker_xml.php";
   
 class olymp_booker extends booker_xml {
   
@@ -13,7 +13,7 @@ class olymp_booker extends booker_xml {
     $this->debug = 1;
   }
   
-  private function extract_league(&$sport_node, $html) {
+  private function extract_league(&$tournirs_node, $html) {
     $html = copy_be($html, '<td', '</td>', '<h4 ');
     $html = kill_space($html);
     $html = numbering_tag($html, 'div');
@@ -21,26 +21,32 @@ class olymp_booker extends booker_xml {
     foreach($tournirs as $tournir) {
       $tournir_name = copy_be($tournir, '<h4', '</h4>');
       $tournir_name = copy_between($tournir_name, '>', '</');
-      list($region_name, $tournir_name) = explode('. ', $tournir_name, 2);
-      $tournir_node = $sport_node->addChild('Tournir');
+      if ($sport_node['Regionable'] == 1) {
+        list($region_name, $tournir_name) = explode('. ', $tournir_name, 2);
+      } else {
+        $region_name = 'World';
+      }
+      $tournir_node = $tournirs_node->addChild('Tournir');
       $league = copy_between($tournir, 'rel="', '"');
       $tournir_node->addAttribute('Id', $league);
-      $tournir_node->addAttribute('Region_Name', $region_name);
-      $tournir_node->addAttribute('Name',  $tournir_name);
+      $tournir_node->addAttribute('Region', $region_name);
+      $tournir_node->addAttribute('Title',  $tournir_name);
     }
   }
 
-  public function getTournirs(&$sport_node, $sport_sign) {
-    if (file_exists('proxy.txt')) $proxy = file_get_contents('proxy.txt');
-    $league_path = $this->getLeaguePath($sport_sign);
+  public function getTournirs($sport_id) {
+    // Зачитываем настройку конторы
+    $xml = parent::getTournirs($sport_id);
+    $tournirs_node = $xml->addChild('Tournirs');
     
     // получаем перечень турниров
-    $file_name = $league_path."league.html";
-    $html = download_or_load($this->debug, $file_name, "{$this->host}/$sport_sign-odds.html", "GET", $proxy, "");
-    $this->extract_league($sport_node, $html);
-    if ($this->debug) file_put_contents($league_path."league.xml", $sport_node->asXML());
+    $file_name = $this->league_path.".league";
+    $url = $this->host.$this->sport_node['Url'];
+    $html = download_or_load($this->debug, $file_name.".html", $url, "GET", "");
+    $this->extract_league($tournirs_node, $html);
+    if ($this->debug) file_put_contents($file_name.".xml", $xml->asXML());
+    return $xml;
   }
-
 
   private function decode_datetime($str) {
     preg_match('/(\d{1,2})\/(\d{2}) (\d{1,2}):(\d\d)/i', $str, $matches);
@@ -77,8 +83,7 @@ class olymp_booker extends booker_xml {
   }
 
   private function extract_main_bets(&$tournir_node, $html, $sport_sign, $tournir_id) {
-    $subjects_file = "phrases/olymp/subjects.txt";
-    $subjects = file_get_hash($subjects_file);
+    $subjects = $this->getSubjects($sport_sign);
     $event_id = extract_property_values(copy_be($html, '<ul', '>', 'rel'), 'rel', '');
     $html = kill_tag_bound($html, 'u');
     $cells = extract_all_tags($html, '<li', '</li>');
@@ -182,16 +187,17 @@ class olymp_booker extends booker_xml {
     foreach($events as $event) $this->extract_extra_bets(&$tournir_node, $event, $sport_sign, $tournir_id);
   }
 
-  public function getEvents(&$tournir_node, $sport_sign, $tournir_id, $debug = null) {
-    if (file_exists('proxy.txt')) $proxy = file_get_contents('proxy.txt');
-    $league_path = $this->getLeaguePath($sport_sign);
+  public function getEvents($sport_id, $tournir_id, $tournir_url) {
+    $xml = parent::getEvents($sport_id, $tournir_id, $tournir_url);
+    $tournir_node = $xml->addChild('Tournir');
     
-    $file_name = $league_path."$tournir_id.html";
-    $url="{$this->host}/engine.php?act=co&co=$tournir_id";
-    $html = download_or_load($this->debug, $file_name, $url, "GET", $proxy, "{$this->host}/$sport_sign-odds.html");
-    $this->extract_bets($tournir_node, $html, $sport_sign, $tournir_id);
+    $file_name = $league_path.$tournir_id;
+    $url = $this->host."/engine.php?act=co&co=$tournir_id";
+    $html = download_or_load($this->debug, $file_name.".html", $url, "GET", $sport_node['Url']);
+    $this->extract_bets($tournir_node, $html, $sport_node['Sign'], $tournir_id);
 
-    if ($this->debug) file_put_contents($league_path."$tournir_id.xml", $tournir_node->asXML());
+    if ($this->debug) file_put_contents($file_name.".xml", $xml->asXML());
+    return $xml;
   }
 
 }  

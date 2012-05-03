@@ -3,12 +3,37 @@ class booker_xml {
   protected $booker;
   protected $host;
   protected $debug;
+  protected $sport_node;
+  protected $league_path;
   
-  public function getTournirs(SimpleXMLElement $xml, string $sport_sign) {
+  public function getSports() {
+    $xml = simplexml_load_file("data/sports/{$this->booker}.xml");
+    foreach($xml->xpath('Sports/Sport/*') as $child) {
+     $domRef = dom_import_simplexml($child); 
+     $domRef->parentNode->removeChild($domRef);
+    }
     return $xml;
   }
   
-  public function getEvents(SimpleXMLElement $xml, string $sport_sign, string $tournir_id) {
+  public function getSport($sport_id) {
+    $sports_xml = simplexml_load_file("data/sports/{$this->booker}.xml");
+    $nodes = $sports_xml->xpath("Sports/Sport[@Id=\"$sport_id\"]"); 
+    if (count($nodes)>=1) $this->sport_node = $nodes[0];
+    $sport_sign = (string)$this->sport_node['Sign'];
+    $this->league_path = "lines/".$this->booker."/$sport_sign.";
+    return $this->sport_node;
+  }
+  
+  public function getTournirs($sport_id) {
+    // Зачитываем настройку спорта конторы
+    $this->sport_node = $this->getSport($sport_id);
+    $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><Root/>');
+    return $xml;
+  }
+  
+  public function getEvents($sport_id, $tournir_id, $tournir_url) {
+    $this->sport_node = $this->getSport($sport_id);
+    $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><Root/>');
     return $xml;
   }
   
@@ -20,9 +45,6 @@ class booker_xml {
     }
   }
   
-  public function getLeaguePath($sport_sign) {
-    return "lines/{$this->booker}/$sport_sign.";
-  }
   
   public function getPhrasesHeaders($sport_sign) {
     $filename = "phrases/{$this->booker}/$sport_sign.headers.txt";
@@ -34,6 +56,11 @@ class booker_xml {
     return file_get_hash($filename);
   }
 
+  public function getSubjects($sport_sign) {
+    $filename = "phrases/{$this->booker}/subjects.txt";
+    return file_get_hash($filename);
+  }
+  
   public function putNewPhrasesHeaders($phrases_headers, $sport_sign) {
     $filename = "phrases/{$this->booker}/$sport_sign.headers.txt";
     $file_hash = file_get_hash($filename);
@@ -48,6 +75,7 @@ class booker_xml {
     file_put_hash("$filename.new", $phrases_labels+file_get_hash("$filename.new"));
   }
 
+  
   
 }
 ?>

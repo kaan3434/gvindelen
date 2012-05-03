@@ -1,6 +1,9 @@
 <?php
   require_once "libs/GvStrings.php";
   require_once "booker_xml.php";
+  require_once "bwin_xml.php";
+  require_once "olymp_xml.php";
+  require_once "marathon_xml.php";
 
 function xml2array($xml) {
   $result = array();
@@ -38,17 +41,15 @@ function getSports ($booker_sign) {
   return xml2array($xml);
 }
     
-function getTournirs($booker_sign, $sport_sign) {
-  $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><Root/>');
-  $tournirs_node = $xml->addChild('Tournirs');
+function getTournirs($booker_sign, $sport_id) {
   if ($booker_sign == 'bwin') {
-    require_once "bwin_xml.php";
     $booker = new bwin_booker();
   } elseif ($booker_sign == 'olymp') {
-    require_once "olymp_xml.php";
     $booker = new olymp_booker();
+  } elseif ($booker_sign == 'marathon') {
+    $booker = new marathon_booker();
   }
-  $booker->getTournirs($tournirs_node, $sport_sign);
+  $xml = $booker->getTournirs($sport_id);
   $out = xml2array($xml);
   return $out;
 }
@@ -57,11 +58,11 @@ function getEvents($booker_sign, $sport_sign, $tournir_id) {
   $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><Root/>');
   $events_node = $xml->addChild('Events');
   if ($booker_sign == 'bwin') {
-    require_once "bwin_xml.php";
     $booker = new bwin_booker();
   } elseif ($booker_sign == 'olymp') {
-    require_once "olymp_xml.php";
     $booker = new olymp_booker();
+  } elseif ($booker_sign == 'marathon') {
+    $booker = new marathon_booker();
   }
   $booker->getEvents($events_node , $sport_sign, $tournir_id);
   $out = xml2array($xml);

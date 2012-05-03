@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sports>
+  <Sport Id="10" Sign="tennis" Name="Теннис" Url="/en/tree-node.htm?nodeId=2398"/>
+  <Sport Id="20" Sign="soccer" Name="Футбол" Url="/en/tree-node.htm?nodeId=11"/>
+</Sports>

@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Root>
   <Sports>
-    <Sport Sign="tennis" Name="Теннис"/>
-    <Sport Sign="football" Name="Футбол"/>
+    <Sport Id="10" Sign="tennis" Name="Теннис" Url="/tennis?ShowDays=168">
+	  <Category Id="33" Title="2Way - Who will win?" Parse="1x2"/>
+      <Category Id="35" Title="Set related bets" Parse="Annotated"/>
+	  <Category Id="36" Title="Number of games" Parse="Annotated"/>
+	  <Category Id="524" Title="Tie breaks" Parse="Annotated"/>
+	</Sport>
+    <Sport Id="20" Sign="soccer" Name="Футбол" Url="/football?ShowDays=168">
+	  <Category Id="25" Title="3Way" ParseProc="1x2"/>
+	  <Category Id="190" Title="Double chance" Parse="Annodated"/>
+	  <Category Id="31" Title="Number of goals?" Parse="Annodated"/>
+	  <Category Id="266" Title="Corners" Parse="Annodated"/>
+	  <Category Id="271" Title="Yellow/Red cards" Parse="Annodated"/>
+	  <Category Id="1228" Title="Odd/Even" Parse="Annodated"/>
+	  <Category Id="28" Title="3Way Handicap" Parse="NoAnnodated"/>
+	  <Category Id="30" Title="Halftime result" Parse="NoAnnodated"/>
+	</Sport>
   </Sports>
 </Root>
