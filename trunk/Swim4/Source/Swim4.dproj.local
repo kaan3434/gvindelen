@@ -1,28 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.423,D:\Swim4\uFormMain.pas=D:\Мои документы\RAD Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.828,=D:\Swim4\Source\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.074,D:\Swim4\Source\Unit1.pas=D:\Swim4\Source\uDmSwim.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.915,=D:\Swim4\Source\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.384,D:\Swim4\Source\Unit1.pas=D:\Swim4\Source\uDmWebServiceThread.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.423,D:\Мои документы\RAD Studio\Projects\Unit1.pas=D:\Swim4\uFormMain.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.920,D:\Swim4\Source\Unit1.pas=D:\Swim4\Source\uWebServiceThread.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.556,=D:\Swim4\Source\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.447,D:\Swim4\Source\Unit1.pas=D:\Swim4\Source\uDmWebServiceThread.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.407,=D:\Мои документы\RAD Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.423,D:\Swim4\uFormMain.dfm=D:\Мои документы\RAD Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.074,D:\Swim4\Source\uDmSwim.dfm=D:\Swim4\Source\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.423,D:\Мои документы\RAD Studio\Projects\Unit1.dfm=D:\Swim4\uFormMain.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.805,D:\Swim4\Source\uDmWebServiceThread.pas=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.157,D:\Мои документы\RAD Studio\Projects\Project1.dproj=D:\Swim4\Swim4.dproj</Transaction>
     <Transaction>1899.12.30 00:00:00.000.022,D:\Swim4\Source\uSOAPswim4.pas=</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.157,D:\Swim4\Swim4.dproj=D:\Мои документы\RAD Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.314,D:\Swim4\Source\uSOAPswim4.pas=D:\Swim4\Source\swim4.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.048,=D:\Swim4\Source\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.384,D:\Swim4\Source\Unit1.dfm=D:\Swim4\Source\uDmWebServiceThread.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.447,D:\Swim4\Source\Unit1.dfm=D:\Swim4\Source\uDmWebServiceThread.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.231,D:\Swim4\Source\Scan.pas=D:\Swim4\Source\ScanWSDL.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.591,=D:\Swim4\Source\Scan.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.250,=D:\Swim4\Source\swim4.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.314,D:\Swim4\Source\swim4.pas=D:\Swim4\Source\uSOAPswim4.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.074,D:\Swim4\Source\Unit1.dfm=D:\Swim4\Source\uDmSwim.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.074,D:\Swim4\Source\uDmSwim.pas=D:\Swim4\Source\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.828,=D:\Swim4\Source\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.818,=D:\Swim4\Source\swim4.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.734,=D:\Swim4\Source\ABOUT.pas</Transaction>
-    <Transaction>2012.05.02 11:07:09.048,=D:\Swim4\Source\Unit1.pas</Transaction>
-    <Transaction>2012.05.02 11:31:52.920,D:\Swim4\Source\uWebServiceThread.pas=D:\Swim4\Source\Unit1.pas</Transaction>
-    <Transaction>2012.05.02 13:57:39.556,=D:\Swim4\Source\Unit1.pas</Transaction>
-    <Transaction>2012.05.02 13:58:03.447,D:\Swim4\Source\uDmWebServiceThread.pas=D:\Swim4\Source\Unit1.pas</Transaction>
-    <Transaction>2012.05.02 13:58:03.447,D:\Swim4\Source\uDmWebServiceThread.dfm=D:\Swim4\Source\Unit1.dfm</Transaction>
-    <Transaction>2012.05.02 13:59:07.915,=D:\Swim4\Source\Unit1.pas</Transaction>
-    <Transaction>2012.05.02 13:59:32.805,D:\Swim4\Source\uDmWebServiceThread.pas=</Transaction>
-    <Transaction>2012.05.02 13:59:38.384,D:\Swim4\Source\uDmWebServiceThread.dfm=D:\Swim4\Source\Unit1.dfm</Transaction>
-    <Transaction>2012.05.02 13:59:38.384,D:\Swim4\Source\uDmWebServiceThread.pas=D:\Swim4\Source\Unit1.pas</Transaction>
-    <Transaction>2012.05.02 14:27:20.591,=D:\Swim4\Source\Scan.pas</Transaction>
-    <Transaction>2012.05.02 14:28:20.231,D:\Swim4\Source\ScanWSDL.pas=D:\Swim4\Source\Scan.pas</Transaction>
+    <Transaction>2012.05.03 16:21:12.753,=D:\Swim4\Source\Scan.pas</Transaction>
+    <Transaction>2012.05.03 16:24:46.241,D:\Swim4\Source\Scan.pas=</Transaction>
+    <Transaction>2012.05.03 16:25:38.929,=D:\Swim4\Source\Scan.pas</Transaction>
+    <Transaction>2012.05.03 16:26:10.398,D:\Swim4\Source\ScanWSDL.pas=D:\Swim4\Source\Scan.pas</Transaction>
+    <Transaction>2012.05.03 16:26:20.710,D:\Swim4\Source\ScanWSDL.pas=</Transaction>
+    <Transaction>2012.05.03 16:28:21.383,=D:\Swim4\Source\Scan.pas</Transaction>
+    <Transaction>2012.05.03 16:28:28.477,D:\Swim4\Source\ScanWSDL.pas=D:\Swim4\Source\Scan.pas</Transaction>
+    <Transaction>2012.05.03 16:28:32.539,D:\Swim4\Source\ScanWSDL.pas=</Transaction>
   </Transactions>
 </BorlandProject>

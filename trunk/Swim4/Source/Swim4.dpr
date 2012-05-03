@@ -5,8 +5,7 @@ uses
   uFormMain in 'uFormMain.pas' {Form1},
   uDmSwim in 'uDmSwim.pas' {dmSwim: TDataModule},
   uWebServiceThread in 'uWebServiceThread.pas',
-  uDmWebServiceThread in 'uDmWebServiceThread.pas' {dmSwimThread: TDataModule},
-  ScanWSDL in 'ScanWSDL.pas';
+  uDmWebServiceThread in 'uDmWebServiceThread.pas' {dmSwimThread: TDataModule};
 
 {$R *.res}
 

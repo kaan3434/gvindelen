@@ -105,10 +105,10 @@
     </types>
     <message name="TournirsRequestMessage">
         <part name="BookerSignPart" type="xs:string" />
-        <part name="SportIdPart" type="xs:string" />
+        <part name="SportIdPart" type="xs:integer" />
     </message>
     <message name="EventsResponseMessage">
-        <part name="EventsResponsePart" type="tns:EventsResponseType" />
+        <part name="EventsResponsePart" type="tns:TEventsResponse" />
     </message>
     <message name="SportsRequestMessage">
         <part name="BookerSignPart" type="xs:string" />
@@ -126,12 +126,12 @@
         <part name="BookersResponse" type="tns:TBookersResponse" />
     </message>
     <message name="SportsResponseMessage">
-        <part name="SportsResponsePart" type="tns:SportsResponseType" />
+        <part name="SportsResponsePart" type="tns:TSportsResponse" />
     </message>
     <message name="TournirsResponseMessage">
-        <part name="TournirResponse" type="tns:TournirResponseType" />
+        <part name="TournirResponse" type="tns:TTournirsResponse" />
     </message>
-    <portType name="ScanPortType">
+    <portType name="TScanPort">
         <operation name="getBookers">
             <input message="tns:BookersRequestMessage" />
             <output message="tns:BookersResponseMessage" />
@@ -149,7 +149,7 @@
             <output message="tns:EventsResponseMessage" />
         </operation>
     </portType>
-    <binding name="ScanBinding" type="tns:ScanPortType">
+    <binding name="ScanBinding" type="tns:TScanPort">
         <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
         <operation name="getBookers">
             <soap:operation soapAction="" />

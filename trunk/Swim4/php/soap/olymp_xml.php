@@ -40,7 +40,7 @@ class olymp_booker extends booker_xml {
     $tournirs_node = $xml->addChild('Tournirs');
     
     // получаем перечень турниров
-    $file_name = $this->league_path.".league";
+    $file_name = $this->league_path."league";
     $url = $this->host.$this->sport_node['Url'];
     $html = download_or_load($this->debug, $file_name.".html", $url, "GET", "");
     $this->extract_league($tournirs_node, $html);
@@ -191,10 +191,11 @@ class olymp_booker extends booker_xml {
     $xml = parent::getEvents($sport_id, $tournir_id, $tournir_url);
     $tournir_node = $xml->addChild('Tournir');
     
-    $file_name = $league_path.$tournir_id;
+    $file_name = $this->league_path.$tournir_id;
     $url = $this->host."/engine.php?act=co&co=$tournir_id";
-    $html = download_or_load($this->debug, $file_name.".html", $url, "GET", $sport_node['Url']);
-    $this->extract_bets($tournir_node, $html, $sport_node['Sign'], $tournir_id);
+    $referer = $this->host.(string)$this->sport_node['Url'];
+    $html = download_or_load($this->debug, $file_name.".html", $url, "GET", $referer);
+    $this->extract_bets($tournir_node, $html, (string)$this->sport_node['Sign'], $tournir_id);
 
     if ($this->debug) file_put_contents($file_name.".xml", $xml->asXML());
     return $xml;

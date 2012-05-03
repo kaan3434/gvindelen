@@ -327,9 +327,37 @@ function download($Url, $Method="GET", $Referer="", $PostHash=null, $ResponseFil
   return $Html;
 }
 
+function make_path($pathname, $is_filename=false){
+    if($is_filename){
+        $pathname = substr($pathname, 0, strrpos($pathname, '/'));
+    }
+    // Check if directory already exists
+    if (is_dir($pathname) || empty($pathname)) {
+        return true;
+    }
+ 
+    // Ensure a file does not already exist with the same name
+    $pathname = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $pathname);
+    if (is_file($pathname)) {
+        trigger_error('mkdirr() File exists', E_USER_WARNING);
+        return false;
+    }
+ 
+    // Crawl up the directory tree
+    $next_pathname = substr($pathname, 0, strrpos($pathname, DIRECTORY_SEPARATOR));
+    if (make_path($next_pathname, $mode)) {
+        if (!file_exists($pathname)) {
+            return mkdir($pathname, $mode);
+        }
+    }
+    return false;
+}
+
+
 function download_or_load($debug, $file_name, $url, $method, $referer=null, $post_hash=null) {
   if (file_exists('proxy.txt')) $proxy = file_get_contents('proxy.txt');
 
+  make_path($file_name, true);
   if ($debug) {
     if (!file_exists($file_name)) {
       if ($proxy) {

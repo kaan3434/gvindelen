@@ -1,8 +1,8 @@
 <?php
   include "bwin_xml.php";
-  require_once"booker_xml.php";
+  require_once "olymp_xml.php";
   
-  $booker = new bwin_booker();
+  $booker = new olymp_booker();
   
   $sports = $booker->getSports();
   

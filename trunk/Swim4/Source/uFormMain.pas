@@ -122,10 +122,12 @@ var
   Bookers: TStringList;
   i: integer;
   BookerName: String;
+  Bookes: TNativeXml;
 begin
   Bookers:= TStringList.Create;
   try
     GvFile.ListFileName(Bookers, ExtractFilePath(ParamStr(0))+'Bookers\*.png', false);
+
     for i:= 0 to Bookers.Count - 1 do
     begin
       BookerName:= ExtractFileNameOnly(Bookers[i]);
