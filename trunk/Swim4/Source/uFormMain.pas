@@ -9,7 +9,8 @@ uses
   Vcl.ImgList, Vcl.ActnCtrls, Vcl.ToolWin, Vcl.ActnMenus,
   Vcl.RibbonActnMenus, Data.Bind.EngExt, Vcl.Bind.DBEngExt, Data.Bind.Components,
   Vcl.StdCtrls, Vcl.ExtCtrls, DBGridEhGrouping, Vcl.ComCtrls, GridsEh, DBGridEh,
-  Data.DB, Soap.InvokeRegistry, Soap.Rio, Soap.SOAPHTTPClient, ToolCtrlsEh;
+  Data.DB, Soap.InvokeRegistry, Soap.Rio, Soap.SOAPHTTPClient, ToolCtrlsEh,
+  Xml.VerySimple, Options, GvVars;
 
 type
   TForm1 = class(TForm)
@@ -33,6 +34,7 @@ type
     procedure actScanAllBookerExecute(Sender: TObject);
   private
     { Private declarations }
+    xmlBookers: TVerySimpleXml;
     procedure CreateButtons(aBookerSign: string; aImgPath: String);
     function AppendPngToImageList(aImageList: TImageList;
       aPngFileName: String): integer;
@@ -44,6 +46,7 @@ type
 
 var
   Form1: TForm1;
+  Path: TVarList;
 
 implementation
 
@@ -122,7 +125,7 @@ var
   Bookers: TStringList;
   i: integer;
   BookerName: String;
-  Bookes: TNativeXml;
+  xmlBookers: TVerySimpleXml;
 begin
   Bookers:= TStringList.Create;
   try
@@ -138,5 +141,6 @@ begin
   end;
   ShowMessage(IntToStr(imgListRibbon.count));
 end;
+
 
 end.
