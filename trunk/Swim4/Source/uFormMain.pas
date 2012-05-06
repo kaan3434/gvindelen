@@ -10,7 +10,7 @@ uses
   Vcl.RibbonActnMenus, Data.Bind.EngExt, Vcl.Bind.DBEngExt, Data.Bind.Components,
   Vcl.StdCtrls, Vcl.ExtCtrls, DBGridEhGrouping, Vcl.ComCtrls, GridsEh, DBGridEh,
   Data.DB, Soap.InvokeRegistry, Soap.Rio, Soap.SOAPHTTPClient, ToolCtrlsEh,
-  Xml.VerySimple, Options, GvVars;
+  GvVars, GvXml, JvComponentBase, JvMTComponents;
 
 type
   TForm1 = class(TForm)
@@ -29,19 +29,27 @@ type
     StatusBar1: TStatusBar;
     ProgressBar1: TProgressBar;
     dsSwims: TDataSource;
+    actDummy: TAction;
+    actNeedScan: TAction;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure actScanAllBookerExecute(Sender: TObject);
+    procedure actDummyExecute(Sender: TObject);
+    procedure actNeedScanExecute(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
     { Private declarations }
-    xmlBookers: TVerySimpleXml;
-    procedure CreateButtons(aBookerSign: string; aImgPath: String);
+    FThreadList: TList;
+    procedure CreateButtons(aBooker: TGvXmlNode);
     function AppendPngToImageList(aImageList: TImageList;
       aPngFileName: String): integer;
-    procedure AppendActionToGroup(aGroup: TRibbonGroup; aImageIndex: Integer;
-      aCaption: String);
+    procedure AppendActionToGroup(aGroup: TRibbonGroup;
+      ndBookersBooker: TGvXmlNode; aChecked: Boolean; aEvent: TNotifyEvent);
+    procedure OnThreadTerminate(Sender: TObject);
   public
     { Public declarations }
+    procedure StartThreads;
   end;
 
 var
@@ -52,7 +60,7 @@ implementation
 
 {$R *.dfm}
 uses
-  GvFile, PngImage, uDmSwim, uWebServiceThread;
+  GvFile, PngImage, uDmFormMain, uWebServiceThread, uSettings;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
@@ -83,14 +91,32 @@ begin
   end;
 end;
 
-procedure TForm1.actScanAllBookerExecute(Sender: TObject);
-var
-  ScanThread: TWebServiceRequester;
+procedure TForm1.actDummyExecute(Sender: TObject);
 begin
-  ScanThread:= TWebServiceRequester.Create;
+  //Dummy
 end;
 
-procedure TForm1.AppendActionToGroup(aGroup: TRibbonGroup; aImageIndex: Integer; aCaption: String);
+procedure TForm1.actNeedScanExecute(Sender: TObject);
+begin
+  if (Sender is TAction) then
+    Settings.Scaner[TAction(Sender).Tag]:= TAction(Sender).Checked;
+end;
+
+procedure TForm1.actScanAllBookerExecute(Sender: TObject);
+var
+  Booker: TGvXmlNode;
+  BookerId: Integer;
+begin
+  for Booker in Settings.Bookers.ChildNodes do
+  begin
+    if Settings.Scaner[Booker['Id']] then
+      dmFormMain.SportsRequestAdd(Booker);
+  end;
+  StartThreads;
+end;
+
+procedure TForm1.AppendActionToGroup(aGroup: TRibbonGroup;
+  ndBookersBooker: TGvXmlNode; aChecked: Boolean; aEvent: TNotifyEvent);
 var
   actClientItem: TActionClientItem;
   act: TAction;
@@ -100,24 +126,33 @@ begin
   begin
     act:= TAction.Create(Self);
     Action := act;
+    act.Tag:= ndBookersBooker['Id'];
     act.AutoCheck:= true;
-    act.OnExecute:= actScanAllBooker.OnExecute;
-    act.Caption:= aCaption;
+    act.OnExecute:= aEvent;
+    act.Caption:= ndBookersBooker['Title'];;
     act.Visible:= true;
-    act.ImageIndex:= aImageIndex;
+    act.ImageIndex:= act.Tag;
+    act.Checked:= aChecked;
     CommandStyle:= csButton;
     (actClientItem.CommandProperties as TButtonProperties).ButtonSize:= bsLarge;
   end;
 end;
 
-procedure TForm1.CreateButtons(aBookerSign: string; aImgPath: string);
+procedure TForm1.CreateButtons(aBooker: TGvXmlNode);
 var
   ImgIndex: integer;
+  ImgName: string;
 begin
-  ImgIndex:= AppendPngToImageList(imgListRibbon, aImgPath);
-  AppendPngToImageList(imgListRibbonLarge, aImgPath);
-  AppendActionToGroup(tbScannerBookers, ImgIndex, aBookerSign);
-  AppendActionTogroup(tbViewerBookers, ImgIndex, aBookerSign);
+  ImgName:= settings.Path['Images']+aBooker['Sign']+'.png';
+  ImgIndex:= AppendPngToImageList(imgListRibbon, ImgName);
+  AppendPngToImageList(imgListRibbonLarge, ImgName);
+  AppendActionToGroup(tbScannerBookers, aBooker, settings.Scaner[aBooker['Id']], actNeedScan.OnExecute);
+  AppendActionTogroup(tbViewerBookers, aBooker, false, actDummy.OnExecute);
+end;
+
+procedure TForm1.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  CanClose:= FThreadList.Count = 0;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -125,22 +160,39 @@ var
   Bookers: TStringList;
   i: integer;
   BookerName: String;
-  xmlBookers: TVerySimpleXml;
+  Booker: TGvXmlNode;
 begin
-  Bookers:= TStringList.Create;
-  try
-    GvFile.ListFileName(Bookers, ExtractFilePath(ParamStr(0))+'Bookers\*.png', false);
-
-    for i:= 0 to Bookers.Count - 1 do
-    begin
-      BookerName:= ExtractFileNameOnly(Bookers[i]);
-      CreateButtons(BookerName, Bookers[i]);
-    end;
-  finally
-    Bookers.Free;
-  end;
-  ShowMessage(IntToStr(imgListRibbon.count));
+  FThreadList:= TList.Create;
+  for Booker in Settings.Bookers.ChildNodes do
+    CreateButtons(Booker);
+  StartThreads;
 end;
 
+procedure TForm1.FormDestroy(Sender: TObject);
+var
+  i: integer;
+begin
+  for i := FThreadList.Count-1 downto 0 do
+    TThread(FThreadList.Items[i]).Terminate;
+end;
+
+procedure TForm1.OnThreadTerminate(Sender: TObject);
+begin
+  FThreadList.Delete(FThreadList.IndexOf(Sender));
+end;
+
+procedure TForm1.StartThreads;
+var
+  i: integer;
+  ScanThread: TWebServiceRequester;
+begin
+  for i := 1 to 1 do
+  begin
+    ScanThread:= TWebServiceRequester.Create(true);
+    FThreadList.Add(ScanThread);
+    ScanThread.OnTerminate:= OnThreadTerminate;
+    ScanThread.Resume;
+  end;
+end;
 
 end.

@@ -12,6 +12,7 @@ type
     spRequestBusyNext: TpFIBStoredProc;
     spRequestAdd: TpFIBStoredProc;
     spRequestCommit: TpFIBStoredProc;
+    spRequestRollback: TpFIBStoredProc;
   private
     { Private declarations }
   public

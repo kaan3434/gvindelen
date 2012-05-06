@@ -23,6 +23,8 @@ type
     function BusyNextRequest: boolean;
     procedure CommitRequest;
     procedure RollbackRequest;
+    procedure RequestCommit;
+    procedure RequestRollback;
   protected
     procedure MyInit;
     procedure MyDestroy;
@@ -33,6 +35,8 @@ type
 
 implementation
 
+uses
+  ActiveX;
 {
   Important: Methods and properties of objects in visual components can only be
   used in a method called using Synchronize, for example,
@@ -82,6 +86,23 @@ begin
   end;
 end;
 
+procedure TWebServiceRequester.RequestCommit;
+begin
+  with dm.spRequestCommit do
+  begin
+    Params.ParamByName('I_REQUEST_ID').AsInteger:= FRequestId;
+    ExecProc;
+  end;
+end;
+
+procedure TWebServiceRequester.RequestRollback;
+begin
+  with dm.spRequestRollback do
+  begin
+    Params.ParamByName('I_REQUEST_ID').AsInteger:= FRequestId;
+    ExecProc;
+  end;
+end;
 
 procedure TWebServiceRequester.MyInit;
 begin
@@ -91,11 +112,12 @@ begin
     'SELECT gen_id(gen_thread_id, 1) FROM RDB$DATABASE', 0);
   FParts:= TVarList.Create;
   FWSScan:= GetTScanPort;
-  Resume;
+  CoInitialize(nil);
 end;
 
 procedure TWebServiceRequester.MyDestroy;
 begin
+  CoUninitialize;
   FParts.Free;
   dm.Free;
 end;
@@ -114,7 +136,7 @@ begin
   MyInit;
   try
     while BusyNextRequest do
-    begin
+    try
       if FActionSign = 'getEvents' then
         PutEvents
       else
@@ -126,6 +148,9 @@ begin
       else
       if FActionSign = 'getBookers' then
         PutBookers;
+      RequestCommit;
+    except
+      RequestRollback;
     end;
   finally
     MyDestroy;
@@ -179,7 +204,6 @@ var
 begin
   Tournirs:= FWSScan.getTournirs(FParts['Booker'],
                                  FParts.AsInteger['SportId'])
-
 end;
 
 procedure TWebServiceRequester.RollbackRequest;

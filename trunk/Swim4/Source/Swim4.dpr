@@ -6,8 +6,9 @@ uses
   uDmSwim in 'uDmSwim.pas' {dmSwim: TDataModule},
   uWebServiceThread in 'uWebServiceThread.pas',
   uDmWebServiceThread in 'uDmWebServiceThread.pas' {dmSwimThread: TDataModule},
-  Xml.VerySimple in 'D:\4Delphi\VerySimpleXml\Source\Xml.VerySimple.pas',
-  uSettings in 'uSettings.pas' {Form2};
+  uSettings in 'uSettings.pas' {Form2},
+  GvXml in 'D:\4Delphi\Gvindln\Source\GvXml.pas',
+  uDmFormMain in 'uDmFormMain.pas' {dmFormMain: TDataModule};
 
 {$R *.res}
 
@@ -15,7 +16,6 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TForm1, Form1);
-  Application.CreateForm(TdmSwim, dmSwim);
-  Application.CreateForm(TForm2, Form2);
+  Application.CreateForm(TdmFormMain, dmFormMain);
   Application.Run;
 end.

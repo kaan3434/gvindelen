@@ -4,18 +4,17 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Options, Xml.VerySimple;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, GvXml;
 
 type
   TForm2 = class(TForm)
-    Options: TOptions;
   private
     { Private declarations }
   public
     { Public declarations }
   end;
 
-  TApplicationSettings = class(TVerySimpleXml)
+  TApplicationSettings = class(TGvXml)
   private
     FChanged: Boolean;
     FFileName: String;
@@ -34,12 +33,20 @@ type
   end;
 
   TScanSettings = class(TApplicationSettings)
-//    property
+  private
+    FBookers: TGvXmlNode;
+    FScaner: TGvXmlNode;
+    function GetNeedScan(BookerId: Integer): Boolean;
+    procedure SetNeedScan(BookerId: Integer; const Value: Boolean);
+  public
+    constructor Create; override;
+    property Bookers: TGvXmlNode read FBookers;
+    property Scaner[BookerId: Integer]: Boolean read GetNeedScan write SetNeedScan;
   end;
 
 var
   Form2: TForm2;
-  Settings: TApplicationSettings;
+  Settings: TScanSettings;
 
 implementation
 
@@ -69,10 +76,14 @@ begin
 end;
 
 function TApplicationSettings.GetPath(Name: string): string;
+var
+  Node: TGvXmlNode;
 begin
-  try
-    result:= Root.Find('Path').Find(Name).Text;
-  except
+  Node:= Root.FindOrCreate('Path').Find(Name);
+  if Assigned(Node) then
+    result:= Node.Text
+  else
+  begin
     Result:= SelfPath+Name+'\';
     SetPath(Name, Result);
   end;
@@ -91,7 +102,7 @@ end;
 
 procedure TApplicationSettings.SetPath(Name: string; const Value: string);
 var
-  Node: TXmlNode;
+  Node: TGvXmlNode;
 begin
   Node:=  Root.FindOrCreate('Path').FindOrCreate(Name);
   if Node.Text <> Value then
@@ -101,8 +112,44 @@ begin
   end;
 end;
 
+{ TScanSettings }
+
+constructor TScanSettings.Create;
+var
+  xml: TGvXml;
+  st: String;
+begin
+  inherited;
+  xml:= TGvXml.Create(Self.Path['Offline']+'Bookers.xml');
+  try
+    FBookers:= Root.FindOrCreate('Bookers');
+    FBookers.LoadFromString(xml.Root.Find('Bookers').WriteToString);
+  finally
+    xml.Free;
+  end;
+end;
+
+function TScanSettings.GetNeedScan(BookerId: Integer): Boolean;
+var
+  Node: TGvXmlNode;
+begin
+  Node:= Root.FindOrCreate('Scaner').FindOrCreate('Booker', 'Id', BookerId);
+  if Not Node.HasAttribute('NeedScan') then
+  begin
+    FChanged:= true;
+    Node['NeedScan']:= false;
+  end;
+  Result:= Node['NeedScan']
+end;
+
+procedure TScanSettings.SetNeedScan(BookerId: Integer; const Value: Boolean);
+begin
+  Root.FindOrCreate('Scaner').FindOrCreate('Booker', 'Id', BookerId)['NeedScan']:= Value;
+  FChanged:= true;
+end;
+
 initialization
-  Settings:= TApplicationSettings.Create;
+  Settings:= TScanSettings.Create;
 finalization
   if Settings.Changed then
     Settings.SaveToFile;

@@ -13,21 +13,4 @@ object Form2: TForm2
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
-  object Options: TOptions
-    FileName = '%appdir%\Options.ini'
-    Left = 224
-    Top = 120
-    Content = (
-      'TOptionList v.1.8.0'
-      'Self'
-      'Path'
-      ''
-      ''
-      'string'
-      'Offline'
-      'Path'
-      ''
-      ''
-      'string')
-  end
 end

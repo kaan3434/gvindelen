@@ -155,7 +155,7 @@ class marathon_booker extends booker_xml {
     foreach ($events as $event) {
       // получаем 
       $event_info= take_be($event, '<table', '</table>');
-      preg_match_all('/<div class="today-member-name">(.*)?<\/div>/imsU', $event_info, $matches);
+      preg_match_all('/<div class=".*?member-name">(.*)?<\/div>/imsU', $event_info, $matches);
       $gamer1_name= $matches[1][0];
       $gamer2_name= $matches[1][1];
       $datetime_str= delete_all(copy_be($event_info, '<td', '</td>', '"date"'), '<', '>');
