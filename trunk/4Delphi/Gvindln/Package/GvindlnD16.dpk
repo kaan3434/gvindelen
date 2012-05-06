@@ -1,7 +1,6 @@
 package GvindlnD16;
 
 {$R *.res}
-{$R *.otares}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
 {$ASSERTIONS ON}
@@ -44,6 +43,7 @@ contains
   gsFileVersionInfo in '..\Source\gsFileVersionInfo.pas',
   GvChkCombo in '..\Source\GvChkCombo.pas',
   GvCloner in '..\Source\GvCloner.pas',
-  GvColor in '..\Source\GvColor.pas';
+  GvColor in '..\Source\GvColor.pas',
+  GvXml in '..\Source\GvXml.pas';
 
 end.
