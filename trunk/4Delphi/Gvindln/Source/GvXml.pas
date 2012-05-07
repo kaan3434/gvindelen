@@ -23,6 +23,11 @@ type
   public
     Name: String; // Attribute name
     procedure SetValue(Value: Variant);
+    function AsIntegerDef(DefaultValue: Integer): Integer;
+    function AsStringDef(DefaultValue: String): String;
+    function AsBooleanDef(DefaultValue: Boolean): Boolean;
+    function AsDateTimeDef(DefaultValue: TDateTime): TDateTime;
+    function AsFloatDef(DefaultValue: Double): Double;
     property AsString: String read FValue write FValue;
     property AsInteger: Integer read GetAsInteger write SetAsInteger;
     property AsBoolean: Boolean read GetAsBoolean write SetAsBoolean;
@@ -41,6 +46,8 @@ type
     FAttributes: TGvXmlAttributeList;
     function GetAttrValue(const AttrName: String): variant;
     procedure SetAttrValue(const AttrName: String; Value: variant);
+    function GetAttribute(const aAttrName: String): TGvXmlAttribute;
+    function AttributeAdd(const aAttrName: String): TGvXmlAttribute;
   protected
     procedure ReadFromString(aLine: string; aLen: Integer; var aIdx: integer);
   public
@@ -72,8 +79,11 @@ type
     procedure ReadAttributes(Tag: string; var IsEmpty: Boolean);
     procedure LoadFromString(aStr: string);
     function WriteToString(aReadable: Boolean = false; aLevel: integer = 0): string;
-    property Attr[const aAttrName: String]: Variant read GetAttrValue
+    procedure ImportAttrs(aStringList: TStringList);
+    procedure ExportAttrs(aStringList: TStringList);
+    property AttributeValue[const aAttrName: String]: Variant read GetAttrValue
       write SetAttrValue; default;
+    property Attr[const aAttrName: string]: TGvXmlAttribute read GetAttribute;
   end;
 
   TGvXmlNodeList = class(TObjectList<TGvXmlNode>);
@@ -281,6 +291,14 @@ begin
   inherited;
 end;
 
+procedure TGvXmlNode.ExportAttrs(aStringList: TStringList);
+var
+  Att: TGvXmlAttribute;
+begin
+  for Att in FAttributes do
+    aStringList.Values[Att.Name]:= Att.FValue;
+end;
+
 function TGvXmlNode.Find(aNodeName: String): TGvXmlNode;
 var
   Node: TGvXmlNode;
@@ -354,6 +372,13 @@ begin
     Result:= AddChild(aNodeName);
 end;
 
+function TGvXmlNode.GetAttribute(const aAttrName: string): TGvXmlAttribute;
+begin
+  Result:= FAttributes.Find(aAttrName);
+  if Not assigned(Result) then
+    Result:= AttributeAdd(aAttrName);
+end;
+
 function TGvXmlNode.GetAttrValue(const AttrName: String): Variant;
 var
   Attribute: TGvXmlAttribute;
@@ -368,6 +393,14 @@ end;
 function TGvXmlNode.HasAttribute(const aNodeName: String): Boolean;
 begin
   Result := assigned(FAttributes.Find(aNodeName));
+end;
+
+procedure TGvXmlNode.ImportAttrs(aStringList: TStringList);
+var
+  i: Integer;
+begin
+  for i := 0 to aStringList.Count-1 do
+    AttributeValue[aStringList.Names[i]]:= aStringList.ValueFromIndex[i];
 end;
 
 procedure TGvXmlNode.LoadFromString(aStr: string);
@@ -398,8 +431,7 @@ begin
     end;
     AttrName:= Copy_5(Tag, '= ', Len, idx);
     inc(idx);
-    AttrValue:= Copy_5(Tag, '"', Len, idx);
-    Attr[AttrName]:=AttrValue;
+    Attr[AttrName].AsString:= Copy_5(Tag, '"', Len, idx);
     SkipSpaces(Tag, Len, idx);
   end;
 end;
@@ -450,17 +482,20 @@ begin
   end;
 end;
 
+function TGvXmlNode.AttributeAdd(const aAttrName: String): TGvXmlAttribute;
+begin
+  Result:= TGvXmlAttribute.Create;
+  Result.Name:= aAttrName;
+  FAttributes.Add(Result);
+end;
+
 function TGvXmlNode.Attribute(const aAttrName: String; const aAttrValue: Variant): TGvXmlNode;
 var
   Att: TGvXmlAttribute;
 begin
   Att:= FAttributes.Find(aAttrName); // Search for given name
   if not assigned(Att) then // If attribute is not found, create one
-  begin
-    Att := TGvXmlAttribute.Create;
-    FAttributes.Add(Att);
-  end;
-  Att.Name := aAttrName; // this allows "name-style" rewriting
+    Att:= AttributeAdd(aAttrName);
   Att.SetValue(aAttrValue);
   Result := Self;
 end;
@@ -536,6 +571,61 @@ begin
 end;
 
 { TGvXmlAttribute }
+
+function TGvXmlAttribute.AsBooleanDef(DefaultValue: Boolean): Boolean;
+begin
+  if FValue = '' then
+  begin
+    AsBoolean:= DefaultValue;
+    Result:= DefaultValue;
+  end
+  else
+    Result:= GetAsBoolean;
+end;
+
+function TGvXmlAttribute.AsDateTimeDef(DefaultValue: TDateTime): TDateTime;
+begin
+  if FValue = '' then
+  begin
+    AsDateTime:= DefaultValue;
+    Result:= DefaultValue;
+  end
+  else
+    Result:= GetAsDateTime;
+end;
+
+function TGvXmlAttribute.AsFloatDef(DefaultValue: Double): Double;
+begin
+  if FValue = '' then
+  begin
+    AsFloat:= DefaultValue;
+    Result:= DefaultValue;
+  end
+  else
+    Result:= GetAsFloat;
+end;
+
+function TGvXmlAttribute.AsIntegerDef(DefaultValue: Integer): Integer;
+begin
+  if FValue = '' then
+  begin
+    AsInteger:= DefaultValue;
+    Result:= DefaultValue;
+  end
+  else
+    Result:= GetAsInteger;
+end;
+
+function TGvXmlAttribute.AsStringDef(DefaultValue: String): String;
+begin
+  if FValue = '' then
+  begin
+    FValue:= DefaultValue;
+    Result:= DefaultValue;
+  end
+  else
+    Result:= FValue;
+end;
 
 function TGvXmlAttribute.GetAsBoolean: Boolean;
 begin
