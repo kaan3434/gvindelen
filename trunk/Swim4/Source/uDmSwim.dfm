@@ -4,7 +4,7 @@ object dmSwim: TdmSwim
   Height = 494
   Width = 765
   object dbSwim: TpFIBDatabase
-    DBName = 'D:\swim2\Data\swim.fdb'
+    DBName = 'D:\Swim4\Data\SWIM.FDB'
     DBParams.Strings = (
       'user_name=SYSDBA'
       'lc_ctype=UTF8'
@@ -43,5 +43,16 @@ object dmSwim: TdmSwim
     TPBMode = tpbDefault
     Left = 48
     Top = 168
+  end
+  object spRequestAdd: TpFIBStoredProc
+    Transaction = trnWrite
+    Database = dbSwim
+    SQL.Strings = (
+      
+        'EXECUTE PROCEDURE REQUEST_ADD (?I_ACTION_SIGN, ?I_PARTS, ?I_SCAN' +
+        '_ID)')
+    StoredProcName = 'REQUEST_ADD'
+    Left = 144
+    Top = 40
   end
 end

@@ -79,6 +79,7 @@ function getEvents($booker_sign, $sport_sign, $tournir_id) {
 
 
   ini_set("soap.wsdl_cache_enabled", "0");
+  header("Content-Type: text/xml");
   $server = new SoapServer("Scan.wsdl");
   $server->addFunction("getBookers");
   $server->addFunction("getSports");

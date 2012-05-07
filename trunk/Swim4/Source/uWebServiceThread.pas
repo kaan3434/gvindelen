@@ -3,7 +3,7 @@ unit uWebServiceThread;
 interface
 
 uses
-  System.Classes, Variants, uDmWebServiceThread, ScanWSDL, GvVars;
+  System.Classes, Variants, uDmWebServiceThread, ScanWSDL;
 
 type
   TWebServiceRequester = class(TThread)
@@ -14,17 +14,13 @@ type
     FRequestId: integer;
     FScanId: integer;
     FActionSign: string;
-    FParts: TVarList;
+    FParts: TStringList;
     FWSScan: TScanPort;
     procedure PutBookers;
     procedure PutSports;
     procedure PutTournirs;
     procedure PutEvents;
     function BusyNextRequest: boolean;
-    procedure CommitRequest;
-    procedure RollbackRequest;
-    procedure RequestCommit;
-    procedure RequestRollback;
   protected
     procedure MyInit;
     procedure MyDestroy;
@@ -36,7 +32,7 @@ type
 implementation
 
 uses
-  ActiveX;
+  ActiveX, GvXml;
 {
   Important: Methods and properties of objects in visual components can only be
   used in a method called using Synchronize, for example,
@@ -82,25 +78,8 @@ begin
       FRequestId:= ParamValue('O_REQUEST_ID');
       FActionSign:= ParamValue('O_ACTION_SIGN');
       FParts.Text:= ParamValue('O_PARTS');
+      FScanId:= ParamValue('O_SCAN_ID');
     end;
-  end;
-end;
-
-procedure TWebServiceRequester.RequestCommit;
-begin
-  with dm.spRequestCommit do
-  begin
-    Params.ParamByName('I_REQUEST_ID').AsInteger:= FRequestId;
-    ExecProc;
-  end;
-end;
-
-procedure TWebServiceRequester.RequestRollback;
-begin
-  with dm.spRequestRollback do
-  begin
-    Params.ParamByName('I_REQUEST_ID').AsInteger:= FRequestId;
-    ExecProc;
   end;
 end;
 
@@ -110,7 +89,7 @@ begin
   dm:= TdmSwimThread.Create(nil);
   FThreadId:= dm.dbSwim.QueryValue(
     'SELECT gen_id(gen_thread_id, 1) FROM RDB$DATABASE', 0);
-  FParts:= TVarList.Create;
+  FParts:= TStringList.Create;
   FWSScan:= GetTScanPort;
   CoInitialize(nil);
 end;
@@ -122,36 +101,30 @@ begin
   dm.Free;
 end;
 
-procedure TWebServiceRequester.CommitRequest;
-begin
-  with dm.spRequestCommit do
-  begin
-    Params.ParamByName('I_REQUEST_ID').AsInteger:= RequestId;
-    ExecProc;
-  end;
-end;
-
 procedure TWebServiceRequester.Execute;
 begin
   MyInit;
   try
-    while BusyNextRequest do
-    try
-      if FActionSign = 'getEvents' then
-        PutEvents
-      else
-      if FActionSign = 'getTournirs' then
-        PutTournirs
-      else
-      if FActionSign = 'getSports' then
-        PutSports
-      else
-      if FActionSign = 'getBookers' then
-        PutBookers;
-      RequestCommit;
-    except
-      RequestRollback;
-    end;
+    repeat
+      while BusyNextRequest do
+      try
+        if FActionSign = 'getEvents' then
+          PutEvents
+        else
+        if FActionSign = 'getTournirs' then
+          PutTournirs
+        else
+        if FActionSign = 'getSports' then
+          PutSports
+        else
+        if FActionSign = 'getBookers' then
+          PutBookers;
+        dm.RequestCommit(FRequestId);
+      except
+        dm.RequestRollback(FRequestId);
+      end;
+      Suspend;
+    until Terminated;
   finally
     MyDestroy;
   end;
@@ -168,7 +141,7 @@ begin
   try
     for i:= 0 to High(Bookers) do
     begin
-      Parts.Values['Booker']:= Bookers[i].Sign;
+      Parts.Values['BookerSign']:= Bookers[i].Sign;
       with dm.spRequestAdd do
       begin
         Params.ParamByName('ActionSign').AsString:= 'getSports';
@@ -185,30 +158,89 @@ procedure TWebServiceRequester.PutEvents;
 var
   Events: TEventsResponse;
 begin
-  Events:= FWSScan.getEvents(FParts['Booker'],
-                             FParts.AsInteger['SportId'],
-                             FParts['TournirId'],
-                             FParts['TournirUrl']);
+//  Events:= FWSScan.getEvents(FParts['BookerSign'],
+//                             FParts.AsInteger['SportId'],
+//                             FParts['TournirId'],
+//                             FParts['TournirUrl']);
 end;
 
 procedure TWebServiceRequester.PutSports;
 var
-  Sports: TSportsResponse;
+  Sports: TSports;
+  Sport: TSport;
+  Node: TGvXmlNode;
+  Parts: TStringList;
 begin
-  Sports:= FWSScan.getSports(FParts.Values['Booker']);
+  Node:= TGvXmlNode.Create;
+  try
+    Node.ImportAttrs(FParts);
+    Sports:= FWSScan.getSports(Node.Attr['Booker_Sign'].AsString).Sports;
+    Parts:= TStringList.Create;
+    try
+      dm.trnWrite.StartTransaction;
+      try
+        for Sport in Sports do
+        begin
+          Parts.Clear;
+          Node.Clear;
+          Node.ImportAttrs(FParts);
+          Node.Attr['Sport_Id'].AsInteger:= Sport.Id;
+          Node.Attr['Sport_Sign'].AsString:= Sport.Sign;
+          Node.Attr['Sport_Title'].AsString:= Sport.Title;
+          dm.SportDetect(Node);
+          Node.ExportAttrs(Parts);
+        end;
+        dm.RequestAdd(FScanId, 'getTournirs', Parts.Text);
+        dm.trnWrite.Commit;
+      except
+        dm.trnWrite.Rollback;
+      end;
+    finally
+      Parts.Free;
+    end;
+  finally
+    Node.Free;
+  end;
 end;
 
 procedure TWebServiceRequester.PutTournirs;
 var
-  Tournirs: TTournirsResponse;
+  Tournirs: TTournirs;
+  Tournir: TTournir;
+  Node: TGvXmlNode;
+  Parts: TStringList;
 begin
-  Tournirs:= FWSScan.getTournirs(FParts['Booker'],
-                                 FParts.AsInteger['SportId'])
-end;
-
-procedure TWebServiceRequester.RollbackRequest;
-begin
-
+  Node:= TGvXmlNode.Create;
+  try
+    Node.ImportAttrs(FParts);
+    Tournirs:= FWSScan.getTournirs(Node.Attr['Booker_Sign'].AsString,
+                                   Node.Attr['Sport_Id'].AsInteger).Tournirs;
+    Parts:= TStringList.Create;
+    try
+      dm.trnWrite.StartTransaction;
+      try
+        for Tournir in Tournirs do
+        begin
+          Parts.Clear;
+          Node.Clear;
+          Node.ImportAttrs(FParts);
+          Node.Attr['Tournir_Id'].AsString:= Tournir.Id;
+          Node.Attr['Tournir_Region'].AsString:= Tournir.Region;
+          Node.Attr['Tournir_Title'].AsString:= Tournir.Title;
+          dm.TournirDetect(Node);
+          Node.ExportAttrs(Parts);
+        end;
+        dm.RequestAdd(FScanId, 'getTournirs', Parts.Text);
+        dm.trnWrite.Commit;
+      except
+        dm.trnWrite.Rollback;
+      end;
+    finally
+      Parts.Free;
+    end;
+  finally
+    Node.Free;
+  end;
 end;
 
 end.

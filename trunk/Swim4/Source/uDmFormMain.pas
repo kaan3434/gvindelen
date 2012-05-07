@@ -3,56 +3,65 @@ unit uDmFormMain;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uDmSwim, FIBDatabase, pFIBDatabase,
   FIBQuery, pFIBQuery, pFIBStoredProc, GvXml;
 
 type
   TdmFormMain = class(TdmSwim)
-    spRequestAdd: TpFIBStoredProc;
+    spTemp: TpFIBStoredProc;
   private
     { Private declarations }
   public
     { Public declarations }
     procedure SportsRequestAdd(aBooker: TGvXmlNode);
+    procedure RequestClean;
   end;
-
-var
-  dmFormMain: TdmFormMain;
 
 implementation
 
 {$R *.dfm}
 
+uses
+  GvVars;
+
 { TdmFormMain }
+
+procedure TdmFormMain.RequestClean;
+begin
+  spTemp.ExecProcedure('REQUEST_CLEAN');
+end;
 
 procedure TdmFormMain.SportsRequestAdd(aBooker: TGvXmlNode);
 var
-  Scan_Id: Integer;
-  Parts: TStringList;
+  ScanId: Integer;
+  Parts: TVarList;
+  Node: TGvXmlNode;
 begin
-  trnWrite.StartTransaction;
+  Node:= TGvXmlNode.Create;
   try
-    // получаем очередной Scan_id
-    Scan_Id:= dbSwim.QueryValue(
-        'select o_scan_id from scan_new(:i_booker_id)',
+    trnWrite.StartTransaction;
+    try
+      // получаем очередной Scan_id
+      ScanId := dbSwim.QueryValue('select o_scan_id from scan_new(:i_booker_id)',
         0, [aBooker['Id']], trnWrite);
-    with spRequestAdd do
-    begin
-      Params.ParamByName('I_SCAN_ID').AsInteger:= Scan_Id;
-      Params.ParamByName('I_ACTION_SIGN').AsString:= 'getSports';
-      Parts:= TStringList.Create;
+      Node['Booker_Sign']:= aBooker['Sign'];
+      Node['Booker_Id']:= aBooker['Id'];
+      Node['Booker_Title']:= aBooker['Title'];
+      Parts:= TVarList.Create;
       try
-        Parts.Values['BookerSign']:= aBooker['Sign'];
-        Params.ParamByName('I_PARTS').AsString:= Parts.Text;
+        Node.ExportAttrs(Parts);
+        RequestAdd(ScanId, 'getSports', Parts.Text);
       finally
         Parts.Free;
       end;
-      ExecProc;
+      trnWrite.Commit;
+    except
+      trnWrite.Rollback;
     end;
-    trnWrite.Commit;
-  except
-    trnWrite.Rollback;
+  finally
+    Node.Free;
   end;
 end;
 

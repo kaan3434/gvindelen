@@ -35,13 +35,14 @@ type
   TScanSettings = class(TApplicationSettings)
   private
     FBookers: TGvXmlNode;
-    FScaner: TGvXmlNode;
+    FScaners: TGvXmlNode;
     function GetNeedScan(BookerId: Integer): Boolean;
     procedure SetNeedScan(BookerId: Integer; const Value: Boolean);
   public
     constructor Create; override;
     property Bookers: TGvXmlNode read FBookers;
-    property Scaner[BookerId: Integer]: Boolean read GetNeedScan write SetNeedScan;
+    property Scaners: TGvXmlNode read FScaners;
+    property ScanerOn[BookerId: Integer]: Boolean read GetNeedScan write SetNeedScan;
   end;
 
 var
@@ -124,6 +125,7 @@ begin
   try
     FBookers:= Root.FindOrCreate('Bookers');
     FBookers.LoadFromString(xml.Root.Find('Bookers').WriteToString);
+    FScaners:= Root.FindOrCreate('Scaners');
   finally
     xml.Free;
   end;
@@ -133,7 +135,7 @@ function TScanSettings.GetNeedScan(BookerId: Integer): Boolean;
 var
   Node: TGvXmlNode;
 begin
-  Node:= Root.FindOrCreate('Scaner').FindOrCreate('Booker', 'Id', BookerId);
+  Node:= Root.FindOrCreate('Scaners').FindOrCreate('Scaner', 'BookerId', BookerId);
   if Not Node.HasAttribute('NeedScan') then
   begin
     FChanged:= true;
@@ -144,7 +146,7 @@ end;
 
 procedure TScanSettings.SetNeedScan(BookerId: Integer; const Value: Boolean);
 begin
-  Root.FindOrCreate('Scaner').FindOrCreate('Booker', 'Id', BookerId)['NeedScan']:= Value;
+  Root.FindOrCreate('Scaners').FindOrCreate('Scaner', 'BookerId', BookerId)['NeedScan']:= Value;
   FChanged:= true;
 end;
 

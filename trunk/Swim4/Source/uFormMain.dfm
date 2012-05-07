@@ -34,6 +34,7 @@ object Form1: TForm1
         Caption = 'Viewer'
         Page = RibbonPage1
       end>
+    TabIndex = 1
     DesignSize = (
       856
       143)
@@ -43,14 +44,14 @@ object Form1: TForm1
       OptionItems = <>
       RecentItems = <>
     end
-    object RibbonPage1: TRibbonPage
+    object RibbonPageScaner: TRibbonPage
       Left = 0
       Top = 50
       Width = 855
       Height = 93
-      Caption = 'Viewer'
-      Index = 1
-      object tbViewerBookers: TRibbonGroup
+      Caption = 'Scanner'
+      Index = 0
+      object tbScannerBookers: TRibbonGroup
         Left = 4
         Top = 3
         Width = 50
@@ -60,14 +61,14 @@ object Form1: TForm1
         GroupIndex = 0
       end
     end
-    object RibbonPageScaner: TRibbonPage
+    object RibbonPage1: TRibbonPage
       Left = 0
       Top = 50
       Width = 855
       Height = 93
-      Caption = 'Scanner'
-      Index = 0
-      object tbScannerBookers: TRibbonGroup
+      Caption = 'Viewer'
+      Index = 1
+      object tbViewerBookers: TRibbonGroup
         Left = 4
         Top = 3
         Width = 50

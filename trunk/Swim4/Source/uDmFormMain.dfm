@@ -1,16 +1,15 @@
 inherited dmFormMain: TdmFormMain
+  OldCreateOrder = True
   inherited dbSwim: TpFIBDatabase
     Connected = True
   end
-  object spRequestAdd: TpFIBStoredProc
+  object spTemp: TpFIBStoredProc [3]
     Transaction = trnWrite
     Database = dbSwim
-    SQL.Strings = (
-      
-        'EXECUTE PROCEDURE REQUEST_ADD (?I_ACTION_SIGN, ?I_PARTS, ?I_SCAN' +
-        '_ID)')
-    StoredProcName = 'REQUEST_ADD'
     Left = 144
-    Top = 40
+    Top = 104
+    qoAutoCommit = True
+    qoStartTransaction = True
+    qoTrimCharFields = True
   end
 end

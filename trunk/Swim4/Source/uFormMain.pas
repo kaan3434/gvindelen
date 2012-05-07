@@ -10,7 +10,7 @@ uses
   Vcl.RibbonActnMenus, Data.Bind.EngExt, Vcl.Bind.DBEngExt, Data.Bind.Components,
   Vcl.StdCtrls, Vcl.ExtCtrls, DBGridEhGrouping, Vcl.ComCtrls, GridsEh, DBGridEh,
   Data.DB, Soap.InvokeRegistry, Soap.Rio, Soap.SOAPHTTPClient, ToolCtrlsEh,
-  GvVars, GvXml, JvComponentBase, JvMTComponents;
+  GvVars, GvXml, JvComponentBase, JvMTComponents, uDmFormMain;
 
 type
   TForm1 = class(TForm)
@@ -41,12 +41,16 @@ type
   private
     { Private declarations }
     FThreadList: TList;
+    dm: TDmFormMain;
     procedure CreateButtons(aBooker: TGvXmlNode);
     function AppendPngToImageList(aImageList: TImageList;
       aPngFileName: String): integer;
     procedure AppendActionToGroup(aGroup: TRibbonGroup;
       ndBookersBooker: TGvXmlNode; aChecked: Boolean; aEvent: TNotifyEvent);
     procedure OnThreadTerminate(Sender: TObject);
+    function GetThreadCount: Integer;
+    procedure SetThreadCount(const Value: Integer);
+    property ThreadCount: Integer read GetThreadCount write SetThreadCount;
   public
     { Public declarations }
     procedure StartThreads;
@@ -60,7 +64,7 @@ implementation
 
 {$R *.dfm}
 uses
-  GvFile, PngImage, uDmFormMain, uWebServiceThread, uSettings;
+  GvFile, PngImage, uWebServiceThread, uSettings;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
@@ -99,7 +103,7 @@ end;
 procedure TForm1.actNeedScanExecute(Sender: TObject);
 begin
   if (Sender is TAction) then
-    Settings.Scaner[TAction(Sender).Tag]:= TAction(Sender).Checked;
+    Settings.ScanerOn[TAction(Sender).Tag]:= TAction(Sender).Checked;
 end;
 
 procedure TForm1.actScanAllBookerExecute(Sender: TObject);
@@ -109,8 +113,8 @@ var
 begin
   for Booker in Settings.Bookers.ChildNodes do
   begin
-    if Settings.Scaner[Booker['Id']] then
-      dmFormMain.SportsRequestAdd(Booker);
+    if Settings.ScanerOn[Booker['Id']] then
+      dm.SportsRequestAdd(Booker);
   end;
   StartThreads;
 end;
@@ -146,34 +150,43 @@ begin
   ImgName:= settings.Path['Images']+aBooker['Sign']+'.png';
   ImgIndex:= AppendPngToImageList(imgListRibbon, ImgName);
   AppendPngToImageList(imgListRibbonLarge, ImgName);
-  AppendActionToGroup(tbScannerBookers, aBooker, settings.Scaner[aBooker['Id']], actNeedScan.OnExecute);
+  AppendActionToGroup(tbScannerBookers, aBooker, settings.ScanerOn[aBooker['Id']], actNeedScan.OnExecute);
   AppendActionTogroup(tbViewerBookers, aBooker, false, actDummy.OnExecute);
 end;
 
 procedure TForm1.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+var
+  p: Pointer;
 begin
+  for p in FThreadList do
+  begin
+    TThread(p).Terminate;
+//    TThread(p).Resume;
+  end;
   CanClose:= FThreadList.Count = 0;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 var
-  Bookers: TStringList;
-  i: integer;
-  BookerName: String;
   Booker: TGvXmlNode;
 begin
+  dm:= TDmFormMain.Create(self);
   FThreadList:= TList.Create;
   for Booker in Settings.Bookers.ChildNodes do
     CreateButtons(Booker);
+  ThreadCount:= Settings.Scaners.Attr['ThreadCount'].AsIntegerDef(1);
+  dm.RequestClean;
   StartThreads;
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
-var
-  i: integer;
 begin
-  for i := FThreadList.Count-1 downto 0 do
-    TThread(FThreadList.Items[i]).Terminate;
+  dm.Free;
+end;
+
+function TForm1.GetThreadCount: Integer;
+begin
+  result:= FThreadList.Count;
 end;
 
 procedure TForm1.OnThreadTerminate(Sender: TObject);
@@ -181,18 +194,27 @@ begin
   FThreadList.Delete(FThreadList.IndexOf(Sender));
 end;
 
-procedure TForm1.StartThreads;
+procedure TForm1.SetThreadCount(const Value: Integer);
 var
-  i: integer;
   ScanThread: TWebServiceRequester;
 begin
-  for i := 1 to 1 do
+  settings.Scaners['ThreadCount']:= Value;
+  while FThreadList.Count < Value do
   begin
     ScanThread:= TWebServiceRequester.Create(true);
     FThreadList.Add(ScanThread);
     ScanThread.OnTerminate:= OnThreadTerminate;
-    ScanThread.Resume;
   end;
+  while FThreadList.Count > Value do
+    TWebServiceRequester(FThreadList[0]).Terminate;
+end;
+
+procedure TForm1.StartThreads;
+var
+  p: Pointer;
+begin
+  for p in FThreadList do
+    TWebServiceRequester(p).Resume;
 end;
 
 end.
