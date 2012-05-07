@@ -28,7 +28,7 @@
           <p>Заявка № <strong><? echo $xml->ORDER['ORDER_CODE'];?></strong> от <strong><? echo $xml->ORDER['CREATE_DTM'];?></strong> г на имя <strong><? echo $xml->ORDER['CLIENT_FIO'];?></strong></p>
           <p>E-майл: <? echo $xml->ORDER->CLIENT['EMAIL'];?> | Kурс евро: <strong><? echo $xml->ORDER['BYR2EUR'];?></strong> | Вес посылки: <strong><? echo $xml->ORDER['WEIGHT'];?> г.</strong></p>
           <p>Сумма к оплатe: <strong><? echo $row['SUMRUN']-$row['SUMPAY'];?> BYR</strong></p>
-          <p>Номер посылки: <a href="http://belpost.by"><? echo $xml->ORDER['BARCODE']; ?></a></p>
+          <p>Номер посылки: <a href="http://belpost.by"><? echo $xml->ORDER['BARCODE'].$xml->ORDER['BAR_CODE']; ?></a></p>
           <p>Форма оплаты: <strong><? echo $xml->ORDER['PRODUCT_NAME']; ?></strong></p>
           <p>Статус заявки: <strong><? echo $xml->ORDER['STATUS_NAME']; ?></strong><br/><br/></p>
           <table border=1 cellpadding="4">
