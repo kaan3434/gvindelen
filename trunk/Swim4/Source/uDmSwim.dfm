@@ -52,7 +52,13 @@ object dmSwim: TdmSwim
         'EXECUTE PROCEDURE REQUEST_ADD (?I_ACTION_SIGN, ?I_PARTS, ?I_SCAN' +
         '_ID)')
     StoredProcName = 'REQUEST_ADD'
-    Left = 144
+    Left = 128
     Top = 40
+  end
+  object spTemp: TpFIBStoredProc
+    Transaction = trnWrite
+    Database = dbSwim
+    Left = 128
+    Top = 96
   end
 end

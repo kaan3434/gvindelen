@@ -32,7 +32,7 @@ type
 implementation
 
 uses
-  ActiveX, GvXml;
+  ActiveX, GvXml, Dialogs, SysUtils;
 {
   Important: Methods and properties of objects in visual components can only be
   used in a method called using Synchronize, for example,
@@ -107,7 +107,7 @@ begin
   try
     repeat
       while BusyNextRequest do
-      try
+      begin
         if FActionSign = 'getEvents' then
           PutEvents
         else
@@ -119,9 +119,6 @@ begin
         else
         if FActionSign = 'getBookers' then
           PutBookers;
-        dm.RequestCommit(FRequestId);
-      except
-        dm.RequestRollback(FRequestId);
       end;
       Suspend;
     until Terminated;
@@ -189,8 +186,17 @@ begin
           Node.Attr['Sport_Title'].AsString:= Sport.Title;
           dm.SportDetect(Node);
           Node.ExportAttrs(Parts);
+          if Node.Attr['Ignore_Flg'].AsBooleanDef(false) then
+            dm.RequestCommit(FRequestId)
+          else
+          if Node['Asport_Id']='' then
+            dm.RequestPostpone(FRequestId)
+          else
+          begin
+            dm.RequestAdd(FScanId, 'getTournirs', Parts.Text);
+            dm.RequestCommit(FRequestId);
+          end;
         end;
-        dm.RequestAdd(FScanId, 'getTournirs', Parts.Text);
         dm.trnWrite.Commit;
       except
         dm.trnWrite.Rollback;
@@ -221,17 +227,33 @@ begin
       try
         for Tournir in Tournirs do
         begin
-          Parts.Clear;
-          Node.Clear;
-          Node.ImportAttrs(FParts);
-          Node.Attr['Tournir_Id'].AsString:= Tournir.Id;
-          Node.Attr['Tournir_Region'].AsString:= Tournir.Region;
-          Node.Attr['Tournir_Title'].AsString:= Tournir.Title;
-          dm.TournirDetect(Node);
-          Node.ExportAttrs(Parts);
+          dm.trnWrite.SetSavePoint('Tournir');
+          try
+            Parts.Clear;
+            Node.Clear;
+            Node.ImportAttrs(FParts);
+            Node.Attr['Tournir_Id'].AsString:= Tournir.Id;
+            Node.Attr['Tournir_Region'].AsString:= Tournir.Region;
+            Node.Attr['Tournir_Title'].AsString:= Tournir.Title;
+            dm.TournirDetect(Node);
+            Node.ExportAttrs(Parts);
+            if Node.Attr['Ignore_Flg'].AsBooleanDef(false) then
+              dm.RequestCommit(FRequestId)
+            else
+            if Node['Atournir_Id']='' then
+              dm.RequestPostpone(FRequestId)
+            else
+            begin
+  //            dm.RequestAdd(FScanId, 'getEvents', Parts.Text);
+              dm.RequestCommit(FRequestId);
+            end;
+          except
+            dm.trnWrite.RollBackToSavePoint('Tournir');
+            Node.NodeName:= 'a';
+            ShowMessage(Node.WriteToString);
+          end;
         end;
-        dm.RequestAdd(FScanId, 'getTournirs', Parts.Text);
-        dm.trnWrite.Commit;
+        dm.trnWrite.Commit
       except
         dm.trnWrite.Rollback;
       end;

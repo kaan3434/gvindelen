@@ -58,7 +58,6 @@ type
 
 var
   Form1: TForm1;
-  Path: TVarList;
 
 implementation
 
@@ -175,7 +174,12 @@ begin
   for Booker in Settings.Bookers.ChildNodes do
     CreateButtons(Booker);
   ThreadCount:= Settings.Scaners.Attr['ThreadCount'].AsIntegerDef(1);
-  dm.RequestClean;
+  dm.trnWrite.StartTransaction;
+  try
+    dm.RequestsClean;
+  finally
+    dm.trnWrite.Commit;
+  end;
   StartThreads;
 end;
 

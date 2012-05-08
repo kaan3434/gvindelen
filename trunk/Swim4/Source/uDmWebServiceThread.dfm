@@ -15,22 +15,10 @@ inherited dmSwimThread: TdmSwimThread
     qoStartTransaction = True
     qoTrimCharFields = True
   end
-  object spTemp: TpFIBStoredProc
-    Transaction = trnWrite
-    Database = dbSwim
-    Left = 144
-    Top = 168
-    qoAutoCommit = True
-    qoStartTransaction = True
-    qoTrimCharFields = True
-  end
   object qryTemp: TpFIBQuery
     Transaction = trnWrite
     Database = dbSwim
     Left = 232
     Top = 40
-    qoAutoCommit = True
-    qoStartTransaction = True
-    qoTrimCharFields = True
   end
 end

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Root>
   <Sports>
-    <Sport Id="10" Sign="tennis" Name="Теннис" Url="/tennis-odds.html"/>
-    <Sport Id="20" Sign="soccer" Name="Футбол" Url="/soccer-odds.html"/>
+    <Sport Id="10" Sign="tennis" Title="Теннис" Url="/tennis-odds.html"/>
+    <Sport Id="20" Sign="soccer" Title="Футбол" Url="/soccer-odds.html"/>
   </Sports>
  </Root>

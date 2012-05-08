@@ -10,13 +10,11 @@ uses
 
 type
   TdmFormMain = class(TdmSwim)
-    spTemp: TpFIBStoredProc;
   private
     { Private declarations }
   public
     { Public declarations }
     procedure SportsRequestAdd(aBooker: TGvXmlNode);
-    procedure RequestClean;
   end;
 
 implementation
@@ -27,11 +25,6 @@ uses
   GvVars;
 
 { TdmFormMain }
-
-procedure TdmFormMain.RequestClean;
-begin
-  spTemp.ExecProcedure('REQUEST_CLEAN');
-end;
 
 procedure TdmFormMain.SportsRequestAdd(aBooker: TGvXmlNode);
 var

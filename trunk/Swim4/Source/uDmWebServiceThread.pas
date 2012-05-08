@@ -10,15 +10,12 @@ uses
 type
   TdmSwimThread = class(TdmSwim)
     spRequestBusyNext: TpFIBStoredProc;
-    spTemp: TpFIBStoredProc;
     qryTemp: TpFIBQuery;
   private
     procedure ExportQueryValues(aQuery: TpFIBQuery; aNode: TGvXmlNode);
     { Private declarations }
   public
     { Public declarations }
-    procedure RequestCommit(aRequestId: Integer);
-    procedure RequestRollback(aRequestId: Integer);
     procedure SportDetect(aNode: TGvXmlNode);
     procedure TournirDetect(aNode: TGvXmlNode);
     procedure EventDetect(aNode: TGvXmlNode);
@@ -47,7 +44,7 @@ begin
   begin
     AName:= aQuery.Fields[i].Name;
     AName:= UpCaseWord(AName, '_');
-    aNode.Attr[AName].SetValue(aQuery.Fields[i].Value);
+    aNode.Attr[AName].Value:= aQuery.Fields[i].Value;
   end;
 end;
 
@@ -74,18 +71,26 @@ begin
 end;
 
 procedure TdmSwimThread.TournirDetect(aNode: TGvXmlNode);
+var
+  i: Integer;
+  PrmName: String;
 begin
-
-end;
-
-procedure TdmSwimThread.RequestCommit(aRequestId: Integer);
-begin
-  spTemp.ExecProcedure('REQUEST_COMMIT', [aRequestId]);
-end;
-
-procedure TdmSwimThread.RequestRollback(aRequestId: Integer);
-begin
-  spTemp.ExecProcedure('REQUEST_ROLLBACK', [aRequestId]);
+  with qryTemp do
+  begin
+    Params.ClearValues;
+    SQL.Text:=
+      'select bt.btournir_id, bt.atournir_id, bt.asport_id, bt.country_sign, bt.ignore_flg '+
+      'from btournir_add(:tournir_title, :bsport_id, :tournir_region) btp'+
+      ' inner join btournirs bt on (bt.btournir_id = btp.o_btournir_id)';
+    for i:= 0 to ParamCount-1 do
+    begin
+      PrmName:= ParamName(i);
+      Params.ParamByName(PrmName).AsString:= aNode[PrmName];
+    end;
+    ExecQuery;
+    ExportQueryValues(qryTemp, aNode);
+    Close;
+  end;
 end;
 
 end.

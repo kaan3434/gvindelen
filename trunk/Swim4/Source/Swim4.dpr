@@ -9,7 +9,8 @@ uses
   uSettings in 'uSettings.pas' {Form2},
   GvXml in 'D:\4Delphi\Gvindln\Source\GvXml.pas',
   uDmFormMain in 'uDmFormMain.pas' {dmFormMain: TDataModule},
-  ScanWSDL in 'ScanWSDL.pas';
+  ScanWSDL in 'ScanWSDL.pas',
+  GvStr in 'D:\4Delphi\Gvindln\Source\GvStr.pas';
 
 {$R *.res}
 
