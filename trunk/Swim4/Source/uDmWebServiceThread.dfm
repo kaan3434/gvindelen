@@ -3,7 +3,7 @@ inherited dmSwimThread: TdmSwimThread
   inherited dbSwim: TpFIBDatabase
     Connected = True
   end
-  object spRequestBusyNext: TpFIBStoredProc [3]
+  object spRequestBusyNext: TpFIBStoredProc
     Transaction = trnWrite
     Database = dbSwim
     SQL.Strings = (
@@ -15,7 +15,7 @@ inherited dmSwimThread: TdmSwimThread
     qoStartTransaction = True
     qoTrimCharFields = True
   end
-  object spTemp: TpFIBStoredProc [4]
+  object spTemp: TpFIBStoredProc
     Transaction = trnWrite
     Database = dbSwim
     Left = 144
@@ -25,7 +25,7 @@ inherited dmSwimThread: TdmSwimThread
     qoTrimCharFields = True
   end
   object qryTemp: TpFIBQuery
-    Transaction = trnRead
+    Transaction = trnWrite
     Database = dbSwim
     Left = 232
     Top = 40

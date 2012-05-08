@@ -13,7 +13,7 @@ type
     spTemp: TpFIBStoredProc;
     qryTemp: TpFIBQuery;
   private
-    procedure ExportQryValues(aQuery: TpFIBQuery; aNode: TGvXmlNode);
+    procedure ExportQueryValues(aQuery: TpFIBQuery; aNode: TGvXmlNode);
     { Private declarations }
   public
     { Public declarations }
@@ -28,6 +28,9 @@ implementation
 
 {$R *.dfm}
 
+uses
+  GvStr;
+
 { TdmSwimThread }
 
 procedure TdmSwimThread.EventDetect(aNode: TGvXmlNode);
@@ -35,12 +38,17 @@ begin
 
 end;
 
-procedure TdmSwimThread.ExportQryValues(aQuery: TpFIBQuery; aNode: TGvXmlNode);
+procedure TdmSwimThread.ExportQueryValues(aQuery: TpFIBQuery; aNode: TGvXmlNode);
 var
   i: Integer;
+  AName: string;
 begin
   for i:= 0 to aQuery.FieldCount-1 do
-    aNode.Attr[aQuery.Fields[i].Name].SetValue(aQuery.Fields[i].Value);
+  begin
+    AName:= aQuery.Fields[i].Name;
+    AName:= UpCaseWord(AName, '_');
+    aNode.Attr[AName].SetValue(aQuery.Fields[i].Value);
+  end;
 end;
 
 procedure TdmSwimThread.SportDetect(aNode: TGvXmlNode);
@@ -52,16 +60,15 @@ begin
   begin
     Params.ClearValues;
     SQL.Text:=
-      'select * from bsports '+
-      'where bsport_name = :sport_title '+
-      '  and booker_id = :booker_id';
+      'select bs.* from bsport_add(:sport_title, :booker_id) bsp '+
+      ' inner join bsports bs on (bs.bsport_id = bsp.o_bsport_id)';
     for i:= 0 to ParamCount-1 do
     begin
       PrmName:= ParamName(i);
       Params.ParamByName(PrmName).AsString:= aNode[PrmName];
     end;
     ExecQuery;
-    ExportQryValues(qryTemp, aNode);
+    ExportQueryValues(qryTemp, aNode);
     Close;
   end;
 end;
