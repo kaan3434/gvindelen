@@ -11,6 +11,7 @@ type
 
   TGvXmlAttribute = class(TObject)
   private
+    FName: String; // Attribute name
     FValue: String;
     function GetAsBoolean: Boolean;
     function GetAsDateTime: TDateTime;
@@ -20,14 +21,15 @@ type
     procedure SetAsBoolean(const Value: Boolean);
     procedure SetAsDateTime(const Value: TDateTime);
     procedure SetAsFloat(const Value: Double);
+    procedure SetAsString(const Value: String);
   public
-    Name: String; // Attribute name
     procedure SetValue(Value: Variant);
     function AsIntegerDef(DefaultValue: Integer): Integer;
     function AsStringDef(DefaultValue: String): String;
     function AsBooleanDef(DefaultValue: Boolean): Boolean;
     function AsDateTimeDef(DefaultValue: TDateTime): TDateTime;
     function AsFloatDef(DefaultValue: Double): Double;
+    property Name: String read FName write FName;
     property AsString: String read FValue write FValue;
     property AsInteger: Integer read GetAsInteger write SetAsInteger;
     property AsBoolean: Boolean read GetAsBoolean write SetAsBoolean;
@@ -685,6 +687,11 @@ end;
 procedure TGvXmlAttribute.SetAsInteger(const Value: Integer);
 begin
   FValue:= IntToStr(Value);
+end;
+
+procedure TGvXmlAttribute.SetAsString(const Value: String);
+begin
+
 end;
 
 procedure TGvXmlAttribute.SetValue(Value: Variant);

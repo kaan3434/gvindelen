@@ -2296,9 +2296,22 @@ begin
 end;
 
 function UpCaseWord(St: string; KeyChars: string=' ,.!-:?'): string;
+var
+  i, Len: integer;
+  StartWord: Boolean;
 begin
-  While St<>'' do
-    Result:= Result + UpCaseFirst(TakeFront3(St, KeyChars));
+  Len:= Length(St);
+  Result:= LowerCase(St);
+  StartWord:= true;
+  for i:= 1 to Len do
+  begin
+    if StartWord then
+    begin
+      Result[i]:= UpCase(Result[i]);
+      StartWord:= false;
+    end;
+    StartWord:= Pos(Result[i], KeyChars) > 0;
+  end;
 end;
 
 function IsWordPresent(aWord, aWordList, aDelimiter: String): Boolean;
