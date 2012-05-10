@@ -33,8 +33,13 @@ object Form1: TForm1
       item
         Caption = 'Viewer'
         Page = RibbonPage1
+      end
+      item
+        Caption = 'Teach'
+        Page = RibbonPage2
       end>
-    TabIndex = 1
+    TabIndex = 2
+    ExplicitTop = -6
     DesignSize = (
       856
       143)
@@ -78,31 +83,13 @@ object Form1: TForm1
         GroupIndex = 0
       end
     end
-  end
-  object DBGridEh1: TDBGridEh
-    Left = 0
-    Top = 143
-    Width = 856
-    Height = 249
-    Align = alClient
-    AutoFitColWidths = True
-    DataGrouping.GroupLevels = <>
-    DataSource = dsSwims
-    Flat = False
-    FooterColor = clWindow
-    FooterFont.Charset = DEFAULT_CHARSET
-    FooterFont.Color = clWindowText
-    FooterFont.Height = -11
-    FooterFont.Name = 'Tahoma'
-    FooterFont.Style = []
-    IndicatorOptions = [gioShowRowIndicatorEh]
-    TabOrder = 1
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -11
-    TitleFont.Name = 'Tahoma'
-    TitleFont.Style = []
-    object RowDetailData: TRowDetailPanelControlEh
+    object RibbonPage2: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 855
+      Height = 93
+      Caption = 'Teach'
+      Index = 2
     end
   end
   object StatusBar1: TStatusBar
@@ -118,7 +105,7 @@ object Form1: TForm1
     Width = 856
     Height = 17
     Align = alBottom
-    TabOrder = 3
+    TabOrder = 2
   end
   object actMngRibbon: TActionManager
     ActionBars = <
@@ -129,6 +116,9 @@ object Form1: TForm1
             Items = <
               item
                 Caption = '&ActionClientItem0'
+              end
+              item
+                Caption = 'ActionClientItem1'
               end>
             Caption = '&ActionClientItem0'
             KeyTip = 'F'
@@ -173,6 +163,8 @@ object Form1: TForm1
             CommandProperties.ButtonSize = bsLarge
           end>
         ActionBar = tbViewerBookers
+      end
+      item
       end>
     LargeImages = imgListRibbonLarge
     Images = imgListRibbon
@@ -206,7 +198,7 @@ object Form1: TForm1
     Left = 560
     Top = 8
     Bitmap = {
-      494C010101000900380010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
+      494C0101010009003C0010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000101010F010101170101011A0101
       011A0101011A0101011A0101011A0101011A0101011A0101011A0101011A0101
@@ -352,7 +344,7 @@ object Form1: TForm1
     Left = 472
     Top = 8
     Bitmap = {
-      494C010101000900300020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010101000900340020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000101010F0101010F010101170101
       01170101011A0101011A0101011A0101011A0101011A0101011A0101011A0101

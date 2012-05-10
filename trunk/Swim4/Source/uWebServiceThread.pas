@@ -153,12 +153,66 @@ end;
 
 procedure TWebServiceRequester.PutEvents;
 var
-  Events: TEventsResponse;
+  Events: TEvents;
+  Event: TEvent;
+  Bet: TBet;
+  Node: TGvXmlNode;
+  Parts: TStringList;
 begin
-//  Events:= FWSScan.getEvents(FParts['BookerSign'],
-//                             FParts.AsInteger['SportId'],
-//                             FParts['TournirId'],
-//                             FParts['TournirUrl']);
+  Node:= TGvXmlNode.Create;
+  try
+    Node.ImportAttrs(FParts);
+    Events:= FWSScan.getEvents(Node.Attr['Booker_Sign'].AsString,
+                               Node.Attr['Sport_Id'].AsInteger,
+                               Node.Attr['Tournir_Id'].AsString,
+                               Node.Attr['Tournir_Url'].AsString).Events;
+    Parts:= TStringList.Create;
+    try
+      dm.trnWrite.StartTransaction;
+      try
+        for Event in Events do
+        begin
+          Parts.Clear;
+          Node.Clear;
+          Node.ImportAttrs(FParts);
+          Node.Attr['Event_Dtm'].AsDateTime:= Event.DateTime.AsDateTime;
+          Node.Attr['Event_Gamer1_Name'].AsString:= Event.Gamer1_Name;
+          Node.Attr['Event_Gamer2_Name'].AsString:= Event.Gamer2_Name;
+          dm.EventDetect(Node);
+          Node.ExportAttrs(Parts);
+          dm.trnWrite.SetSavePoint('PutEvent');
+          try
+            if Node.Attr['Ignore_Flg'].AsBooleanDef(false) then
+              // Это игнорируемое событие?
+            else
+            begin
+              // Добавляем запрос на получение турниров
+              for Bet in Event.Bet do
+              try
+                dm.trnWrite.SetSavePoint('PutBet');
+                dm.BetDetect(Bet.Period, Bet.Kind, Bet.Subject, Bet.Gamer,
+                             Bet.Value, Bet.Modifier, Bet.Koef,
+                             Node.Attr['Event_Swap'].AsBoolean);
+              except
+                dm.trnWrite.RollBackToSavePoint('PutBet');
+              end;
+            end;
+          except
+            dm.trnWrite.RollBackToSavePoint('PutEvent');
+            Node.NodeName:= 'a';
+            ShowMessage(Node.WriteToString);
+          end;
+        end;
+      finally
+        dm.RequestCommit(FRequestId);
+        dm.trnWrite.Commit;
+      end;
+    finally
+      Parts.Free;
+    end;
+  finally
+    Node.Free;
+  end;
 end;
 
 procedure TWebServiceRequester.PutSports;
@@ -186,36 +240,22 @@ begin
           Node.Attr['Sport_Title'].AsString:= Sport.Title;
           dm.SportDetect(Node);
           Node.ExportAttrs(Parts);
-          dm.trnWrite.SetSavePoint('Tournir');
+          dm.trnWrite.SetSavePoint('PutTournir');
           try
             if Node.Attr['Ignore_Flg'].AsBooleanDef(false) then
-              // Это игнорируемый турнир?
+              // Это игнорируемый спорт?
             else
-            if Node['Asport_Id']='' then
-              // Это неизвестный турнир?
-              dm.
-
-            dm.RequestAdd(FScanId, 'getTournirs', Parts.Text);
+              // Добавляем запрос на получение турниров
+              dm.RequestAdd(FScanId, 'getTournirs', Parts.Text);
           except
-            dm.trnWrite.RollBackToSavePoint('Tournir');
+            dm.trnWrite.RollBackToSavePoint('PutTournir');
             Node.NodeName:= 'a';
             ShowMessage(Node.WriteToString);
           end;
-        end
-
-          if Node.Attr['Ignore_Flg'].AsBooleanDef(false) then
-            dm.RequestCommit(FRequestId)
-          else
-          if Node['Asport_Id']='' then
-            dm.RequestPostpone(FRequestId)
-          else
-          begin
-            dm.RequestCommit(FRequestId);
-          end;
         end;
+      finally
+        dm.RequestCommit(FRequestId);
         dm.trnWrite.Commit;
-      except
-        dm.trnWrite.Rollback;
       end;
     finally
       Parts.Free;
@@ -243,33 +283,28 @@ begin
       try
         for Tournir in Tournirs do
         begin
+          Parts.Clear;
+          Node.Clear;
+          Node.ImportAttrs(FParts);
+          Node.Attr['Tournir_Id'].AsString:= Tournir.Id;
+          Node.Attr['Tournir_Region'].AsString:= Tournir.Region;
+          Node.Attr['Tournir_Title'].AsString:= Tournir.Title;
+          dm.TournirDetect(Node);
+          Node.ExportAttrs(Parts);
           dm.trnWrite.SetSavePoint('Tournir');
           try
-            Parts.Clear;
-            Node.Clear;
-            Node.ImportAttrs(FParts);
-            Node.Attr['Tournir_Id'].AsString:= Tournir.Id;
-            Node.Attr['Tournir_Region'].AsString:= Tournir.Region;
-            Node.Attr['Tournir_Title'].AsString:= Tournir.Title;
-            dm.TournirDetect(Node);
-            Node.ExportAttrs(Parts);
-
             if Node.Attr['Ignore_Flg'].AsBooleanDef(false) then
+              // это игрорируемый турнир?
             else
-            if Node['Atournir_Id']='' then
-              dm.RequestPostpone(FRequestId)
-            else
-            begin
-  //            dm.RequestAdd(FScanId, 'getEvents', Parts.Text);
-              dm.RequestCommit(FRequestId);
-            end;
+              // добавляем запрос на получение событий
+              dm.RequestAdd(FScanId, 'getEvents', Parts.Text);
           except
             dm.trnWrite.RollBackToSavePoint('Tournir');
           end;
         end;
+      finally
+        dm.RequestCommit(FRequestId);
         dm.trnWrite.Commit
-      except
-        dm.trnWrite.Rollback;
       end;
     finally
       Parts.Free;

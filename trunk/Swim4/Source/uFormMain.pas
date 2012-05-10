@@ -25,12 +25,12 @@ type
     tbViewerBookers: TRibbonGroup;
     tbScannerBookers: TRibbonGroup;
     actViewAll: TAction;
-    DBGridEh1: TDBGridEh;
     StatusBar1: TStatusBar;
     ProgressBar1: TProgressBar;
     dsSwims: TDataSource;
     actDummy: TAction;
     actNeedScan: TAction;
+    RibbonPage2: TRibbonPage;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure actScanAllBookerExecute(Sender: TObject);

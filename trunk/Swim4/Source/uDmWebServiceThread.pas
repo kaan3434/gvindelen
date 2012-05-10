@@ -19,6 +19,8 @@ type
     procedure SportDetect(aNode: TGvXmlNode);
     procedure TournirDetect(aNode: TGvXmlNode);
     procedure EventDetect(aNode: TGvXmlNode);
+    procedure BetDetect(aPeriod, aKind, aSubject, aGamer, aValue, aModifier: String;
+      aKoef: Single; isSwapper: Boolean);
   end;
 
 implementation
@@ -30,9 +32,32 @@ uses
 
 { TdmSwimThread }
 
-procedure TdmSwimThread.EventDetect(aNode: TGvXmlNode);
+procedure TdmSwimThread.BetDetect(aPeriod, aKind, aSubject, aGamer, aValue,
+  aModifier: String; aKoef: Single; isSwapper: Boolean);
 begin
 
+end;
+
+procedure TdmSwimThread.EventDetect(aNode: TGvXmlNode);
+var
+  i: integer;
+  PrmName: String;
+begin
+  with qryTemp do
+  begin
+    Params.ClearValues;
+    SQL.Text:=
+      'select be.* from bevent_add(:btournir_id, :event_dtm, :gamer1_name, :gamer2_name) bep '+
+      ' inner join bevents be on (be.bevent_id = bep.o_bevent_id)';
+    for i:= 0 to ParamCount-1 do
+    begin
+      PrmName:= ParamName(i);
+      Params.ParamByName(PrmName).AsString:= aNode[PrmName];
+    end;
+    ExecQuery;
+    ExportQueryValues(qryTemp, aNode);
+    Close;
+  end;
 end;
 
 procedure TdmSwimThread.ExportQueryValues(aQuery: TpFIBQuery; aNode: TGvXmlNode);
