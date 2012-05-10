@@ -132,7 +132,7 @@ begin
     act.Tag:= ndBookersBooker['Id'];
     act.AutoCheck:= true;
     act.OnExecute:= aEvent;
-    act.Caption:= ndBookersBooker['Title'];;
+    act.Caption:= ndBookersBooker['Title'];
     act.Visible:= true;
     act.ImageIndex:= act.Tag;
     act.Checked:= aChecked;
@@ -160,8 +160,9 @@ begin
   for p in FThreadList do
   begin
     TThread(p).Terminate;
-//    TThread(p).Resume;
+    TThread(p).Resume;
   end;
+  while FThreadList.Count > 0 do Application.ProcessMessages;
   CanClose:= FThreadList.Count = 0;
 end;
 

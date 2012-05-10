@@ -186,6 +186,23 @@ begin
           Node.Attr['Sport_Title'].AsString:= Sport.Title;
           dm.SportDetect(Node);
           Node.ExportAttrs(Parts);
+          dm.trnWrite.SetSavePoint('Tournir');
+          try
+            if Node.Attr['Ignore_Flg'].AsBooleanDef(false) then
+              // Это игнорируемый турнир?
+            else
+            if Node['Asport_Id']='' then
+              // Это неизвестный турнир?
+              dm.
+
+            dm.RequestAdd(FScanId, 'getTournirs', Parts.Text);
+          except
+            dm.trnWrite.RollBackToSavePoint('Tournir');
+            Node.NodeName:= 'a';
+            ShowMessage(Node.WriteToString);
+          end;
+        end
+
           if Node.Attr['Ignore_Flg'].AsBooleanDef(false) then
             dm.RequestCommit(FRequestId)
           else
@@ -193,7 +210,6 @@ begin
             dm.RequestPostpone(FRequestId)
           else
           begin
-            dm.RequestAdd(FScanId, 'getTournirs', Parts.Text);
             dm.RequestCommit(FRequestId);
           end;
         end;
@@ -237,8 +253,8 @@ begin
             Node.Attr['Tournir_Title'].AsString:= Tournir.Title;
             dm.TournirDetect(Node);
             Node.ExportAttrs(Parts);
+
             if Node.Attr['Ignore_Flg'].AsBooleanDef(false) then
-              dm.RequestCommit(FRequestId)
             else
             if Node['Atournir_Id']='' then
               dm.RequestPostpone(FRequestId)
@@ -249,8 +265,6 @@ begin
             end;
           except
             dm.trnWrite.RollBackToSavePoint('Tournir');
-            Node.NodeName:= 'a';
-            ShowMessage(Node.WriteToString);
           end;
         end;
         dm.trnWrite.Commit
