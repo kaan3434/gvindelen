@@ -22,8 +22,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 829
-    Height = 49
+    Width = 837
+    Height = 47
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -212,16 +212,16 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 432
-    Width = 829
+    Top = 436
+    Width = 837
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object pbMain: TProgressBar
     Left = 0
-    Top = 415
-    Width = 829
+    Top = 419
+    Width = 837
     Height = 17
     Align = alBottom
     TabOrder = 1
@@ -1546,7 +1546,7 @@ object MainForm: TMainForm
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 40939.979501435170000000
+    ReportOptions.LastChange = 40998.019255509300000000
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
     Left = 352

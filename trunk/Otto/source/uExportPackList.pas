@@ -53,6 +53,10 @@ begin
   ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM', 'ID', aOrderItemId);
   try
     ndTaxSSbor:= ndOrderTaxs.NodeByAttributeValue('ORDERTAX', 'TAXSERV_ID', '1');
+    if not Assigned(ndTaxSSbor) then
+    begin
+      ShowMessage(GetXmlAttr(ndOrder, 'ORDER_CODE', 'Отсутствует сервисный сбор на заявке '));
+    end;
 
     ndClient:= ndOrder.NodeFindOrCreate('CLIENT');
     dmOtto.ObjectGet(ndClient, GetXmlAttrValue(ndOrder, 'CLIENT_ID'), aTransaction);

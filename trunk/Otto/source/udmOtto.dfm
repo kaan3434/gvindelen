@@ -7,10 +7,11 @@ object dmOtto: TdmOtto
   Height = 405
   Width = 624
   object dbOtto: TpFIBDatabase
+    Connected = True
     DBName = 'localhost:D:\otto\Data\otto_ppz.fdb'
     DBParams.Strings = (
       'lc_ctype=CYRL'
-      'user_name=SYSDBA'
+      'user_name=sysdba'
       'password=masterkey'
       'sql_role_name=rdb$admin')
     DefaultTransaction = trnAutonomouse
@@ -29,6 +30,7 @@ object dmOtto: TdmOtto
     Top = 16
   end
   object spTemp: TpFIBStoredProc
+    Transaction = trnAutonomouse
     Database = dbOtto
     Left = 88
     Top = 64
@@ -111,6 +113,7 @@ object dmOtto: TdmOtto
     Top = 176
   end
   object trnAutonomouse: TpFIBTransaction
+    Active = True
     DefaultDatabase = dbOtto
     TimeoutAction = TARollback
     TRParams.Strings = (
@@ -285,6 +288,7 @@ object dmOtto: TdmOtto
     Version = '4.9.64'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
+    PreviewOptions.AllowEdit = False
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
     PreviewOptions.MDIChild = True
     PreviewOptions.Modal = False

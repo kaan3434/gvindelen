@@ -768,6 +768,7 @@ end;
 procedure TMainForm.actMoneyReturnBankExecute(Sender: TObject);
 var
   Orders: string;
+  OrderId: Variant;
 begin
   frxReport.LoadFromFile(Path['FastReport']+'MoneyBackBelPost.fr3');
   frxReport.PrepareReport(true);
@@ -783,7 +784,7 @@ begin
   while Orders <> '' do
   begin
     OrderId:= TakeFront5(Orders,',');
-    dmOtto.ActionExecute(trnWrite, 'ORDER');
+//    dmOtto.ActionExecute(trnWrite, 'ORDER');
   end;
 end;
 

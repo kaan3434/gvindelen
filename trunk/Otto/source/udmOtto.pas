@@ -935,13 +935,9 @@ end;
 procedure TdmOtto.CleanUp;
 begin
   trnAutonomouse.StartTransaction;
-  try
-    spTemp.StoredProcName:= 'DB_CLEANUP';
-    spTemp.ExecProc;
+  trnAutonomouse.ExecSQLImmediate('execute procedure db_cleanup');
+  if trnAutonomouse.Active then
     trnAutonomouse.Commit;
-  finally
-    trnAutonomouse.Rollback;
-  end;
 end;
 
 function TdmOtto.isAdminRoleGet: boolean;
