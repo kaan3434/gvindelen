@@ -145,6 +145,10 @@ type
     frxInvoice: TfrxReport;
     btnCleanUp: TTBXItem;
     actDBClean: TAction;
+    actMoneyReturnBank: TAction;
+    btnMoneyReturn: TTBXItem;
+    actMoneyReturnPost: TAction;
+    btnMoneyReturnPost: TTBXItem;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -181,6 +185,7 @@ type
     procedure actExportToSiteExecute(Sender: TObject);
     procedure actExportPrePacklistExecute(Sender: TObject);
     procedure actDBCleanExecute(Sender: TObject);
+    procedure actMoneyReturnBankExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -758,6 +763,28 @@ end;
 procedure TMainForm.actDBCleanExecute(Sender: TObject);
 begin
   dmOtto.CleanUp;
+end;
+
+procedure TMainForm.actMoneyReturnBankExecute(Sender: TObject);
+var
+  Orders: string;
+begin
+  frxReport.LoadFromFile(Path['FastReport']+'MoneyBackBelPost.fr3');
+  frxReport.PrepareReport(true);
+  frxReport.ShowPreparedReport;
+  Orders:= trnWrite.DefaultDatabase.QueryValue(
+    'select list(distinct o.order_id) '+
+    'from orders o '+
+    'inner join v_order_attrs oa on (oa.object_id = o.order_id and oa.attr_sign=''MONEYBACK_KIND'' and oa.attr_value=''BELPOST'') '+
+    'inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign=''HAVERETURN'') '+
+    'left join statuses s2 on (s2.status_id = o.state_id) '+
+    'where coalesce(s2.status_sign, '''')  <> ''MONEYSENT''',
+    0, [], trnWrite);
+  while Orders <> '' do
+  begin
+    OrderId:= TakeFront5(Orders,',');
+    dmOtto.ActionExecute(trnWrite, 'ORDER');
+  end;
 end;
 
 end.

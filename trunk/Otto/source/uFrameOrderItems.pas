@@ -532,8 +532,14 @@ begin
 end;
 
 procedure TFrameOrderItems.actDiscardUpdate(Sender: TObject);
+var
+  ndOrderItem: TXmlNode;
 begin
-  actReturnRequest.Enabled:= mtblOrderItems['STATUS_SIGN'] = 'DELIVERING';
+  ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM', 'ID', mtblOrderItems['OrderItem_Id']);
+  if Assigned(ndOrderItem) then
+    actDiscard.Enabled:= xmlAttrIn(ndOrderItem, 'STATUS_SIGN', 'DELIVERING,DELIVERED')
+  else
+    actDiscard.Enabled:= False;
 end;
 
 procedure TFrameOrderItems.actDiscardExecute(Sender: TObject);
@@ -564,8 +570,14 @@ end;
 
 
 procedure TFrameOrderItems.actReturnRequestUpdate(Sender: TObject);
+var
+  StatusSign: String;
 begin
-  actReturnRequest.Enabled:= mtblOrderItems['STATUS_SIGN'] = 'DELIVERING';
+  ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM', 'ID', mtblOrderItems['OrderItem_Id']);
+  if Assigned(ndOrderItem) then
+    actReturnRequest.Enabled:= xmlAttrIn(ndOrderItem, 'STATUS_SIGN', 'DELIVERING,DELIVERED')
+  else
+    actReturnRequest.Enabled:= False;
 end;
 
 procedure TFrameOrderItems.actCheckAvailableUpdate(Sender: TObject);

@@ -110,7 +110,7 @@ var
 begin
   trnWrite.SetSavePoint('OnMoneyBack');
   try
-    SetXmlAttr(ndOrder, 'MONEYBACK_KIND', ExtractWord(rgReturnKind.ItemIndex, 'LEAVE;BELPOST;BANK', ';'));
+    SetXmlAttr(ndOrder, 'MONEYBACK_KIND', ExtractWord(rgReturnKind.ItemIndex+1, 'LEAVE;BELPOST;BANK', ';'));
     SetXmlAttr(ndOrder, 'BELPOST_BAR_CODE', edBelPostBarCode.Text);
     SetXmlAttr(ndOrder, 'BONUS_EUR', edBonus.text);
 

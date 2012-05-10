@@ -22,8 +22,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 837
-    Height = 47
+    Width = 829
+    Height = 49
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -68,6 +68,12 @@ object MainForm: TMainForm
         end
         object btnImportInfo2Pay: TTBXItem
           Action = actProcessInfo2Pay
+        end
+        object btnMoneyReturn: TTBXItem
+          Action = actMoneyReturnBank
+        end
+        object btnMoneyReturnPost: TTBXItem
+          Action = actMoneyReturnPost
         end
       end
       object subExportActions: TTBXSubmenuItem
@@ -206,16 +212,16 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 436
-    Width = 837
+    Top = 432
+    Width = 829
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object pbMain: TProgressBar
     Left = 0
-    Top = 419
-    Width = 837
+    Top = 415
+    Width = 829
     Height = 17
     Align = alBottom
     TabOrder = 1
@@ -392,6 +398,15 @@ object MainForm: TMainForm
       Caption = #1055#1086#1095#1080#1089#1090#1080#1090#1100' '#1073#1072#1079#1091
       ImageIndex = 18
       OnExecute = actDBCleanExecute
+    end
+    object actMoneyReturnBank: TAction
+      Category = 'Export'
+      Caption = #1056#1077#1077#1089#1090#1088' '#1041#1072#1085#1082#1086#1074#1089#1082#1080#1093' '#1087#1077#1088#1077#1074#1086#1076#1086#1074
+      OnExecute = actMoneyReturnBankExecute
+    end
+    object actMoneyReturnPost: TAction
+      Category = 'Export'
+      Caption = #1056#1077#1077#1089#1090#1088' '#1055#1086#1095#1090#1086#1074#1099#1093' '#1087#1077#1088#1077#1074#1086#1076#1086#1074
     end
   end
   object imgListMainMenu: TPngImageList

@@ -131,14 +131,26 @@ begin
 end;
 
 procedure TFormWizardReturn.wzFormFinishButtonClick(Sender: TObject);
+var
+  MoneyEur: Double;
 begin
   inherited;
   try
+    frmMoneyBack.Write;
     SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'HAVERETURN');
     XmlData.XmlFormat:= xfReadable;
     XmlData.SaveToFile('Order.xml');
     dmOtto.ActionExecute(trnWrite, ndOrder);
     dmOtto.ObjectGet(ndOrder, ObjectId, trnWrite);
+    if GetXmlAttrValue(ndOrder, 'MONEYBACK_KIND') = 'LEAVE' then
+    begin
+      MoneyEur:= trnWrite.DefaultDatabase.QueryValue(
+        'select cost_eur from v_order_summary os where os.order_id = :order_id',
+        0, [GetXmlAttrValue(ndOrder, 'ID')]);
+      dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_DEBITORDER',
+        XmlAttrs2Vars(ndOrder, 'ID=ACCOUNT_ID;ORDER_ID=ID',
+        Value2Vars(MoneyEur, 'AMOUNT_EUR')));
+    end;
     trnWrite.Commit;
     ShowMessage('Возврат оформлен');
   except
