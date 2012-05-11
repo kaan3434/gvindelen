@@ -27,10 +27,11 @@ type
     actViewAll: TAction;
     StatusBar1: TStatusBar;
     ProgressBar1: TProgressBar;
-    dsSwims: TDataSource;
     actDummy: TAction;
     actNeedScan: TAction;
     RibbonPage2: TRibbonPage;
+    RibbonGroup1: TRibbonGroup;
+    actTeachTournirs: TAction;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure actScanAllBookerExecute(Sender: TObject);
