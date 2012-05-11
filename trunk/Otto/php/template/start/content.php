@@ -20,23 +20,23 @@
         </div>
       </li>
 
-      
-    </ul>
-    <ul class="ulist">
-
       <li>
-        <div class="widetxt">
+        <div class="widetxt2h">
           <div class="hl">
-            <a href="">Уважаемые клиенты!</a>
+            <a href="">Внимание!!!</a>
           </div>
-          <font color='blue'>
-          <p>Коллектив ЗАО "BALT-POST" cердечно поздравляет вас с <font color="red">праздником Победы</font>.</p> 
-          <p>Счастья вам, радости, любви  и удачных заявок!</p>
-          <p><font color="green">8 мая</font> мы работаем до <font color="green">17-00</font>.</p>
-          <p>Пожалуйста, оставляйте заявки на нашем сайте.</p>
+          <font color='green' size="4">
+          <p>Возврат товара осуществляется по адресу: <font color="blue">220089, г. Минск, ул. Уманская, 54-49</font>.<br/><br/></p>
+          </font>
+          <font color="red" size="4">
+          <p>В случае самостоятельной отправки клиентами посылок с возвращаемым товаром <font color="blue">в Литву, фирме Бермета</font>, стоимость улуги возврата будет увеличена до <font color="green">7&euro;</font>.</p>
           </font>
         </div>
       </li>
+      
+      
+    </ul>
+    <ul class="ulist">
 
       <li>
         <div class="widetxt">
