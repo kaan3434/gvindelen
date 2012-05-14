@@ -10,9 +10,9 @@ uses
   FIBDatabase, pFIBDatabase, JvDSADialogs, frxClass, frxExportPDF,
   frxFIBComponents, ExtCtrls, DBGridEh,
   JvEmbeddedForms, JvProgressComponent, frxRich, pFIBScripter,
-  JvBaseDlg, 
-  gsFileVersionInfo, JvLogFile, JvProgressDialog, 
-  frxExportXML, 
+  JvBaseDlg,
+  gsFileVersionInfo, JvLogFile, JvProgressDialog,
+  frxExportXML,
   ComCtrls;
 
 type
@@ -145,10 +145,11 @@ type
     frxInvoice: TfrxReport;
     btnCleanUp: TTBXItem;
     actDBClean: TAction;
-    actMoneyReturnBank: TAction;
+    actMoneyBackBank: TAction;
     btnMoneyReturn: TTBXItem;
-    actMoneyReturnPost: TAction;
+    actMoneyBackBelpost: TAction;
     btnMoneyReturnPost: TTBXItem;
+    actMoneyBackAccount: TAction;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -185,7 +186,9 @@ type
     procedure actExportToSiteExecute(Sender: TObject);
     procedure actExportPrePacklistExecute(Sender: TObject);
     procedure actDBCleanExecute(Sender: TObject);
-    procedure actMoneyReturnBankExecute(Sender: TObject);
+    procedure actMoneyBackBankExecute(Sender: TObject);
+    procedure actMoneyBackBelpostExecute(Sender: TObject);
+    procedure actMoneyBackAccountExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -206,9 +209,9 @@ uses
   uFormTableOrder, uFormTableClients, uParseProtocol, uParseLiefer,
   uParseConsignment, pFIBQuery, uParsePayments,
   uFormWizardOrder, uSetByr2Eur, uExportSMSReject,
-  uExportCancellation, uExportOrder, uExportInvoices, uExportPackList, 
-  uParseArtN, uParseCancellation, uFormWizardReturn, uParseInfo2Pay, 
-  uExportToSite, uExportPrePackList;
+  uExportCancellation, uExportOrder, uExportInvoices, uExportPackList,
+  uParseArtN, uParseCancellation, uFormWizardReturn, uParseInfo2Pay,
+  uExportToSite, uExportPrePackList, uMoneyBack;
 
 procedure TMainForm.actParseOrderXmlExecute(Sender: TObject);
 var
@@ -765,27 +768,19 @@ begin
   dmOtto.CleanUp;
 end;
 
-procedure TMainForm.actMoneyReturnBankExecute(Sender: TObject);
-var
-  Orders: string;
-  OrderId: Variant;
+procedure TMainForm.actMoneyBackBankExecute(Sender: TObject);
 begin
-  frxReport.LoadFromFile(Path['FastReport']+'MoneyBackBelPost.fr3');
-  frxReport.PrepareReport(true);
-  frxReport.ShowPreparedReport;
-  Orders:= trnWrite.DefaultDatabase.QueryValue(
-    'select list(distinct o.order_id) '+
-    'from orders o '+
-    'inner join v_order_attrs oa on (oa.object_id = o.order_id and oa.attr_sign=''MONEYBACK_KIND'' and oa.attr_value=''BELPOST'') '+
-    'inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign=''HAVERETURN'') '+
-    'left join statuses s2 on (s2.status_id = o.state_id) '+
-    'where coalesce(s2.status_sign, '''')  <> ''MONEYSENT''',
-    0, [], trnWrite);
-  while Orders <> '' do
-  begin
-    OrderId:= TakeFront5(Orders,',');
-//    dmOtto.ActionExecute(trnWrite, 'ORDER');
-  end;
+  ReportMoneyBackBank(trnWrite, frxReport);
+end;
+
+procedure TMainForm.actMoneyBackBelpostExecute(Sender: TObject);
+begin
+  ReportMoneyBackBelpost(trnWrite, frxReport);
+end;
+
+procedure TMainForm.actMoneyBackAccountExecute(Sender: TObject);
+begin
+  ReportMoneyBackAccount(trnWrite, frxReport);
 end;
 
 end.

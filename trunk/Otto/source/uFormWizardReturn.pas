@@ -30,6 +30,7 @@ type
     ndOrderTax: TXmlNode;
     ndOrderMoneys: TXmlNode;
     ndAccount: TXmlNode;
+    ndMoneyBack: TXmlNode;
     frmOrderItems: TFrameOrderItems;
     frmMoneyBack: TFrameMoneyBack;
 //    frmClient: TFrameClient;
@@ -78,6 +79,7 @@ begin
   ndOrderTaxs:= ndOrder.NodeFindOrCreate('ORDERTAXS');
   ndOrderMoneys:= ndOrder.NodeFindOrCreate('ORDERMONEYS');
   ndAccount:= ndClient.NodeFindOrCreate('ACCOUNT');
+  ndMoneyBack:= ndOrder.NodeFindOrCreate('MONEYBACK');
 end;
 
 procedure TFormWizardReturn.ReadFromDB(aObjectId: Integer);
@@ -111,6 +113,7 @@ begin
     frmMoneyBack:= TFrameMoneyBack.Create(Self);
     frmMoneyBack.ndOrder:= ndOrder;
     frmMoneyBack.ndClient:= ndClient;
+    frmMoneyBack.ndMoneyBack:= ndMoneyBack;
     IncludeForm(wzIPageMoneyBackKind, frmMoneyBack);
 
     wzForm.ActivePageIndex:= 0;

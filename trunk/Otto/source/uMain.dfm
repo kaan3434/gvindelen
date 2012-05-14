@@ -22,8 +22,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 837
-    Height = 47
+    Width = 829
+    Height = 49
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -70,10 +70,10 @@ object MainForm: TMainForm
           Action = actProcessInfo2Pay
         end
         object btnMoneyReturn: TTBXItem
-          Action = actMoneyReturnBank
+          Action = actMoneyBackBank
         end
         object btnMoneyReturnPost: TTBXItem
-          Action = actMoneyReturnPost
+          Action = actMoneyBackBelpost
         end
       end
       object subExportActions: TTBXSubmenuItem
@@ -212,16 +212,16 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 436
-    Width = 837
+    Top = 432
+    Width = 829
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object pbMain: TProgressBar
     Left = 0
-    Top = 419
-    Width = 837
+    Top = 415
+    Width = 829
     Height = 17
     Align = alBottom
     TabOrder = 1
@@ -399,14 +399,20 @@ object MainForm: TMainForm
       ImageIndex = 18
       OnExecute = actDBCleanExecute
     end
-    object actMoneyReturnBank: TAction
+    object actMoneyBackAccount: TAction
+      Category = 'Export'
+      Caption = #1056#1077#1077#1089#1090#1088' '#1074#1086#1079#1074#1088#1072#1090#1086#1074' '#1085#1072' '#1089#1095#1077#1090
+      OnExecute = actMoneyBackAccountExecute
+    end
+    object actMoneyBackBank: TAction
       Category = 'Export'
       Caption = #1056#1077#1077#1089#1090#1088' '#1041#1072#1085#1082#1086#1074#1089#1082#1080#1093' '#1087#1077#1088#1077#1074#1086#1076#1086#1074
-      OnExecute = actMoneyReturnBankExecute
+      OnExecute = actMoneyBackBankExecute
     end
-    object actMoneyReturnPost: TAction
+    object actMoneyBackBelpost: TAction
       Category = 'Export'
       Caption = #1056#1077#1077#1089#1090#1088' '#1055#1086#1095#1090#1086#1074#1099#1093' '#1087#1077#1088#1077#1074#1086#1076#1086#1074
+      OnExecute = actMoneyBackBelpostExecute
     end
   end
   object imgListMainMenu: TPngImageList

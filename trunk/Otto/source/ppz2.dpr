@@ -43,7 +43,8 @@ uses
   uFrameReturn in 'uFrameReturn.pas' {FrameMoneyBack},
   uParseLiefer in 'uParseLiefer.pas',
   uExportReturns in 'uExportReturns.pas',
-  uExportCancellation in 'uExportCancellation.pas';
+  uExportCancellation in 'uExportCancellation.pas',
+  uMoneyBack in 'uMoneyBack.pas';
 
 {$R *.res}
 

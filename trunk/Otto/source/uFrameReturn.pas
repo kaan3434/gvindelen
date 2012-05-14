@@ -35,6 +35,7 @@ type
     ndOrder: TXmlNode;
     ndClient: TXmlNode;
     ndOrderMoneys: TXmlNode;
+    ndMoneyBack: TXmlNode;
     procedure InitData; override;
     procedure FreeData; override;
     procedure OpenTables; override;
