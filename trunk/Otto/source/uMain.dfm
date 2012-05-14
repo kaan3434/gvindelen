@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 399
-  Top = 179
+  Left = 347
+  Top = 316
   Width = 845
   Height = 512
   Caption = 'PPZ'
@@ -22,8 +22,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 829
-    Height = 49
+    Width = 837
+    Height = 47
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -69,12 +69,6 @@ object MainForm: TMainForm
         object btnImportInfo2Pay: TTBXItem
           Action = actProcessInfo2Pay
         end
-        object btnMoneyReturn: TTBXItem
-          Action = actMoneyBackBank
-        end
-        object btnMoneyReturnPost: TTBXItem
-          Action = actMoneyBackBelpost
-        end
       end
       object subExportActions: TTBXSubmenuItem
         Caption = #1048#1089#1093#1086#1076#1103#1097#1080#1077
@@ -103,6 +97,12 @@ object MainForm: TMainForm
         end
         object btnExportToSite: TTBXItem
           Action = actExportToSite
+        end
+        object btnMoneyReturn: TTBXItem
+          Action = actMoneyBackBank
+        end
+        object btnMoneyReturnPost: TTBXItem
+          Action = actMoneyBackBelpost
         end
       end
       object btnParseOrder: TTBXItem
@@ -212,16 +212,16 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 432
-    Width = 829
+    Top = 436
+    Width = 837
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object pbMain: TProgressBar
     Left = 0
-    Top = 415
-    Width = 829
+    Top = 419
+    Width = 837
     Height = 17
     Align = alBottom
     TabOrder = 1
@@ -1552,7 +1552,7 @@ object MainForm: TMainForm
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 40998.019255509300000000
+    ReportOptions.LastChange = 41043.392592743100000000
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
     Left = 352

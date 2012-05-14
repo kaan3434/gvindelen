@@ -27,7 +27,10 @@ type
     rgReturnKind: TRadioGroup;
     edBonus: TDBNumberEditEh;
     lblBonus: TLabel;
+    chkPayByFirm: TCheckBox;
     procedure rgReturnKindClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     function GetOrderId: Integer;
     { Private declarations }
@@ -135,6 +138,14 @@ begin
     trnWrite.RollBackToSavePoint('OnMoneyBack');
     raise;
   end;
+end;
+
+procedure TFrameMoneyBack.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  inherited;
+  if Key=vk_Return then
+    Key:= 0;
 end;
 
 end.

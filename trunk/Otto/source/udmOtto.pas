@@ -147,13 +147,13 @@ begin
     begin
       Params.ClearValues;
       Transaction:= aTransaction;
-      ParamByName('I_OBJECT_SIGN').AsString:= aObjectSign;
+      ParamByName('I_OBJECT_SIGN').AsString:= UpperCase(aObjectSign);
       ParamByName('I_ACTION_SIGN').Value:= IfThen(aActionSign = '', null, aActionSign);
       ParamByName('I_OBJECT_ID').Value:= IfThen(aObjectId=0, null, aObjectId);
       stBlob:= TStringStream.Create(aParams);
       try
         ParamByName('I_PARAMS').LoadFromStream(stBlob);
-//        SaveStringAsFile(aParams, 'params.txt');
+        SaveStringAsFile(aParams, 'params.txt');
       finally
         stBlob.Free;
       end;
@@ -436,7 +436,7 @@ begin
   with qryReadObject do
   begin
     Transaction:= aTransaction;
-    ExecWP([aNode.Name, aObjectId]);
+    ExecWP([UpperCase(aNode.Name), aObjectId]);
     try
       while not Eof do
       begin
