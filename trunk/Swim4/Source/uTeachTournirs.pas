@@ -29,6 +29,8 @@ type
     Panel1: TPanel;
     edTournirName: TDBEditEh;
     DBEditEh2: TDBEditEh;
+    Label1: TLabel;
+    Label2: TLabel;
   private
     { Private declarations }
   public

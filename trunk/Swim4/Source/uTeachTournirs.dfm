@@ -149,7 +149,7 @@ object Form3: TForm3
         Align = alLeft
         DataGrouping.GroupLevels = <>
         DataSource = dsATournirs
-        Flat = False
+        Flat = True
         FooterColor = clWindow
         FooterFont.Charset = DEFAULT_CHARSET
         FooterFont.Color = clWindowText
@@ -174,26 +174,41 @@ object Form3: TForm3
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
-        ExplicitLeft = 512
-        ExplicitTop = 40
-        ExplicitWidth = 185
-        ExplicitHeight = 41
+        ExplicitLeft = 351
+        object Label1: TLabel
+          Left = 18
+          Top = 18
+          Width = 63
+          Height = 17
+          AutoSize = False
+          Caption = #1053#1072#1079#1074#1072#1085#1080#1077
+        end
+        object Label2: TLabel
+          Left = 18
+          Top = 41
+          Width = 63
+          Height = 17
+          AutoSize = False
+          Caption = #1057#1087#1086#1088#1090
+        end
         object edTournirName: TDBEditEh
           Left = 96
           Top = 16
           Width = 393
-          Height = 21
+          Height = 19
           EditButtons = <>
+          Flat = True
           TabOrder = 0
           Text = 'edTournirName'
           Visible = True
         end
         object DBEditEh2: TDBEditEh
           Left = 96
-          Top = 56
+          Top = 41
           Width = 393
-          Height = 21
+          Height = 19
           EditButtons = <>
+          Flat = True
           TabOrder = 1
           Text = 'DBEditEh2'
           Visible = True
@@ -233,10 +248,8 @@ object Form3: TForm3
       '    BTOURNIRS'
       'ORDER BY '
       '    ASPORT_ID')
-    Active = True
     Transaction = trnWrite
     Database = dmFormMain.dbSwim
-    UpdateTransaction = dmFormMain.trnWrite
     Left = 112
     Top = 24
   end
@@ -247,6 +260,10 @@ object Form3: TForm3
     Top = 24
   end
   object qryASports: TpFIBDataSet
+    SelectSQL.Strings = (
+      'select *'
+      'from asports a'
+      'order by a.asport_id')
     Transaction = trnWrite
     Database = dmFormMain.dbSwim
     Left = 112
@@ -260,6 +277,7 @@ object Form3: TForm3
       '     on (r.country_sign = a.country_sign)'
       'where r.region_sign = :region_sign'
       'order by a.start_dt desc')
+    Active = True
     Transaction = trnWrite
     Database = dmFormMain.dbSwim
     Left = 112
