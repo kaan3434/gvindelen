@@ -11,7 +11,8 @@ uses
   uDmFormMain in 'uDmFormMain.pas' {dmFormMain: TDataModule},
   ScanWSDL in 'ScanWSDL.pas',
   GvStr in 'D:\4Delphi\Gvindln\Source\GvStr.pas',
-  uTeachTournirs in 'uTeachTournirs.pas' {Form3};
+  uTeachTournirs in 'uTeachTournirs.pas' {Form3},
+  GvVariant in 'D:\4Delphi\Gvindln\Source\GvVariant.pas';
 
 {$R *.res}
 

@@ -182,7 +182,8 @@ begin
   finally
     dm.trnWrite.Commit;
   end;
-  StartThreads;
+  if Settings.Scaners.Attr['AutoStart'].AsBooleanDef(false) then
+    StartThreads;
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
