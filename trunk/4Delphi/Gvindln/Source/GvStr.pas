@@ -2301,16 +2301,17 @@ var
   StartWord: Boolean;
 begin
   Len:= Length(St);
+  Result:= '';
   Result:= LowerCase(St);
   StartWord:= true;
   for i:= 1 to Len do
   begin
     if StartWord then
     begin
-      Result[i]:= UpCase(Result[i]);
+      Result[i]:= UpCase(St[i]);
       StartWord:= false;
     end;
-    StartWord:= Pos(Result[i], KeyChars) > 0;
+    StartWord:= Pos(St[i], KeyChars) > 0;
   end;
 end;
 

@@ -12,6 +12,8 @@ function nvl(Value1, Value2: Variant): Variant;
 
 function ToNumber(St: string): Variant;
 
+function NullIf(Value1, Value2: Variant): Variant;
+
 implementation
 
 function nvl(Value1, Value2: Variant): Variant;
@@ -44,6 +46,14 @@ begin
   if p2>0 then
     St[p2]:= DecimalSeparator;
   Result:= St;
+end;
+
+function NullIf(Value1, Value2: Variant): Variant;
+begin
+  if Value1 = Value2 then
+    Result:= null
+  else
+    Result:= Value1;
 end;
 
 end.

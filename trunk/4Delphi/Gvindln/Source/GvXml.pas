@@ -21,9 +21,9 @@ type
     procedure SetAsBoolean(const Value: Boolean);
     procedure SetAsDateTime(const Value: TDateTime);
     procedure SetAsFloat(const Value: Double);
-    procedure SetAsString(const Value: String);
+    procedure SetAsVariant(const Value: Variant);
+    function GetAsVariant: variant;
   public
-    procedure SetValue(Value: Variant);
     function AsIntegerDef(DefaultValue: Integer): Integer;
     function AsStringDef(DefaultValue: String): String;
     function AsBooleanDef(DefaultValue: Boolean): Boolean;
@@ -35,6 +35,7 @@ type
     property AsBoolean: Boolean read GetAsBoolean write SetAsBoolean;
     property AsDateTime: TDateTime read GetAsDateTime write SetAsDateTime;
     property AsFloat: Double read GetAsFloat write SetAsFloat;
+    property Value: variant read GetAsVariant write SetAsVariant;
   end;
 
   TGvXmlAttributeList = class(TObjectList<TGvXmlAttribute>)
@@ -498,7 +499,7 @@ begin
   Att:= FAttributes.Find(aAttrName); // Search for given name
   if not assigned(Att) then // If attribute is not found, create one
     Att:= AttributeAdd(aAttrName);
-  Att.SetValue(aAttrValue);
+  Att.Value:= aAttrValue;
   Result := Self;
 end;
 
@@ -669,6 +670,11 @@ begin
   Result:= StrToInt(FValue);
 end;
 
+function TGvXmlAttribute.GetAsVariant: variant;
+begin
+  Result:= FValue;
+end;
+
 procedure TGvXmlAttribute.SetAsBoolean(const Value: Boolean);
 begin
   FValue:= IfThen(Value, '1', '0')
@@ -689,12 +695,7 @@ begin
   FValue:= IntToStr(Value);
 end;
 
-procedure TGvXmlAttribute.SetAsString(const Value: String);
-begin
-
-end;
-
-procedure TGvXmlAttribute.SetValue(Value: Variant);
+procedure TGvXmlAttribute.SetAsVariant(const Value: Variant);
 begin
   if VarType(Value) = varUString then
     FValue:= Value
