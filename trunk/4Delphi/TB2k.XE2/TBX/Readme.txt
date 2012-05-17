@@ -1,0 +1,5 @@
+Short info
+
+Installation
+
+Freeware
