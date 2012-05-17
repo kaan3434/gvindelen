@@ -282,39 +282,54 @@ inherited FormTableOrders: TFormTableOrders
                     Visible = False
                   end
                   item
+                    AutoFitColWidth = False
                     EditButtons = <>
                     FieldName = 'ORDERITEM_INDEX'
                     Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = #1055#1086#1079'.'
+                    Width = 30
                   end
                   item
                     EditButtons = <>
                     FieldName = 'ARTICLE_CODE'
                     Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = #1040#1088#1090#1080#1082#1091#1083
                   end
                   item
                     EditButtons = <>
                     FieldName = 'NAME_RUS'
                     Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = #1053#1072#1080#1084#1077#1085#1086#1074#1072#1085#1080#1077
                   end
                   item
                     EditButtons = <>
                     FieldName = 'DIMENSION'
                     Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = #1056#1072#1079#1084#1077#1088
                   end
                   item
                     EditButtons = <>
                     FieldName = 'PRICE_EUR'
                     Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = #1062#1077#1085#1072', EUR'
                   end
                   item
                     EditButtons = <>
                     FieldName = 'AMOUNT'
                     Footers = <>
+                    Visible = False
                   end
                   item
                     EditButtons = <>
                     FieldName = 'COST_EUR'
                     Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = #1057#1090#1086#1080#1084#1086#1089#1090#1100', EUR'
                   end
                   item
                     EditButtons = <>
@@ -324,14 +339,26 @@ inherited FormTableOrders: TFormTableOrders
                   end
                   item
                     EditButtons = <>
+                    FieldName = 'STATE_NAME'
+                    Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = #1057#1086#1089#1090#1086#1103#1085#1080#1077
+                    Width = 100
+                  end
+                  item
+                    EditButtons = <>
                     FieldName = 'STATUS_NAME'
                     Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = #1057#1090#1072#1090#1091#1089
                     Width = 200
                   end
                   item
                     EditButtons = <>
                     FieldName = 'STATUS_DTM'
                     Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = #1044#1072#1090#1072' '#1076#1074#1080#1078#1077#1085#1080#1103
                   end>
                 object RowDetailData: TRowDetailPanelControlEh
                 end
@@ -774,6 +801,9 @@ inherited FormTableOrders: TFormTableOrders
       end>
     Bitmap = {}
   end
+  inherited trnNSI: TpFIBTransaction
+    Active = True
+  end
   object qryOrderAttrs: TpFIBDataSet
     SelectSQL.Strings = (
       'select a.attr_name, o.o_param_name, o.o_param_value'
@@ -809,6 +839,7 @@ inherited FormTableOrders: TFormTableOrders
       '    oi.AMOUNT,'
       '    oi.COST_EUR,'
       '    oi.STATUS_ID,'
+      '    ss.STATUS_NAME STATE_NAME,'
       '    s.STATUS_NAME,'
       '    oi.STATUS_DTM,'
       '    oi.ORDERITEM_INDEX,'
@@ -823,6 +854,7 @@ inherited FormTableOrders: TFormTableOrders
       
         '  left join v_orderitem_attrs oia2 on (oia2.object_id = oi.order' +
         'item_id and oia2.attr_sign='#39'KIND_RUS'#39')'
+      '  left join statuses ss on (ss.status_id = oi.state_id)'
       'WHERE ORDER_ID = :ORDER_ID'
       'ORDER BY ORDERITEM_ID')
     Transaction = trnNSI
