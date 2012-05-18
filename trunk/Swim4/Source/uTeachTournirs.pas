@@ -8,7 +8,7 @@ uses
   FIBDatabase, pFIBDatabase, GridsEh, DBGridEh, Vcl.StdCtrls, Data.DB,
   FIBDataSet, pFIBDataSet, Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.Mask, DBCtrlsEh,
   DBLookupEh, TB2Dock, SpTBXItem, SpTBXDkPanels, SpTBXEditors, SpTBXControls,
-  Vcl.ActnList;
+  Vcl.ActnList, FIBQuery, pFIBQuery, pFIBStoredProc;
 
 type
   TForm3 = class(TForm)
@@ -25,40 +25,49 @@ type
     dsCountries: TDataSource;
     Splitter1: TSplitter;
     SpTBXDockablePanel1: TSpTBXDockablePanel;
-    lcbASport: TDBLookupComboboxEh;
-    lcbCountry: TDBLookupComboboxEh;
-    edTournirLevel: TDBNumberEditEh;
-    cbSwapable: TCheckBox;
     Panel1: TPanel;
     SpTBXMultiDock2: TSpTBXMultiDock;
-    edTournirName: TDBEditEh;
-    edTournirMask: TDBEditEh;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
     Label4: TLabel;
-    Label5: TLabel;
-    Label6: TLabel;
     SpTBXButton1: TSpTBXButton;
     ActionList: TActionList;
     actATournirNew: TAction;
     actBTournirIgnore: TAction;
     actBTournirLink: TAction;
     actFillEditForm: TAction;
-    cbIgnore: TCheckBox;
     SpTBXDockablePanel2: TSpTBXDockablePanel;
     gridATournirs: TDBGridEh;
     trnRead: TpFIBTransaction;
+    spTempSignle: TpFIBStoredProc;
+    spTemp: TpFIBStoredProc;
+    Label1: TLabel;
+    edTournirName: TDBEditEh;
+    Label2: TLabel;
+    edTournirMask: TDBEditEh;
+    Label3: TLabel;
+    lcbASport: TDBLookupComboboxEh;
+    Label5: TLabel;
+    lcbCountry: TDBLookupComboboxEh;
+    Label6: TLabel;
+    edTournirLevel: TDBNumberEditEh;
+    cbSwapable: TCheckBox;
+    cbIgnore: TCheckBox;
+    actBTournirMaskAdd: TAction;
+    SpTBXButton2: TSpTBXButton;
     procedure actFillEditFormExecute(Sender: TObject);
     procedure lcbASportChange(Sender: TObject);
     procedure lcbCountryChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure trnReadAfterStart(Sender: TObject);
-    procedure gridBTournirsDblClick(Sender: TObject);
     procedure actATournirNewExecute(Sender: TObject);
     procedure trnWriteAfterEnd(EndingTR: TFIBTransaction;
       Action: TTransactionAction; Force: Boolean);
+    procedure qryBTournirsAfterScroll(DataSet: TDataSet);
+    procedure gridATournirsDblClick(Sender: TObject);
+    procedure actBTournirLinkExecute(Sender: TObject);
+    procedure actBTournirMaskAddExecute(Sender: TObject);
+    procedure actBTournirMaskAddUpdate(Sender: TObject);
+    procedure actATournirNewUpdate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -77,22 +86,82 @@ uses
 
 procedure TForm3.actATournirNewExecute(Sender: TObject);
 var
-  ATournir_Id: Variant;
+  bm: TBookmark;
 begin
-  trnWrite.StartTransaction;
+  bm:= qryBTournirs.GetBookmark;
   try
-    ATournir_Id:= trnWrite.DefaultDatabase.QueryValue(
-      'select o_atournir_id from btournir_teach'+
-      '(:i_btournir_id, :i_atournir_id, :i_ignore_flg, '+
-      ':i_atournir_name, :i_tournir_lvl, :i_btournir_mask, '+
-      ':i_asport_id, :i_country_sign, :i_swapable)',
-      0, [qryBTournirs['BTournir_Id'], qryBTournirs['ATournir_Id'], cbIgnore.Checked,
-      edTournirName.Text, edTournirLevel.Value, NullIf(trim(edTournirMask.Text), ''),
-      lcbASport.Value, lcbCountry.Value, cbSwapable.Checked], trnWrite);
-    trnWrite.Commit;
+    with spTempSignle do
+    begin
+      StoredProcName:= 'BTOURNIR_TEACH';
+      Params.ClearValues;
+      Params.ParamByName('i_btournir_id').Value := qryBTournirs['BTournir_Id'];
+      Params.ParamByName('i_ignore_flg').Value := cbIgnore.Checked;
+      Params.ParamByName('i_atournir_name').AsString := edTournirName.Text;
+      Params.ParamByName('i_tournir_lvl').Value:= edTournirLevel.Value;
+      Params.ParamByName('i_asport_id').Value:= lcbASport.Value;
+      Params.ParamByName('i_country_sign').Value := lcbCountry.Value;
+      Params.ParamByName('i_swapable').Value:= cbSwapable.Checked;
+      ExecProc;
+    end;
   finally
-    trnWrite.Rollback;
+    qryBTournirs.GotoBookmark(bm);
+    qryBTournirs.FreeBookmark(bm);
   end;
+end;
+
+procedure TForm3.actATournirNewUpdate(Sender: TObject);
+begin
+  actATournirNew.Enabled:= edTournirMask.Text = '';
+end;
+
+procedure TForm3.actBTournirLinkExecute(Sender: TObject);
+var
+  bm: TBookmark;
+begin
+  bm:= qryBTournirs.GetBookmark;
+  try
+    with spTempSignle do
+    begin
+      StoredProcName:= 'BTOURNIR_LINK';
+      Params.ClearValues;
+      Params.ParamByName('i_btournir_id').Value := qryBTournirs['BTournir_Id'];
+      Params.ParamByName('i_atournir_id').Value := qryATournirs['ATournir_Id'];
+      ExecProc;
+    end;
+  finally
+    qryBTournirs.GotoBookmark(bm);
+    qryBTournirs.FreeBookmark(bm);
+  end;
+end;
+
+procedure TForm3.actBTournirMaskAddExecute(Sender: TObject);
+var
+  bm: TBookmark;
+begin
+  bm:= qryBTournirs.GetBookmark;
+  try
+    with spTempSignle do
+    begin
+      StoredProcName:= 'BTOURNIR_MASK_ADD';
+      Params.ClearValues;
+      Params.ParamByName('i_bsport_id').Value := qryBTournirs['BSport_Id'];
+      Params.ParamByName('i_ignore_flg').Value := cbIgnore.Checked;
+      Params.ParamByName('i_tournir_lvl').Value:= edTournirLevel.Value;
+      Params.ParamByName('i_asport_id').Value:= lcbASport.Value;
+      Params.ParamByName('i_country_sign').Value := lcbCountry.Value;
+      Params.ParamByName('i_swapable_flg').Value:= cbSwapable.Checked;
+      Params.ParamByName('i_btournir_mask').Value:= NullIf(edTournirMask.Text, '');
+      ExecProc;
+    end;
+  finally
+    qryBTournirs.GotoBookmark(bm);
+    qryBTournirs.FreeBookmark(bm);
+  end;
+end;
+
+procedure TForm3.actBTournirMaskAddUpdate(Sender: TObject);
+begin
+  actBTournirMaskAdd.Enabled:= edTournirMask.Text<>'';
 end;
 
 procedure TForm3.actFillEditFormExecute(Sender: TObject);
@@ -100,20 +169,28 @@ begin
   with gridBTournirs.DataSource do
   begin
     if DataSet['ATournir_Id'] = null then
+    with spTemp do
     begin
+      StoredProcName:= 'BTOURNIR_DETECT';
+      Params.ClearValues;
+      Params.ParamByName('i_btournir_id').Value:= qryBTournirs['BTournir_Id'];
+      ExecProc;
       edTournirName.Text:= DataSet['BTournir_Name'];
-      lcbASport.Value:= DataSet['ASport_Id'];
-      lcbCountry.Value:= 'ANY';
+      lcbASport.Value:= ParamValue('o_asport_id');
+      lcbCountry.Value:= nvl(ParamValue('o_country_sign'), 'ANY');
+      edTournirLevel.Value:= ParamValue('o_tournir_lvl');
+      cbIgnore.Checked:= ParamValue('o_ignore_flg')='1';
+      cbSwapable.Checked:= ParamValue('o_swapable_flg') = '1';
     end
     else
     begin
       edTournirName.Text:= DataSet['ATournir_Name'];
-      edTournirMask.Text:= DataSet['BTournir_Mask'];
       lcbASport.Value:= DataSet['ASport_Id'];
       lcbCountry.Value:= DataSet['Country_Sign'];
       cbSwapable.Checked:= Dataset['Swapable'];
       cbIgnore.Checked:= DataSet['Ignore_Flg'];
     end;
+    edTournirMask.Text:= '';
   end;
 end;
 
@@ -127,9 +204,9 @@ begin
   trnRead.Rollback;
 end;
 
-procedure TForm3.gridBTournirsDblClick(Sender: TObject);
+procedure TForm3.gridATournirsDblClick(Sender: TObject);
 begin
-  actFillEditForm.Execute;
+  actBTournirLink.Execute;
 end;
 
 procedure TForm3.lcbASportChange(Sender: TObject);
@@ -162,18 +239,30 @@ begin
   end;
 end;
 
+procedure TForm3.qryBTournirsAfterScroll(DataSet: TDataSet);
+begin
+  if not DataSet.ControlsDisabled then
+    actFillEditForm.Execute;
+end;
+
 procedure TForm3.trnReadAfterStart(Sender: TObject);
 begin
-  qryBTournirs.Open;
-  qryASports.Open;
-  qryATournirs.Open;
-  qryCountries.Open;
+  qryBTournirs.DisableControls;
+  try
+    qryBTournirs.Open;
+    qryASports.Open;
+    qryATournirs.Open;
+    qryCountries.Open;
+  finally
+    qryBTournirs.EnableControls;
+    actFillEditForm.Execute;
+  end;
 end;
 
 procedure TForm3.trnWriteAfterEnd(EndingTR: TFIBTransaction;
   Action: TTransactionAction; Force: Boolean);
 begin
-  trnRead.Commit;
+  trnRead.Rollback;
   trnRead.StartTransaction;
 end;
 

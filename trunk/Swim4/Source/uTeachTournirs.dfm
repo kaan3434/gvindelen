@@ -43,7 +43,6 @@ object Form3: TForm3
     Align = alTop
     Caption = #1053#1077#1080#1079#1074#1077#1089#1090#1085#1099#1077' '#1090#1091#1088#1085#1080#1088#1099
     TabOrder = 0
-    ExplicitWidth = 959
     object gridBTournirs: TDBGridEh
       Left = 2
       Top = 15
@@ -51,6 +50,7 @@ object Form3: TForm3
       Height = 200
       Align = alClient
       AutoFitColWidths = True
+      Color = clBtnFace
       DataGrouping.GroupLevels = <>
       DataSource = dsBTournirs
       Flat = True
@@ -69,7 +69,6 @@ object Form3: TForm3
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = []
-      OnDblClick = gridBTournirsDblClick
       Columns = <
         item
           EditButtons = <>
@@ -135,14 +134,11 @@ object Form3: TForm3
     BevelOuter = bvNone
     Caption = 'Panel1'
     TabOrder = 1
-    ExplicitWidth = 959
-    ExplicitHeight = 457
     object SpTBXMultiDock2: TSpTBXMultiDock
       Left = 0
       Top = 0
       Width = 313
       Height = 459
-      ExplicitHeight = 457
       object SpTBXDockablePanel1: TSpTBXDockablePanel
         Left = 0
         Top = 0
@@ -177,7 +173,7 @@ object Form3: TForm3
           Caption = #1057#1087#1086#1088#1090
         end
         object Label5: TLabel
-          Left = 12
+          Left = 11
           Top = 146
           Width = 37
           Height = 13
@@ -190,9 +186,39 @@ object Form3: TForm3
           Height = 13
           Caption = #1059#1088#1086#1074#1077#1085#1100
         end
+        object SpTBXButton1: TSpTBXButton
+          Left = 223
+          Top = 225
+          Width = 75
+          Height = 25
+          Action = actATournirNew
+          Anchors = [akTop, akRight]
+          TabOrder = 1
+          DrawPushedCaption = False
+        end
+        object edTournirName: TDBEditEh
+          Left = 12
+          Top = 40
+          Width = 286
+          Height = 21
+          Anchors = [akLeft, akTop, akRight]
+          EditButtons = <>
+          TabOrder = 2
+          Visible = True
+        end
+        object edTournirMask: TDBEditEh
+          Left = 12
+          Top = 80
+          Width = 286
+          Height = 21
+          Anchors = [akLeft, akTop, akRight]
+          EditButtons = <>
+          TabOrder = 3
+          Visible = True
+        end
         object lcbASport: TDBLookupComboboxEh
           Left = 12
-          Top = 119
+          Top = 120
           Width = 286
           Height = 21
           Anchors = [akLeft, akTop, akRight]
@@ -200,13 +226,13 @@ object Form3: TForm3
           KeyField = 'ASPORT_ID'
           ListField = 'ASPORT_NAME'
           ListSource = dsASports
-          TabOrder = 1
+          TabOrder = 4
           Visible = True
           OnChange = lcbASportChange
         end
         object lcbCountry: TDBLookupComboboxEh
           Left = 12
-          Top = 159
+          Top = 160
           Width = 286
           Height = 21
           Anchors = [akLeft, akTop, akRight]
@@ -214,67 +240,46 @@ object Form3: TForm3
           KeyField = 'COUNTRY_SIGN'
           ListField = 'COUNTRY_NAME_ENG'
           ListSource = dsCountries
-          TabOrder = 2
+          TabOrder = 5
           Visible = True
           OnChange = lcbCountryChange
         end
         object edTournirLevel: TDBNumberEditEh
           Left = 12
-          Top = 199
+          Top = 200
           Width = 43
           Height = 21
-          EditButton.Style = ebsAltDropDownEh
+          EditButton.Style = ebsAltUpDownEh
           EditButton.Visible = True
           EditButtons = <>
-          TabOrder = 3
+          TabOrder = 6
           Value = 1.000000000000000000
           Visible = True
         end
         object cbSwapable: TCheckBox
-          Left = 85
-          Top = 201
+          Left = 77
+          Top = 202
           Width = 92
           Height = 17
           Caption = #1055#1077#1088#1077#1074#1077#1088#1090#1099#1096
-          TabOrder = 4
-        end
-        object edTournirName: TDBEditEh
-          Left = 12
-          Top = 39
-          Width = 286
-          Height = 21
-          Anchors = [akLeft, akTop, akRight]
-          EditButtons = <>
-          TabOrder = 5
-          Visible = True
-        end
-        object edTournirMask: TDBEditEh
-          Left = 12
-          Top = 79
-          Width = 286
-          Height = 21
-          Anchors = [akLeft, akTop, akRight]
-          EditButtons = <>
-          TabOrder = 6
-          Visible = True
-        end
-        object SpTBXButton1: TSpTBXButton
-          Left = 223
-          Top = 232
-          Width = 75
-          Height = 25
-          Action = actATournirNew
-          Anchors = [akTop, akRight]
           TabOrder = 7
-          DrawPushedCaption = False
         end
         object cbIgnore: TCheckBox
           Left = 201
-          Top = 201
+          Top = 202
           Width = 97
           Height = 17
           Caption = #1048#1075#1085#1086#1088#1080#1088#1086#1074#1072#1090#1100
           TabOrder = 8
+        end
+        object SpTBXButton2: TSpTBXButton
+          Left = 120
+          Top = 225
+          Width = 75
+          Height = 25
+          Action = actBTournirMaskAdd
+          TabOrder = 9
+          DrawPushedCaption = False
         end
       end
     end
@@ -287,10 +292,6 @@ object Form3: TForm3
       Align = alClient
       TabOrder = 1
       Options.Close = False
-      ExplicitLeft = 520
-      ExplicitTop = 128
-      ExplicitWidth = 160
-      ExplicitHeight = 128
       object gridATournirs: TDBGridEh
         Left = 0
         Top = 19
@@ -298,6 +299,7 @@ object Form3: TForm3
         Height = 440
         Align = alClient
         AutoFitColWidths = True
+        Color = clBtnFace
         DataGrouping.GroupLevels = <>
         DataSource = dsATournirs
         Flat = True
@@ -308,12 +310,15 @@ object Form3: TForm3
         FooterFont.Name = 'Tahoma'
         FooterFont.Style = []
         IndicatorOptions = [gioShowRowIndicatorEh]
+        Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+        OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
         TabOrder = 1
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clWindowText
         TitleFont.Height = -11
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        OnDblClick = gridATournirsDblClick
         Columns = <
           item
             AutoFitColWidth = False
@@ -353,7 +358,6 @@ object Form3: TForm3
     end
   end
   object trnWrite: TpFIBTransaction
-    Active = True
     DefaultDatabase = dmFormMain.dbSwim
     TimeoutAction = TARollback
     TRParams.Strings = (
@@ -381,14 +385,14 @@ object Form3: TForm3
       '    BSPORT_ID,'
       '    BOOKER_ID,'
       '    BOOKER_NAME,'
-      '    BTOURNIR_MASK,'
       '    IGNORE_FLG,'
-      '    USED_DT'
+      '    USED_DT    '
       'FROM'
       '    V_BTOURNIRS '
-      'ORDER BY ASPORT_ID, USED_DT DESC')
+      'ORDER BY ATOURNIR_ID, ASPORT_ID, USED_DT DESC')
     CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
     CacheModelOptions.BufferChunks = 100
+    AfterScroll = qryBTournirsAfterScroll
     AllowedUpdateKinds = []
     Transaction = trnRead
     Database = dmFormMain.dbSwim
@@ -448,7 +452,7 @@ object Form3: TForm3
       '    COUNTRY_NAME_ENG,'
       '    COUNTRY_NAME_RUS'
       'FROM COUNTRIES '
-      'ORDER BY COUNTRY_SIGN')
+      'ORDER BY COUNTRY_NAME_ENG')
     CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
     CacheModelOptions.BufferChunks = 100
     AllowedUpdateKinds = []
@@ -482,24 +486,46 @@ object Form3: TForm3
     object actATournirNew: TAction
       Caption = #1057#1086#1079#1076#1072#1090#1100
       OnExecute = actATournirNewExecute
+      OnUpdate = actATournirNewUpdate
     end
     object actBTournirIgnore: TAction
       Caption = #1048#1075#1085#1086#1088#1080#1088#1086#1074#1072#1090#1100
     end
     object actBTournirLink: TAction
       Caption = #1057#1074#1103#1079#1072#1090#1100
+      OnExecute = actBTournirLinkExecute
     end
     object actFillEditForm: TAction
       Caption = #1047#1072#1087#1086#1083#1085#1080#1090#1100' '#1092#1086#1088#1084#1091
       OnExecute = actFillEditFormExecute
     end
+    object actBTournirMaskAdd: TAction
+      Caption = #1054#1073#1091#1095#1080#1090#1100
+      OnExecute = actBTournirMaskAddExecute
+      OnUpdate = actBTournirMaskAddUpdate
+    end
   end
   object trnRead: TpFIBTransaction
-    Active = True
     DefaultDatabase = dmFormMain.dbSwim
     TimeoutAction = TARollback
     AfterStart = trnReadAfterStart
     Left = 48
     Top = 72
+  end
+  object spTempSignle: TpFIBStoredProc
+    Transaction = trnWrite
+    Database = dmFormMain.dbSwim
+    Left = 48
+    Top = 176
+    qoAutoCommit = True
+    qoStartTransaction = True
+    qoFreeHandleAfterExecute = False
+  end
+  object spTemp: TpFIBStoredProc
+    Transaction = trnRead
+    Database = dmFormMain.dbSwim
+    Left = 48
+    Top = 224
+    qoFreeHandleAfterExecute = False
   end
 end
