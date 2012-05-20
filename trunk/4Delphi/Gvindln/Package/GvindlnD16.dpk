@@ -44,6 +44,7 @@ contains
   GvChkCombo in '..\Source\GvChkCombo.pas',
   GvCloner in '..\Source\GvCloner.pas',
   GvColor in '..\Source\GvColor.pas',
-  GvXml in '..\Source\GvXml.pas';
+  GvXml in '..\Source\GvXml.pas',
+  GvVariant in '..\Source\GvVariant.pas';
 
 end.

@@ -46,15 +46,15 @@ function Take(var St:WideString; Index, Count: Integer): WideString; overload;
 function CopyLast(St: String; Count: Integer): string;
 function TakeLast(var St: String; Count: Integer): String;
 
-function CopyFront3(St: String; KeyChar: String=' '): String; overload;
-function CopyFront3(St: WideString; KeyChar: WideString=' '): WideString; overload;
-function CopyFront4(St: String; KeyChar: String=' '): String; overload;
-function CopyFront4(St: WideString; KeyChar: WideString=' '): WideString; overload;
+function CopyFront3(St: AnsiString; KeyChar: AnsiString; StartPos: Integer = 1): AnsiString; overload;
+function CopyFront3(St: WideString; KeyChar: WideString; StartPos: Integer = 1): WideString; overload;
+function CopyFront4(St: AnsiString; KeyChar: AnsiString; StartPos: Integer = 1): AnsiString; overload;
+function CopyFront4(St: WideString; KeyChar: WideString; StartPos: Integer = 1): WideString; overload;
 
-function TakeFront3(var St: String; KeyChar: String=#32): String; overload;
-function TakeFront4(var St: String; KeyChar: String=#32): String; overload;
-function TakeFront5(var St: String; KeyChar: String=#32): String; overload;
-function TakeFront5(var St: WideString; KeyChar: WideString=#32): WideString; overload;
+function TakeFront3(var St: String; KeyChar: String=' '): String; overload;
+function TakeFront4(var St: String; KeyChar: String=' '): String; overload;
+function TakeFront5(var St: String; KeyChar: String=' '): String; overload;
+function TakeFront5(var St: WideString; KeyChar: WideString=' '): WideString; overload;
 
 function CopyBack3(St: String; KeyChar: String=#32): String; overload;
 function CopyBack4(St: String; KeyChar: String=#32): String; overload;
@@ -69,6 +69,8 @@ function CopyBetween(ASt, ABegin, AContain1, AContain2, AContain3, AEnd: WideStr
   var VPos: Integer; ACaseSensitive:Boolean=false): WideString; overload;
 function CopyBetween(ASt, ABegin, AEnd: String;
   ACaseSensitive:Boolean=false): String; overload;
+function CopyBetween(ASt, ABegin, AEnd: String; StartPos: Integer;
+  ACaseSensitive: Boolean = false): String; overload;
 function CopyBetween(ASt, ABegin, AContain1, AEnd: String;
   ACaseSensitive:Boolean=false): String; overload;
 function CopyBetween(ASt, ABegin, AContain1, AContain2, AEnd: String;
@@ -229,8 +231,8 @@ function GvUtf8ToAnsi(St: String): String;
 
 function EscapeString(St: String; AddChar: String = ''): string; overload;
 function EscapeString(St: WideString; AddChar: WideString = ''): WideString; overload;
-function UnEscapeString(St: string; AddChar: String = ''): string; overload;
-function UnEscapeString(St: WideString; AddChar: WideString = ''): WideString; overload;
+function UnEscapeString(St: Ansistring; AddChar: AnsiString = ''): Ansistring; overload;
+function UnEscapeString(St: WideString): WideString; overload;
 
 function FilterString(St, KeyChars: string): string;
 
@@ -416,47 +418,47 @@ begin
   St:= Copy(St, 1, Length(St)-Count);
 end;
 
-function CopyFront3(St: String; KeyChar: String): String;
+function CopyFront3(St: AnsiString; KeyChar: AnsiString; StartPos: Integer = 1): AnsiString;
 var
   LS, P: Integer;
 begin
   LS:= Length(St);
-  P:= 1;
+  P:= StartPos;
   While (P<=LS) and (Pos(St[P], KeyChar)=0) do inc(P);
   While (P<=LS) and (Pos(St[P], KeyChar)>0) do inc(P);
-  result:= Copy(St, 1, P-1);
+  result:= Copy(St, StartPos, P-StartPos);
 end;
 
-function CopyFront3(St: WideString; KeyChar: WideString): WideString;
+function CopyFront3(St: WideString; KeyChar: WideString; StartPos: Integer = 1): WideString;
 var
   LS, P: Integer;
 begin
   LS:= Length(St);
-  P:= 1;
+  P:= StartPos;
   While (P<=LS) and (Pos(St[P], KeyChar)=0) do inc(P);
   While (P<=LS) and (Pos(St[P], KeyChar)>0) do inc(P);
-  result:= Copy(St, 1, P-1);
+  result:= Copy(St, StartPos, P-StartPos);
 end;
 
 
-function CopyFront4(St: String; KeyChar: String): String;
+function CopyFront4(St: AnsiString; KeyChar: AnsiString; StartPos: Integer = 1): AnsiString;
 var
   LS, P: Integer;
 begin
   LS:= Length(St);
   P:= 1;
   While (P<=LS) and (Pos(St[P], KeyChar)=0) do inc(P);
-  result:= Copy(St, 1, P-1);
+  result:= Copy(St, StartPos, P-StartPos);
 end;
 
-function CopyFront4(St: WideString; KeyChar: WideString): WideString;
+function CopyFront4(St: WideString; KeyChar: WideString; StartPos: Integer = 1): WideString;
 var
   LS, P: Integer;
 begin
   LS:= Length(St);
   P:= 1;
   While (P<=LS) and (Pos(St[P], KeyChar)=0) do inc(P);
-  result:= Copy(St, 1, P-1);
+  result:= Copy(St, StartPos, P-StartPos);
 end;
 
 function TakeFront3(var St: String; KeyChar: String): String;
@@ -705,6 +707,12 @@ var
 begin
   PSB:= 1;
   result:= CopyBetween(ASt, ABegin, '', '', '', AEnd, PSB, ACaseSensitive);
+end;
+
+function CopyBetween(ASt, ABegin, AEnd: String; StartPos: Integer;
+  ACaseSensitive: Boolean = false): String; overload;
+begin
+  result:= CopyBetween(ASt, ABegin, '', '', '', AEnd, StartPos, ACaseSensitive);
 end;
 
 function CopyBetween(ASt, ABegin, AContain1, AEnd: String;
@@ -1680,16 +1688,16 @@ begin
   repeat
     PSB:= PosEx(ASubSt, LSt, PSE+1);
     if PSB = 0 then break;
-    Move(ASt[PSE+1], result[lr+1], (PSB-1)-PSE);
+    Move(ASt[PSE+1], result[lr+1], ((PSB-1)-PSE)*SizeOf(Char));
     Inc(lr, (PSB-1)-PSE);
     if LSN > 0 then
     begin
-      Move(ANewSt[1], result[lr+1], LSN);
+      Move(ANewSt[1], result[lr+1], LSN*SizeOf(Char));
       Inc(lr, LSN);
     end;
     PSE:= PSB+LSS-1;
   until false;
-  Move(ASt[PSE+1], result[lr+1], LS-PSE);
+  Move(ASt[PSE+1], result[lr+1], (LS-PSE)*SizeOf(Char));
   inc(lr, LS-PSE);
   SetLength(result, lr);
 end;
@@ -2221,12 +2229,12 @@ begin
   result:= St;
 end;
 
-function UnEscapeString(St: string; AddChar: String = ''): string;
+function UnEscapeString(St: Ansistring; AddChar: AnsiString = ''): AnsiString;
 const
-  EscChar : string = '|,';
+  EscChar : WideString = '|,';
 var
   i: Byte;
-  EscChars : WideString;
+  EscChars: WideString;
 begin
   EscChars:= EscChar + AddChar;
   for i:= 1 to Length(EscChars) do
@@ -2234,16 +2242,19 @@ begin
   result:= St;
 end;
 
-function UnEscapeString(St: WideString; AddChar: WideString = ''): WideString;
-const
-  EscChar : WideString = '|,';
+function UnEscapeString(St: WideString): WideString;
 var
-  i: Byte;
-  EscChars : WideString;
+  P: Integer;
+  EscChar: WideString;
 begin
-  EscChars:= EscChar + AddChar;
-  for i:= 1 to Length(EscChars) do
-    St:= ReplaceAll(St, '&#'+IntToStr(ord(EscChars[i]))+';', EscChars[i]);
+  P:= PosEx('&#', St, 1);
+  while P > 0 do
+  begin
+    EscChar:= CopyBetween(St, '&#', ';', P);
+    if FilterString(EscChar, '0123456789') = EscChar then
+      St:= ReplaceAll(St, '&#'+EscChar+';', Chr(StrToInt(EscChar)));
+    P:= PosEx('&#', St, P);
+  end;
   result:= St;
 end;
 

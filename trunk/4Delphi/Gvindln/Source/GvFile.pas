@@ -555,7 +555,7 @@ begin
   if FileHandle=-1 then Exit;
   try
     FLen:= Length(St);
-    FileWrite(FileHandle, St[1], FLen);
+    FileWrite(FileHandle, St[1], FLen*SizeOf(Char));
   finally
     FileClose(FileHandle);
   end
