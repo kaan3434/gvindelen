@@ -185,7 +185,7 @@ function update_cookies($Url, $Response) {
     $NewCookArr = explode("\r\n", trim($NewCook));
     foreach ($NewCookArr as $NewCook) {
       list($Cookie,) = explode(';', $NewCook,2);
-      list($name, $value) = explode('=', $Cookie);
+      list($name, $value) = explode('=', $Cookie, 2);
       $FCookArr[$name] = $value;
     }
     $Cookies = array();

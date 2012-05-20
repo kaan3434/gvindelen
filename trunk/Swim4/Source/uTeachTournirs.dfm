@@ -1,8 +1,8 @@
-object Form3: TForm3
+object frmTeachTournirs: TfrmTeachTournirs
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'Form3'
+  Caption = 'frmTeachTournirs'
   ClientHeight = 679
   ClientWidth = 961
   Color = clBtnFace
@@ -13,7 +13,6 @@ object Form3: TForm3
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
-  Visible = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
@@ -236,6 +235,8 @@ object Form3: TForm3
           Width = 286
           Height = 21
           Anchors = [akLeft, akTop, akRight]
+          DropDownBox.ListSource = dsCountries
+          DropDownBox.Options = []
           EditButtons = <>
           KeyField = 'COUNTRY_SIGN'
           ListField = 'COUNTRY_NAME_ENG'
@@ -389,7 +390,8 @@ object Form3: TForm3
       '    USED_DT    '
       'FROM'
       '    V_BTOURNIRS '
-      'ORDER BY ATOURNIR_ID, ASPORT_ID, USED_DT DESC')
+      'WHERE ATOURNIR_ID is null and coalesce(IGNORE_FLG, 0)=0'
+      'ORDER BY IGNORE_FLG, ATOURNIR_ID, ASPORT_ID, USED_DT DESC')
     CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
     CacheModelOptions.BufferChunks = 100
     AfterScroll = qryBTournirsAfterScroll
@@ -411,7 +413,6 @@ object Form3: TForm3
       'select *'
       'from asports a'
       'order by a.asport_id')
-    CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
     CacheModelOptions.BufferChunks = 100
     AllowedUpdateKinds = []
     Transaction = trnRead
@@ -430,11 +431,7 @@ object Form3: TForm3
       '       a.end_dt'
       'from atournirs a'
       'where a.asport_id = coalesce(:asport_id, a.asport_id)'
-      '  and a.country_sign in (select r.country_sign'
-      '                           from regions r'
-      
-        '                           where r.region_sign = coalesce(:regio' +
-        'n_sign, r.region_sign))'
+      '  and a.country_sign = :region_sign'
       'order by a.start_dt desc')
     CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
     CacheModelOptions.BufferChunks = 100
@@ -453,7 +450,6 @@ object Form3: TForm3
       '    COUNTRY_NAME_RUS'
       'FROM COUNTRIES '
       'ORDER BY COUNTRY_NAME_ENG')
-    CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
     CacheModelOptions.BufferChunks = 100
     AllowedUpdateKinds = []
     Transaction = trnRead
@@ -506,6 +502,7 @@ object Form3: TForm3
     end
   end
   object trnRead: TpFIBTransaction
+    Active = True
     DefaultDatabase = dmFormMain.dbSwim
     TimeoutAction = TARollback
     AfterStart = trnReadAfterStart
@@ -519,13 +516,11 @@ object Form3: TForm3
     Top = 176
     qoAutoCommit = True
     qoStartTransaction = True
-    qoFreeHandleAfterExecute = False
   end
   object spTemp: TpFIBStoredProc
     Transaction = trnRead
     Database = dmFormMain.dbSwim
     Left = 48
     Top = 224
-    qoFreeHandleAfterExecute = False
   end
 end

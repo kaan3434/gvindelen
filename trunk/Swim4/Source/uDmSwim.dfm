@@ -7,7 +7,7 @@ object dmSwim: TdmSwim
     DBName = 'D:\Swim4\Data\SWIM.FDB'
     DBParams.Strings = (
       'user_name=SYSDBA'
-      'lc_ctype=UTF8'
+      'lc_ctype=UNICODE_FSS'
       'sql_role_name=ADMIN'
       'password=masterkey')
     DefaultTransaction = trnRead

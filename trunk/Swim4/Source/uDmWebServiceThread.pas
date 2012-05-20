@@ -104,7 +104,7 @@ begin
   begin
     Params.ClearValues;
     SQL.Text:=
-      'select bt.btournir_id, bt.atournir_id, bt.asport_id, bt.country_sign, bt.ignore_flg '+
+      'select bt.btournir_id, bt.atournir_id, bt.ignore_flg '+
       'from btournir_add(:tournir_title, :bsport_id, :tournir_region) btp '+
       'inner join btournirs bt on (bt.btournir_id = btp.o_btournir_id)';
     for i:= 0 to ParamCount-1 do

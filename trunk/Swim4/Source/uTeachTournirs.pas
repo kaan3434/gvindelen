@@ -11,7 +11,7 @@ uses
   Vcl.ActnList, FIBQuery, pFIBQuery, pFIBStoredProc;
 
 type
-  TForm3 = class(TForm)
+  TfrmTeachTournirs = class(TForm)
     GroupBox1: TGroupBox;
     gridBTournirs: TDBGridEh;
     trnWrite: TpFIBTransaction;
@@ -75,7 +75,7 @@ type
   end;
 
 var
-  Form3: TForm3;
+  frmTeachTournirs: TfrmTeachTournirs;
 
 implementation
 
@@ -84,7 +84,7 @@ implementation
 uses
   uDmFormMain, GvVariant;
 
-procedure TForm3.actATournirNewExecute(Sender: TObject);
+procedure TfrmTeachTournirs.actATournirNewExecute(Sender: TObject);
 var
   bm: TBookmark;
 begin
@@ -109,12 +109,12 @@ begin
   end;
 end;
 
-procedure TForm3.actATournirNewUpdate(Sender: TObject);
+procedure TfrmTeachTournirs.actATournirNewUpdate(Sender: TObject);
 begin
   actATournirNew.Enabled:= edTournirMask.Text = '';
 end;
 
-procedure TForm3.actBTournirLinkExecute(Sender: TObject);
+procedure TfrmTeachTournirs.actBTournirLinkExecute(Sender: TObject);
 var
   bm: TBookmark;
 begin
@@ -134,7 +134,7 @@ begin
   end;
 end;
 
-procedure TForm3.actBTournirMaskAddExecute(Sender: TObject);
+procedure TfrmTeachTournirs.actBTournirMaskAddExecute(Sender: TObject);
 var
   bm: TBookmark;
 begin
@@ -159,15 +159,16 @@ begin
   end;
 end;
 
-procedure TForm3.actBTournirMaskAddUpdate(Sender: TObject);
+procedure TfrmTeachTournirs.actBTournirMaskAddUpdate(Sender: TObject);
 begin
   actBTournirMaskAdd.Enabled:= edTournirMask.Text<>'';
 end;
 
-procedure TForm3.actFillEditFormExecute(Sender: TObject);
+procedure TfrmTeachTournirs.actFillEditFormExecute(Sender: TObject);
 begin
   with gridBTournirs.DataSource do
   begin
+    if DataSet.Eof then exit;
     if DataSet['ATournir_Id'] = null then
     with spTemp do
     begin
@@ -194,22 +195,22 @@ begin
   end;
 end;
 
-procedure TForm3.FormCreate(Sender: TObject);
+procedure TfrmTeachTournirs.FormCreate(Sender: TObject);
 begin
   trnRead.StartTransaction;
 end;
 
-procedure TForm3.FormDestroy(Sender: TObject);
+procedure TfrmTeachTournirs.FormDestroy(Sender: TObject);
 begin
   trnRead.Rollback;
 end;
 
-procedure TForm3.gridATournirsDblClick(Sender: TObject);
+procedure TfrmTeachTournirs.gridATournirsDblClick(Sender: TObject);
 begin
   actBTournirLink.Execute;
 end;
 
-procedure TForm3.lcbASportChange(Sender: TObject);
+procedure TfrmTeachTournirs.lcbASportChange(Sender: TObject);
 begin
   if not trnRead.Active then exit;
   with qryATournirs do
@@ -224,7 +225,7 @@ begin
   end;
 end;
 
-procedure TForm3.lcbCountryChange(Sender: TObject);
+procedure TfrmTeachTournirs.lcbCountryChange(Sender: TObject);
 begin
   if not trnRead.Active then exit;
   with qryATournirs do
@@ -239,13 +240,13 @@ begin
   end;
 end;
 
-procedure TForm3.qryBTournirsAfterScroll(DataSet: TDataSet);
+procedure TfrmTeachTournirs.qryBTournirsAfterScroll(DataSet: TDataSet);
 begin
   if not DataSet.ControlsDisabled then
     actFillEditForm.Execute;
 end;
 
-procedure TForm3.trnReadAfterStart(Sender: TObject);
+procedure TfrmTeachTournirs.trnReadAfterStart(Sender: TObject);
 begin
   qryBTournirs.DisableControls;
   try
@@ -259,7 +260,7 @@ begin
   end;
 end;
 
-procedure TForm3.trnWriteAfterEnd(EndingTR: TFIBTransaction;
+procedure TfrmTeachTournirs.trnWriteAfterEnd(EndingTR: TFIBTransaction;
   Action: TTransactionAction; Force: Boolean);
 begin
   trnRead.Rollback;

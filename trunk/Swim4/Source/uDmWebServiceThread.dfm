@@ -9,7 +9,7 @@ inherited dmSwimThread: TdmSwimThread
     SQL.Strings = (
       'EXECUTE PROCEDURE REQUEST_BUSY (?I_THREAD_ID)')
     StoredProcName = 'REQUEST_BUSY'
-    Left = 144
+    Left = 232
     Top = 96
     qoAutoCommit = True
     qoStartTransaction = True

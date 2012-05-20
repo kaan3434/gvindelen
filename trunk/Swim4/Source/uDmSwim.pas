@@ -19,7 +19,7 @@ type
     { Private declarations }
   public
     { Public declarations }
-    procedure RequestAdd(aScanId: Integer; aActionSign, aParts: String);
+    procedure RequestAdd(aScanId: Integer; aActionSign, aParts: WideString);
     procedure RequestCommit(aRequestId: Integer);
     procedure RequestPostpone(aRequestId: Integer);
     procedure RequestsClean;
@@ -39,13 +39,13 @@ begin
   dbSwim.Connected:= true;
 end;
 
-procedure TdmSwim.RequestAdd(aScanId: Integer; aActionSign, aParts: String);
+procedure TdmSwim.RequestAdd(aScanId: Integer; aActionSign, aParts: WideString);
 begin
   with spRequestAdd do
   begin
     Params.ParamByName('I_SCAN_ID').AsInteger := aScanId;
     Params.ParamByName('I_ACTION_SIGN').AsString := aActionSign;
-    Params.ParamByName('I_PARTS').AsString:= aParts;
+    Params.ParamByName('I_PARTS').AsWideString:= aParts;
     ExecProc;
   end;
 end;

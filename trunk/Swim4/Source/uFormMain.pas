@@ -3,9 +3,9 @@ unit uFormMain;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ActnList, Vcl.ActnMan,
-  Vcl.RibbonLunaStyleActnCtrls, Vcl.Ribbon,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
+  Vcl.ActnList, Vcl.ActnMan, Vcl.RibbonLunaStyleActnCtrls, Vcl.Ribbon,
   Vcl.ImgList, Vcl.ActnCtrls, Vcl.ToolWin, Vcl.ActnMenus,
   Vcl.RibbonActnMenus, Data.Bind.EngExt, Vcl.Bind.DBEngExt, Data.Bind.Components,
   Vcl.StdCtrls, Vcl.ExtCtrls, DBGridEhGrouping, Vcl.ComCtrls, GridsEh, DBGridEh,
@@ -39,6 +39,7 @@ type
     procedure actNeedScanExecute(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure actTeachTournirsExecute(Sender: TObject);
   private
     { Private declarations }
     FThreadList: TList;
@@ -64,7 +65,7 @@ implementation
 
 {$R *.dfm}
 uses
-  GvFile, PngImage, uWebServiceThread, uSettings;
+  GvFile, PngImage, uWebServiceThread, uSettings, uTeachTournirs;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
@@ -117,6 +118,18 @@ begin
       dm.SportsRequestAdd(Booker);
   end;
   StartThreads;
+end;
+
+procedure TForm1.actTeachTournirsExecute(Sender: TObject);
+var
+  frmTeachTournir: TfrmTeachTournirs;
+begin
+  frmTeachTournir:= TfrmTeachTournirs.Create(self);
+  try
+    frmTeachTournir.ShowModal;
+  finally
+    frmTeachTournir.Free;
+  end;
 end;
 
 procedure TForm1.AppendActionToGroup(aGroup: TRibbonGroup;

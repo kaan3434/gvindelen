@@ -29,10 +29,10 @@ uses
 procedure TdmFormMain.SportsRequestAdd(aBooker: TGvXmlNode);
 var
   ScanId: Integer;
-  Parts: TVarList;
   Node: TGvXmlNode;
 begin
   Node:= TGvXmlNode.Create;
+  Node.NodeName:= 'getSport';
   try
     trnWrite.StartTransaction;
     try
@@ -42,13 +42,7 @@ begin
       Node['Booker_Sign']:= aBooker['Sign'];
       Node['Booker_Id']:= aBooker['Id'];
       Node['Booker_Title']:= aBooker['Title'];
-      Parts:= TVarList.Create;
-      try
-        Node.ExportAttrs(Parts);
-        RequestAdd(ScanId, 'getSports', Parts.Text);
-      finally
-        Parts.Free;
-      end;
+      RequestAdd(ScanId, 'getSports', Node.WriteToString);
       trnWrite.Commit;
     except
       trnWrite.Rollback;
