@@ -13,7 +13,8 @@ uses
   uTeachTournirs in 'uTeachTournirs.pas' {frmTeachTournirs},
   GvVariant in 'D:\4Delphi\Gvindln\Source\GvVariant.pas',
   GvFile in 'D:\4Delphi\Gvindln\Source\GvFile.pas',
-  ScanWSDL in 'ScanWSDL.pas';
+  ScanWSDL in 'ScanWSDL.pas',
+  uTeachGamers in 'uTeachGamers.pas' {frmTeachGamers};
 
 {$R *.res}
 

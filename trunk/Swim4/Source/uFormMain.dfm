@@ -92,7 +92,7 @@ object Form1: TForm1
       object RibbonGroup1: TRibbonGroup
         Left = 4
         Top = 3
-        Width = 119
+        Width = 100
         Height = 86
         ActionManager = actMngRibbon
         Caption = 'Categories'
@@ -186,6 +186,7 @@ object Form1: TForm1
             Action = actTeachEvents
             Caption = '&Events'
             ImageIndex = 2
+            CommandProperties.ButtonSize = bsLarge
           end>
         ActionBar = RibbonGroup1
       end>
@@ -224,6 +225,7 @@ object Form1: TForm1
       Category = 'Teacher'
       Caption = 'Events'
       ImageIndex = 2
+      OnExecute = actTeachEventsExecute
     end
   end
   object imgListRibbon: TImageList
@@ -232,7 +234,7 @@ object Form1: TForm1
     Left = 560
     Top = 8
     Bitmap = {
-      494C010103000900400010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
+      494C010103000900440010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000101010F010101170101011A0101
       011A0101011A0101011A0101011A0101011A0101011A0101011A0101011A0101
@@ -378,7 +380,7 @@ object Form1: TForm1
     Left = 472
     Top = 8
     Bitmap = {
-      494C010103000900380020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C0101030009003C0020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000101010F0101010F010101170101
       01170101011A0101011A0101011A0101011A0101011A0101011A0101011A0101

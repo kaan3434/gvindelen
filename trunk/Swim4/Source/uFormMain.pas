@@ -41,6 +41,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure actTeachTournirsExecute(Sender: TObject);
+    procedure actTeachEventsExecute(Sender: TObject);
   private
     { Private declarations }
     FThreadList: TList;
@@ -66,7 +67,7 @@ implementation
 
 {$R *.dfm}
 uses
-  GvFile, PngImage, uWebServiceThread, uSettings, uTeachTournirs;
+  GvFile, PngImage, uWebServiceThread, uSettings, uTeachTournirs, uTeachGamers;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
@@ -121,15 +122,24 @@ begin
   StartThreads;
 end;
 
-procedure TForm1.actTeachTournirsExecute(Sender: TObject);
-var
-  frmTeachTournir: TfrmTeachTournirs;
+procedure TForm1.actTeachEventsExecute(Sender: TObject);
 begin
-  frmTeachTournir:= TfrmTeachTournirs.Create(self);
+  with TfrmTeachGamers.Create(self) do
   try
-    frmTeachTournir.ShowModal;
+    ShowModal;
   finally
-    frmTeachTournir.Free;
+    Free;
+  end;
+
+end;
+
+procedure TForm1.actTeachTournirsExecute(Sender: TObject);
+begin
+  with TfrmTeachTournirs.Create(self) do
+  try
+    ShowModal;
+  finally
+    Free;
   end;
 end;
 
@@ -149,7 +159,7 @@ begin
     act.OnExecute:= aEvent;
     act.Caption:= ndBookersBooker['Title'];
     act.Visible:= true;
-    act.ImageIndex:= act.Tag;
+    act.ImageIndex:= ndBookersBooker['ImgIndex'];
     act.Checked:= aChecked;
     CommandStyle:= csButton;
     (actClientItem.CommandProperties as TButtonProperties).ButtonSize:= bsLarge;
@@ -163,6 +173,7 @@ var
 begin
   ImgName:= settings.Path['Images']+aBooker['Sign']+'.png';
   ImgIndex:= AppendPngToImageList(imgListRibbon, ImgName);
+  aBooker.Attr['ImgIndex'].AsInteger:= ImgIndex;
   AppendPngToImageList(imgListRibbonLarge, ImgName);
   AppendActionToGroup(tbScannerBookers, aBooker, settings.ScanerOn[aBooker['Id']], actNeedScan.OnExecute);
   AppendActionTogroup(tbViewerBookers, aBooker, false, actDummy.OnExecute);

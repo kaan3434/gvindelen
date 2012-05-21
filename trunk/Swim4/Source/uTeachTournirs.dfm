@@ -144,7 +144,7 @@ object frmTeachTournirs: TfrmTeachTournirs
         Width = 313
         Height = 459
         Caption = #1056#1077#1075#1080#1089#1090#1088#1072#1094#1080#1103' '#1090#1091#1088#1085#1080#1088#1072
-        DockPos = 0
+        DockPos = 1
         TabOrder = 0
         Options.Close = False
         DesignSize = (
@@ -502,7 +502,6 @@ object frmTeachTournirs: TfrmTeachTournirs
     end
   end
   object trnRead: TpFIBTransaction
-    Active = True
     DefaultDatabase = dmFormMain.dbSwim
     TimeoutAction = TARollback
     AfterStart = trnReadAfterStart
