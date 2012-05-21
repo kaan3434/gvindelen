@@ -41,7 +41,7 @@ end;
 procedure TdmSwimThread.EventDetect(aNode: TGvXmlNode);
 var
   i: integer;
-  PrmName: String;
+  PrmName, Value: String;
 begin
   with qryTemp do
   begin
@@ -52,7 +52,8 @@ begin
     for i:= 0 to ParamCount-1 do
     begin
       PrmName:= ParamName(i);
-      Params.ParamByName(PrmName).AsString:= aNode[PrmName];
+      Value:= aNode.Attr[PrmName].Value;
+      Params.ParamByName(PrmName).AsString:= Value;
     end;
     ExecQuery;
     ExportQueryValues(qryTemp, aNode);

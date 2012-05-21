@@ -9,11 +9,11 @@ uses
   uSettings in 'uSettings.pas' {Form2},
   GvXml in 'D:\4Delphi\Gvindln\Source\GvXml.pas',
   uDmFormMain in 'uDmFormMain.pas' {dmFormMain: TDataModule},
-  ScanWSDL in 'ScanWSDL.pas',
   GvStr in 'D:\4Delphi\Gvindln\Source\GvStr.pas',
   uTeachTournirs in 'uTeachTournirs.pas' {frmTeachTournirs},
   GvVariant in 'D:\4Delphi\Gvindln\Source\GvVariant.pas',
-  GvFile in 'D:\4Delphi\Gvindln\Source\GvFile.pas';
+  GvFile in 'D:\4Delphi\Gvindln\Source\GvFile.pas',
+  ScanWSDL in 'ScanWSDL.pas';
 
 {$R *.res}
 

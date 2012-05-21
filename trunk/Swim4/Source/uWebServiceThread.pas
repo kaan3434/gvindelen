@@ -161,6 +161,7 @@ var
   Node: TGvXmlNode;
   IsEmpty: Boolean;
 begin
+  DecimalSeparator:= '.';
   Node:= TGvXmlNode.Create;
   try
     try
@@ -169,8 +170,12 @@ begin
                                  FNode.Attr['Tournir_Id'].AsString,
                                  FNode.Attr['Tournir_Url'].AsString).Events;
     except
-      ShowMessage(FNode.WriteToString);
-      exit;
+      on E: Exception do
+      begin
+        ShowMessage(Format('Webservice error (Request=%u, Message="%s", Node="%s"',
+          [FRequestId, E.Message, FNode.WriteToString]));
+        exit;
+      end;
     end;
     try
       dm.trnWrite.StartTransaction;
@@ -180,8 +185,8 @@ begin
         Node.NodeName:= 'putEvent';
         Node.ReadAttributes(FNode.WriteToString, IsEmpty);
         Node.Attr['Event_Dtm'].AsDateTime:= Event.DateTime.AsDateTime;
-        Node.Attr['Event_Gamer1_Name'].AsString:= Event.Gamer1_Name;
-        Node.Attr['Event_Gamer2_Name'].AsString:= Event.Gamer2_Name;
+        Node.Attr['Gamer1_Name'].AsString:= Event.Gamer1_Name;
+        Node.Attr['Gamer2_Name'].AsString:= Event.Gamer2_Name;
         dm.EventDetect(Node);
         dm.trnWrite.SetSavePoint('PutEvent');
         try

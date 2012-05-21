@@ -1,5 +1,7 @@
 How many games will be played in the first set?=Period=Set1;Subject=Game;Kind=Total
 How many games will be played in the match?=Period=Match;Subject=Game;Kind=Total
+How many games will Gamer1 win in the first set?=Period=Set1;Gamer=1;Subject=Game;Kind=Total
+How many games will Gamer1 win in the match?=Period=Match;Gamer=1;Subject=Game;Kind=Total
 How many games will Gamer2 win in the first set?=Period=Set1;Gamer=2;Subject=Game;Kind=Total
 How many games will Gamer2 win in the match?=Modifier=Period=Match;Gamer=2;Subject=Game;Kind=Total
 Set bet=Modifier=Ignore

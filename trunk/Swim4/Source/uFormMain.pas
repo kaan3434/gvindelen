@@ -32,6 +32,7 @@ type
     RibbonPage2: TRibbonPage;
     RibbonGroup1: TRibbonGroup;
     actTeachTournirs: TAction;
+    actTeachEvents: TAction;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure actScanAllBookerExecute(Sender: TObject);

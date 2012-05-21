@@ -2,7 +2,7 @@
 class booker_xml {
   protected $booker;
   protected $host;
-  protected $debug;
+  public $debug;
   protected $sport_node;
   protected $league_path;
   

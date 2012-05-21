@@ -3,17 +3,18 @@
   require_once"booker_xml.php";
   
   $booker = new bwin_booker();
+  $booker->debug = 1;
   
-  $sports = $booker->getSports();
+//  $sports = $booker->getSports();
   
 //  print $sports->asXML();
 
-  $tournirs = $booker->getTournirs(10);
+//  $tournirs = $booker->getTournirs(10);
   
 //  print $tournirs->asXML();
   
-  $tournir_id = (string) $tournirs->Tournirs->Tournir[0]['Id'];
-  $events = $booker->getEvents(10, $tournir_id, null);
+  $tournir_id = (string) '12899';
+  $events = $booker->getEvents(10, $tournir_id, '');
   
 //  print $events->asXML();
   

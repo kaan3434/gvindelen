@@ -4,7 +4,57 @@
   require_once "bwin_xml.php";
   require_once "olymp_xml.php";
   require_once "marathon_xml.php";
+  
+define("DEFAULT_LOG","/afs/ir/default.log");
+  
 
+function write_log($message, $logfile='') {
+  // Determine log file
+  if($logfile == '') {
+    // checking if the constant for the log file is defined
+    if (defined(DEFAULT_LOG) == TRUE) {
+        $logfile = DEFAULT_LOG;
+    }
+    // the constant is not defined and there is no log file given as input
+    else {
+        error_log('No log file defined!',0);
+        return array(status => false, message => 'No log file defined!');
+    }
+  }
+ 
+  // Get time of request
+  if( ($time = $_SERVER['REQUEST_TIME']) == '') {
+    $time = time();
+  }
+ 
+  // Get IP address
+  if( ($remote_addr = $_SERVER['REMOTE_ADDR']) == '') {
+    $remote_addr = "REMOTE_ADDR_UNKNOWN";
+  }
+ 
+  // Get requested script
+  if( ($request_uri = $_SERVER['REQUEST_URI']) == '') {
+    $request_uri = "REQUEST_URI_UNKNOWN";
+  }
+ 
+  // Format the date and time
+  $date = date("Y-m-d H:i:s", $time);
+ 
+  // Append to the log file
+  if($fd = @fopen($logfile, "a")) {
+    $result = fputcsv($fd, array($date, $remote_addr, $request_uri, $message));
+    fclose($fd);
+ 
+    if($result > 0)
+      return array(status => true);  
+    else
+      return array(status => false, message => 'Unable to write to '.$logfile.'!');
+  }
+  else {
+    return array(status => false, message => 'Unable to open log '.$logfile.'!');
+  }
+}  
+  
 function xml2array($xml) {
   $result = array();
   $child_count = count($xml);
@@ -54,9 +104,7 @@ function getTournirs($booker_sign, $sport_id) {
   return $out;
 }
 
-function getEvents($booker_sign, $sport_sign, $tournir_id) {
-  $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><Root/>');
-  $events_node = $xml->addChild('Events');
+function getEvents($booker_sign, $sport_id, $tournir_id) {
   if ($booker_sign == 'bwin') {
     $booker = new bwin_booker();
   } elseif ($booker_sign == 'olymp') {
@@ -64,7 +112,7 @@ function getEvents($booker_sign, $sport_sign, $tournir_id) {
   } elseif ($booker_sign == 'marathon') {
     $booker = new marathon_booker();
   }
-  $booker->getEvents($events_node , $sport_sign, $tournir_id);
+  $xml = $booker->getEvents($sport_id, $tournir_id, null);
   $out = xml2array($xml);
   return $out;
 }
@@ -73,11 +121,12 @@ function getEvents($booker_sign, $sport_sign, $tournir_id) {
   //getBookers('123');
   //getSports('bwin');
 //  getTournirs('olymp', 'tennis');
-  //getEvents('olymp', 'tennis', '26.79cdd5dea2126f7cd6c6ba41df72a4c0');
+//  getEvents('bwin', 10, '12899');
+  //getEvents('olymp', 20, '29.68c6824d4a82dee51ee4e5fc228dbb92');
   
   //exit;
 
-
+  write_log(file_get_contents('php://input'), 'requests.log');
   ini_set("soap.wsdl_cache_enabled", "0");
   header("Content-Type: text/xml");
   $server = new SoapServer("Scan.wsdl");
@@ -86,4 +135,5 @@ function getEvents($booker_sign, $sport_sign, $tournir_id) {
   $server->addFunction("getTournirs");
   $server->addFunction("getEvents");
   $server->handle();
+  
 ?>

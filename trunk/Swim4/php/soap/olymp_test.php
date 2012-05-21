@@ -4,16 +4,16 @@
   
   $booker = new olymp_booker();
   
-  $sports = $booker->getSports();
+  //$sports = $booker->getSports();
   
 //  print $sports->asXML();
 
-  $tournirs = $booker->getTournirs(10);
+  //$tournirs = $booker->getTournirs(10);
   
 //  print $tournirs->asXML();
   
-  $tournir_id = (string) $tournirs->Tournirs->Tournir[0]['Id'];
-  $events = $booker->getEvents(10, $tournir_id, null);
+  $tournir_id = '29.68c6824d4a82dee51ee4e5fc228dbb92';
+  $events = $booker->getEvents(20, $tournir_id, null);
   
 //  print $events->asXML();
   

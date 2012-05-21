@@ -314,7 +314,7 @@ class bwin_booker extends booker_xml {
         $url= $this->host."/betviewiframe.aspx?sorting=leaguedate&categoryIDs=$category_id&bv=bb&leagueIDs=$tournir_id";
         $referer = $this->host.(string)$this->sport_node['Url'];
         $html = download_or_load($this->debug, $file_name, $url, "GET", $referer);
-        $this->extract_bets($tournir_node, $html, $sport_node['Sign'], $tournir_id, $parse);
+        $this->extract_bets($tournir_node, $html, (string) $this->sport_node['Sign'], $tournir_id, $parse);
       } while ($this->to_be_continue($html, $current_page+1));
     }
     
@@ -322,7 +322,7 @@ class bwin_booker extends booker_xml {
 
   function getEvents($sport_id, $tournir_id, $tournir_url) {
     $xml = parent::getEvents($sport_id, $tournir_id, $tournir_url);
-    $tournir_node = $xml->addChild('Tournir');
+    $tournir_node = $xml->addChild('Events');
     $this->getBets($tournir_node, $sport_id, $tournir_id);
     if ($this->debug) file_put_contents($this->league_path."$tournir_id.xml", $xml->asXML());
     return $xml;

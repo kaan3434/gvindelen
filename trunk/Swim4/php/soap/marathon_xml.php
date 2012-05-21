@@ -205,7 +205,7 @@ class marathon_booker extends booker_xml {
     
   public function getEvents($sport_id, $tournir_id, $tournir_url) {
     $xml = parent::getEvents($sport_id, $tournir_id, $tournir_url);
-    $tournir_node = $xml->addChild('Tournir');
+    $tournir_node = $xml->addChild('Events');
 
     $file_name = $this->league_path.$tournir_id;
     $url= $this->host."/en/ajaxevents.htm?id=$tournir_id";

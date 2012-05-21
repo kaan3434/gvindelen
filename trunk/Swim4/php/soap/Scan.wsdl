@@ -71,7 +71,7 @@
             </complexType>
             <complexType name="TBet">
                 <simpleContent>
-                    <extension base="anySimpleType">
+                    <extension base="string">
                         <attribute name="Period" type="string" use="required" />
                         <attribute name="Kind" type="string" use="required" />
                         <attribute name="Subject" type="string" />
