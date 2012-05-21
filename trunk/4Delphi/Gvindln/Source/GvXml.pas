@@ -672,7 +672,10 @@ end;
 
 function TGvXmlAttribute.GetAsVariant: variant;
 begin
-  Result:= FValue;
+  if FilterString(FValue, '-T:') = '--T::' then
+    Result:= GetAsDateTime
+  else
+    Result:= FValue;
 end;
 
 procedure TGvXmlAttribute.SetAsBoolean(const Value: Boolean);
@@ -682,7 +685,7 @@ end;
 
 procedure TGvXmlAttribute.SetAsDateTime(const Value: TDateTime);
 begin
-  FValue:= FormatDateTime('YYYY-MM-DDTHH:NN:SS', Value)
+  FValue:= ReplaceAll(FormatDateTime('YYYY-MM-DD HH:NN:SS', Value), ' ', 'T');
 end;
 
 procedure TGvXmlAttribute.SetAsFloat(const Value: Double);
