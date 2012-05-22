@@ -47,7 +47,7 @@ begin
   begin
     Params.ClearValues;
     SQL.Text:=
-      'select be.* from bevent_add(:btournir_id, :event_dtm, :gamer1_name, :gamer2_name) bep '+
+      'select be.* from bevent_add(:btournir_id, :event_dtm, :gamer1_name, :gamer2_name, :scan_id) bep '+
       ' inner join bevents be on (be.bevent_id = bep.o_bevent_id)';
     for i:= 0 to ParamCount-1 do
     begin

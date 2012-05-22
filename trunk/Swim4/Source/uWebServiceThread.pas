@@ -81,6 +81,7 @@ begin
       FActionSign:= ParamValue('O_ACTION_SIGN');
       FNode.ReadAttributes(ParamValue('O_PARTS'), IsEmpty);
       FScanId:= ParamValue('O_SCAN_ID');
+      FNode['Scan_Id']:= FScanId;
     end;
   end;
 end;

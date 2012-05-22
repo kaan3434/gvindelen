@@ -126,7 +126,7 @@ function getEvents($booker_sign, $sport_id, $tournir_id) {
   
   //exit;
 
-  write_log(file_get_contents('php://input'), 'requests.log');
+//  write_log(file_get_contents('php://input'), 'requests.log');
   ini_set("soap.wsdl_cache_enabled", "0");
   header("Content-Type: text/xml");
   $server = new SoapServer("Scan.wsdl");
