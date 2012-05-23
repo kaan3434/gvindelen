@@ -134,7 +134,7 @@ object frmTeachGamers: TfrmTeachGamers
           Action = actAGamerAdd
         end
         object edAGamerName: TDBEditEh
-          Left = 45
+          Left = 41
           Top = 0
           Width = 286
           Height = 21
@@ -148,7 +148,7 @@ object frmTeachGamers: TfrmTeachGamers
           Visible = True
         end
         object lcbCountry: TDBLookupComboboxEh
-          Left = 384
+          Left = 376
           Top = 0
           Width = 89
           Height = 21

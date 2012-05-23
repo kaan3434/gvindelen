@@ -123,7 +123,7 @@ end;
 
 procedure TfrmTeachGamers.actAppendCountryExecute(Sender: TObject);
 begin
-  edAGamerName.Text:= Format('%s (%s)', [edAGamerName.Text, lcbCountry.Value]);
+  edAGamerName.Text:= Format('%s (%s)', [edAGamerName.Text, string(lcbCountry.Value)]);
 end;
 
 procedure TfrmTeachGamers.actAppendCountryUpdate(Sender: TObject);
