@@ -108,13 +108,13 @@ begin
       'left join statuses s2 on (s2.status_id = o.state_id) '+
       'where coalesce(s2.status_sign, '''')  <> ''MONEYSENT''',
       0, [], aTransaction);
-{    while Orders <> '' do
+    while Orders <> '' do
     begin
       OrderId:= TakeFront5(Orders,',');
       dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
       SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'MONEYSENT');
       dmOtto.ActionExecute(aTransaction, ndOrder);
-    end;}
+    end;
   finally
     xml.Free;
   end;

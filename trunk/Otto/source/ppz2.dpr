@@ -44,7 +44,8 @@ uses
   uParseLiefer in 'uParseLiefer.pas',
   uExportReturns in 'uExportReturns.pas',
   uExportCancellation in 'uExportCancellation.pas',
-  uMoneyBack in 'uMoneyBack.pas';
+  uMoneyBack in 'uMoneyBack.pas',
+  uReportReturnedOrderItems in 'uReportReturnedOrderItems.pas';
 
 {$R *.res}
 

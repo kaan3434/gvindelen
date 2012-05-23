@@ -104,6 +104,9 @@ object MainForm: TMainForm
         object btnMoneyReturnPost: TTBXItem
           Action = actMoneyBackBelpost
         end
+        object btn16: TTBXItem
+          Action = actReestrReturns
+        end
       end
       object btnParseOrder: TTBXItem
         Action = actParseOrder
@@ -413,6 +416,11 @@ object MainForm: TMainForm
       Category = 'Export'
       Caption = #1056#1077#1077#1089#1090#1088' '#1055#1086#1095#1090#1086#1074#1099#1093' '#1087#1077#1088#1077#1074#1086#1076#1086#1074
       OnExecute = actMoneyBackBelpostExecute
+    end
+    object actReestrReturns: TAction
+      Category = 'Export'
+      Caption = #1056#1077#1077#1089#1090#1088' '#1074#1086#1079#1074#1088#1072#1097#1072#1077#1084#1099#1093' '#1072#1088#1090#1080#1082#1091#1083#1086#1074
+      OnExecute = actReestrReturnsExecute
     end
   end
   object imgListMainMenu: TPngImageList
@@ -1551,8 +1559,8 @@ object MainForm: TMainForm
     PreviewOptions.ZoomMode = zmManyPages
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
-    ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 41043.392592743100000000
+    ReportOptions.CreateDate = 41052.470927870400000000
+    ReportOptions.LastChange = 41052.579964861100000000
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
     Left = 352

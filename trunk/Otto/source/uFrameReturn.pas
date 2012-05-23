@@ -7,7 +7,8 @@ uses
   Dialogs, uFrameBase1, StdCtrls, ExtCtrls, ImgList, PngImageList,
   ActnList, FIBDatabase, pFIBDatabase, TBXStatusBars, TB2Dock, TB2Toolbar,
   TBX, JvExStdCtrls, JvGroupBox, Mask, JvExMask, JvMaskEdit,
-  DBCtrlsEh, NativeXml;
+  DBCtrlsEh, NativeXml, TB2Item, JvValidators, JvErrorIndicator,
+  JvComponentBase;
 
 type
   TFrameMoneyBack = class(TFrameBase1)
@@ -28,9 +29,25 @@ type
     edBonus: TDBNumberEditEh;
     lblBonus: TLabel;
     chkPayByFirm: TCheckBox;
+    btnMakeReturn: TTBXItem;
+    actCreateReturn: TAction;
+    vldFrame: TJvValidators;
+    vldIndicator: TJvErrorIndicator;
+    JvRequiredFieldValidator1: TJvRequiredFieldValidator;
+    jvrngvldtr1: TJvRangeValidator;
+    JvRequiredFieldValidator2: TJvRequiredFieldValidator;
+    JvRequiredFieldValidator3: TJvRequiredFieldValidator;
+    JvRequiredFieldValidator4: TJvRequiredFieldValidator;
+    JvRequiredFieldValidator5: TJvRequiredFieldValidator;
+    JvRequiredFieldValidator6: TJvRequiredFieldValidator;
+    JvRequiredFieldValidator7: TJvRequiredFieldValidator;
+    JvRequiredFieldValidator8: TJvRequiredFieldValidator;
+    JvRequiredFieldValidator9: TJvRequiredFieldValidator;
+    JvRequiredFieldValidator10: TJvRequiredFieldValidator;
     procedure rgReturnKindClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure actCreateReturnExecute(Sender: TObject);
   private
     function GetOrderId: Integer;
     { Private declarations }
@@ -146,6 +163,39 @@ begin
   inherited;
   if Key=vk_Return then
     Key:= 0;
+end;
+
+procedure TFrameMoneyBack.actCreateReturnExecute(Sender: TObject);
+var
+  MoneyEur: Double;
+  Valid: Boolean;
+begin
+  inherited;
+  Write;
+  Valid:= vldFrame.Validate('COMMON');
+  if rgReturnKind.ItemIndex = 2 then
+    Valid:= Valid and vldFrame.Validate('BANK');
+  if Valid then
+  try
+    SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'HAVERETURN');
+    dmOtto.ActionExecute(trnWrite, ndOrder);
+    dmOtto.ObjectGet(ndOrder, OrderId, trnWrite);
+    if GetXmlAttrValue(ndOrder, 'MONEYBACK_KIND') = 'LEAVE' then
+    begin
+      MoneyEur:= trnWrite.DefaultDatabase.QueryValue(
+        'select cost_eur from v_order_summary os where os.order_id = :order_id',
+        0, [GetXmlAttrValue(ndOrder, 'ID')]);
+      dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_DEBITORDER',
+        XmlAttrs2Vars(ndOrder, 'ID=ACCOUNT_ID;ORDER_ID=ID',
+        Value2Vars(MoneyEur, 'AMOUNT_EUR')));
+    end;
+    trnWrite.Commit;
+    trnRead.Commit;
+    ShowMessage('Возврат оформлен');
+    TForm(Owner).Close;
+  except
+    trnWrite.Rollback;
+  end;
 end;
 
 end.

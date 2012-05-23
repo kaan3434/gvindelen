@@ -8,7 +8,6 @@ inherited FormWizardReturn: TFormWizardReturn
   TextHeight = 13
   inherited wzForm: TJvWizard
     ActivePage = wzIPageMoneyBackKind
-    OnFinishButtonClick = wzFormFinishButtonClick
     OnActivePageChanging = wzFormActivePageChanging
     object wzWPage: TJvWizardWelcomePage
       Header.ParentFont = False
@@ -75,7 +74,7 @@ inherited FormWizardReturn: TFormWizardReturn
       Header.Subtitle.Font.Name = 'MS Sans Serif'
       Header.Subtitle.Font.Style = []
       Panel.Visible = True
-      EnabledButtons = [bkBack, bkNext, bkFinish, bkCancel]
+      EnabledButtons = [bkBack, bkNext, bkCancel]
       VisibleButtons = [bkBack, bkFinish, bkCancel]
       Color = clWindow
       Caption = 'wzIPageMoneyBackKind'

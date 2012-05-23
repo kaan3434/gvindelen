@@ -54,6 +54,7 @@ begin
       OrderItemId:= GetXmlAttrValue(ndOrderItem, 'ID');
       SetXmlAttr(ndOrderItem, 'DESCRIPTION', sl[6]);
       SetXmlAttr(ndOrderItem, 'NREGWG', sl[9]);
+      SetXmlAttr(ndOrderItem, 'NRRETCODE', sl[10]);
       SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'PACKED');
       try
         dmOtto.ActionExecute(aTransaction, ndOrderItem);

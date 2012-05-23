@@ -89,6 +89,7 @@ begin
           SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', StateSign);
           if sl[12] <> '00000000000000' then
           begin
+            SetXmlAttr(ndOrderItem, 'NRRETCODE', sl[12]);
             SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'BUNDLING');
             MessageClass:= 'I';
           end

@@ -150,6 +150,8 @@ type
     actMoneyBackBelpost: TAction;
     btnMoneyReturnPost: TTBXItem;
     actMoneyBackAccount: TAction;
+    actReestrReturns: TAction;
+    btn16: TTBXItem;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -189,6 +191,7 @@ type
     procedure actMoneyBackBankExecute(Sender: TObject);
     procedure actMoneyBackBelpostExecute(Sender: TObject);
     procedure actMoneyBackAccountExecute(Sender: TObject);
+    procedure actReestrReturnsExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -211,7 +214,7 @@ uses
   uFormWizardOrder, uSetByr2Eur, uExportSMSReject,
   uExportCancellation, uExportOrder, uExportInvoices, uExportPackList,
   uParseArtN, uParseCancellation, uFormWizardReturn, uParseInfo2Pay,
-  uExportToSite, uExportPrePackList, uMoneyBack;
+  uExportToSite, uExportPrePackList, uMoneyBack, uReportReturnedOrderItems;
 
 procedure TMainForm.actParseOrderXmlExecute(Sender: TObject);
 var
@@ -781,6 +784,11 @@ end;
 procedure TMainForm.actMoneyBackAccountExecute(Sender: TObject);
 begin
   ReportMoneyBackAccount(trnWrite, frxReport);
+end;
+
+procedure TMainForm.actReestrReturnsExecute(Sender: TObject);
+begin
+  ReportReturnedOrderItems(trnWrite, frxReport);
 end;
 
 end.

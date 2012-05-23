@@ -9,6 +9,12 @@ inherited FrameMoneyBack: TFrameMoneyBack
   TextHeight = 13
   inherited dckTop: TTBXDock
     Width = 934
+    Height = 23
+    inherited tlBarTop: TTBXToolbar
+      object btnMakeReturn: TTBXItem
+        Action = actCreateReturn
+      end
+    end
   end
   inherited sb: TTBXStatusBar
     Top = 431
@@ -16,7 +22,7 @@ inherited FrameMoneyBack: TFrameMoneyBack
   end
   object grpBankMovement: TJvGroupBox [2]
     Left = 0
-    Top = 177
+    Top = 174
     Width = 934
     Height = 152
     Align = alTop
@@ -91,7 +97,7 @@ inherited FrameMoneyBack: TFrameMoneyBack
   end
   object grpCommon: TJvGroupBox [3]
     Left = 0
-    Top = 26
+    Top = 23
     Width = 934
     Height = 103
     Align = alTop
@@ -130,6 +136,7 @@ inherited FrameMoneyBack: TFrameMoneyBack
       EditLabel.Width = 84
       EditLabel.Height = 13
       EditLabel.Caption = #1053#1086#1084#1077#1088' '#1087#1072#1089#1087#1086#1088#1090#1072
+      MaxLength = 9
       TabOrder = 1
     end
     object edtPassportIssued: TDBDateTimeEditEh
@@ -178,7 +185,7 @@ inherited FrameMoneyBack: TFrameMoneyBack
   end
   object rgReturnKind: TRadioGroup [4]
     Left = 0
-    Top = 129
+    Top = 126
     Width = 934
     Height = 48
     Align = alTop
@@ -198,5 +205,78 @@ inherited FrameMoneyBack: TFrameMoneyBack
   inherited trnWrite: TpFIBTransaction
     Left = 88
     Top = 0
+  end
+  inherited actList: TActionList
+    object actCreateReturn: TAction
+      Caption = #1054#1092#1086#1088#1084#1080#1090#1100' '#1074#1086#1079#1074#1088#1072#1090
+      OnExecute = actCreateReturnExecute
+    end
+  end
+  object vldFrame: TJvValidators
+    ErrorIndicator = vldIndicator
+    Left = 48
+    Top = 336
+    object JvRequiredFieldValidator1: TJvRequiredFieldValidator
+      ControlToValidate = edBankAccount
+      PropertyToValidate = 'Text'
+      GroupName = 'BANK'
+      ErrorMessage = #1053#1077' '#1091#1082#1072#1079#1072#1085' 13-'#1079#1085#1072#1095#1085#1099#1081' '#1089#1095#1077#1090
+    end
+    object jvrngvldtr1: TJvRangeValidator
+      ControlToValidate = edBankAccount
+      PropertyToValidate = 'Text'
+      GroupName = 'BANK'
+      MinimumValue = 1000000000000
+      MaximumValue = 9999999999999
+    end
+    object JvRequiredFieldValidator2: TJvRequiredFieldValidator
+      ControlToValidate = edClientAccount
+      PropertyToValidate = 'Text'
+    end
+    object JvRequiredFieldValidator3: TJvRequiredFieldValidator
+      ControlToValidate = edBankName
+      PropertyToValidate = 'Text'
+      GroupName = 'BANK'
+    end
+    object JvRequiredFieldValidator4: TJvRequiredFieldValidator
+      ControlToValidate = edBankMFO
+      PropertyToValidate = 'Text'
+      GroupName = 'BANK'
+    end
+    object JvRequiredFieldValidator5: TJvRequiredFieldValidator
+      ControlToValidate = edBankUNP
+      PropertyToValidate = 'Text'
+      GroupName = 'BANK'
+    end
+    object JvRequiredFieldValidator6: TJvRequiredFieldValidator
+      ControlToValidate = edPersonalNum
+      PropertyToValidate = 'Text'
+      GroupName = 'BANK'
+    end
+    object JvRequiredFieldValidator7: TJvRequiredFieldValidator
+      ControlToValidate = edBelPostBarCode
+      PropertyToValidate = 'Text'
+      GroupName = 'COMMON'
+    end
+    object JvRequiredFieldValidator8: TJvRequiredFieldValidator
+      ControlToValidate = edPassportNum
+      PropertyToValidate = 'Text'
+      GroupName = 'COMMON'
+    end
+    object JvRequiredFieldValidator9: TJvRequiredFieldValidator
+      ControlToValidate = edtPassportIssued
+      PropertyToValidate = 'Value'
+      GroupName = 'COMMON'
+    end
+    object JvRequiredFieldValidator10: TJvRequiredFieldValidator
+      ControlToValidate = edPassportIssuer
+      PropertyToValidate = 'Text'
+      GroupName = 'COMMON'
+    end
+  end
+  object vldIndicator: TJvErrorIndicator
+    ImageIndex = 0
+    Left = 192
+    Top = 342
   end
 end

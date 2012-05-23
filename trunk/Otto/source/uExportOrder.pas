@@ -19,6 +19,7 @@ begin
   else
     Result:= Translit(GetXmlAttr(ndPlace, 'PLACETYPE_SIGN') +
                      GetXmlAttr(ndPlace, 'PLACE_NAME', '. '));
+  result:= Copy(Result, 1, MaxLen);
 end;
 
 function GetAdress(ndAdress: TXmlNode; MaxLen: integer): string;
