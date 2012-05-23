@@ -45,6 +45,7 @@ type
     cbGamerOnTournir: TSpTBXItem;
     cbTemporary: TSpTBXItem;
     SpTBXSeparatorItem1: TSpTBXSeparatorItem;
+    actAppendCountry: TAction;
     procedure actFillEditFormExecute(Sender: TObject);
     procedure trnWriteAfterEnd(EndingTR: TFIBTransaction;
       Action: TTransactionAction; Force: Boolean);
@@ -56,6 +57,9 @@ type
     procedure cbGamerOnTournirClick(Sender: TObject);
     procedure gridAGamersDblClick(Sender: TObject);
     procedure actAGamerLinkExecute(Sender: TObject);
+    procedure actAppendCountryExecute(Sender: TObject);
+    procedure actAppendCountryUpdate(Sender: TObject);
+    procedure lcbCountryChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -117,6 +121,16 @@ begin
   end;
 end;
 
+procedure TfrmTeachGamers.actAppendCountryExecute(Sender: TObject);
+begin
+  edAGamerName.Text:= Format('%s (%s)', [edAGamerName.Text, lcbCountry.Value]);
+end;
+
+procedure TfrmTeachGamers.actAppendCountryUpdate(Sender: TObject);
+begin
+  actAppendCountry.Enabled:= Pos(lcbCountry.Value, edAGamerName.Text) = 0;
+end;
+
 procedure TfrmTeachGamers.actFillEditFormExecute(Sender: TObject);
 begin
   with gridBGamers.DataSource do
@@ -133,6 +147,10 @@ begin
       else
         qryAGamers.Params.ParamByName('ATournir_Id').Value := null;
       qryAGamers.CloseOpen(true);
+      qryAGamers.First;
+      while not qryAGamers.Eof and
+            (qryAGamers['AGamer_Name']< edAGamerName.Text) do
+        qryAGamers.Next;
     finally
       qryAGamers.EnableControls;
     end;
@@ -157,6 +175,17 @@ end;
 procedure TfrmTeachGamers.gridAGamersDblClick(Sender: TObject);
 begin
   actAGamerLink.Execute;
+end;
+
+procedure TfrmTeachGamers.lcbCountryChange(Sender: TObject);
+begin
+  qryAGamers.DisableControls;
+  try
+    qryAGamers.Params.ParamByName('Country_Sign').Value:= lcbCountry.Value;
+    qryAGamers.CloseOpen(true);
+  finally
+    qryAGamers.EnableControls;
+  end;
 end;
 
 procedure TfrmTeachGamers.qryBGamersAfterScroll(DataSet: TDataSet);

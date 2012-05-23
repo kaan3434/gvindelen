@@ -22,8 +22,6 @@ object frmTeachGamers: TfrmTeachGamers
     Height = 5
     Cursor = crSizeNS
     Align = alBottom
-    ExplicitTop = 169
-    ExplicitWidth = 784
   end
   object SpTBXPanel1: TSpTBXPanel
     Left = 0
@@ -33,8 +31,6 @@ object frmTeachGamers: TfrmTeachGamers
     Caption = 'SpTBXPanel1'
     Align = alBottom
     TabOrder = 1
-    ExplicitTop = 174
-    ExplicitWidth = 784
     object SpTBXSplitter2: TSpTBXSplitter
       Left = 2
       Top = 2
@@ -50,7 +46,6 @@ object frmTeachGamers: TfrmTeachGamers
       Align = alClient
       TabOrder = 1
       Options.Close = False
-      ExplicitWidth = 766
       object gridAGamers: TDBGridEh
         Left = 0
         Top = 40
@@ -139,17 +134,21 @@ object frmTeachGamers: TfrmTeachGamers
           Action = actAGamerAdd
         end
         object edAGamerName: TDBEditEh
-          Left = 41
+          Left = 45
           Top = 0
           Width = 286
           Height = 21
           Anchors = [akLeft, akTop, akRight]
-          EditButtons = <>
+          EditButtons = <
+            item
+              Action = actAppendCountry
+              Style = ebsEllipsisEh
+            end>
           TabOrder = 0
           Visible = True
         end
         object lcbCountry: TDBLookupComboboxEh
-          Left = 376
+          Left = 384
           Top = 0
           Width = 89
           Height = 21
@@ -163,6 +162,7 @@ object frmTeachGamers: TfrmTeachGamers
           ListSource = dsCountry
           TabOrder = 1
           Visible = True
+          OnChange = lcbCountryChange
         end
       end
     end
@@ -172,7 +172,6 @@ object frmTeachGamers: TfrmTeachGamers
       Width = 9
       Height = 315
       Position = dpxRight
-      ExplicitLeft = 773
     end
   end
   object gridBGamers: TDBGridEh
@@ -267,7 +266,6 @@ object frmTeachGamers: TfrmTeachGamers
     Top = 56
   end
   object trnRead: TpFIBTransaction
-    Active = True
     DefaultDatabase = dmFormMain.dbSwim
     TimeoutAction = TARollback
     TRParams.Strings = (
@@ -311,7 +309,7 @@ object frmTeachGamers: TfrmTeachGamers
   end
   object qryAGamers: TpFIBDataSet
     SelectSQL.Strings = (
-      'select *'
+      'select distinct ag.agamer_id, ag.agamer_name, ag.used_dt'
       'from agamers ag '
       '  left join v_atournir c on (c.agamer_id = ag.agamer_id)'
       'where coalesce(:atournir_id, c.atournir_id) = c.atournir_id'
@@ -347,6 +345,11 @@ object frmTeachGamers: TfrmTeachGamers
     object actFilterByTournir: TAction
       AutoCheck = True
       Caption = 'In tournir'
+    end
+    object actAppendCountry: TAction
+      Caption = 'actAppendCountry'
+      OnExecute = actAppendCountryExecute
+      OnUpdate = actAppendCountryUpdate
     end
   end
   object qryCountries: TpFIBDataSet
