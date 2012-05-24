@@ -106,6 +106,7 @@ object Form1: TForm1
     Width = 856
     Height = 19
     Panels = <>
+    SimplePanel = True
   end
   object ProgressBar1: TProgressBar
     Left = 0

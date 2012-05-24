@@ -3,9 +3,12 @@ unit uDmSwim;
 interface
 
 uses
-  System.SysUtils, System.Classes, pFIBDatabase, FIBDatabase, IBDatabase,
+  System.SysUtils, System.Classes, Messages, pFIBDatabase, FIBDatabase, IBDatabase,
   Data.DB, IBCustomDataSet, IBQuery, FIBDataSet, pFIBDataSet, FIBQuery,
   pFIBQuery, pFIBStoredProc;
+
+const
+  MY_QUEUESIZE = WM_USER + 1;
 
 type
   TdmSwim = class(TDataModule)

@@ -46,6 +46,7 @@ type
     cbTemporary: TSpTBXItem;
     SpTBXSeparatorItem1: TSpTBXSeparatorItem;
     actAppendCountry: TAction;
+    actSearchAGamer: TAction;
     procedure actFillEditFormExecute(Sender: TObject);
     procedure trnWriteAfterEnd(EndingTR: TFIBTransaction;
       Action: TTransactionAction; Force: Boolean);
@@ -60,6 +61,8 @@ type
     procedure actAppendCountryExecute(Sender: TObject);
     procedure actAppendCountryUpdate(Sender: TObject);
     procedure lcbCountryChange(Sender: TObject);
+    procedure edAGamerNameChange(Sender: TObject);
+    procedure actSearchAGamerExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -131,13 +134,12 @@ begin
   actAppendCountry.Enabled:= Pos(lcbCountry.Value, edAGamerName.Text) = 0;
 end;
 
+
 procedure TfrmTeachGamers.actFillEditFormExecute(Sender: TObject);
 begin
   with gridBGamers.DataSource do
   begin
     if DataSet.Eof then exit;
-    edAGamerName.Text:= qryBGamers['Gamer_Name'];
-    lcbCountry.Value:= qryBGamers['Country_Sign'];
     qryAGamers.DisableControls;
     try
       qryAGamers.Params.ParamByName('ASport_Id').Value := qryBGamers['ASport_Id'];
@@ -146,20 +148,36 @@ begin
         qryAGamers.Params.ParamByName('ATournir_Id').Value := qryBGamers['ATournir_Id']
       else
         qryAGamers.Params.ParamByName('ATournir_Id').Value := null;
-      qryAGamers.CloseOpen(true);
-      qryAGamers.First;
-      while not qryAGamers.Eof and
-            (qryAGamers['AGamer_Name']< edAGamerName.Text) do
-        qryAGamers.Next;
+      edAGamerName.Text:= qryBGamers['Gamer_Name'];
+      lcbCountry.Value:= qryBGamers['Country_Sign'];
     finally
       qryAGamers.EnableControls;
     end;
   end;
 end;
 
+procedure TfrmTeachGamers.actSearchAGamerExecute(Sender: TObject);
+begin
+  if not qryAGamers.Active then exit;
+  qryAGamers.DisableControls;
+  try
+    qryAGamers.First;
+    while not qryAGamers.Eof and
+             (qryAGamers['AGamer_Name']< edAGamerName.Text) do
+    qryAGamers.Next;
+  finally
+    qryAGamers.EnableControls;
+  end;
+end;
+
 procedure TfrmTeachGamers.cbGamerOnTournirClick(Sender: TObject);
 begin
   actFillEditForm.Execute;
+end;
+
+procedure TfrmTeachGamers.edAGamerNameChange(Sender: TObject);
+begin
+  actSearchAGamer.Execute;
 end;
 
 procedure TfrmTeachGamers.FormCreate(Sender: TObject);

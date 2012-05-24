@@ -146,6 +146,7 @@ object frmTeachGamers: TfrmTeachGamers
             end>
           TabOrder = 0
           Visible = True
+          OnChange = edAGamerNameChange
         end
         object lcbCountry: TDBLookupComboboxEh
           Left = 376
@@ -266,6 +267,7 @@ object frmTeachGamers: TfrmTeachGamers
     Top = 56
   end
   object trnRead: TpFIBTransaction
+    Active = True
     DefaultDatabase = dmFormMain.dbSwim
     TimeoutAction = TARollback
     TRParams.Strings = (
@@ -300,7 +302,7 @@ object frmTeachGamers: TfrmTeachGamers
       '  where be2.agamer2_id is null'
       '    and nullif(be2.bgamer2_name, '#39#39') is not null) gmr'
       'inner join v_btournirs bt on (bt.btournir_id = gmr.btournir_id)'
-      'order by bt.asport_id, bt.atournir_name')
+      'order by bt.booker_id, bt.asport_id, bt.atournir_name')
     AfterScroll = qryBGamersAfterScroll
     Transaction = trnRead
     Database = dmFormMain.dbSwim
@@ -312,13 +314,15 @@ object frmTeachGamers: TfrmTeachGamers
       'select distinct ag.agamer_id, ag.agamer_name, ag.used_dt'
       'from agamers ag '
       '  left join v_atournir c on (c.agamer_id = ag.agamer_id)'
-      'where coalesce(:atournir_id, c.atournir_id) = c.atournir_id'
-      '  and ag.asport_id = :asport_id'
+      'where ag.asport_id = :asport_id'
+      '  and (coalesce(:atournir_id, c.atournir_id) = c.atournir_id or'
+      
+        '       c.atournir_id in (select a.atournir_id from atournirs a w' +
+        'here a.mtournir_id = :atournir_id))'
       '  and (ag.country_sign = :country_sign or'
       '       ag.country_sign in (select r.country_sign'
       '                          from regions r '
       '                          where r.region_sign = :country_sign))'
-      ''
       'order by ag.agamer_name')
     CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
     CacheModelOptions.BufferChunks = 100
@@ -350,6 +354,10 @@ object frmTeachGamers: TfrmTeachGamers
       Caption = 'actAppendCountry'
       OnExecute = actAppendCountryExecute
       OnUpdate = actAppendCountryUpdate
+    end
+    object actSearchAGamer: TAction
+      Caption = 'actSearchAGamer'
+      OnExecute = actSearchAGamerExecute
     end
   end
   object qryCountries: TpFIBDataSet

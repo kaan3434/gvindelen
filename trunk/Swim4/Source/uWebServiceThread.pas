@@ -24,6 +24,7 @@ type
   protected
     procedure MyInit;
     procedure MyDestroy;
+    procedure UpdateMainForm;
     procedure Execute; override;
     property ThreadId: integer read FThreadId;
     property RequestId: integer read FRequestId;
@@ -32,7 +33,7 @@ type
 implementation
 
 uses
-  ActiveX, Dialogs, SysUtils, GvStr, GvFile;
+  Windows, ActiveX, Dialogs, SysUtils, GvStr, GvFile, Forms, uDmSwim;
 {
   Important: Methods and properties of objects in visual components can only be
   used in a method called using Synchronize, for example,
@@ -122,6 +123,7 @@ begin
         else
         if FActionSign = 'getBookers' then
           PutBookers;
+        Synchronize(UpdateMainForm);
       end;
       Suspend;
     until Terminated;
@@ -303,6 +305,15 @@ begin
   finally
     Node.Free;
   end;
+end;
+
+procedure TWebServiceRequester.UpdateMainForm;
+var
+  QueueSize: integer;
+begin
+  QueueSize:= dm.trnRead.DefaultDatabase.QueryValue(
+    'select count(*) from requests', 0, dm.trnRead);
+  PostMessage(Application.MainForm.Handle, MY_QUEUESIZE, QueueSize, 0);
 end;
 
 end.

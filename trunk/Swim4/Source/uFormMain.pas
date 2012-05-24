@@ -10,7 +10,7 @@ uses
   Vcl.RibbonActnMenus, Data.Bind.EngExt, Vcl.Bind.DBEngExt, Data.Bind.Components,
   Vcl.StdCtrls, Vcl.ExtCtrls, DBGridEhGrouping, Vcl.ComCtrls, GridsEh, DBGridEh,
   Data.DB, Soap.InvokeRegistry, Soap.Rio, Soap.SOAPHTTPClient, ToolCtrlsEh,
-  GvVars, GvXml, JvComponentBase, JvMTComponents, uDmFormMain;
+  GvVars, GvXml, JvComponentBase, JvMTComponents, uDmFormMain, uDmSwim;
 
 type
   TForm1 = class(TForm)
@@ -54,6 +54,7 @@ type
     procedure OnThreadTerminate(Sender: TObject);
     function GetThreadCount: Integer;
     procedure SetThreadCount(const Value: Integer);
+    procedure ShowQueueSize(var msg: TMessage); message MY_QUEUESIZE;
     property ThreadCount: Integer read GetThreadCount write SetThreadCount;
   public
     { Public declarations }
@@ -239,6 +240,11 @@ begin
   end;
   while FThreadList.Count > Value do
     TWebServiceRequester(FThreadList[0]).Terminate;
+end;
+
+procedure TForm1.ShowQueueSize(var msg: TMessage);
+begin
+  StatusBar1.SimpleText:= Format('Очередь %u', [msg.WParam]);
 end;
 
 procedure TForm1.StartThreads;
