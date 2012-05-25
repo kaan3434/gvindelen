@@ -237,6 +237,7 @@ function UnEscapeString(St: WideString): WideString; overload;
 function FilterString(St, KeyChars: string): string;
 
 function Translit(St: string): string;
+function DeTranslit(St: string): string;
 function UpCaseFirst(St: string): string;
 function UpCaseWord(St: string; KeyChars: string=' ,.!-:?'): string;
 
@@ -2298,6 +2299,34 @@ begin
     p:= Pos(Result[i], Rus);
     if p > 0 then
       Result[i]:= Lat[p];
+  end;
+end;
+
+function DeTranslit(St: string): string;
+const
+  Rus='ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÚÛİàáâãäåæçèéêëìíîïğñòóôõúûı';
+  Lat='ABVGDEJZIYKLMNOPRSTUFH`YEabvgdejziyklmnoprstufh`ye';
+var
+  Mapping: TStringList;
+  i, lr, p: Integer;
+begin
+  Result:= St;
+  Mapping:= TStringList.Create;
+  try
+    Mapping.Text:= ReplaceAll(
+      'Liu=Ëş;liu=ëş;yo=¸;Ch=×;ch=÷;Sh=Ø;sh=ø;Sch=Ù;sch=ù;Yu=Ş;yu=ş;Ya=ß;ya=ÿ;'+
+      'Ts=Ö;ts=ö;Ci=Öû;ci=öû;Ca=Êà;C=Ö;c=ö', ';', #13#10);
+    for i:= 0 to Mapping.count - 1 do
+      Result:= ReplaceAll(Result, Mapping.Names[i], Mapping.ValueFromIndex[i], true);
+  finally
+    Mapping.Free;
+  end;
+  lr:= Length(Result);
+  for i:= 1 to lr do
+  begin
+    p:= Pos(Result[i], Lat);
+    if p > 0 then
+      Result[i]:= Rus[p];
   end;
 end;
 
