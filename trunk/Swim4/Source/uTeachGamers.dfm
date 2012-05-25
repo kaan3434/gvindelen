@@ -53,6 +53,7 @@ object frmTeachGamers: TfrmTeachGamers
         Height = 275
         Align = alClient
         AutoFitColWidths = True
+        Color = clBtnFace
         DataGrouping.GroupLevels = <>
         DataSource = dsAGamers
         Flat = True
@@ -124,9 +125,7 @@ object frmTeachGamers: TfrmTeachGamers
           AutoCheck = True
         end
         object cbGamerOnTournir: TSpTBXItem
-          Caption = #1059#1095#1072#1089#1090#1085#1080#1082#1080' '#1090#1091#1088#1085#1080#1088#1072
-          AutoCheck = True
-          OnClick = cbGamerOnTournirClick
+          Action = actFilterByTournir
         end
         object SpTBXSeparatorItem1: TSpTBXSeparatorItem
         end
@@ -142,6 +141,10 @@ object frmTeachGamers: TfrmTeachGamers
           EditButtons = <
             item
               Action = actAppendCountry
+              Style = ebsPlusEh
+            end
+            item
+              Action = actTranslit
               Style = ebsEllipsisEh
             end>
           TabOrder = 0
@@ -182,6 +185,7 @@ object frmTeachGamers: TfrmTeachGamers
     Height = 274
     Align = alClient
     AutoFitColWidths = True
+    Color = clBtnFace
     DataGrouping.GroupLevels = <>
     DataSource = dsBGamers
     Flat = True
@@ -194,6 +198,7 @@ object frmTeachGamers: TfrmTeachGamers
     IndicatorOptions = [gioShowRowIndicatorEh]
     Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
     OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
+    STFilter.InstantApply = False
     TabOrder = 2
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
@@ -267,7 +272,6 @@ object frmTeachGamers: TfrmTeachGamers
     Top = 56
   end
   object trnRead: TpFIBTransaction
-    Active = True
     DefaultDatabase = dmFormMain.dbSwim
     TimeoutAction = TARollback
     TRParams.Strings = (
@@ -301,8 +305,12 @@ object frmTeachGamers: TfrmTeachGamers
       '  from bevents be2'
       '  where be2.agamer2_id is null'
       '    and nullif(be2.bgamer2_name, '#39#39') is not null) gmr'
-      'inner join v_btournirs bt on (bt.btournir_id = gmr.btournir_id)'
-      'order by bt.booker_id, bt.asport_id, bt.atournir_name')
+      
+        'inner join v_btournirs bt on (bt.btournir_id = gmr.btournir_id a' +
+        'nd bt.atournir_id is not null)'
+      
+        'order by bt.teach_order, bt.asport_id, bt.country_sign, bt.atour' +
+        'nir_lvl')
     AfterScroll = qryBGamersAfterScroll
     Transaction = trnRead
     Database = dmFormMain.dbSwim
@@ -315,7 +323,8 @@ object frmTeachGamers: TfrmTeachGamers
       'from agamers ag '
       '  left join v_atournir c on (c.agamer_id = ag.agamer_id)'
       'where ag.asport_id = :asport_id'
-      '  and (coalesce(:atournir_id, c.atournir_id) = c.atournir_id or'
+      '  and (coalesce(:atournir_id, 0) = 0 or'
+      '       coalesce(:atournir_id, c.atournir_id) = c.atournir_id or'
       
         '       c.atournir_id in (select a.atournir_id from atournirs a w' +
         'here a.mtournir_id = :atournir_id))'
@@ -326,6 +335,7 @@ object frmTeachGamers: TfrmTeachGamers
       'order by ag.agamer_name')
     CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
     CacheModelOptions.BufferChunks = 100
+    BeforeOpen = qryAGamersBeforeOpen
     Transaction = trnRead
     Database = dmFormMain.dbSwim
     Left = 136
@@ -349,6 +359,7 @@ object frmTeachGamers: TfrmTeachGamers
     object actFilterByTournir: TAction
       AutoCheck = True
       Caption = 'In tournir'
+      OnExecute = actFilterByTournirExecute
     end
     object actAppendCountry: TAction
       Caption = 'actAppendCountry'
@@ -358,6 +369,10 @@ object frmTeachGamers: TfrmTeachGamers
     object actSearchAGamer: TAction
       Caption = 'actSearchAGamer'
       OnExecute = actSearchAGamerExecute
+    end
+    object actTranslit: TAction
+      Caption = 'actTranslit'
+      OnExecute = actTranslitExecute
     end
   end
   object qryCountries: TpFIBDataSet

@@ -8,7 +8,7 @@ uses
   FIBDatabase, pFIBDatabase, GridsEh, DBGridEh, Vcl.StdCtrls, Data.DB,
   FIBDataSet, pFIBDataSet, Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.Mask, DBCtrlsEh,
   DBLookupEh, TB2Dock, SpTBXItem, SpTBXDkPanels, SpTBXEditors, SpTBXControls,
-  Vcl.ActnList, FIBQuery, pFIBQuery, pFIBStoredProc;
+  Vcl.ActnList, FIBQuery, pFIBQuery, pFIBStoredProc, Vcl.Menus;
 
 type
   TfrmTeachTournirs = class(TForm)
@@ -53,6 +53,8 @@ type
     cbIgnore: TCheckBox;
     actBTournirMaskAdd: TAction;
     SpTBXButton2: TSpTBXButton;
+    actBTournirPostpone: TAction;
+    SpTBXButton3: TSpTBXButton;
     procedure actFillEditFormExecute(Sender: TObject);
     procedure lcbASportChange(Sender: TObject);
     procedure lcbCountryChange(Sender: TObject);
@@ -68,6 +70,7 @@ type
     procedure actBTournirMaskAddExecute(Sender: TObject);
     procedure actBTournirMaskAddUpdate(Sender: TObject);
     procedure actATournirNewUpdate(Sender: TObject);
+    procedure actBTournirPostponeExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -192,6 +195,26 @@ begin
       cbIgnore.Checked:= DataSet['Ignore_Flg'];
     end;
     edTournirMask.Text:= '';
+  end;
+end;
+
+procedure TfrmTeachTournirs.actBTournirPostponeExecute(Sender: TObject);
+var
+  bm: TBookmark;
+begin
+  bm:= qryBTournirs.GetBookmark;
+  try
+    with spTempSignle do
+    begin
+      StoredProcName:= 'BTOURNIR_POSTPONE';
+      Params.ClearValues;
+      Params.ParamByName('i_btournir_id').Value := qryBTournirs['BTournir_Id'];
+      Params.ParamByName('i_hour_cnt').Value := 24;
+      ExecProc;
+    end;
+  finally
+    qryBTournirs.GotoBookmark(bm);
+    qryBTournirs.FreeBookmark(bm);
   end;
 end;
 

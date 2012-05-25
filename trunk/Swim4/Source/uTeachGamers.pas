@@ -8,7 +8,7 @@ uses
   TB2Dock, SpTBXDkPanels, SpTBXItem, SpTBXControls, Data.DB, FIBDataSet,
   pFIBDataSet, FIBDatabase, pFIBDatabase, DBLookupEh, Vcl.StdCtrls, Vcl.Mask,
   DBCtrlsEh, Vcl.ActnList, ToolCtrlsEh, FIBQuery, pFIBQuery, pFIBStoredProc,
-  TB2Toolbar, TB2Item, SpTBXEditors;
+  TB2Toolbar, TB2Item, SpTBXEditors, EhLibFIB;
 
 type
   TfrmTeachGamers = class(TForm)
@@ -47,6 +47,7 @@ type
     SpTBXSeparatorItem1: TSpTBXSeparatorItem;
     actAppendCountry: TAction;
     actSearchAGamer: TAction;
+    actTranslit: TAction;
     procedure actFillEditFormExecute(Sender: TObject);
     procedure trnWriteAfterEnd(EndingTR: TFIBTransaction;
       Action: TTransactionAction; Force: Boolean);
@@ -55,7 +56,6 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure actAGamerAddExecute(Sender: TObject);
     procedure qryBGamersAfterScroll(DataSet: TDataSet);
-    procedure cbGamerOnTournirClick(Sender: TObject);
     procedure gridAGamersDblClick(Sender: TObject);
     procedure actAGamerLinkExecute(Sender: TObject);
     procedure actAppendCountryExecute(Sender: TObject);
@@ -63,6 +63,9 @@ type
     procedure lcbCountryChange(Sender: TObject);
     procedure edAGamerNameChange(Sender: TObject);
     procedure actSearchAGamerExecute(Sender: TObject);
+    procedure actTranslitExecute(Sender: TObject);
+    procedure actFilterByTournirExecute(Sender: TObject);
+    procedure qryAGamersBeforeOpen(DataSet: TDataSet);
   private
     { Private declarations }
   public
@@ -77,7 +80,7 @@ implementation
 {$R *.dfm}
 
 uses
-  uDmFormMain, GvVariant;
+  uDmFormMain, GvVariant, GvStr;
 
 procedure TfrmTeachGamers.actAGamerAddExecute(Sender: TObject);
 var
@@ -144,15 +147,23 @@ begin
     try
       qryAGamers.Params.ParamByName('ASport_Id').Value := qryBGamers['ASport_Id'];
       qryAGamers.Params.ParamByName('Country_Sign').Value := qryBGamers['Country_Sign'];
-      if cbGamerOnTournir.Checked then
-        qryAGamers.Params.ParamByName('ATournir_Id').Value := qryBGamers['ATournir_Id']
-      else
-        qryAGamers.Params.ParamByName('ATournir_Id').Value := null;
       edAGamerName.Text:= qryBGamers['Gamer_Name'];
       lcbCountry.Value:= qryBGamers['Country_Sign'];
+      actSearchAGamer.Execute;
     finally
       qryAGamers.EnableControls;
     end;
+  end;
+end;
+
+procedure TfrmTeachGamers.actFilterByTournirExecute(Sender: TObject);
+begin
+  qryAGamers.DisableControls;
+  try
+    qryAGamers.CloseOpen(true);
+    actFillEditForm.Execute;
+  finally
+    qryAGamers.EnableControls;
   end;
 end;
 
@@ -170,9 +181,12 @@ begin
   end;
 end;
 
-procedure TfrmTeachGamers.cbGamerOnTournirClick(Sender: TObject);
+procedure TfrmTeachGamers.actTranslitExecute(Sender: TObject);
 begin
-  actFillEditForm.Execute;
+  if edAGamerName.Text[1] < 'z' then
+    edAGamerName.Text:= DeTranslit(edAGamerName.Text)
+  else
+    edAGamerName.Text:= Translit(edAGamerName.Text);
 end;
 
 procedure TfrmTeachGamers.edAGamerNameChange(Sender: TObject);
@@ -204,6 +218,14 @@ begin
   finally
     qryAGamers.EnableControls;
   end;
+end;
+
+procedure TfrmTeachGamers.qryAGamersBeforeOpen(DataSet: TDataSet);
+begin
+  if actFilterByTournir.Checked then
+    qryAGamers.Params.ParamByName('ATournir_Id').Value := qryBGamers['ATournir_Id']
+  else
+    qryAGamers.Params.ParamByName('ATournir_Id').Value := null;
 end;
 
 procedure TfrmTeachGamers.qryBGamersAfterScroll(DataSet: TDataSet);

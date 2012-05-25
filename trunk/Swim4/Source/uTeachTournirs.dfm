@@ -187,7 +187,7 @@ object frmTeachTournirs: TfrmTeachTournirs
         end
         object SpTBXButton1: TSpTBXButton
           Left = 223
-          Top = 225
+          Top = 227
           Width = 75
           Height = 25
           Action = actATournirNew
@@ -275,11 +275,20 @@ object frmTeachTournirs: TfrmTeachTournirs
         end
         object SpTBXButton2: TSpTBXButton
           Left = 120
-          Top = 225
+          Top = 227
           Width = 75
           Height = 25
           Action = actBTournirMaskAdd
           TabOrder = 9
+          DrawPushedCaption = False
+        end
+        object SpTBXButton3: TSpTBXButton
+          Left = 12
+          Top = 227
+          Width = 75
+          Height = 25
+          Action = actBTournirPostpone
+          TabOrder = 10
           DrawPushedCaption = False
         end
       end
@@ -499,6 +508,10 @@ object frmTeachTournirs: TfrmTeachTournirs
       Caption = #1054#1073#1091#1095#1080#1090#1100
       OnExecute = actBTournirMaskAddExecute
       OnUpdate = actBTournirMaskAddUpdate
+    end
+    object actBTournirPostpone: TAction
+      Caption = #1054#1090#1083#1086#1078#1080#1090#1100
+      OnExecute = actBTournirPostponeExecute
     end
   end
   object trnRead: TpFIBTransaction
