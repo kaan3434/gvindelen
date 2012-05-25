@@ -4,3 +4,5 @@
 Счёт=Modifier=Ignore
 Счет 1-го сета=Modifier=Ignore
 Счет 2-го сета=Modifier=Ignore
+Дополнительные форы=Subject=Game
+Тотал=Kind=Total;Subject=Game

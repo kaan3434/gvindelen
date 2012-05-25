@@ -11,19 +11,29 @@ Gamer2=Gamer=2
 No=Kind=Total;Modifier=Under;Value=0.5
 Odd=Modifier=Odd
 Over 10,5=Modifier=Over;Value=10.5
+Over 16,5=Modifier=Over;Value=16.5
+Over 17,5=Modifier=Over;Value=17.5
+Over 18,5=Modifier=Over;Value=18.5
 Over 19,5=Modifier=Over;Value=19.5
 Over 20,5=Modifier=Over;Value=20.5
 Over 21,5=Modifier=Over;Value=21.5
 Over 22,5=Modifier=Over;Value=22.5
+Over 23,5=Modifier=Over;Value=23.5
 Over 4,5=Modifier=Over;Value=4.5
+Over 6,5=Modifier=Over;Value=6.5
 Over 7,5=Modifier=Over;Value=7.5
 Over 8,5=Modifier=Over;Value=8.5
 Under 10,5=Modifier=Under;Value=10.5
+Under 16,5=Modifier=Under;Value=16.5
+Under 17,5=Modifier=Under;Value=17.5
+Under 18,5=Modifier=Under;Value=18.5
 Under 19,5=Modifier=Under;Value=19.5
 Under 20,5=Modifier=Under;Value=20.5
 Under 21,5=Modifier=Under;Value=21.5
 Under 22,5=Modifier=Under;Value=22.5
+Under 23,5=Modifier=Under;Value=23.5
 Under 4,5=Modifier=Under;Value=4.5
+Under 6,5=Modifier=Under;Value=6.5
 Under 7,5=Modifier=Under;Value=7.5
 Under 8,5=Modifier=Under;Value=8.5
 Yes=Kind=Total;Modifier=Over;Value=0.5
