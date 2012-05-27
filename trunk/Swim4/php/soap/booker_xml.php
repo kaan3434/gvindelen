@@ -6,6 +6,12 @@ class booker_xml {
   protected $sport_node;
   protected $league_path;
   
+  function __construct() { 
+    if ($_SERVER['HTTP_HOST'] == 'localhost:8080')
+      $this->debug = 1;
+  }
+  
+  
   public function getSports() {
     $xml = simplexml_load_file("data/sports/{$this->booker}.xml");
     foreach($xml->xpath('Sports/Sport/*') as $child) {

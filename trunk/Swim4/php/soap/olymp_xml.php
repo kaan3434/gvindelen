@@ -8,9 +8,9 @@
 class olymp_booker extends booker_xml {
   
   function __construct() { 
+    parent::__construct();
     $this->booker = 'olymp'; 
     $this->host = 'https://olympbet.com';
-    $this->debug = 1;
   }
   
   private function extract_league(&$tournirs_node, $html) {

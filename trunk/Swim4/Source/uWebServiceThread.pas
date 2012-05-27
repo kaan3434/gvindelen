@@ -33,7 +33,7 @@ type
 implementation
 
 uses
-  Windows, ActiveX, Dialogs, SysUtils, GvStr, GvFile, Forms, uDmSwim;
+  Windows, ActiveX, Dialogs, SysUtils, GvStr, GvFile, Forms, uDmSwim, uSettings;
 {
   Important: Methods and properties of objects in visual components can only be
   used in a method called using Synchronize, for example,
@@ -88,12 +88,16 @@ begin
 end;
 
 procedure TWebServiceRequester.MyInit;
+var
+  Addr: String;
 begin
   FreeOnTerminate:= true;
   dm:= TdmSwimThread.Create(nil);
   FThreadId:= dm.dbSwim.QueryValue(
     'SELECT gen_id(gen_thread_id, 1) FROM RDB$DATABASE', 0);
-  FWSScan:= GetTScanPort;
+  Addr:= settings.Root.Find('WebServices').Find('WebService', 'IsDefault', '1').
+         Attr['Url'].AsStringDef('http://localhost:8080/soap/ScanBooker.php');
+  FWSScan:= GetTScanPort(false, Addr);
   FNode:= TGvXmlNode.Create;
   CoInitialize(nil);
 end;
@@ -202,8 +206,7 @@ begin
             try
               dm.trnWrite.SetSavePoint('PutBet');
               dm.BetDetect(Bet.Period, Bet.Kind, Bet.Subject, Bet.Gamer,
-                           Bet.Value, Bet.Modifier, Bet.Koef,
-                           Node.Attr['Event_Swap'].AsBoolean);
+                           Bet.Value, Bet.Modifier, Bet.Koef);
             except
               dm.trnWrite.RollBackToSavePoint('PutBet');
             end;
@@ -273,8 +276,16 @@ var
 begin
   Node:= TGvXmlNode.Create;
   try
-    Tournirs:= FWSScan.getTournirs(FNode.Attr['Booker_Sign'].AsString,
-                                   FNode.Attr['Sport_Id'].AsInteger).Tournirs;
+    try
+      Tournirs:= FWSScan.getTournirs(FNode.Attr['Booker_Sign'].AsString,
+                                     FNode.Attr['Sport_Id'].AsInteger).Tournirs;
+    except
+      on E:Exception do
+      begin
+        ShowMessage(E.Message);
+        Raise;
+      end;
+    end;
     dm.trnWrite.StartTransaction;
     try
       for Tournir in Tournirs do

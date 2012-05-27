@@ -48,6 +48,7 @@ type
     actAppendCountry: TAction;
     actSearchAGamer: TAction;
     actTranslit: TAction;
+    aUpCaseFirst: TAction;
     procedure actFillEditFormExecute(Sender: TObject);
     procedure trnWriteAfterEnd(EndingTR: TFIBTransaction;
       Action: TTransactionAction; Force: Boolean);
@@ -66,6 +67,7 @@ type
     procedure actTranslitExecute(Sender: TObject);
     procedure actFilterByTournirExecute(Sender: TObject);
     procedure qryAGamersBeforeOpen(DataSet: TDataSet);
+    procedure aUpCaseFirstExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -187,6 +189,11 @@ begin
     edAGamerName.Text:= DeTranslit(edAGamerName.Text)
   else
     edAGamerName.Text:= Translit(edAGamerName.Text);
+end;
+
+procedure TfrmTeachGamers.aUpCaseFirstExecute(Sender: TObject);
+begin
+  edAGamerName.SetSelText(UpCaseFirst(edAGamerName.SelText));
 end;
 
 procedure TfrmTeachGamers.edAGamerNameChange(Sender: TObject);

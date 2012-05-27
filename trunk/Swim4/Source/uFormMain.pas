@@ -33,6 +33,7 @@ type
     RibbonGroup1: TRibbonGroup;
     actTeachTournirs: TAction;
     actTeachEvents: TAction;
+    actRunThread: TAction;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure actScanAllBookerExecute(Sender: TObject);
@@ -42,6 +43,7 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure actTeachTournirsExecute(Sender: TObject);
     procedure actTeachEventsExecute(Sender: TObject);
+    procedure actRunThreadExecute(Sender: TObject);
   private
     { Private declarations }
     FThreadList: TList;
@@ -108,6 +110,11 @@ procedure TForm1.actNeedScanExecute(Sender: TObject);
 begin
   if (Sender is TAction) then
     Settings.ScanerOn[TAction(Sender).Tag]:= TAction(Sender).Checked;
+end;
+
+procedure TForm1.actRunThreadExecute(Sender: TObject);
+begin
+  StartThreads;
 end;
 
 procedure TForm1.actScanAllBookerExecute(Sender: TObject);

@@ -3,6 +3,7 @@
   require_once "olymp_xml.php";
   
   $booker = new olymp_booker();
+  $booker->debug = 1;
   
   //$sports = $booker->getSports();
   

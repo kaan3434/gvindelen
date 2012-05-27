@@ -38,7 +38,6 @@ object Form1: TForm1
         Caption = 'Teacher'
         Page = RibbonPage2
       end>
-    TabIndex = 2
     DesignSize = (
       856
       143)
@@ -47,23 +46,6 @@ object Form1: TForm1
       ActionManager = actMngRibbon
       OptionItems = <>
       RecentItems = <>
-    end
-    object RibbonPageScaner: TRibbonPage
-      Left = 0
-      Top = 50
-      Width = 855
-      Height = 93
-      Caption = 'Scanner'
-      Index = 0
-      object tbScannerBookers: TRibbonGroup
-        Left = 4
-        Top = 3
-        Width = 50
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = 'Bookers'
-        GroupIndex = 0
-      end
     end
     object RibbonPage1: TRibbonPage
       Left = 0
@@ -96,6 +78,23 @@ object Form1: TForm1
         Height = 86
         ActionManager = actMngRibbon
         Caption = 'Categories'
+        GroupIndex = 0
+      end
+    end
+    object RibbonPageScaner: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 855
+      Height = 93
+      Caption = 'Scanner'
+      Index = 0
+      object tbScannerBookers: TRibbonGroup
+        Left = 4
+        Top = 3
+        Width = 123
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = 'Bookers'
         GroupIndex = 0
       end
     end
@@ -155,6 +154,11 @@ object Form1: TForm1
       end
       item
         Items = <
+          item
+            Action = actRunThread
+            ImageIndex = 0
+            CommandProperties.ButtonSize = bsLarge
+          end
           item
             Action = actScanAllBooker
             Caption = '&All'
@@ -227,6 +231,12 @@ object Form1: TForm1
       Caption = 'Events'
       ImageIndex = 2
       OnExecute = actTeachEventsExecute
+    end
+    object actRunThread: TAction
+      Category = 'Scanner'
+      Caption = 'StartThreads'
+      ImageIndex = 0
+      OnExecute = actRunThreadExecute
     end
   end
   object imgListRibbon: TImageList

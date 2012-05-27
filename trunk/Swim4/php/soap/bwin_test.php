@@ -3,7 +3,6 @@
   require_once"booker_xml.php";
   
   $booker = new bwin_booker();
-  $booker->debug = 1;
   
 //  $sports = $booker->getSports();
   

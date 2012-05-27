@@ -10,9 +10,9 @@ class marathon_booker extends booker_xml {
   private $header;
   
   function __construct() { 
+    parent::__construct();
     $this->booker = 'marathon'; 
     $this->host = 'http://marathonbet.com';
-    $this->debug = 1;
   }
   
   private function extract_league(&$tournirs_node, $html, $sport_sign) {
@@ -155,9 +155,9 @@ class marathon_booker extends booker_xml {
     foreach ($events as $event) {
       // получаем 
       $event_info= take_be($event, '<table', '</table>');
-      preg_match_all('/<div class=".*?member-name">(.*)?<\/div>/imsU', $event_info, $matches);
-      $gamer1_name= $matches[1][0];
-      $gamer2_name= $matches[1][1];
+      preg_match_all('/<div class="(today-member-name|member-name)">(.*)?<\/div>/imsU', $event_info, $matches);
+      $gamer1_name= $matches[2][0];
+      $gamer2_name= $matches[2][1];
       $datetime_str= delete_all(copy_be($event_info, '<td', '</td>', '"date"'), '<', '>');
       list($day_no, $month_no, $year_no, $hour, $minute) = $this->decode_datetime($datetime_str);
       $extrabet = copy_be($event_info, '<a', '</a>', 'treeid');

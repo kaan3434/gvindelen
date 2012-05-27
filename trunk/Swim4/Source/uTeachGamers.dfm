@@ -92,6 +92,11 @@ object frmTeachGamers: TfrmTeachGamers
             EditButtons = <>
             FieldName = 'USED_DT'
             Footers = <>
+          end
+          item
+            EditButtons = <>
+            FieldName = 'AGAMER_ID'
+            Footers = <>
           end>
         object RowDetailData: TRowDetailPanelControlEh
         end
@@ -146,6 +151,10 @@ object frmTeachGamers: TfrmTeachGamers
             item
               Action = actTranslit
               Style = ebsEllipsisEh
+            end
+            item
+              Action = aUpCaseFirst
+              Style = ebsUpDownEh
             end>
           TabOrder = 0
           Visible = True
@@ -242,6 +251,16 @@ object frmTeachGamers: TfrmTeachGamers
         EditButtons = <>
         FieldName = 'BOOKER_NAME'
         Footers = <>
+      end
+      item
+        EditButtons = <>
+        FieldName = 'BEVENT_ID'
+        Footers = <>
+      end
+      item
+        EditButtons = <>
+        FieldName = 'OPPONENT_NAME'
+        Footers = <>
       end>
     object RowDetailData: TRowDetailPanelControlEh
     end
@@ -272,6 +291,7 @@ object frmTeachGamers: TfrmTeachGamers
     Top = 56
   end
   object trnRead: TpFIBTransaction
+    Active = True
     DefaultDatabase = dmFormMain.dbSwim
     TimeoutAction = TARollback
     TRParams.Strings = (
@@ -291,17 +311,17 @@ object frmTeachGamers: TfrmTeachGamers
         '_name, '
       
         '  bt.country_sign, gmr.event_dtm, gmr.gamer_name, bt.booker_name' +
-        ', gmr.bevent_id '
+        ', gmr.bevent_id, gmr.opponent_name'
       
         'from (select be1.bevent_id, be1.btournir_id, be1.event_dtm, be1.' +
-        'bgamer1_name gamer_name'
+        'bgamer1_name gamer_name, be1.bgamer2_name opponent_name'
       '  from bevents be1'
       '  where be1.agamer1_id is null'
       '    and nullif(be1.bgamer1_name, '#39#39') is not null'
       '  union'
       
         '  select be2.bevent_id, be2.btournir_id, be2.event_dtm, be2.bgam' +
-        'er2_name'
+        'er2_name, be2.bgamer1_name'
       '  from bevents be2'
       '  where be2.agamer2_id is null'
       '    and nullif(be2.bgamer2_name, '#39#39') is not null) gmr'
@@ -373,6 +393,10 @@ object frmTeachGamers: TfrmTeachGamers
     object actTranslit: TAction
       Caption = 'actTranslit'
       OnExecute = actTranslitExecute
+    end
+    object aUpCaseFirst: TAction
+      Caption = 'aUpCaseFirst'
+      OnExecute = aUpCaseFirstExecute
     end
   end
   object qryCountries: TpFIBDataSet

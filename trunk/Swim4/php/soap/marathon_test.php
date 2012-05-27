@@ -4,17 +4,17 @@
   
   $booker = new marathon_booker();
   
-  $sports = $booker->getSports();
+//  $sports = $booker->getSports();
   
 //  print $sports->asXML();
 
-  $tournirs = $booker->getTournirs(10);
+//  $tournirs = $booker->getTournirs(10);
   
 //  print $tournirs->asXML();
   
-  $tournir_id = (string) $tournirs->Tournirs->Tournir[0]['Id'];
-  //$tournir_id = 712714;
-  $events = $booker->getEvents(10, $tournir_id, null);
+//  $tournir_id = (string) $tournirs->Tournirs->Tournir[0]['Id'];
+  $tournir_id = 725093;
+  $events = $booker->getEvents(20, $tournir_id, null);
   
 //  print $events->asXML();
   

@@ -8,9 +8,9 @@
 class bwin_booker extends booker_xml {
   
   function __construct() { 
+    parent::__construct();
     $this->booker = 'bwin'; 
     $this->host = 'https://www.bwin.com';
-    $this->debug = 1;
   }
   
   public function extract_league(&$tournirs_node, $html) {

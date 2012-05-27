@@ -20,7 +20,7 @@ type
     procedure TournirDetect(aNode: TGvXmlNode);
     procedure EventDetect(aNode: TGvXmlNode);
     procedure BetDetect(aPeriod, aKind, aSubject, aGamer, aValue, aModifier: String;
-      aKoef: Single; isSwapper: Boolean);
+      aKoef: Single);
   end;
 
 implementation
@@ -33,7 +33,7 @@ uses
 { TdmSwimThread }
 
 procedure TdmSwimThread.BetDetect(aPeriod, aKind, aSubject, aGamer, aValue,
-  aModifier: String; aKoef: Single; isSwapper: Boolean);
+  aModifier: String; aKoef: Single);
 begin
 
 end;
