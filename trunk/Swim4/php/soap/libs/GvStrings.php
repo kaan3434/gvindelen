@@ -51,8 +51,9 @@ function copy_front_withotkey($Html, $FromPos, $KeyChars) {
 }
 
 function copy_be($Html, $Begin, $End, $Contain1=null, $Contain2=null, $Contain3=null) {
-  $Begin = prepare_ereg_param($Begin);
-  $BArr = spliti($Begin, $Html);
+//  $Begin = prepare_ereg_param($Begin);
+//  $BArr = spliti($Begin, $Html);
+  $BArr = explode($Begin, $Html);
   for ($i=1, $m=count($BArr); $i<$m; $i++) {
     $s = $BArr[$i];
     $PSE = stripos($s, $End);
