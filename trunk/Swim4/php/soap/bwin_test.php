@@ -12,7 +12,7 @@
   
 //  print $tournirs->asXML();
   
-  $tournir_id = (string) '12899';
+  $tournir_id = (string) '4635';
   $events = $booker->getEvents(10, $tournir_id, '');
   
 //  print $events->asXML();

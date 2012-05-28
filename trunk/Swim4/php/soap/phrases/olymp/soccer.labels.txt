@@ -73,7 +73,7 @@
 Ф2(2)=Gamer=2;Value=+2;Kind=Fora
 Ф2(2.5)=Gamer=2;Value=+2.5;Kind=Fora
 Ф2(3.5)=Gamer=2;Value=+3.5;Kind=Fora
-Х2=Kind=DoubleChance;Gamer=2;Modifier=NoLose
+Х2=Kind=Double;Gamer=2;Modifier=NoLose
 никто не забьет=Kind=Total;Modifier=Under;Value=0.5
 обе забьют да=Kind=Total;Value=1.5;Modifier=Over
 пенальти да=Subject=Penalty;Kind=Total;Modifier=Over;Value=0.5
@@ -91,8 +91,8 @@
 удаление да=Subject=RedCard;Kind=Total;Modifier=Over;Value=0.5
 удаление нет=Subject=RedCard;Kind=Total;Modifier=Under;Value=0.5
 хотя бы одна не забьёт=Modifier=Ignore
-1Х=Kind=DoubleChance;Gamer=1;Modifier=NoLose
-12=Kind=DoubleChance;Modifier=NoDraw
+1Х=Kind=Double;Gamer=1;Modifier=NoLose
+12=Kind=Double;Modifier=NoDraw
 Gamer1 забьет во 2-ом тайме: ДА=Modifier=Ignore
 Gamer1 забьет во 2-ом тайме: НЕТ=Modifier=Ignore
 Gamer1 забьет в 1-ом тайме: ДА=Modifier=Ignore

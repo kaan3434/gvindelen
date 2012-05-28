@@ -11,6 +11,7 @@ type
   TdmSwimThread = class(TdmSwim)
     spRequestBusyNext: TpFIBStoredProc;
     qryTemp: TpFIBQuery;
+    spBetAdd: TpFIBStoredProc;
   private
     procedure ExportQueryValues(aQuery: TpFIBQuery; aNode: TGvXmlNode);
     { Private declarations }
@@ -19,7 +20,7 @@ type
     procedure SportDetect(aNode: TGvXmlNode);
     procedure TournirDetect(aNode: TGvXmlNode);
     procedure EventDetect(aNode: TGvXmlNode);
-    procedure BetDetect(aPeriod, aKind, aSubject, aGamer, aValue, aModifier: String;
+    procedure BetAdd(aBEventId: integer; aPeriod, aKind, aSubject, aGamer, aValue, aModifier: String;
       aKoef: Single);
   end;
 
@@ -28,14 +29,38 @@ implementation
 {$R *.dfm}
 
 uses
-  GvStr;
+  GvStr, GvVariant;
 
 { TdmSwimThread }
 
-procedure TdmSwimThread.BetDetect(aPeriod, aKind, aSubject, aGamer, aValue,
+procedure TdmSwimThread.BetAdd(aBEventId: integer; aPeriod, aKind, aSubject, aGamer, aValue,
   aModifier: String; aKoef: Single);
 begin
-
+  try
+    trnWrite.SetSavePoint('PutBet');
+    with spBetAdd do
+    begin
+      Params.ClearValues;
+      Params.ParamByName('I_BEVENT_ID').AsInteger:= aBEventId;
+      Params.ParamByName('I_PERIOD').Value:= aPeriod;
+      Params.ParamByName('I_KIND').Value:= aKind;
+      Params.ParamByName('I_SUBJECT').Value:= aSubject;
+      Params.ParamByName('I_GAMER').Value:= NullIf(aGamer, '');
+      Params.ParamByName('I_MODIFIER').Value:= aModifier;
+      Params.ParamByName('I_VALUE').Value:= NullIf(aValue, '');
+      Params.ParamByName('I_KOEF').Value:= aKoef;
+      ExecProc;
+    end
+  except
+    on E:Exception do
+    begin
+      ShowMessage(E.Message + ' Period='+aPeriod+', Kind='+aKind+
+        ', Subject='+aSubject+', Gamer='+aGamer+', Modifier='+
+        aModifier+', Value='+aValue);
+      trnWrite.RollBackToSavePoint('PutBet');
+      raise;
+    end;
+  end;
 end;
 
 procedure TdmSwimThread.EventDetect(aNode: TGvXmlNode);
@@ -47,7 +72,7 @@ begin
   begin
     Params.ClearValues;
     SQL.Text:=
-      'select be.* from bevent_add(:btournir_id, :event_dtm, :gamer1_name, :gamer2_name, :scan_id) bep '+
+      'select be.* from bevent_add(:btournir_id, :event_dtm, :bgamer1_name, :bgamer2_name, :scan_id) bep '+
       ' inner join bevents be on (be.bevent_id = bep.o_bevent_id)';
     for i:= 0 to ParamCount-1 do
     begin

@@ -321,7 +321,7 @@ implementation
 
 function GetTScanPort(UseWSDL: Boolean; Addr: string; HTTPRIO: THTTPRIO): TScanPort;
 const
-  defWSDL = 'D:\Swim4\php\soap\Scan.wsdl';
+  defWSDL = 'http://localhost:8080/soap/Scan.wsdl';
   defURL  = 'http://localhost:8080/soap/ScanBooker.php';
   defSvc  = 'ScanService';
   defPrt  = 'ScanPort';

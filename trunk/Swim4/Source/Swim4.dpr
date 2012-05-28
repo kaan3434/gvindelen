@@ -15,8 +15,7 @@ uses
   GvFile in 'D:\4Delphi\Gvindln\Source\GvFile.pas',
   ScanWSDL in 'ScanWSDL.pas',
   uTeachGamers in 'uTeachGamers.pas' {frmTeachGamers},
-  EhLibFIB in 'D:\4Delphi\EhLib\DataService\Others\EhLibFIB.pas',
-  Scan in 'Scan.pas';
+  EhLibFIB in 'D:\4Delphi\EhLib\DataService\Others\EhLibFIB.pas';
 
 {$R *.res}
 

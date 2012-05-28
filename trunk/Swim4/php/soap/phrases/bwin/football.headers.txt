@@ -1,7 +1,7 @@
 1st Half Goal Kicks odd/even=Modifier=Period=Half1;Subject=GoalKick;Kind=Total
 2nd Half Over/Under goals 3,5=Period=Half2;Subject=Goal;Kind=Total;Value=3.5
-Double chance=Period=Match;Kind=DoubleChance
-Halftime double chance=Period=Half1;Kind=DoubleChance
+Double chance=Period=Match;Kind=Double
+Halftime double chance=Period=Half1;Kind=Double
 Handicap 0:1=Period=Match;Kind=Handicap;Value=-1
 Handicap 0:2=Period=Match;Kind=Handicap;Value=-2
 Handicap 1:0=Period=Match;Kind=Handicap;Value=1

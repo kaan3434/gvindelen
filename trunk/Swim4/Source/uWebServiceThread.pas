@@ -192,8 +192,8 @@ begin
         Node.NodeName:= 'putEvent';
         Node.ReadAttributes(FNode.WriteToString, IsEmpty);
         Node.Attr['Event_Dtm'].AsDateTime:= Event.DateTime.AsDateTime;
-        Node.Attr['Gamer1_Name'].AsString:= Event.Gamer1_Name;
-        Node.Attr['Gamer2_Name'].AsString:= Event.Gamer2_Name;
+        Node.Attr['BGamer1_Name'].AsString:= Event.Gamer1_Name;
+        Node.Attr['BGamer2_Name'].AsString:= Event.Gamer2_Name;
         dm.EventDetect(Node);
         dm.trnWrite.SetSavePoint('PutEvent');
         try
@@ -203,17 +203,17 @@ begin
           begin
             // ƒобавл€ем запрос на получение турниров
             for Bet in Event.Bet do
-            try
-              dm.trnWrite.SetSavePoint('PutBet');
-              dm.BetDetect(Bet.Period, Bet.Kind, Bet.Subject, Bet.Gamer,
-                           Bet.Value, Bet.Modifier, Bet.Koef);
-            except
-              dm.trnWrite.RollBackToSavePoint('PutBet');
+            begin
+              dm.BetAdd(Node.Attr['BEvent_Id'].AsInteger, Bet.Period, Bet.Kind,
+                Bet.Subject, Bet.Gamer, Bet.Value, Bet.Modifier, Bet.Koef);
             end;
           end;
         except
-          dm.trnWrite.RollBackToSavePoint('PutEvent');
-          ShowMessage(Node.WriteToString);
+          on E:Exception do
+          begin
+            ShowMessage(E.Message+' '+Node.WriteToString);
+            dm.trnWrite.RollBackToSavePoint('PutEvent');
+          end;
         end;
       end;
     finally
@@ -244,7 +244,7 @@ begin
         Node.ReadAttributes(FNode.WriteToString, IsEmpty);
         Node.Attr['Sport_Id'].AsInteger:= Sport.Id;
         Node.Attr['Sport_Sign'].AsString:= Sport.Sign;
-        Node.Attr['Sport_Title'].AsString:= Sport.Title;
+        Node.Attr['Sport_Name'].AsString:= Sport.Title;
         dm.SportDetect(Node);
         dm.trnWrite.SetSavePoint('PutTournir');
         try
@@ -295,7 +295,7 @@ begin
         Node.ReadAttributes(FNode.WriteToString, IsEmpty);
         Node.Attr['Tournir_Id'].AsString:= Tournir.Id;
         Node.Attr['Tournir_Region'].AsString:= Tournir.Region;
-        Node.Attr['Tournir_Title'].AsString:= UnEscapeString(Tournir.Title);
+        Node.Attr['BTournir_Name'].AsString:= UnEscapeString(Tournir.Title);
         dm.TournirDetect(Node);
         dm.trnWrite.SetSavePoint('Tournir');
         try
