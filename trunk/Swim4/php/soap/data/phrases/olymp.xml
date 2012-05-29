@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Root>
+  <tennis>
+    <Section Caption="Header">
+      <Phrase Caption="1" BetKind="Period=Match;Kind=Win;Gamer=1;Modifier=Win"/>
+      <Phrase Caption="X" BetKind="Period=Match;Kind=Win;Modifier=Draw"/>
+      <Phrase Caption="2" BetKind="Period=Match;Kind=Win;Gamer=2;Modifier=Win"/>
+      <Phrase Caption="1X" BetKind="Period=Match;Kind=Win;Gamer=1;Modifier=NoLose"/>
+      <Phrase Caption="12" BetKind="Period=Match;Kind=Win;Modifier=NoDraw"/>
+      <Phrase Caption="X2" BetKind="Period=Match;Kind=Win;Gamer=2;Modifier=NoLose"/>
+      <Phrase Caption="HCap1" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win"/>
+      <Phrase Caption="HCap2" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win"/>
+      <Phrase Caption="TotalUnder" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under"/>
+      <Phrase Caption="TotalOver" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over"/>
+    </Section>
+    <Section Caption="Сеты">
+      <Phrase Caption="1-й сет - П1" BetKind="Period=Set1;Kind=Win;Gamer=1;Modifier=Win"/>
+      <Phrase Caption="1-й сет - П2" BetKind="Period=Set1;Kind=Win;Gamer=2;Modifier=Win"/>
+    </Section>
+    <Section Caption="Показатели в теннисе">
+      <Phrase Caption="Тай-брейк в матче - ДА" BetKind="Period=Match;Kind=Total;Subject=TaiBreak;Modifier=Over;Value=0.5"/>
+      <Phrase Caption="Тай-брейк в матче - НЕТ" BetKind="Period=Match;Kind=Total;Subject=TaiBreak;Modifier=Under;Value=0.5"/>
+    </Section>
+    <Section Caption="Счет 1-го сета">
+      <Phrase Caption="Счет 1-го сета 6:0" BetKind="Ignore"/>
+      <Phrase Caption="Счет 1-го сета 6:1" BetKind="Ignore"/>
+      <Phrase Caption="Счет 1-го сета 6:2" BetKind="Ignore"/>
+      <Phrase Caption="Счет 1-го сета 6:3" BetKind="Ignore"/>
+      <Phrase Caption="Счет 1-го сета 6:4" BetKind="Ignore"/>
+      <Phrase Caption="Счет 1-го сета 7:5" BetKind="Ignore"/>
+      <Phrase Caption="Счет 1-го сета 7:6" BetKind="Ignore"/>
+      <Phrase Caption="Счет 1-го сета 0:6" BetKind="Ignore"/>
+      <Phrase Caption="Счет 1-го сета 1:6" BetKind="Ignore"/>
+      <Phrase Caption="Счет 1-го сета 2:6" BetKind="Ignore"/>
+      <Phrase Caption="Счет 1-го сета 3:6" BetKind="Ignore"/>
+      <Phrase Caption="Счет 1-го сета 4:6" BetKind="Ignore"/>
+      <Phrase Caption="Счет 1-го сета 5:7" BetKind="Ignore"/>
+      <Phrase Caption="Счет 1-го сета 6:7" BetKind="Ignore"/>
+    </Section>
+    <Section Caption="Счет 2-го сета">
+      <Phrase Caption="Счет 2-го сета 6:0" BetKind="Ignore"/>
+      <Phrase Caption="Счет 2-го сета 6:1" BetKind="Ignore"/>
+      <Phrase Caption="Счет 2-го сета 6:2" BetKind="Ignore"/>
+      <Phrase Caption="Счет 2-го сета 6:3" BetKind="Ignore"/>
+      <Phrase Caption="Счет 2-го сета 6:4" BetKind="Ignore"/>
+      <Phrase Caption="Счет 2-го сета 7:5" BetKind="Ignore"/>
+      <Phrase Caption="Счет 2-го сета 7:6" BetKind="Ignore"/>
+      <Phrase Caption="Счет 2-го сета 0:6" BetKind="Ignore"/>
+      <Phrase Caption="Счет 2-го сета 1:6" BetKind="Ignore"/>
+      <Phrase Caption="Счет 2-го сета 2:6" BetKind="Ignore"/>
+      <Phrase Caption="Счет 2-го сета 3:6" BetKind="Ignore"/>
+      <Phrase Caption="Счет 2-го сета 4:6" BetKind="Ignore"/>
+      <Phrase Caption="Счет 2-го сета 5:7" BetKind="Ignore"/>
+      <Phrase Caption="Счет 2-го сета 6:7" BetKind="Ignore"/>
+    </Section>
+    <Section Caption="Сравнение сетов">
+      <Phrase Caption="1-й сет больше 2-го" BetKind="Ignore"/>
+      <Phrase Caption="1-й сет равен 2-му" BetKind="Ignore"/>
+      <Phrase Caption="1-й сет меньше 2-го" BetKind="Ignore"/>
+    </Section>
+    <Section Caption="Тотал геймов">
+      <Phrase Caption="Тотал геймов: ЧЕТ" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Even"/>
+      <Phrase Caption="Тотал геймов: НЕЧЕТ" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Odd"/>
+    </Section>
+    <Section Caption="Счёт">
+      <Phrase Caption="2:0" BetKind="Ignore"/>
+      <Phrase Caption="2:1" BetKind="Ignore"/>
+      <Phrase Caption="0:2" BetKind="Ignore"/>
+      <Phrase Caption="1:2" BetKind="Ignore"/>
+    </Section>
+    <Section Caption="Тотал">
+      <Phrase Caption="М(17.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=17.5"/>
+      <Phrase Caption="Б(17.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=17.5"/>
+      <Phrase Caption="М(20.50)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=20.5"/>
+      <Phrase Caption="Б(20.50)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=20.5"/>
+      <Phrase Caption="М(19.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=19.5"/>
+      <Phrase Caption="Б(19.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=19.5"/>
+      <Phrase Caption="М(21.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=21.5"/>
+      <Phrase Caption="Б(21.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=21.5"/>
+      <Phrase Caption="М(18.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=18.5"/>
+      <Phrase Caption="Б(18.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=18.5"/>
+      <Phrase Caption="М(16.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=16.5"/>
+      <Phrase Caption="Б(16.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=16.5"/>
+    </Section>
+  </tennis>
+</Root>

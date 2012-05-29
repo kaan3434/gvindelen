@@ -1,6 +1,0 @@
-1=Period=Match;Kind=Win;Gamer=1;Modifier=Win
-2=Period=Match;Kind=Win;Gamer=2;Modifier=Win
-Hcap1=Period=Match;Kind=Fora;Gamer=1;Modifier=Win
-Hcap2=Period=Match;Kind=Fora;Gamer=2;Modifier=Win
-Totalunder=Period=Match;Subject=Game;Kind=Total;Modifier=Under
-Totalover=Period=Match;Subject=Game;Kind=Total;Modifier=Over

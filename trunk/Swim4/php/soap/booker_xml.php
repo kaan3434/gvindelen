@@ -5,12 +5,25 @@ class booker_xml {
   public $debug;
   protected $sport_node;
   protected $league_path;
+  protected $phrases;
   
   function __construct() { 
     if ($_SERVER['HTTP_HOST'] == 'localhost:8080')
       $this->debug = 1;
+    if (file_exists("data/phrases/{$this->booker}.xml")) {
+      $this->phrases = simplexml_load_file("data/phrases/{$this->booker}.xml");
+    } else {
+      $this->phrases = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><Root/>');
+    }
   }
+                 
+  function __destruct() {
+     $this->phrases->asXML("data/phrases/{$this->booker}.xml");
+   }
   
+  public function putPhrases() {
+    $this->phrases->asXML("data/phrases/{$this->booker}.xml");
+  }
   
   public function getSports() {
     $xml = simplexml_load_file("data/sports/{$this->booker}.xml");
@@ -30,11 +43,32 @@ class booker_xml {
     return $this->sport_node;
   }
   
+  public function findSection($sport_sign, $section) {
+    $sport_node = $this->phrases->$sport_sign;
+    if (!$sport_node) $sport_node = $this->phrases->addChild($sport_sign);
+    foreach($sport_node->children() as $element_name => $child) {
+      if ($child['Caption'] == $section) return $child;
+    }
+    $section_node = $sport_node->addChild('Section');
+    $section_node->addAttribute('Caption', $section);
+    return $section_node;
+  }
+  
+  public function findPhrase($sport_sign, $section, $caption) {
+    $section_node = $this->findSection($sport_sign, $section);
+    foreach($section_node->children() as $element_name => $child) {
+      if ($child['Caption'] == $caption) return $child;
+    }
+    $phrase = $section_node->addChild('Phrase');
+    $phrase->addAttribute('Caption', $caption);
+    $phrase->addAttribute('BetKind', 'Modifier=Unknown');
+    return $phrase;
+  }
+  
   public function getTournirs($sport_id) {
     // Зачитываем настройку спорта конторы
     $this->sport_node = $this->getSport($sport_id);
-    $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><Root/>');
-    return $xml;
+    $phrases = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><Root/>');
   }
   
   public function getEvents($sport_id, $tournir_id, $tournir_url) {
@@ -52,38 +86,10 @@ class booker_xml {
     foreach ($bet_attrs as $key=>$value) $bet_node->addAttribute($key, strtr($value, ',', '.'));
   }
   
-  public function getPhrasesXml($sport_sign)
-  
-  public function getPhrases($sport_sign) {
-    $filename = "phrases/{$this->booker}/$sport_sign.headers.txt";
-    return file_get_hash($filename);
-  }
-  
-  public function getPhrasesLabels($sport_sign) {
-    $filename = "phrases/{$this->booker}/$sport_sign.labels.txt";
-    return file_get_hash($filename);
-  }
-
   public function getSubjects($sport_sign) {
     $filename = "phrases/{$this->booker}/subjects.txt";
     return file_get_hash($filename);
   }
-  
-  public function putNewPhrasesHeaders($phrases_headers, $sport_sign) {
-    $filename = "phrases/{$this->booker}/$sport_sign.headers.txt";
-    $file_hash = file_get_hash($filename);
-    foreach($file_hash as $key=>$value) unset($phrases_headers[$key]);
-    file_put_hash("$filename.new", $phrases_headers+file_get_hash("$filename.new"));
-  }
-
-  public function putNewPhrasesLabels($phrases_labels, $sport_sign) {
-    $filename = "phrases/{$this->booker}/$sport_sign.labels.txt";
-    $file_hash = file_get_hash($filename);
-    foreach($file_hash as $key=>$value) unset($phrases_labels[$key]);
-    file_put_hash("$filename.new", $phrases_labels+file_get_hash("$filename.new"));
-  }
-
-  
   
 }
 ?>

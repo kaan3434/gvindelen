@@ -10,9 +10,9 @@ class marathon_booker extends booker_xml {
   private $header;
   
   function __construct() { 
-    parent::__construct();
     $this->booker = 'marathon'; 
     $this->host = 'http://marathonbet.com';
+    parent::__construct();
   }
   
   private function extract_league(&$tournirs_node, $html, $sport_sign) {
@@ -79,7 +79,6 @@ class marathon_booker extends booker_xml {
   
 
   private function extract_header($html, $sport_sign) {
-    $phrases_headers = $this->getPhrasesHeaders($sport_sign);
     $html = copy_be($html, '<tr', '</tr>', '</th>');
     $coupons = extract_all_tags($html, '<th', '</th>', 'coupone');
     $i = 0;
@@ -87,20 +86,13 @@ class marathon_booker extends booker_xml {
       $i++;
       $phrase = delete_all(copy_be($coupon, '<a', '</a>'), '<', '>');
       if (!$phrase) $phrase = delete_all($coupon, '<', '>');
-      $bettype_str = $phrases_headers[$phrase];
-      if (!$bettype_str) {
-        $bettype_str = 'Modifier=Unknown';
-        $phrases_headers[$phrase] = $bettype_str;
-        $phrases_headers_modified = true;
-      }
-      $this->header[$i] = $bettype_str;
+      $phrase_node = $this->findPhrase($sport_sign, 'Header', $phrase);
+      $this->header[$i] = (string)$phrase_node['BetKind'];
     }
-    if ($phrases_headers_modified) $this->putNewPhrasesHeaders($phrases_headers, $sport_sign);
   }
   
   private function parse_extra_table(&$event_node, $html) {
     $header= delete_all(copy_be($html, '<th', '</th>'), '<', '>');
-    
   }
   
   private function extract_extra_bets(&$event_node, $tournir_id, $event_id) {
@@ -149,7 +141,6 @@ class marathon_booker extends booker_xml {
     
   
   private function extract_main_bets(&$tournir_node, $html, $sport_sign, $tournir_id) {
-    $subjects = $this->getSubjects($sport_sign);
     $html = kill_property($html, 'TagNo');
     $html = numbering_tag($html, 'tr');
     $events = extract_all_numbered_tags($html, 'tr', '"event-header"');
@@ -179,7 +170,7 @@ class marathon_booker extends booker_xml {
           }
           if ($bettype['Kind'] == 'Total') {
             preg_match('/\((.+?)\)<br\/>(.+?)/iU', $cell, $matches);
-            $this->addBet($event_node, $subjects[$sport_sign].';'.$bettype_str.';Value='.$matches[1].';Koef='.$matches[2]);
+            $this->addBet($event_node, $bettype_str.';Value='.$matches[1].';Koef='.$matches[2]);
           } elseif ($bettype['Kind'] == 'Fora') {
             preg_match('/\(([\+\-]*?)(.+?)\)<br\/>(.+?)/iU', $cell, $matches);
             if (($matches[1] == '') and ($matches[2] <> '0')) $matches[1] = '+';
@@ -214,6 +205,7 @@ class marathon_booker extends booker_xml {
     $html = download_or_load($this->debug, $file_name.".html", $url, "GET", $referer);
     $this->extract_bets($tournir_node, $html, (string)$this->sport_node['Sign'], $tournir_id);
     if ($this->debug) file_put_contents($file_name.".xml", $xml->asXML());
+//    $this->putPhrases();
     return $xml;
   }
 

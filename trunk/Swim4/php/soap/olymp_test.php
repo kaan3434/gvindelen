@@ -3,7 +3,6 @@
   require_once "olymp_xml.php";
   
   $booker = new olymp_booker();
-  $booker->debug = 1;
   
   //$sports = $booker->getSports();
   
@@ -13,8 +12,8 @@
   
 //  print $tournirs->asXML();
   
-  $tournir_id = '29.68c6824d4a82dee51ee4e5fc228dbb92';
-  $events = $booker->getEvents(20, $tournir_id, null);
+  $tournir_id = '26.69222ee6d2710d8885fca1de63b9804e';
+  $events = $booker->getEvents(10, $tournir_id, null);
   
 //  print $events->asXML();
   

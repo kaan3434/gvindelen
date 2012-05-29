@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Root>
+  <tennis>
+    <Section Caption="1x2">
+      <Phrase Caption="Gamer1" BetKind="Period=Match;Kind=Win;Gamer=1;Modifier=Win"/>
+      <Phrase Caption="Gamer2" BetKind="Period=Match;Kind=Win;Gamer=2;Modifier=Win"/>
+    </Section>
+    <Section Caption="Set bet">
+      <Phrase Caption="2-0" BetKind="Ignore"/>
+      <Phrase Caption="2-1" BetKind="Ignore"/>
+      <Phrase Caption="1-2" BetKind="Ignore"/>
+      <Phrase Caption="0-2" BetKind="Ignore"/>
+      </Section>
+    <Section Caption="Who will win the first set ?" NewEvent="1">
+      <Phrase Caption="Gamer1" BetKind="Period=Set1;Kind=Win;Gamer=1;Modifier=Win"/>
+      <Phrase Caption="Gamer2" BetKind="Period=Set1;Kind=Win;Gamer=2;Modifier=Win"/>
+    </Section>
+    <Section Caption="How many games will be played in the first set?">
+      <Phrase Caption="6 - 8 Games" BetKind="Ignore"/>
+      <Phrase Caption="9 - 10 games" BetKind="Ignore"/>
+      <Phrase Caption="11 games or more" BetKind="Period=Set1;Kind=Total;Subject=Game;Modifier=Over;Value=11.5"/>
+    </Section>
+    <Section Caption="How many games will be played in the match?">
+      <Phrase Caption="Over 17,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=17.5"/>
+      <Phrase Caption="Under 17,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=17.5"/>
+      <Phrase Caption="Over 19,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=19.5"/>
+      <Phrase Caption="Under 19,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=19.5"/>
+      <Phrase Caption="Over 20,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=20.5"/>
+      <Phrase Caption="Under 20,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=20.5"/>
+      <Phrase Caption="Over 18,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=18.5"/>
+      <Phrase Caption="Under 18,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=18.5"/>
+      <Phrase Caption="Over 21,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=21.5"/>
+      <Phrase Caption="Under 21,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=21.5"/>
+      </Section>
+    <Section Caption="How many games will Gamer1 win in the first set?">
+      <Phrase Caption="Over 2,5" BetKind="Period=Set1;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="Under 2,5" BetKind="Period=Set1;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=2.5"/>
+    </Section>
+    <Section Caption="How many games will Gamer1 win in the match?">
+      <Phrase Caption="Over 5,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=5.5"/>
+      <Phrase Caption="Under 5,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=5.5"/>
+    </Section>
+    <Section Caption="Who will win the most games in the match? (player handicap)">
+      <Phrase Caption="Gamer1 +7,5" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=7.5"/>
+      <Phrase Caption="Gamer2 -7,5" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-7.5"/>
+      <Phrase Caption="Gamer1 +1" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=0.5"/>
+      <Phrase Caption="Gamer2 -1" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-1.5"/>
+    </Section>
+    <Section Caption="Will number of games played in the match be odd or even?">
+      <Phrase Caption="Odd" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Odd"/>
+      <Phrase Caption="Even" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Even"/>
+    </Section>
+    <Section Caption="How many games will Gamer2 win in the first set?">
+      <Phrase Caption="Over 4,5" BetKind="Period=Set1;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=4.5"/>
+      <Phrase Caption="Under 4,5" BetKind="Period=Set1;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=4.5"/>
+    </Section>
+    <Section Caption="Will there be a tie-break in the first set?">
+      <Phrase Caption="Yes" BetKind="Period=Set1;Kind=Total;Subject=TieBreak;Modifier=Over;Value=0.5"/>
+      <Phrase Caption="No" BetKind="Period=Set1;Kind=Total;Subject=TieBreak;Modifier=Under;Value=0.5"/>
+    </Section>
+    <Section Caption="Will there be a tie-break in the match?">
+      <Phrase Caption="Yes" BetKind="Period=Match;Kind=Total;Subject=TieBreak;Modifier=Over;Value=0.5"/>
+      <Phrase Caption="No" BetKind="Period=Match;Kind=Total;Subject=TieBreak;Modifier=Under;Value=0.5"/>
+    </Section>
+  </tennis>
+</Root>
