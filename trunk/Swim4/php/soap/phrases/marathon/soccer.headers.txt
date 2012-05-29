@@ -1,0 +1,10 @@
+1=Period=Match;Kind=Win;Gamer=1;Modifier=Win
+X=Period=Match;Kind=Win;Modifier=Draw
+2=Period=Match;Kind=Win;Gamer=2;Modifier=Win
+1X=Period=Match;Kind=Double;Gamer=1;Modifier=NoLose
+12=Period=Match;Kind=Double;Modifier=NoDraw
+X2=Period=Match;Kind=Double;Gamer=2;Modifier=NoLose
+Hcap1=Period=Match;Kind=Fora;Gamer=1;Modifier=Win
+Hcap2=Period=Match;Kind=Fora;Gamer=2;Modifier=Win
+Totalunder=Period=Match;Subject=Game;Kind=Total;Modifier=Under
+Totalover=Period=Match;Subject=Game;Kind=Total;Modifier=Over

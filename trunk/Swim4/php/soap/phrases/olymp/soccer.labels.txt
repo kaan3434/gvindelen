@@ -121,3 +121,29 @@ Gamer2(2)бол.=Gamer=2;Subject=Goal;Kind=Total;Value=2.5;Modifier=Under
 Gamer2(2)мен.=Gamer=2;Subject=Goal;Kind=Total;Value=1.5;Modifier=Under
 Gamer2(2.5)бол.=Gamer=2;Subject=Goal;Kind=Total;Value=2.5;Modifier=Over
 Gamer2(2.5)мен.=Gamer=2;Subject=Goal;Kind=Total;Value=2.5;Modifier=Under
+Ф1(-4.5)=Gamer=1;Value=-4.5;Kind=Fora;Modifier=Win
+Ф1(2.5)=Gamer=1;Value=2.5;Kind=Fora;Modifier=Win
+Ф2(-2.5)=Gamer=2;Value=-2.5;Kind=Fora;Modifier=Win
+Ф1(3.5)=Gamer=1;Value=3.5;Kind=Fora;Modifier=Win
+Ф2(-3.5)=Gamer=2;Value=-3.5;Kind=Fora;Modifier=Win
+Угловые - Мен(11.5)=Subject=Corner;Kind=Total;Value=11.5;Modifier=Under
+Угловые - Бол(11.5)=Subject=Corner;Kind=Total;Value=11.5;Modifier=Over
+Угловые (Gamer2) - М(7.5)=Subject=Corner;Gamer=2;Kind=Total;Modifier=Under;Value=7.5
+Угловые (Gamer2) - Б(7.5)=Subject=Corner;Gamer=2;Kind=Total;Modifier=Over;Value=7.5
+Предупреждения K1&eq;K2=Modifier=Ignore
+Предупреждения - Мен(6)=Subject=Yellow;Kind=Total;Modifer=Under;Value=6
+Предупреждения - Бол(6)=Subject=Yellow;Kind=Total;Modifer=Over;Value=6
+Предупреждения - Мен(6.5)=Subject=Yellow;Kind=Total;Modifer=Under;Value=6.5
+Предупреждения - Бол(6.5)=Subject=Yellow;Kind=Total;Modifer=Over;Value=6
+Ф 1(2.5)=Gamer=1;Value=2.5;Kind=Fora;Modifier=Win
+Ф 2(-2.5)=Gamer=2;Value=-2.5;Kind=Fora;Modifier=Win
+Gamer1(0.50)мен.=Modifier=Unknown
+Gamer1(0.50)бол.=Modifier=Unknown
+Gamer2(0.50)мен.=Modifier=Unknown
+Gamer2(0.50)бол.=Modifier=Unknown
+Ф1(3)=Gamer=1;Value=3;Kind=Fora;Modifier=Win
+Ф2(-3)=Modifier=Unknown
+Ф 1(1.5)=Modifier=Unknown
+Ф 2(-1.5)=Modifier=Unknown
+Gamer1(1.9)мен.=Modifier=Unknown
+Gamer1(1.9)бол.=Modifier=Unknown

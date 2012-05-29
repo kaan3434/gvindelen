@@ -86,6 +86,7 @@ class marathon_booker extends booker_xml {
     foreach ($coupons as $coupon) {
       $i++;
       $phrase = delete_all(copy_be($coupon, '<a', '</a>'), '<', '>');
+      if (!$phrase) $phrase = delete_all($coupon, '<', '>');
       $bettype_str = $phrases_headers[$phrase];
       if (!$bettype_str) {
         $bettype_str = 'Modifier=Unknown';

@@ -52,8 +52,9 @@ class booker_xml {
     foreach ($bet_attrs as $key=>$value) $bet_node->addAttribute($key, strtr($value, ',', '.'));
   }
   
+  public function getPhrasesXml($sport_sign)
   
-  public function getPhrasesHeaders($sport_sign) {
+  public function getPhrases($sport_sign) {
     $filename = "phrases/{$this->booker}/$sport_sign.headers.txt";
     return file_get_hash($filename);
   }

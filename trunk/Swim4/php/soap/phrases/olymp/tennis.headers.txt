@@ -1,4 +1,4 @@
-Сеты=Kind=Win;Modifier=Win
+﻿Сеты=Kind=Win;Modifier=Win
 Сравнение сетов=Modifier=Ignore
 Тотал геймов=Period=Match;Subject=Game;Kind=Total
 Счёт=Modifier=Ignore
@@ -6,3 +6,5 @@
 Счет 2-го сета=Modifier=Ignore
 Дополнительные форы=Subject=Game
 Тотал=Kind=Total;Subject=Game
+Победитель турнира=Modifier=Ignore
+Победитель=Modifier=Ignore

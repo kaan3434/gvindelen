@@ -95,9 +95,8 @@ begin
   dm:= TdmSwimThread.Create(nil);
   FThreadId:= dm.dbSwim.QueryValue(
     'SELECT gen_id(gen_thread_id, 1) FROM RDB$DATABASE', 0);
-  Addr:= settings.Root.Find('WebServices').Find('WebService', 'IsDefault', '1').
-         Attr['Url'].AsStringDef('http://localhost:8080/soap/ScanBooker.php');
-  FWSScan:= GetTScanPort(false, Addr);
+
+  FWSScan:= GetTScanPort(false, settings.RandomService.Attr['Url'].AsString);
   FNode:= TGvXmlNode.Create;
   CoInitialize(nil);
 end;

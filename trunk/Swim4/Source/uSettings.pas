@@ -36,10 +36,14 @@ type
   private
     FBookers: TGvXmlNode;
     FScaners: TGvXmlNode;
+    FServices: TGvXmlNode;
     function GetNeedScan(BookerId: Integer): Boolean;
     procedure SetNeedScan(BookerId: Integer; const Value: Boolean);
   public
     constructor Create; override;
+    function DefaultService: TGvXmlNode;
+    function RandomService: TGvXmlNode;
+    property Services: TGvXmlNode read FServices;
     property Bookers: TGvXmlNode read FBookers;
     property Scaners: TGvXmlNode read FScaners;
     property ScanerOn[BookerId: Integer]: Boolean read GetNeedScan write SetNeedScan;
@@ -126,8 +130,23 @@ begin
     FBookers:= Root.FindOrCreate('Bookers');
     FBookers.LoadFromString(xml.Root.Find('Bookers').WriteToString);
     FScaners:= Root.FindOrCreate('Scaners');
+    FServices:= Root.FindOrCreate('Services');
   finally
     xml.Free;
+  end;
+end;
+
+function TScanSettings.DefaultService: TGvXmlNode;
+var
+  DefaultServiceId: String;
+begin
+  DefaultServiceId:= FServices.Attr['Default'].AsStringDef('0');
+  Result:= FServices.Find('Service', 'Id', DefaultServiceId);
+  if Not Assigned(Result) then
+  begin
+    Result:= FServices.AddChild('Service');
+    Result['Default']:= DefaultServiceId;
+    Result['Url']:= 'http://localhost:8080/soap/ScanBooker.php';
   end;
 end;
 
@@ -142,6 +161,17 @@ begin
     Node['NeedScan']:= false;
   end;
   Result:= Node['NeedScan']
+end;
+
+function TScanSettings.RandomService: TGvXmlNode;
+var
+  Idx: integer;
+begin
+  Idx:= FServices.ChildNodes.Count;
+  if Idx<=1 then
+    Result:= DefaultService
+  else
+    Result:= FServices.ChildNodes[Random(Idx)];
 end;
 
 procedure TScanSettings.SetNeedScan(BookerId: Integer; const Value: Boolean);
