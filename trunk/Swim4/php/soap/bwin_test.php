@@ -13,7 +13,7 @@
 //    $events = $booker->getEvents(20, $tournir_id, '');
 //  }
 
-    $tournir_id = '251';
+    $tournir_id = '12604';
     $events = $booker->getEvents(20, $tournir_id, '');
   
 ?>

@@ -46,7 +46,17 @@
       <Phrase Caption="Under 36,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=36.5"/>
       <Phrase Caption="Over 34,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=34.5"/>
       <Phrase Caption="Under 34,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=34.5"/>
-    <Phrase Caption="Over 29,5" BetKind="Modifier=Unknown"/><Phrase Caption="Under 29,5" BetKind="Modifier=Unknown"/></Section>
+      <Phrase Caption="Over 29,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=29.5"/>
+      <Phrase Caption="Under 29,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=29.5"/>
+      <Phrase Caption="Over 31,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=31.5"/>
+      <Phrase Caption="Under 31,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=31.5"/>
+      <Phrase Caption="Over 30,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=30.5"/>
+      <Phrase Caption="Under 30,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=30.5"/>
+      <Phrase Caption="Over 35,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=35.5"/>
+      <Phrase Caption="Under 35,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=35.5"/>
+      <Phrase Caption="Over 40,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=40.5"/>
+      <Phrase Caption="Under 40,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=40.5"/>
+    </Section>
     <Section Caption="How many games will Gamer1 win in the first set?">
       <Phrase Caption="Over 2,5" BetKind="Period=Set1;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=2.5"/>
       <Phrase Caption="Under 2,5" BetKind="Period=Set1;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=2.5"/>
@@ -100,6 +110,8 @@
       <Phrase Caption="Gamer2 +10,5" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=10.5"/>
       <Phrase Caption="Gamer1 +5,5" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=5.5"/>
       <Phrase Caption="Gamer2 -5,5" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-5.5"/>
+      <Phrase Caption="Gamer1 +8,5" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=8.5"/>
+      <Phrase Caption="Gamer2 -8,5" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-8.5"/>
     </Section>
     <Section Caption="Will number of games played in the match be odd or even?">
       <Phrase Caption="Odd" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Odd"/>
@@ -130,7 +142,7 @@
       <Phrase Caption="Gamer1 or X" BetKind="Period=Match;Kind=Win;Gamer=1;Modifier=NoLose"/>
       <Phrase Caption="X or Gamer2" BetKind="Period=Match;Kind=Win;Gamer=2;Modifier=NoLose"/>
       <Phrase Caption="Gamer1 or Gamer2" BetKind="Period=Match;Kind=Win;Modifier=NoDraw"/>
-    <Phrase Caption="X or HJK" BetKind="Modifier=Unknown"/><Phrase Caption="Gamer1 or HJK" BetKind="Modifier=Unknown"/></Section>
+    <Phrase Caption="X or HJK" BetKind="Modifier=Unknown"/><Phrase Caption="Gamer1 or HJK" BetKind="Modifier=Unknown"/><Phrase Caption="X or Malkia" BetKind="Modifier=Unknown"/><Phrase Caption="Gamer1 or Malkia" BetKind="Modifier=Unknown"/></Section>
     <Section Caption="How many goals will be scored?">
       <Phrase Caption="Over 2,5" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=2.5"/>
       <Phrase Caption="Under 2,5" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=2.5"/>
@@ -182,10 +194,6 @@
       <Phrase Caption="Gamer1 or X" BetKind="Period=Half1;Kind=Win;Gamer=1;Modifier=NoLose"/>
       <Phrase Caption="X or Gamer2" BetKind="Period=Half1;Kind=Win;Gamer=2;Modifier=NoLose"/>
       <Phrase Caption="Gamer1 or Gamer2" BetKind="Period=Half1;Kind=Win;Modifier=NoDraw"/>
-      <Phrase Caption="X or Korea Republic" BetKind="Modifier=Unknown"/>
-      <Phrase Caption="Gamer1 or Korea Republic" BetKind="Modifier=Unknown"/>
-      <Phrase Caption="X or Russia" BetKind="Modifier=Unknown"/>
-      <Phrase Caption="Gamer1 or Russia" BetKind="Modifier=Unknown"/>
     </Section>
     <Section Caption="2nd Half Over/Under goals 3,5">
       <Phrase Caption="Over 3,5" BetKind="Period=Half2;Kind=Total;Subject=Goal;Modifier=Over;Value=3.5"/>

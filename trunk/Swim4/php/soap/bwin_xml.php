@@ -119,15 +119,18 @@ class bwin_booker extends booker_xml {
     $event_node = $this->event_find_or_create($tournir_node, $event_dtm, $gamer1_name, $gamer2_name);
     if ($win1_koef) {
       $phrase_node = $this->findPhrase($sport_sign, $phrase, 'Gamer1');
-      $this->addBet($event_node, (string)$phrase_node['BetKind'].';Koef='.$win1_koef);
+      if ((string)$phrase_node['BetKind'] <> 'Ignore')
+        $this->addBet($event_node, (string)$phrase_node['BetKind'].';Koef='.$win1_koef);
     }  
     if ($draw_koef) {
       $phrase_node = $this->findPhrase($sport_sign, $phrase, 'X');
-      $this->addBet($event_node, (string)$phrase_node['BetKind'].';Koef='.$draw_koef);
+      if ((string)$phrase_node['BetKind'] <> 'Ignore')
+        $this->addBet($event_node, (string)$phrase_node['BetKind'].';Koef='.$draw_koef);
     }  
     if ($win2_koef) {
       $phrase_node = $this->findPhrase($sport_sign, $phrase, 'Gamer2');
-      $this->addBet($event_node, (string)$phrase_node['BetKind'].';Koef='.$win2_koef);
+      if ((string)$phrase_node['BetKind'] <> 'Ignore')
+        $this->addBet($event_node, (string)$phrase_node['BetKind'].';Koef='.$win2_koef);
     }
   }
   

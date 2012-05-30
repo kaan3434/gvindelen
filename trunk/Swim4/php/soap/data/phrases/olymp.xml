@@ -20,10 +20,12 @@
       <Phrase Caption="1-й сет - Б(8.5)" BetKind="Period=Set1;Kind=Total;Subject=Game;Modifier=Over;Value=8.5"/>
       <Phrase Caption="1-й сет - М(9.5)" BetKind="Period=Set1;Kind=Total;Subject=Game;Modifier=Under;Value=9.5"/>
       <Phrase Caption="1-й сет - Б(9.5)" BetKind="Period=Set1;Kind=Total;Subject=Game;Modifier=Over;Value=9.5"/>
+      <Phrase Caption="1-й сет - М(10.50)" BetKind="Period=Set1;Kind=Total;Subject=Game;Modifier=Under;Value=10.5"/>
+      <Phrase Caption="1-й сет - Б(10.50)" BetKind="Period=Set1;Kind=Total;Subject=Game;Modifier=Over;Value=10.5"/>
     </Section>
     <Section Caption="Показатели в теннисе">
-      <Phrase Caption="Тай-брейк в матче - ДА" BetKind="Period=Match;Kind=Total;Subject=TaiBreak;Modifier=Over;Value=0.5"/>
-      <Phrase Caption="Тай-брейк в матче - НЕТ" BetKind="Period=Match;Kind=Total;Subject=TaiBreak;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="Тай-брейк в матче - ДА" BetKind="Period=Match;Kind=Total;Subject=TieBreak;Modifier=Over;Value=0.5"/>
+      <Phrase Caption="Тай-брейк в матче - НЕТ" BetKind="Period=Match;Kind=Total;Subject=TieBreak;Modifier=Under;Value=0.5"/>
     </Section>
     <Section Caption="Счет 1-го сета" Ignore="1"/>
     <Section Caption="Счет 2-го сета" Ignore="1"/>
@@ -34,58 +36,114 @@
     </Section>
     <Section Caption="Счёт" Ignore="1"/>
     <Section Caption="Тотал">
-      <Phrase Caption="М(17.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=17.5"/>
-      <Phrase Caption="Б(17.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=17.5"/>
-      <Phrase Caption="М(20.50)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=20.5"/>
-      <Phrase Caption="Б(20.50)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=20.5"/>
-      <Phrase Caption="М(19.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=19.5"/>
-      <Phrase Caption="Б(19.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=19.5"/>
-      <Phrase Caption="М(21.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=21.5"/>
-      <Phrase Caption="Б(21.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=21.5"/>
-      <Phrase Caption="М(18.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=18.5"/>
-      <Phrase Caption="Б(18.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=18.5"/>
-      <Phrase Caption="М(16.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=16.5"/>
       <Phrase Caption="Б(16.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=16.5"/>
-      <Phrase Caption="М(28.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=28.5"/>
-      <Phrase Caption="Б(28.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=28.5"/>
-      <Phrase Caption="М(29.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=29.5"/>
-      <Phrase Caption="Б(29.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=29.5"/>
-      <Phrase Caption="М(30.50)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=30.5"/>
-      <Phrase Caption="Б(30.50)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=30.5"/>
-      <Phrase Caption="М(31.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=31.5"/>
-      <Phrase Caption="Б(31.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=31.5"/>
-      <Phrase Caption="М(25.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=25.5"/>
+      <Phrase Caption="Б(17.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=17.5"/>
+      <Phrase Caption="Б(18.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=18.5"/>
+      <Phrase Caption="Б(19.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=19.5"/>
+      <Phrase Caption="Б(20.50)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=20.5"/>
+      <Phrase Caption="Б(21.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=21.5"/>
       <Phrase Caption="Б(25.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=25.5"/>
-      <Phrase Caption="М(26.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=26.5"/>
       <Phrase Caption="Б(26.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=26.5"/>
-      <Phrase Caption="М(27.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=27.5"/>
       <Phrase Caption="Б(27.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=27.5"/>
-      <Phrase Caption="М(37.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=37.5"/>
+      <Phrase Caption="Б(28.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=28.5"/>
+      <Phrase Caption="Б(29.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=29.5"/>
+      <Phrase Caption="Б(30.50)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=30.5"/>
+      <Phrase Caption="Б(31.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=31.5"/>
+      <Phrase Caption="Б(32.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=32.5"/>
+      <Phrase Caption="Б(33.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=33.5"/>
+      <Phrase Caption="Б(34.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=34.5"/>
+      <Phrase Caption="Б(35.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=35.5"/>
+      <Phrase Caption="Б(36.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=36.5"/>
       <Phrase Caption="Б(37.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=37.5"/>
-      <Phrase Caption="М(39.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=39.5"/>
-      <Phrase Caption="Б(39.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=39.5"/>
-      <Phrase Caption="М(38.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=38.5"/>
       <Phrase Caption="Б(38.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=38.5"/>
+      <Phrase Caption="Б(39.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=39.5"/>
+      <Phrase Caption="М(16.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=16.5"/>
+      <Phrase Caption="М(17.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=17.5"/>
+      <Phrase Caption="М(18.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=18.5"/>
+      <Phrase Caption="М(19.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=19.5"/>
+      <Phrase Caption="М(20.50)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=20.5"/>
+      <Phrase Caption="М(21.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=21.5"/>
+      <Phrase Caption="М(25.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=25.5"/>
+      <Phrase Caption="М(26.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=26.5"/>
+      <Phrase Caption="М(27.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=27.5"/>
+      <Phrase Caption="М(28.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=28.5"/>
+      <Phrase Caption="М(29.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=29.5"/>
+      <Phrase Caption="М(30.50)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=30.5"/>
+      <Phrase Caption="М(31.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=31.5"/>
+      <Phrase Caption="М(32.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=32.5"/>
+      <Phrase Caption="М(33.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=33.5"/>
+      <Phrase Caption="М(34.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=34.5"/>
+      <Phrase Caption="М(35.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=35.5"/>
+      <Phrase Caption="М(36.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=36.5"/>
+      <Phrase Caption="М(37.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=37.5"/>
+      <Phrase Caption="М(38.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=38.5"/>
+      <Phrase Caption="М(39.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=39.5"/>
+      <Phrase Caption="М(40.50)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=40.5"/>
+      <Phrase Caption="Б(40.50)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=40.5"/>
+      <Phrase Caption="М(41.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=41.5"/>
+      <Phrase Caption="Б(41.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=41.5"/>
+      <Phrase Caption="М(22.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=22.5"/>
+      <Phrase Caption="Б(22.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=22.5"/>
+      <Phrase Caption="М(23.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=23.5"/>
+      <Phrase Caption="Б(23.5)" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=23.5"/>
     </Section>
     <Section Caption="Победитель турнира" Ignore="1"/>
     <Section Caption="Победитель" Ignore="1"/>
     <Section Caption="Дополнительные форы">
-      <Phrase Caption="Ф1(-7.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-7.5"/>
-      <Phrase Caption="Ф2(7.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=7.5"/>
-      <Phrase Caption="Ф1(-8.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-8.5"/>
-      <Phrase Caption="Ф2(8.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=8.5"/>
-      <Phrase Caption="Ф1(-9.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-9.5"/>
-      <Phrase Caption="Ф2(9.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=9.5"/>
+      <Phrase Caption="Ф1(-1.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-1.5"/>
       <Phrase Caption="Ф1(-10.50)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-10.5"/>
-      <Phrase Caption="Ф2(10.50)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=10.5"/>
       <Phrase Caption="Ф1(-11.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-11.5"/>
-      <Phrase Caption="Ф2(11.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=11.5"/>
       <Phrase Caption="Ф1(-12.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-12.5"/>
-      <Phrase Caption="Ф2(12.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=12.5"/>
-      <Phrase Caption="Ф1(-8)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-8"/>
-      <Phrase Caption="Ф2(8)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=8"/>
+      <Phrase Caption="Ф1(-2.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-2.5"/>
+      <Phrase Caption="Ф1(-3.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-3.5"/>
+      <Phrase Caption="Ф1(-4.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-4.5"/>
       <Phrase Caption="Ф1(-5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-5"/>
+      <Phrase Caption="Ф1(-5.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-5.5"/>
+      <Phrase Caption="Ф1(-6)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-6"/>
+      <Phrase Caption="Ф1(-6.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-6.5"/>
+      <Phrase Caption="Ф1(-7.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-7.5"/>
+      <Phrase Caption="Ф1(-8)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-8"/>
+      <Phrase Caption="Ф1(-8.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-8.5"/>
+      <Phrase Caption="Ф1(-9.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-9.5"/>
+      <Phrase Caption="Ф1(0)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=0"/>
+      <Phrase Caption="Ф1(1.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=1.5"/>
+      <Phrase Caption="Ф1(2.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=2.5"/>
+      <Phrase Caption="Ф1(5.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=5.5"/>
+      <Phrase Caption="Ф1(6.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=6.5"/>
+      <Phrase Caption="Ф1(7.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=7.5"/>
+      <Phrase Caption="Ф1(8)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=8"/>
+      <Phrase Caption="Ф1(8.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=8.5"/>
+      <Phrase Caption="Ф2(-1.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=1.5"/>
+      <Phrase Caption="Ф2(-2.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-2.5"/>
+      <Phrase Caption="Ф2(-5.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-5.5"/>
+      <Phrase Caption="Ф2(-6.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-6.5"/>
+      <Phrase Caption="Ф2(-7.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-7.5"/>
+      <Phrase Caption="Ф2(-8)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-8"/>
+      <Phrase Caption="Ф2(-8.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-8.5"/>
+      <Phrase Caption="Ф2(0)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=0"/>
+      <Phrase Caption="Ф2(1.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=1.5"/>
+      <Phrase Caption="Ф2(10.50)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=10.5"/>
+      <Phrase Caption="Ф2(11.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=11.5"/>
+      <Phrase Caption="Ф2(12.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=12.5"/>
+      <Phrase Caption="Ф2(2.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=2.5"/>
+      <Phrase Caption="Ф2(3.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=3.5"/>
+      <Phrase Caption="Ф2(4.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=4.5"/>
       <Phrase Caption="Ф2(5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=5"/>
+      <Phrase Caption="Ф2(5.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=5.5"/>
+      <Phrase Caption="Ф2(6)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=6"/>
+      <Phrase Caption="Ф2(6.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=6.5"/>
+      <Phrase Caption="Ф2(7.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=7.5"/>
+      <Phrase Caption="Ф2(8)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=8"/>
+      <Phrase Caption="Ф2(8.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=8.5"/>
+      <Phrase Caption="Ф2(9.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=9.5"/>
+      <Phrase Caption="Ф1(6)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=6"/>
+      <Phrase Caption="Ф2(-6)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-6"/>
+      <Phrase Caption="Ф1(4.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=4.5"/>
+      <Phrase Caption="Ф2(-4.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-4.5"/>
+      <Phrase Caption="Ф1(3.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=3.5"/>
+      <Phrase Caption="Ф2(-3.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-3.5"/>
+      <Phrase Caption="Ф1(-4)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-4"/>
+      <Phrase Caption="Ф2(4)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=4"/>
     </Section>
   </tennis>
   <soccer>
@@ -148,7 +206,11 @@
       <Phrase Caption="Б(3)" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=3"/>
       <Phrase Caption="Б(5.5)" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=5.5"/>
       <Phrase Caption="М(5.5)" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=5.5"/>
-      </Section>
+      <Phrase Caption="М(1.5)" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=1.5"/>
+      <Phrase Caption="Б(1.5)" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=1.5"/>
+      <Phrase Caption="М(4)" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=4"/>
+      <Phrase Caption="Б(4)" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=4"/>
+    </Section>
     <Section Caption="Результативность таймов" Ignore="1"/>
     <Section Caption="Инд. тоталы">
       <Phrase Caption="Gamer1(1)мен." BetKind="Period=Match;Kind=Total;Subject=Goal;Gamer=1;Modifier=Under;Value=1"/>
@@ -163,6 +225,8 @@
       <Phrase Caption="Gamer2(1.5)бол." BetKind="Period=Match;Kind=Total;Subject=Goal;Gamer=2;Modifier=Over;Value=1.5"/>
       <Phrase Caption="Gamer2(2.5)мен." BetKind="Period=Match;Kind=Total;Subject=Goal;Gamer=2;Modifier=Under;Value=2.5"/>
       <Phrase Caption="Gamer2(2.5)бол." BetKind="Period=Match;Kind=Total;Subject=Goal;Gamer=2;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="Gamer1(2)мен." BetKind="Period=Match;Kind=Total;Subject=Goal;Gamer=1;Modifier=Under;Value=2"/>
+      <Phrase Caption="Gamer1(2)бол." BetKind="Period=Match;Kind=Total;Subject=Goal;Gamer=1;Modifier=Over;Value=2"/>
     </Section>
     <Section Caption="Сложная фора" Ignore="1"/>
     <Section Caption="Таймы" Ignore="1"/>
@@ -201,8 +265,24 @@
       <Phrase Caption="Ф2(-1)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-1"/>
       <Phrase Caption="Ф1(1.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=1.5"/>
       <Phrase Caption="Ф2(-1.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-1.5"/>
+      <Phrase Caption="Ф1(-3.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-3.5"/>
+      <Phrase Caption="Ф2(3.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=3.5"/>
+      <Phrase Caption="Ф1(2.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=2.5"/>
+      <Phrase Caption="Ф2(-2.5)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-2.5"/>
+      <Phrase Caption="Ф1(-2)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-2"/>
+      <Phrase Caption="Ф2(2)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=2"/>
+      <Phrase Caption="Ф1(2)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=2"/>
+      <Phrase Caption="Ф2(-2)" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-2"/>
+      <Phrase Caption="Ф1(-4.5)" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-4.5"/>
     </Section>
-    <Section Caption="Победитель" Ignore="1" />
-    <Section Caption="Проход" Ignore="1" />
+    <Section Caption="Победитель" Ignore="1"/>
+    <Section Caption="Проход" Ignore="1"/>
+    <Section Caption="Замeны" Ignore="1"/>
+    <Section Caption="Нарушения">
+      <Phrase Caption="пенальти да" BetKind="Period=Match;Kind=Total;Subject=Penalty;Modifier=Over;Value=0.5"/>
+      <Phrase Caption="пенальти нет" BetKind="Period=Match;Kind=Total;Subject=Penalty;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="удаление да" BetKind="Period=Match;Kind=Total;Subject=RedCard;Modifier=Over;Value=0.5"/>
+      <Phrase Caption="удаление нет" BetKind="Period=Match;Kind=Total;Subject=RedCard;Modifier=Under;Value=0.5"/>
+    </Section>
   </soccer>
 </Root>

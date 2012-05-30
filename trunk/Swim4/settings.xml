@@ -9,7 +9,7 @@
     <Booker Id="2" Sign="olymp" Url="https://olympbet.com" Title="Olymp"/>
     <Booker Id="3" Sign="marathon" Url="http://marathonbet.com" Title="Марафон"/>
   </Bookers>
-  <Scaners ThreadCount="3" AutoStart="0">
+  <Scaners ThreadCount="10" AutoStart="0">
     <Scaner BookerId="1" NeedScan="1"/>
     <Scaner BookerId="2" NeedScan="1"/>
     <Scaner BookerId="3" NeedScan="1"/>

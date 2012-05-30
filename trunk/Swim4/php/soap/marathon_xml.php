@@ -159,7 +159,7 @@ class marathon_booker extends booker_xml {
       $cells = extract_all_tags(replace_all($event, '<td', '>', '<td>'), '<td>', '</td>');
       $i = 0;
       foreach ($cells as $cell) {
-        $cell = copy_between($cell, '<td>', '</td>');
+        $cell = trim(copy_between($cell, '<td>', '</td>'));
         if ($cell) {
           $cell = kill_tag_bound($cell, 'a');
           unset($bettype);
@@ -170,11 +170,14 @@ class marathon_booker extends booker_xml {
           }
           if ($bettype['Kind'] == 'Total') {
             preg_match('/\((.+?)\)<br\/>(.+?)/iU', $cell, $matches);
-            $this->addBet($event_node, $bettype_str.';Value='.$matches[1].';Koef='.$matches[2]);
+            if ($matches[2]) {
+              $this->addBet($event_node, $bettype_str.';Value='.$matches[1].';Koef='.$matches[2]);
+            }
           } elseif ($bettype['Kind'] == 'Fora') {
             preg_match('/\(([\+\-]*?)(.+?)\)<br\/>(.+?)/iU', $cell, $matches);
-            if (($matches[1] == '') and ($matches[2] <> '0')) $matches[1] = '+';
-            $this->addBet($event_node, $bettype_str.';Value='.$matches[1].$matches[2].';Koef='.$matches[3]);
+            if ($matches[3]) {
+              $this->addBet($event_node, $bettype_str.';Value='.$matches[1].$matches[2].';Koef='.$matches[3]);
+            }
           } else {
             $this->addBet($event_node, $bettype_str.';Koef='.$cell);
           }

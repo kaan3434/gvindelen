@@ -82,7 +82,11 @@ class booker_xml {
     $bet_node = $event_node->addChild('Bet');
     foreach(explode(';', $attrs) as $bet_pair) {
       list($key, $value) = explode('=', $bet_pair);
-      $bet_attrs[$key] = $value;
+      if ($key == 'Ignore') {
+        $a=1;
+      } else {
+        $bet_attrs[$key] = $value;
+      }
     }
     foreach ($bet_attrs as $key=>$value) $bet_node->addAttribute($key, strtr($value, ',', '.'));
   }
