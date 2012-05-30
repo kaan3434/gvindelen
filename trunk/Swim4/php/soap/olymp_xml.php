@@ -147,7 +147,6 @@ class olymp_booker extends booker_xml {
   }
 
   private function extract_extra_bets(&$tournir_node, $html, $sport_sign, $tournir_id) {
-//    $i = 0;
     $html = str_ireplace('<li><h2>', '<li class="extra"><h2>', $html);
     $html = numbering_tag($html, 'li');
     $table_rows = extract_all_numbered_tags($html, 'li', 'extra');
@@ -157,17 +156,19 @@ class olymp_booker extends booker_xml {
       $event_node = $this->event_find($tournir_node, $event_id);
       $phrase = copy_be($row, '<h2', '</h2>');
       $phrase = copy_between($phrase, '>', '<');
-      $bets = extract_all_tags($row, '<li', '</li>', 'rel');
-      foreach($bets as $bet) {
-        list($label, $koef) = $this->extract_label_koef($bet);
-        $label = str_ireplace((string)$event_node['Gamer1_Name'], 'Gamer1', $label);
-        $label = str_ireplace((string)$event_node['Gamer2_Name'], 'Gamer2', $label);
-        $phrase_node = $this->findPhrase($sport_sign, $phrase, $label);
-        if ((string)$phrase_node['BetKind'] <> 'Ignore') {
-          $this->addBet($event_node, (string)$phrase_node['BetKind'].';Koef='.$koef);
+      $section_node = $this->findSection($sport_sign, $phrase);
+      if (!(string)$section_node['Ignore']) {
+        $bets = extract_all_tags($row, '<li', '</li>', 'rel');
+        foreach($bets as $bet) {
+          list($label, $koef) = $this->extract_label_koef($bet);
+          $label = str_ireplace((string)$event_node['Gamer1_Name'], 'Gamer1', $label);
+          $label = str_ireplace((string)$event_node['Gamer2_Name'], 'Gamer2', $label);
+          $phrase_node = $this->findPhrase($sport_sign, $phrase, $label);
+          if ((string)$phrase_node['BetKind'] <> 'Ignore') {
+            $this->addBet($event_node, (string)$phrase_node['BetKind'].';Koef='.$koef);
+          }
         }
       }
-      //$i++;
     }
   }
     

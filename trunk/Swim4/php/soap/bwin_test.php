@@ -5,16 +5,15 @@
   $booker = new bwin_booker();
   
 //  $sports = $booker->getSports();
-  
-//  print $sports->asXML();
 
-//  $tournirs = $booker->getTournirs(10);
+//  $tournirs = $booker->getTournirs(20);
   
-//  print $tournirs->asXML();
-  
-  $tournir_id = (string) '4635';
-  $events = $booker->getEvents(10, $tournir_id, '');
-  
-//  print $events->asXML();
+//  foreach($tournirs->Tournirs->children() as $element_name=>$child) {
+//    $tournir_id = (string) $child['Id'];
+//    $events = $booker->getEvents(20, $tournir_id, '');
+//  }
+
+    $tournir_id = '251';
+    $events = $booker->getEvents(20, $tournir_id, '');
   
 ?>

@@ -68,7 +68,8 @@ class booker_xml {
   public function getTournirs($sport_id) {
     // Зачитываем настройку спорта конторы
     $this->sport_node = $this->getSport($sport_id);
-    $phrases = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><Root/>');
+    $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><Root/>');
+    return $xml;
   }
   
   public function getEvents($sport_id, $tournir_id, $tournir_url) {

@@ -4,17 +4,11 @@
   
   $booker = new olymp_booker();
   
-  //$sports = $booker->getSports();
+  $tournirs = $booker->getTournirs(20);
   
-//  print $sports->asXML();
-
-  //$tournirs = $booker->getTournirs(10);
-  
-//  print $tournirs->asXML();
-  
-  $tournir_id = '26.69222ee6d2710d8885fca1de63b9804e';
-  $events = $booker->getEvents(10, $tournir_id, null);
-  
-//  print $events->asXML();
+  foreach($tournirs->Tournirs->children() as $element_name=>$child) {
+    $tournir_id = (string) $child['Id'];
+    $events = $booker->getEvents(20, $tournir_id, '');
+  }
   
 ?>

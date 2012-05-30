@@ -7,6 +7,8 @@
   
 class bwin_booker extends booker_xml {
   
+  private $categories;
+  
   function __construct() { 
     $this->booker = 'bwin'; 
     $this->host = 'https://www.bwin.com';
@@ -81,6 +83,7 @@ class bwin_booker extends booker_xml {
   private function extract_label_koef($html) {
     $html = kill_tag_bound($html, 'div|tr');
     $label = delete_all(copy_be($html, '<td', '</td>', 'label'), '<', '>');
+    $label = html_to_utf8($label);
     $koef = delete_all(copy_be($html, '<td', '</td>', '\'odd\''), '<', '>');
     return array($label, $koef);
   }
@@ -168,9 +171,11 @@ class bwin_booker extends booker_xml {
       } elseif (in_array($row_class_name, array('def', 'alt'))) {// заголовок
         if (preg_match('/<td.*>(<h5>)*?(.+)(<\/h5>)*?</iU', $row, $matches)){
           $phrase = $matches[2];
+          $section_node = $this->findSection($sport_sign, $phrase);
         }
-      } elseif ($row_class_name == 'normal') {  // основная ставка
-        $this->extract_new_event($tournir_node, $row, $sport_sign, $phrase, mktime(0, 0, 0, $month_no, $day_no, $year_no)); 
+      } elseif ($row_class_name == 'normal') {  // основная ставка  
+        if (!$section_node['Ignore'])
+          $this->extract_new_event($tournir_node, $row, $sport_sign, $phrase, mktime(0, 0, 0, $month_no, $day_no, $year_no)); 
       }
     }
   }
@@ -187,7 +192,7 @@ class bwin_booker extends booker_xml {
         $row = copy_between($row, '<h3>', '</h3>');
         list($day_no, $month_no, $year_no) = $this->decode_date($row);
       } elseif (in_array($row_class_name, array('def', 'alt'))) {// игроки + время
-        if (preg_match('/<td.*>(<h4>)*?(.+) - (.+) - (\d{1,2}:\d\d (PM|AM))(.*?)(<\/h4>)*?</Ui', $row, $matches)) {
+        if (preg_match('/<td.*>(<h4>)*?(.+) - (.+)( \(Neutral Venue\))? - (\d{1,2}:\d\d (PM|AM))(.*?)(<\/h4>)*?</Ui', $row, $matches)) {
           $gamer1_name = $matches[2];
           $gamer2_name = $matches[3];
           list($hour, $minute) = $this->decode_time($matches[4]);
@@ -195,9 +200,9 @@ class bwin_booker extends booker_xml {
           $phrase = $matches[2];
           $phrase = str_ireplace($gamer1_name, 'Gamer1', $phrase);
           $phrase = str_ireplace($gamer2_name, 'Gamer2', $phrase);
+          $section_node = $this->findSection($sport_sign, $phrase);
         }
-      } elseif (($row_class_name == 'normal')) {  // основная ставка
-        $section_node = $this->findSection($sport_sign, $phrase);
+      } elseif (($row_class_name == 'normal') and (!$section_node['Ignore'])) {  // основная ставка
         if ($section_node['NewEvent']) {
           $this->extract_new_event($tournir_node, $row, $sport_sign, $phrase, mktime($hour, $minute, 0, $month_no, $day_no, $year_no));
         } else {
@@ -239,6 +244,14 @@ class bwin_booker extends booker_xml {
     return ($html);
   }
     
+  private function extract_categories($html) {
+    $html = copy_be($html, '<table', '</table>', 'SelectSingleCategory');
+    $categories = extract_all_tags($html, 'SelectSingleCategory(', ')');
+    foreach($categories as $category) {
+      $this->categories[copy_between($category, '(', ')')] = 1;
+    }
+  } 
+    
   private function getBets(&$tournir_node, $sport_id, $tournir_id) {
     foreach($this->sport_node as $category_node) {
       $category_id = (string) $category_node['Id'];
@@ -250,7 +263,10 @@ class bwin_booker extends booker_xml {
         $url= $this->host."/betviewiframe.aspx?sorting=leaguedate&categoryIDs=$category_id&bv=bb&leagueIDs=$tournir_id";
         $referer = $this->host.(string)$this->sport_node['Url'];
         $html = download_or_load($this->debug, $file_name, $url, "GET", $referer);
-        $this->extract_bets($tournir_node, $html, (string) $this->sport_node['Sign'], $tournir_id, $parse);
+        if (!$this->categories) 
+          $this->extract_categories($html);
+        if ($this->categories[$category_id])
+          $this->extract_bets($tournir_node, $html, (string) $this->sport_node['Sign'], $tournir_id, $parse);
       } while ($this->to_be_continue($html, $current_page+1));
     }
     

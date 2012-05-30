@@ -38,6 +38,7 @@ object Form1: TForm1
         Caption = 'Teacher'
         Page = RibbonPage2
       end>
+    TabIndex = 2
     DesignSize = (
       856
       143)
@@ -46,6 +47,23 @@ object Form1: TForm1
       ActionManager = actMngRibbon
       OptionItems = <>
       RecentItems = <>
+    end
+    object RibbonPageScaner: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 855
+      Height = 93
+      Caption = 'Scanner'
+      Index = 0
+      object tbScannerBookers: TRibbonGroup
+        Left = 4
+        Top = 3
+        Width = 123
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = 'Bookers'
+        GroupIndex = 0
+      end
     end
     object RibbonPage1: TRibbonPage
       Left = 0
@@ -78,23 +96,6 @@ object Form1: TForm1
         Height = 86
         ActionManager = actMngRibbon
         Caption = 'Categories'
-        GroupIndex = 0
-      end
-    end
-    object RibbonPageScaner: TRibbonPage
-      Left = 0
-      Top = 50
-      Width = 855
-      Height = 93
-      Caption = 'Scanner'
-      Index = 0
-      object tbScannerBookers: TRibbonGroup
-        Left = 4
-        Top = 3
-        Width = 123
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = 'Bookers'
         GroupIndex = 0
       end
     end
@@ -156,6 +157,7 @@ object Form1: TForm1
         Items = <
           item
             Action = actRunThread
+            Caption = '&StartThreads'
             ImageIndex = 0
             CommandProperties.ButtonSize = bsLarge
           end
@@ -245,7 +247,7 @@ object Form1: TForm1
     Left = 560
     Top = 8
     Bitmap = {
-      494C010103000900440010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
+      494C010103000900480010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000101010F010101170101011A0101
       011A0101011A0101011A0101011A0101011A0101011A0101011A0101011A0101
@@ -391,7 +393,7 @@ object Form1: TForm1
     Left = 472
     Top = 8
     Bitmap = {
-      494C0101030009003C0020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010103000900400020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000101010F0101010F010101170101
       01170101011A0101011A0101011A0101011A0101011A0101011A0101011A0101

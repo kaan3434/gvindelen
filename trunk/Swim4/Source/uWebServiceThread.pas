@@ -176,12 +176,7 @@ begin
                                  FNode.Attr['Tournir_Id'].AsString,
                                  FNode.Attr['Tournir_Url'].AsString).Events;
     except
-      on E: Exception do
-      begin
-        ShowMessage(Format('Webservice error (Request=%u, Message="%s", Node="%s"',
-          [FRequestId, E.Message, FNode.WriteToString]));
-        exit;
-      end;
+      exit;
     end;
     try
       dm.trnWrite.StartTransaction;
@@ -233,7 +228,11 @@ var
 begin
   Node:= TGvXmlNode.Create;
   try
-    Sports:= FWSScan.getSports(FNode.Attr['Booker_Sign'].AsString).Sports;
+    try
+      Sports:= FWSScan.getSports(FNode.Attr['Booker_Sign'].AsString).Sports;
+    except
+      exit;
+    end;
     dm.trnWrite.StartTransaction;
     try
       for Sport in Sports do
@@ -279,11 +278,7 @@ begin
       Tournirs:= FWSScan.getTournirs(FNode.Attr['Booker_Sign'].AsString,
                                      FNode.Attr['Sport_Id'].AsInteger).Tournirs;
     except
-      on E:Exception do
-      begin
-        ShowMessage(E.Message);
-        Raise;
-      end;
+      Exit;
     end;
     dm.trnWrite.StartTransaction;
     try
