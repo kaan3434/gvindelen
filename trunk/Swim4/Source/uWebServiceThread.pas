@@ -242,7 +242,7 @@ begin
         Node.ReadAttributes(FNode.WriteToString, IsEmpty);
         Node.Attr['Sport_Id'].AsInteger:= Sport.Id;
         Node.Attr['Sport_Sign'].AsString:= Sport.Sign;
-        Node.Attr['Sport_Name'].AsString:= Sport.Title;
+        Node.Attr['BSport_Name'].AsString:= Sport.Title;
         dm.SportDetect(Node);
         dm.trnWrite.SetSavePoint('PutTournir');
         try

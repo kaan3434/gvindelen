@@ -291,7 +291,6 @@ object frmTeachGamers: TfrmTeachGamers
     Top = 56
   end
   object trnRead: TpFIBTransaction
-    Active = True
     DefaultDatabase = dmFormMain.dbSwim
     TimeoutAction = TARollback
     TRParams.Strings = (
@@ -397,6 +396,10 @@ object frmTeachGamers: TfrmTeachGamers
     object aUpCaseFirst: TAction
       Caption = 'aUpCaseFirst'
       OnExecute = aUpCaseFirstExecute
+    end
+    object actSearchPair: TAction
+      Caption = 'actSearchPair'
+      OnExecute = actSearchPairExecute
     end
   end
   object qryCountries: TpFIBDataSet

@@ -108,7 +108,7 @@ begin
   begin
     Params.ClearValues;
     SQL.Text:=
-      'select bs.* from bsport_add(:sport_title, :booker_id) bsp '+
+      'select bs.* from bsport_add(:bsport_name, :booker_id) bsp '+
       ' inner join bsports bs on (bs.bsport_id = bsp.o_bsport_id)';
     for i:= 0 to ParamCount-1 do
     begin
@@ -131,7 +131,7 @@ begin
     Params.ClearValues;
     SQL.Text:=
       'select bt.btournir_id, bt.atournir_id, bt.ignore_flg '+
-      'from btournir_add(:tournir_title, :bsport_id, :tournir_region) btp '+
+      'from btournir_add(:btournir_name, :bsport_id, :tournir_region) btp '+
       'inner join btournirs bt on (bt.btournir_id = btp.o_btournir_id)';
     for i:= 0 to ParamCount-1 do
     begin

@@ -49,6 +49,7 @@ type
     actSearchAGamer: TAction;
     actTranslit: TAction;
     aUpCaseFirst: TAction;
+    actSearchPair: TAction;
     procedure actFillEditFormExecute(Sender: TObject);
     procedure trnWriteAfterEnd(EndingTR: TFIBTransaction;
       Action: TTransactionAction; Force: Boolean);
@@ -68,6 +69,7 @@ type
     procedure actFilterByTournirExecute(Sender: TObject);
     procedure qryAGamersBeforeOpen(DataSet: TDataSet);
     procedure aUpCaseFirstExecute(Sender: TObject);
+    procedure actSearchPairExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -181,6 +183,71 @@ begin
   finally
     qryAGamers.EnableControls;
   end;
+end;
+
+procedure TfrmTeachGamers.actSearchPairExecute(Sender: TObject);
+var
+  Gamer1Name, Gamer2Name, St: String;
+
+
+procedure BuildMasks(Masks: TStringList; St: String);
+const
+  WordVar : array [2..5]of string =
+    [';21;',
+     ';213;',
+     ';3124;2314;',
+     ';41235;34125;23415;'];
+var
+  Words: TStringList;
+  Mask: String;
+begin
+  Masks.Clear;
+  Words:= TStringList.Create;
+  try
+    while St<>'' do
+      Words.Add(TakeFront5(St, ' .,'));
+    St:= WordVar[Words.Count];
+    Mask:= '';
+    while St<>'' do
+    begin
+      if St[1] = ';' then
+      begin
+        if Mask<>'' then
+          Masks.Add(Mask+'%');
+        Mask:= '';
+      end
+      else
+        Mask:= Mask+'%'+Words(StrToInt(St[1])-1);
+    end;
+  finally
+    Words.Free;
+  end;
+end;
+
+function FindGamer(St: String): string;
+var
+  Masks: TStringList;
+  Mask: String;
+begin
+  Masks:= TStringList.Create;
+  try
+    BuildMasks(Masks, St);
+    For Mask in Masks do
+    begin
+      Result:= trnRead.DefaultDatabase.QueryValueAsStr(
+        'select AGamer_Name from AGamers where AGamerName similar to :Mask',
+        0, [Mask]);
+      if Result <> '' then Exit;
+    end;
+  finally
+    Masks.Free;
+  end;
+end;
+
+begin
+  Gamer2Name:= edAGamerName.text;
+  Gamer1Name:= Trim(TakeFront5(Gamer2Name, '/'));
+  Gamer2Name:= trim(Gamer2Name);
 end;
 
 procedure TfrmTeachGamers.actTranslitExecute(Sender: TObject);
