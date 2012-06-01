@@ -11,8 +11,8 @@
       <Phrase Caption="Gamer2" BetKind="Ways=2;Period=Set1;Kind=Win;Gamer=2;Modifier=Win"/>
     </Section>
     <Section Caption="How many games will be played in the first set?">
-      <Phrase Caption="6 - 8 Games" BetKind="Ignore"/>
-      <Phrase Caption="9 - 10 games" BetKind="Ignore"/>
+      <Phrase Caption="6 - 8 Games" Ignore="1"/>
+      <Phrase Caption="9 - 10 games" Ignore="1"/>
       <Phrase Caption="11 games or more" BetKind="Ways=2;Period=Set1;Kind=Total;Subject=Game;Modifier=Over;Value=10.5"/>
     </Section>
     <Section Caption="How many games will be played in the match?">
@@ -78,7 +78,7 @@
       <Phrase Caption="Under 15,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=15.5"/>
       <Phrase Caption="Over 20,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=20.5"/>
       <Phrase Caption="Under 20,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=20.5"/>
-    </Section>
+    <Phrase Caption="Over 14,5" BetKind="Modifier=Unknown"/><Phrase Caption="Under 14,5" BetKind="Modifier=Unknown"/></Section>
     <Section Caption="How many games will Gamer2 win in the match?">
       <Phrase Caption="Over 4,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=4.5"/>
       <Phrase Caption="Under 4,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=4.5"/>
@@ -122,7 +122,7 @@
       <Phrase Caption="Gamer2 -1,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-1.5"/>
       <Phrase Caption="Gamer1 -9,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-9.5"/>
       <Phrase Caption="Gamer2 +9,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=9.5"/>
-    </Section>
+    <Phrase Caption="Gamer1 +6,5" BetKind="Modifier=Unknown"/><Phrase Caption="Gamer2 -6,5" BetKind="Modifier=Unknown"/></Section>
     <Section Caption="Will number of games played in the match be odd or even?">
       <Phrase Caption="Odd" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Odd"/>
       <Phrase Caption="Even" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Even"/>
@@ -152,7 +152,7 @@
       <Phrase Caption="Gamer1 or X" BetKind="Ways=3;Period=Match;Kind=Win;Gamer=1;Modifier=NoLose"/>
       <Phrase Caption="X or Gamer2" BetKind="Ways=3;Period=Match;Kind=Win;Gamer=2;Modifier=NoLose"/>
       <Phrase Caption="Gamer1 or Gamer2" BetKind="Ways=3;Period=Match;Kind=Win;Modifier=NoDraw"/>
-    </Section>
+    <Phrase Caption="X or HJK" BetKind="Modifier=Unknown"/><Phrase Caption="Gamer1 or HJK" BetKind="Modifier=Unknown"/><Phrase Caption="X or Malkia" BetKind="Modifier=Unknown"/><Phrase Caption="Gamer1 or Malkia" BetKind="Modifier=Unknown"/></Section>
     <Section Caption="How many goals will be scored?">
       <Phrase Caption="Over 2,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=2.5"/>
       <Phrase Caption="Under 2,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=2.5"/>

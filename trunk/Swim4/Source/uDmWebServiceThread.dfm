@@ -25,9 +25,16 @@ inherited dmSwimThread: TdmSwimThread
     Transaction = trnWrite
     Database = dbSwim
     SQL.Strings = (
-      
-        'EXECUTE PROCEDURE BET_ADD (?I_BEVENT_ID, ?I_PERIOD, ?I_KIND, ?I_' +
-        'SUBJECT, ?I_GAMER, ?I_MODIFIER, ?I_VALUE, ?I_KOEF)')
+      'EXECUTE PROCEDURE BET_ADD'
+      '(:I_BEVENT_ID,'
+      '    :I_WAYS,'
+      '    :I_PERIOD,'
+      '    :I_KIND,'
+      '    :I_SUBJECT,'
+      '    :I_GAMER,'
+      '    :I_MODIFIER,'
+      '    :I_VALUE,'
+      '    :I_KOEF)')
     StoredProcName = 'BET_ADD'
     Left = 128
     Top = 168

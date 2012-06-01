@@ -144,7 +144,7 @@
       <Phrase Caption="Ф2(-3.5)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-3.5"/>
       <Phrase Caption="Ф1(-4)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-4"/>
       <Phrase Caption="Ф2(4)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=4"/>
-    </Section>
+    <Phrase Caption="Ф1(-11)" BetKind="Modifier=Unknown"/><Phrase Caption="Ф2(11)" BetKind="Modifier=Unknown"/><Phrase Caption="Ф1(-7)" BetKind="Modifier=Unknown"/><Phrase Caption="Ф2(7)" BetKind="Modifier=Unknown"/></Section>
   </tennis>
   <soccer>
     <Section Caption="Header">
@@ -233,25 +233,25 @@
     <Section Caption="Taймы" Ignore="1"/>
     <Section Caption="Точный счет 1-го тайма" Ignore="1"/>
     <Section Caption="Точные тоталы">
-      <Phrase Caption="Тотал - 1 гол" BetKind="Ignore"/>
-      <Phrase Caption="Тотал - 2 гола" BetKind="Ignore"/>
-      <Phrase Caption="Тотал - 3 гола" BetKind="Ignore"/>
-      <Phrase Caption="Тотал - 4 гола" BetKind="Ignore"/>
+      <Phrase Caption="Тотал - 1 гол" Ignore="1"/>
+      <Phrase Caption="Тотал - 2 гола" Ignore="1"/>
+      <Phrase Caption="Тотал - 3 гола" Ignore="1"/>
+      <Phrase Caption="Тотал - 4 гола" Ignore="1"/>
       <Phrase Caption="Тотал - 5 и более голов" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=4.5"/>
     </Section>
     <Section Caption="Последний гол" Ignore="1"/>
     <Section Caption="Первый гол" Ignore="1"/>
     <Section Caption="Голы">
       <Phrase Caption="никто не забьет" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=0.5"/>
-      <Phrase Caption="обе забьют да" BetKind="Ignore"/>
-      <Phrase Caption="хотя бы одна не забьёт" BetKind="Ignore"/>
-      <Phrase Caption="Gamer1 забьет" BetKind="Ignore"/>
-      <Phrase Caption="Gamer1 не забьет" BetKind="Ignore"/>
-      <Phrase Caption="Gamer2 забьет" BetKind="Ignore"/>
-      <Phrase Caption="Gamer2 не забьет" BetKind="Ignore"/>
-      <Phrase Caption="Гол с 1 по 15 мин: ДА" BetKind="Ignore"/>
-      <Phrase Caption="Гол с 1 по 15 мин: НЕТ" BetKind="Ignore"/>
-    </Section>
+      <Phrase Caption="обе забьют да" Ignore="1"/>
+      <Phrase Caption="хотя бы одна не забьёт" Ignore="1"/>
+      <Phrase Caption="Gamer1 забьет" Ignore="1"/>
+      <Phrase Caption="Gamer1 не забьет" Ignore="1"/>
+      <Phrase Caption="Gamer2 забьет" Ignore="1"/>
+      <Phrase Caption="Gamer2 не забьет" Ignore="1"/>
+      <Phrase Caption="Гол с 1 по 15 мин: ДА" Ignore="1"/>
+      <Phrase Caption="Гол с 1 по 15 мин: НЕТ" Ignore="1"/>
+    <Phrase Caption="Автогол - ДА" BetKind="Modifier=Unknown"/></Section>
     <Section Caption="Дополнительные форы">
       <Phrase Caption="Ф1(0)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=0"/>
       <Phrase Caption="Ф2(0)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=0"/>
