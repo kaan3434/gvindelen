@@ -198,7 +198,7 @@ begin
             // ƒобавл€ем запрос на получение турниров
             for Bet in Event.Bet do
             begin
-              dm.BetAdd(Node.Attr['BEvent_Id'].AsInteger, Bet.Period, Bet.Kind,
+              dm.BetAdd(Node.Attr['BEvent_Id'].AsInteger, Bet.Ways, Bet.Period, Bet.Kind,
                 Bet.Subject, Bet.Gamer, Bet.Value, Bet.Modifier, Bet.Koef);
             end;
           end;

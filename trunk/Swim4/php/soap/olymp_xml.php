@@ -164,7 +164,7 @@ class olymp_booker extends booker_xml {
           $label = str_ireplace((string)$event_node['Gamer1_Name'], 'Gamer1', $label);
           $label = str_ireplace((string)$event_node['Gamer2_Name'], 'Gamer2', $label);
           $phrase_node = $this->findPhrase($sport_sign, $phrase, $label);
-          if ((string)$phrase_node['BetKind'] <> 'Ignore') {
+          if (!$phrase_node['Ignore']) {
             $this->addBet($event_node, (string)$phrase_node['BetKind'].';Koef='.$koef);
           }
         }

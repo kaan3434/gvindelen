@@ -1,11 +1,11 @@
 // ************************************************************************ //
 // The types declared in this file were generated from data read from the
 // WSDL File described below:
-// WSDL     : D:\Swim4\php\soap\Scan.wsdl
-//  >Import : D:\Swim4\php\soap\Scan.wsdl>0
+// WSDL     : http://localhost:8080/soap/Scan.wsdl
+//  >Import : http://localhost:8080/soap/Scan.wsdl>0
 // Encoding : utf-8
 // Version  : 1.0
-// (21.05.2012 15:09:05 - - $Rev: 37707 $)
+// (01.06.2012 3:31:41 - - $Rev: 37707 $)
 // ************************************************************************ //
 
 unit ScanWSDL;
@@ -30,18 +30,19 @@ type
   // typically map to predefined/known XML or Embarcadero types; however, they could also 
   // indicate incorrect WSDL documents that failed to declare or import a schema type.
   // ************************************************************************ //
+  // !:byte            - "http://www.w3.org/2001/XMLSchema"[Gbl]
   // !:float           - "http://www.w3.org/2001/XMLSchema"[Gbl]
   // !:dateTime        - "http://www.w3.org/2001/XMLSchema"[Gbl]
-  // !:integer         - "http://www.w3.org/2001/XMLSchema"[Gbl]
   // !:anyURI          - "http://www.w3.org/2001/XMLSchema"[Gbl]
+  // !:integer         - "http://www.w3.org/2001/XMLSchema"[Gbl]
   // !:string          - "http://www.w3.org/2001/XMLSchema"[Lit][Gbl]
 
   TTournirsResponse    = class;                 { "http://example.com/"[Lit][GblCplx] }
   TEventsResponse      = class;                 { "http://example.com/"[Lit][GblCplx] }
   TBooker              = class;                 { "http://example.com/"[GblCplx] }
-  TTournir             = class;                 { "http://example.com/"[GblCplx] }
   TEvent               = class;                 { "http://example.com/"[GblCplx] }
   TBet                 = class;                 { "http://example.com/"[GblCplx] }
+  TTournir             = class;                 { "http://example.com/"[GblCplx] }
   TSportsResponse      = class;                 { "http://example.com/"[Lit][GblCplx] }
   TBookersResponse     = class;                 { "http://example.com/"[Lit][GblCplx] }
   TSport               = class;                 { "http://example.com/"[GblCplx] }
@@ -85,6 +86,7 @@ type
     property Events: TEvents  read FEvents write FEvents;
   end;
 
+  TBookers   = array of TBooker;                { "http://example.com/"[GblCplx] }
 
 
   // ************************************************************************ //
@@ -107,36 +109,6 @@ type
     property Sign:  string  Index (IS_ATTR) read FSign write FSign;
     property Title: string  Index (IS_ATTR) read FTitle write FTitle;
     property Url:   string  Index (IS_ATTR or IS_OPTN) read FUrl write SetUrl stored Url_Specified;
-  end;
-
-
-
-  // ************************************************************************ //
-  // XML       : TTournir, global, <complexType>
-  // Namespace : http://example.com/
-  // ************************************************************************ //
-  TTournir = class(TRemotable)
-  private
-    FText: string;
-    FId: string;
-    FId_Specified: boolean;
-    FRegion: string;
-    FRegion_Specified: boolean;
-    FTitle: string;
-    FUrl: string;
-    FUrl_Specified: boolean;
-    procedure SetId(Index: Integer; const Astring: string);
-    function  Id_Specified(Index: Integer): boolean;
-    procedure SetRegion(Index: Integer; const Astring: string);
-    function  Region_Specified(Index: Integer): boolean;
-    procedure SetUrl(Index: Integer; const Astring: string);
-    function  Url_Specified(Index: Integer): boolean;
-  published
-    property Text:   string  Index (IS_TEXT) read FText write FText;
-    property Id:     string  Index (IS_ATTR or IS_OPTN) read FId write SetId stored Id_Specified;
-    property Region: string  Index (IS_ATTR or IS_OPTN) read FRegion write SetRegion stored Region_Specified;
-    property Title:  string  Index (IS_ATTR) read FTitle write FTitle;
-    property Url:    string  Index (IS_ATTR or IS_OPTN) read FUrl write SetUrl stored Url_Specified;
   end;
 
 
@@ -186,40 +158,71 @@ type
   TBet = class(TRemotable)
   private
     FText: string;
+    FWays: ShortInt;
     FPeriod: string;
     FKind: string;
     FSubject: string;
     FSubject_Specified: boolean;
     FGamer: string;
     FGamer_Specified: boolean;
-    FValue: string;
-    FValue_Specified: boolean;
     FModifier: string;
     FModifier_Specified: boolean;
+    FValue: string;
+    FValue_Specified: boolean;
     FKoef: Single;
     FKoef_Specified: boolean;
     procedure SetSubject(Index: Integer; const Astring: string);
     function  Subject_Specified(Index: Integer): boolean;
     procedure SetGamer(Index: Integer; const Astring: string);
     function  Gamer_Specified(Index: Integer): boolean;
-    procedure SetValue(Index: Integer; const Astring: string);
-    function  Value_Specified(Index: Integer): boolean;
     procedure SetModifier(Index: Integer; const Astring: string);
     function  Modifier_Specified(Index: Integer): boolean;
+    procedure SetValue(Index: Integer; const Astring: string);
+    function  Value_Specified(Index: Integer): boolean;
     procedure SetKoef(Index: Integer; const ASingle: Single);
     function  Koef_Specified(Index: Integer): boolean;
   published
-    property Text:     string  Index (IS_TEXT) read FText write FText;
-    property Period:   string  Index (IS_ATTR) read FPeriod write FPeriod;
-    property Kind:     string  Index (IS_ATTR) read FKind write FKind;
-    property Subject:  string  Index (IS_ATTR or IS_OPTN) read FSubject write SetSubject stored Subject_Specified;
-    property Gamer:    string  Index (IS_ATTR or IS_OPTN) read FGamer write SetGamer stored Gamer_Specified;
-    property Value:    string  Index (IS_ATTR or IS_OPTN) read FValue write SetValue stored Value_Specified;
-    property Modifier: string  Index (IS_ATTR or IS_OPTN) read FModifier write SetModifier stored Modifier_Specified;
-    property Koef:     Single  Index (IS_ATTR or IS_OPTN) read FKoef write SetKoef stored Koef_Specified;
+    property Text:     string    Index (IS_TEXT) read FText write FText;
+    property Ways:     ShortInt  Index (IS_ATTR) read FWays write FWays;
+    property Period:   string    Index (IS_ATTR) read FPeriod write FPeriod;
+    property Kind:     string    Index (IS_ATTR) read FKind write FKind;
+    property Subject:  string    Index (IS_ATTR or IS_OPTN) read FSubject write SetSubject stored Subject_Specified;
+    property Gamer:    string    Index (IS_ATTR or IS_OPTN) read FGamer write SetGamer stored Gamer_Specified;
+    property Modifier: string    Index (IS_ATTR or IS_OPTN) read FModifier write SetModifier stored Modifier_Specified;
+    property Value:    string    Index (IS_ATTR or IS_OPTN) read FValue write SetValue stored Value_Specified;
+    property Koef:     Single    Index (IS_ATTR or IS_OPTN) read FKoef write SetKoef stored Koef_Specified;
   end;
 
-  TBookers   = array of TBooker;                { "http://example.com/"[GblCplx] }
+
+
+  // ************************************************************************ //
+  // XML       : TTournir, global, <complexType>
+  // Namespace : http://example.com/
+  // ************************************************************************ //
+  TTournir = class(TRemotable)
+  private
+    FText: string;
+    FId: string;
+    FId_Specified: boolean;
+    FRegion: string;
+    FRegion_Specified: boolean;
+    FTitle: string;
+    FUrl: string;
+    FUrl_Specified: boolean;
+    procedure SetId(Index: Integer; const Astring: string);
+    function  Id_Specified(Index: Integer): boolean;
+    procedure SetRegion(Index: Integer; const Astring: string);
+    function  Region_Specified(Index: Integer): boolean;
+    procedure SetUrl(Index: Integer; const Astring: string);
+    function  Url_Specified(Index: Integer): boolean;
+  published
+    property Text:   string  Index (IS_TEXT) read FText write FText;
+    property Id:     string  Index (IS_ATTR or IS_OPTN) read FId write SetId stored Id_Specified;
+    property Region: string  Index (IS_ATTR or IS_OPTN) read FRegion write SetRegion stored Region_Specified;
+    property Title:  string  Index (IS_ATTR) read FTitle write FTitle;
+    property Url:    string  Index (IS_ATTR or IS_OPTN) read FUrl write SetUrl stored Url_Specified;
+  end;
+
   TSports    = array of TSport;                 { "http://example.com/"[GblCplx] }
 
 
@@ -399,39 +402,6 @@ begin
   Result := FUrl_Specified;
 end;
 
-procedure TTournir.SetId(Index: Integer; const Astring: string);
-begin
-  FId := Astring;
-  FId_Specified := True;
-end;
-
-function TTournir.Id_Specified(Index: Integer): boolean;
-begin
-  Result := FId_Specified;
-end;
-
-procedure TTournir.SetRegion(Index: Integer; const Astring: string);
-begin
-  FRegion := Astring;
-  FRegion_Specified := True;
-end;
-
-function TTournir.Region_Specified(Index: Integer): boolean;
-begin
-  Result := FRegion_Specified;
-end;
-
-procedure TTournir.SetUrl(Index: Integer; const Astring: string);
-begin
-  FUrl := Astring;
-  FUrl_Specified := True;
-end;
-
-function TTournir.Url_Specified(Index: Integer): boolean;
-begin
-  Result := FUrl_Specified;
-end;
-
 destructor TEvent.Destroy;
 var
   I: Integer;
@@ -520,17 +490,6 @@ begin
   Result := FGamer_Specified;
 end;
 
-procedure TBet.SetValue(Index: Integer; const Astring: string);
-begin
-  FValue := Astring;
-  FValue_Specified := True;
-end;
-
-function TBet.Value_Specified(Index: Integer): boolean;
-begin
-  Result := FValue_Specified;
-end;
-
 procedure TBet.SetModifier(Index: Integer; const Astring: string);
 begin
   FModifier := Astring;
@@ -542,6 +501,17 @@ begin
   Result := FModifier_Specified;
 end;
 
+procedure TBet.SetValue(Index: Integer; const Astring: string);
+begin
+  FValue := Astring;
+  FValue_Specified := True;
+end;
+
+function TBet.Value_Specified(Index: Integer): boolean;
+begin
+  Result := FValue_Specified;
+end;
+
 procedure TBet.SetKoef(Index: Integer; const ASingle: Single);
 begin
   FKoef := ASingle;
@@ -551,6 +521,39 @@ end;
 function TBet.Koef_Specified(Index: Integer): boolean;
 begin
   Result := FKoef_Specified;
+end;
+
+procedure TTournir.SetId(Index: Integer; const Astring: string);
+begin
+  FId := Astring;
+  FId_Specified := True;
+end;
+
+function TTournir.Id_Specified(Index: Integer): boolean;
+begin
+  Result := FId_Specified;
+end;
+
+procedure TTournir.SetRegion(Index: Integer; const Astring: string);
+begin
+  FRegion := Astring;
+  FRegion_Specified := True;
+end;
+
+function TTournir.Region_Specified(Index: Integer): boolean;
+begin
+  Result := FRegion_Specified;
+end;
+
+procedure TTournir.SetUrl(Index: Integer; const Astring: string);
+begin
+  FUrl := Astring;
+  FUrl_Specified := True;
+end;
+
+function TTournir.Url_Specified(Index: Integer): boolean;
+begin
+  Result := FUrl_Specified;
 end;
 
 constructor TSportsResponse.Create;
@@ -611,11 +614,11 @@ initialization
   RemClassRegistry.RegisterXSClass(TEventsResponse, 'http://example.com/', 'TEventsResponse');
   RemClassRegistry.RegisterExternalPropName(TypeInfo(TEventsResponse), 'Events', '[ArrayItemName="Event"]');
   RemClassRegistry.RegisterSerializeOptions(TEventsResponse, [xoLiteralParam]);
+  RemClassRegistry.RegisterXSInfo(TypeInfo(TBookers), 'http://example.com/', 'TBookers');
   RemClassRegistry.RegisterXSClass(TBooker, 'http://example.com/', 'TBooker');
-  RemClassRegistry.RegisterXSClass(TTournir, 'http://example.com/', 'TTournir');
   RemClassRegistry.RegisterXSClass(TEvent, 'http://example.com/', 'TEvent');
   RemClassRegistry.RegisterXSClass(TBet, 'http://example.com/', 'TBet');
-  RemClassRegistry.RegisterXSInfo(TypeInfo(TBookers), 'http://example.com/', 'TBookers');
+  RemClassRegistry.RegisterXSClass(TTournir, 'http://example.com/', 'TTournir');
   RemClassRegistry.RegisterXSInfo(TypeInfo(TSports), 'http://example.com/', 'TSports');
   RemClassRegistry.RegisterXSClass(TSportsResponse, 'http://example.com/', 'TSportsResponse');
   RemClassRegistry.RegisterExternalPropName(TypeInfo(TSportsResponse), 'Sports', '[ArrayItemName="Sport"]');

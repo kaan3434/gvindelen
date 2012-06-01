@@ -20,7 +20,7 @@ type
     procedure SportDetect(aNode: TGvXmlNode);
     procedure TournirDetect(aNode: TGvXmlNode);
     procedure EventDetect(aNode: TGvXmlNode);
-    procedure BetAdd(aBEventId: integer; aPeriod, aKind, aSubject, aGamer, aValue, aModifier: String;
+    procedure BetAdd(aBEventId: integer; aWays: Byte; aPeriod, aKind, aSubject, aGamer, aValue, aModifier: String;
       aKoef: Single);
   end;
 
@@ -33,7 +33,7 @@ uses
 
 { TdmSwimThread }
 
-procedure TdmSwimThread.BetAdd(aBEventId: integer; aPeriod, aKind, aSubject, aGamer, aValue,
+procedure TdmSwimThread.BetAdd(aBEventId: integer; aWays: Byte; aPeriod, aKind, aSubject, aGamer, aValue,
   aModifier: String; aKoef: Single);
 begin
   try
@@ -42,6 +42,7 @@ begin
     begin
       Params.ClearValues;
       Params.ParamByName('I_BEVENT_ID').AsInteger:= aBEventId;
+      Params.ParamByName('I_WAYS').Value:= aWays;
       Params.ParamByName('I_PERIOD').Value:= aPeriod;
       Params.ParamByName('I_KIND').Value:= aKind;
       Params.ParamByName('I_SUBJECT').Value:= aSubject;

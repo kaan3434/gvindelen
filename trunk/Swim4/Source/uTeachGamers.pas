@@ -50,6 +50,7 @@ type
     actTranslit: TAction;
     aUpCaseFirst: TAction;
     actSearchPair: TAction;
+    Action1: TAction;
     procedure actFillEditFormExecute(Sender: TObject);
     procedure trnWriteAfterEnd(EndingTR: TFIBTransaction;
       Action: TTransactionAction; Force: Boolean);
@@ -193,38 +194,39 @@ var
 procedure BuildMasks(Masks: TStringList; St: String);
 const
   WordVar : array [2..5]of string =
-    [';21;',
-     ';213;',
-     ';3124;2314;',
-     ';41235;34125;23415;'];
+    (';21;',
+     ';213;231;312;',
+     ';3124;2314;2341;4123;',
+     ';41235;34125;23415;');
 var
   Words: TStringList;
   Mask: String;
+  Ch: Char;
 begin
   Masks.Clear;
   Words:= TStringList.Create;
   try
     while St<>'' do
-      Words.Add(TakeFront5(St, ' .,'));
+      Words.Add(TakeFront5(St, ' .,-'));
     St:= WordVar[Words.Count];
     Mask:= '';
-    while St<>'' do
+    For Ch in St do
     begin
-      if St[1] = ';' then
+      if Ch = ';' then
       begin
         if Mask<>'' then
           Masks.Add(Mask+'%');
         Mask:= '';
       end
       else
-        Mask:= Mask+'%'+Words(StrToInt(St[1])-1);
+        Mask:= Mask+'%'+Words[Ord(Ch)-Ord('1')];
     end;
   finally
     Words.Free;
   end;
 end;
 
-function FindGamer(St: String): string;
+function FindGamer(St: String; SubSport, aSportId: integer): string;
 var
   Masks: TStringList;
   Mask: String;
@@ -235,10 +237,14 @@ begin
     For Mask in Masks do
     begin
       Result:= trnRead.DefaultDatabase.QueryValueAsStr(
-        'select AGamer_Name from AGamers where AGamerName similar to :Mask',
-        0, [Mask]);
+        'select ag.agamer_name from AGamers ag '+
+        ' inner join asports a on (iif(:subsport=1, a.asubsport1_id, a.asubsport2_id) = ag.asport_id) '+
+        'where ag.agamer_name similar to :mask '+
+        ' and a.asport_id = :asport_id',
+        0, [SubSport, Mask, aSportId]);
       if Result <> '' then Exit;
     end;
+    Result:= St;
   finally
     Masks.Free;
   end;
@@ -248,6 +254,9 @@ begin
   Gamer2Name:= edAGamerName.text;
   Gamer1Name:= Trim(TakeFront5(Gamer2Name, '/'));
   Gamer2Name:= trim(Gamer2Name);
+  Gamer1Name:= FindGamer(Gamer1Name, 1, qryBGamers['ASport_Id']);
+  Gamer2Name:= FindGamer(Gamer2Name, 2, qryBGamers['ASport_Id']);
+  edAGamerName.Text:= Gamer1Name+' / '+Gamer2Name;
 end;
 
 procedure TfrmTeachGamers.actTranslitExecute(Sender: TObject);

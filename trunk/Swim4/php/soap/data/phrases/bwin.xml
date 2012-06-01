@@ -2,282 +2,292 @@
 <Root>
   <tennis>
     <Section Caption="1x2">
-      <Phrase Caption="Gamer1" BetKind="Period=Match;Kind=Win;Gamer=1;Modifier=Win"/>
-      <Phrase Caption="Gamer2" BetKind="Period=Match;Kind=Win;Gamer=2;Modifier=Win"/>
+      <Phrase Caption="Gamer1" BetKind="Ways=2;Period=Match;Kind=Win;Gamer=1;Modifier=Win"/>
+      <Phrase Caption="Gamer2" BetKind="Ways=2;Period=Match;Kind=Win;Gamer=2;Modifier=Win"/>
     </Section>
     <Section Caption="Set bet" Ignore="1"/>
     <Section Caption="Who will win the first set ?" NewEvent="1">
-      <Phrase Caption="Gamer1" BetKind="Period=Set1;Kind=Win;Gamer=1;Modifier=Win"/>
-      <Phrase Caption="Gamer2" BetKind="Period=Set1;Kind=Win;Gamer=2;Modifier=Win"/>
+      <Phrase Caption="Gamer1" BetKind="Ways=2;Period=Set1;Kind=Win;Gamer=1;Modifier=Win"/>
+      <Phrase Caption="Gamer2" BetKind="Ways=2;Period=Set1;Kind=Win;Gamer=2;Modifier=Win"/>
     </Section>
     <Section Caption="How many games will be played in the first set?">
       <Phrase Caption="6 - 8 Games" BetKind="Ignore"/>
       <Phrase Caption="9 - 10 games" BetKind="Ignore"/>
-      <Phrase Caption="11 games or more" BetKind="Period=Set1;Kind=Total;Subject=Game;Modifier=Over;Value=10.5"/>
+      <Phrase Caption="11 games or more" BetKind="Ways=2;Period=Set1;Kind=Total;Subject=Game;Modifier=Over;Value=10.5"/>
     </Section>
     <Section Caption="How many games will be played in the match?">
-      <Phrase Caption="Over 17,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=17.5"/>
-      <Phrase Caption="Under 17,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=17.5"/>
-      <Phrase Caption="Over 19,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=19.5"/>
-      <Phrase Caption="Under 19,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=19.5"/>
-      <Phrase Caption="Over 20,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=20.5"/>
-      <Phrase Caption="Under 20,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=20.5"/>
-      <Phrase Caption="Over 18,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=18.5"/>
-      <Phrase Caption="Under 18,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=18.5"/>
-      <Phrase Caption="Over 21,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=21.5"/>
-      <Phrase Caption="Under 21,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=21.5"/>
-      <Phrase Caption="Over 16,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=16.5"/>
-      <Phrase Caption="Under 16,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=16.5"/>
-      <Phrase Caption="Over 27,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=27.5"/>
-      <Phrase Caption="Under 27,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=27.5"/>
-      <Phrase Caption="Over 25,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=25.5"/>
-      <Phrase Caption="Under 25,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=25.5"/>
-      <Phrase Caption="Over 37,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=37.5"/>
-      <Phrase Caption="Under 37,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=37.5"/>
-      <Phrase Caption="Over 38,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=38.5"/>
-      <Phrase Caption="Under 38,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=38.5"/>
-      <Phrase Caption="Over 26,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=26.5"/>
-      <Phrase Caption="Under 26,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=26.5"/>
-      <Phrase Caption="Over 39,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=39.5"/>
-      <Phrase Caption="Under 39,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=39.5"/>
-      <Phrase Caption="Over 32,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=32.5"/>
-      <Phrase Caption="Under 32,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=32.5"/>
-      <Phrase Caption="Over 36,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=36.5"/>
-      <Phrase Caption="Under 36,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=36.5"/>
-      <Phrase Caption="Over 34,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=34.5"/>
-      <Phrase Caption="Under 34,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=34.5"/>
-      <Phrase Caption="Over 29,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=29.5"/>
-      <Phrase Caption="Under 29,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=29.5"/>
-      <Phrase Caption="Over 31,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=31.5"/>
-      <Phrase Caption="Under 31,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=31.5"/>
-      <Phrase Caption="Over 30,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=30.5"/>
-      <Phrase Caption="Under 30,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=30.5"/>
-      <Phrase Caption="Over 35,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=35.5"/>
-      <Phrase Caption="Under 35,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=35.5"/>
-      <Phrase Caption="Over 40,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=40.5"/>
-      <Phrase Caption="Under 40,5" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=40.5"/>
+      <Phrase Caption="Over 17,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=17.5"/>
+      <Phrase Caption="Under 17,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=17.5"/>
+      <Phrase Caption="Over 19,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=19.5"/>
+      <Phrase Caption="Under 19,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=19.5"/>
+      <Phrase Caption="Over 20,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=20.5"/>
+      <Phrase Caption="Under 20,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=20.5"/>
+      <Phrase Caption="Over 18,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=18.5"/>
+      <Phrase Caption="Under 18,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=18.5"/>
+      <Phrase Caption="Over 21,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=21.5"/>
+      <Phrase Caption="Under 21,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=21.5"/>
+      <Phrase Caption="Over 16,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=16.5"/>
+      <Phrase Caption="Under 16,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=16.5"/>
+      <Phrase Caption="Over 27,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=27.5"/>
+      <Phrase Caption="Under 27,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=27.5"/>
+      <Phrase Caption="Over 25,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=25.5"/>
+      <Phrase Caption="Under 25,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=25.5"/>
+      <Phrase Caption="Over 37,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=37.5"/>
+      <Phrase Caption="Under 37,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=37.5"/>
+      <Phrase Caption="Over 38,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=38.5"/>
+      <Phrase Caption="Under 38,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=38.5"/>
+      <Phrase Caption="Over 26,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=26.5"/>
+      <Phrase Caption="Under 26,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=26.5"/>
+      <Phrase Caption="Over 39,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=39.5"/>
+      <Phrase Caption="Under 39,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=39.5"/>
+      <Phrase Caption="Over 32,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=32.5"/>
+      <Phrase Caption="Under 32,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=32.5"/>
+      <Phrase Caption="Over 36,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=36.5"/>
+      <Phrase Caption="Under 36,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=36.5"/>
+      <Phrase Caption="Over 34,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=34.5"/>
+      <Phrase Caption="Under 34,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=34.5"/>
+      <Phrase Caption="Over 29,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=29.5"/>
+      <Phrase Caption="Under 29,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=29.5"/>
+      <Phrase Caption="Over 31,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=31.5"/>
+      <Phrase Caption="Under 31,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=31.5"/>
+      <Phrase Caption="Over 30,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=30.5"/>
+      <Phrase Caption="Under 30,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=30.5"/>
+      <Phrase Caption="Over 35,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=35.5"/>
+      <Phrase Caption="Under 35,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=35.5"/>
+      <Phrase Caption="Over 40,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over;Value=40.5"/>
+      <Phrase Caption="Under 40,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under;Value=40.5"/>
     </Section>
     <Section Caption="How many games will Gamer1 win in the first set?">
-      <Phrase Caption="Over 2,5" BetKind="Period=Set1;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=2.5"/>
-      <Phrase Caption="Under 2,5" BetKind="Period=Set1;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=2.5"/>
-      <Phrase Caption="Over 4,5" BetKind="Period=Set1;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=4.5"/>
-      <Phrase Caption="Under 4,5" BetKind="Period=Set1;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=4.5"/>
+      <Phrase Caption="Over 2,5" BetKind="Ways=2;Period=Set1;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="Under 2,5" BetKind="Ways=2;Period=Set1;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=2.5"/>
+      <Phrase Caption="Over 4,5" BetKind="Ways=2;Period=Set1;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=4.5"/>
+      <Phrase Caption="Under 4,5" BetKind="Ways=2;Period=Set1;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=4.5"/>
     </Section>
     <Section Caption="How many games will Gamer1 win in the match?">
-      <Phrase Caption="Over 5,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=5.5"/>
-      <Phrase Caption="Under 5,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=5.5"/>
-      <Phrase Caption="Over 4,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=4.5"/>
-      <Phrase Caption="Under 4,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=4.5"/>
-      <Phrase Caption="Over 10,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=10.5"/>
-      <Phrase Caption="Under 10,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=10.5"/>
-      <Phrase Caption="Over 18,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=18.5"/>
-      <Phrase Caption="Under 18,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=18.5"/>
-      <Phrase Caption="Over 12,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=12.5"/>
-      <Phrase Caption="Under 12,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=12.5"/>
-      <Phrase Caption="Over 15,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=15.5"/>
-      <Phrase Caption="Under 15,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=15.5"/>
+      <Phrase Caption="Over 5,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=5.5"/>
+      <Phrase Caption="Under 5,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=5.5"/>
+      <Phrase Caption="Over 4,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=4.5"/>
+      <Phrase Caption="Under 4,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=4.5"/>
+      <Phrase Caption="Over 10,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=10.5"/>
+      <Phrase Caption="Under 10,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=10.5"/>
+      <Phrase Caption="Over 18,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=18.5"/>
+      <Phrase Caption="Under 18,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=18.5"/>
+      <Phrase Caption="Over 12,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=12.5"/>
+      <Phrase Caption="Under 12,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=12.5"/>
+      <Phrase Caption="Over 15,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=15.5"/>
+      <Phrase Caption="Under 15,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=15.5"/>
+      <Phrase Caption="Over 20,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=20.5"/>
+      <Phrase Caption="Under 20,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=20.5"/>
     </Section>
     <Section Caption="How many games will Gamer2 win in the match?">
-      <Phrase Caption="Over 4,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=4.5"/>
-      <Phrase Caption="Under 4,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=4.5"/>
-      <Phrase Caption="Over 6,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=6.5"/>
-      <Phrase Caption="Under 6,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=6.5"/>
-      <Phrase Caption="Over 10,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=10.5"/>
-      <Phrase Caption="Under 10,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=10.5"/>
-      <Phrase Caption="Over 7,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=7.5"/>
-      <Phrase Caption="Under 7,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=7.5"/>
-      <Phrase Caption="Over 8,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=8.5"/>
-      <Phrase Caption="Under 8,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=8.5"/>
-      <Phrase Caption="Over 15,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=15.5"/>
-      <Phrase Caption="Under 15,5" BetKind="Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=15.5"/>
+      <Phrase Caption="Over 4,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=4.5"/>
+      <Phrase Caption="Under 4,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=4.5"/>
+      <Phrase Caption="Over 6,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=6.5"/>
+      <Phrase Caption="Under 6,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=6.5"/>
+      <Phrase Caption="Over 10,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=10.5"/>
+      <Phrase Caption="Under 10,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=10.5"/>
+      <Phrase Caption="Over 7,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=7.5"/>
+      <Phrase Caption="Under 7,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=7.5"/>
+      <Phrase Caption="Over 8,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=8.5"/>
+      <Phrase Caption="Under 8,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=8.5"/>
+      <Phrase Caption="Over 15,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=15.5"/>
+      <Phrase Caption="Under 15,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=15.5"/>
+      <Phrase Caption="Over 20,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=20.5"/>
+      <Phrase Caption="Under 20,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=20.5"/>
     </Section>
     <Section Caption="Who will win the most games in the match? (player handicap)">
-      <Phrase Caption="Gamer1 +7,5" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=7.5"/>
-      <Phrase Caption="Gamer2 -7,5" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-7.5"/>
-      <Phrase Caption="Gamer1 +1" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=0.5"/>
-      <Phrase Caption="Gamer2 -1" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-1.5"/>
-      <Phrase Caption="Gamer1 -7,5" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-7.5"/>
-      <Phrase Caption="Gamer2 +7,5" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=7.5"/>
-      <Phrase Caption="Gamer1 +3,5" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=3.5"/>
-      <Phrase Caption="Gamer2 -3,5" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-3.5"/>
-      <Phrase Caption="Gamer1 -5,5" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-5.5"/>
-      <Phrase Caption="Gamer2 +5,5" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=5.5"/>
-      <Phrase Caption="Gamer1 -3,5" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-3.5"/>
-      <Phrase Caption="Gamer2 +3,5" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=3.5"/>
-      <Phrase Caption="Gamer1 -8,5" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-8.5"/>
-      <Phrase Caption="Gamer2 +8,5" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=8.5"/>
-      <Phrase Caption="Gamer1 -10,5" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-10.5"/>
-      <Phrase Caption="Gamer2 +10,5" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=10.5"/>
-      <Phrase Caption="Gamer1 +5,5" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=5.5"/>
-      <Phrase Caption="Gamer2 -5,5" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-5.5"/>
-      <Phrase Caption="Gamer1 +8,5" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=8.5"/>
-      <Phrase Caption="Gamer2 -8,5" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-8.5"/>
+      <Phrase Caption="Gamer1 +7,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=7.5"/>
+      <Phrase Caption="Gamer2 -7,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-7.5"/>
+      <Phrase Caption="Gamer1 +1" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=0.5"/>
+      <Phrase Caption="Gamer2 -1" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-1.5"/>
+      <Phrase Caption="Gamer1 -7,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-7.5"/>
+      <Phrase Caption="Gamer2 +7,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=7.5"/>
+      <Phrase Caption="Gamer1 +3,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=3.5"/>
+      <Phrase Caption="Gamer2 -3,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-3.5"/>
+      <Phrase Caption="Gamer1 -5,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-5.5"/>
+      <Phrase Caption="Gamer2 +5,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=5.5"/>
+      <Phrase Caption="Gamer1 -3,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-3.5"/>
+      <Phrase Caption="Gamer2 +3,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=3.5"/>
+      <Phrase Caption="Gamer1 -8,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-8.5"/>
+      <Phrase Caption="Gamer2 +8,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=8.5"/>
+      <Phrase Caption="Gamer1 -10,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-10.5"/>
+      <Phrase Caption="Gamer2 +10,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=10.5"/>
+      <Phrase Caption="Gamer1 +5,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=5.5"/>
+      <Phrase Caption="Gamer2 -5,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-5.5"/>
+      <Phrase Caption="Gamer1 +8,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=8.5"/>
+      <Phrase Caption="Gamer2 -8,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-8.5"/>
+      <Phrase Caption="Gamer1 +4,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=4.5"/>
+      <Phrase Caption="Gamer2 -4,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-4.5"/>
+      <Phrase Caption="Gamer1 +1,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=1.5"/>
+      <Phrase Caption="Gamer2 -1,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-1.5"/>
+      <Phrase Caption="Gamer1 -9,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-9.5"/>
+      <Phrase Caption="Gamer2 +9,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=9.5"/>
     </Section>
     <Section Caption="Will number of games played in the match be odd or even?">
-      <Phrase Caption="Odd" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Odd"/>
-      <Phrase Caption="Even" BetKind="Period=Match;Kind=Total;Subject=Game;Modifier=Even"/>
+      <Phrase Caption="Odd" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Odd"/>
+      <Phrase Caption="Even" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Even"/>
     </Section>
     <Section Caption="How many games will Gamer2 win in the first set?">
-      <Phrase Caption="Over 4,5" BetKind="Period=Set1;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=4.5"/>
-      <Phrase Caption="Under 4,5" BetKind="Period=Set1;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=4.5"/>
-      <Phrase Caption="Over 2,5" BetKind="Period=Set1;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=2.5"/>
-      <Phrase Caption="Under 2,5" BetKind="Period=Set1;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=2.5"/>
+      <Phrase Caption="Over 4,5" BetKind="Ways=2;Period=Set1;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=4.5"/>
+      <Phrase Caption="Under 4,5" BetKind="Ways=2;Period=Set1;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=4.5"/>
+      <Phrase Caption="Over 2,5" BetKind="Ways=2;Period=Set1;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="Under 2,5" BetKind="Ways=2;Period=Set1;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=2.5"/>
     </Section>
     <Section Caption="Will there be a tie-break in the first set?">
-      <Phrase Caption="Yes" BetKind="Period=Set1;Kind=Total;Subject=TieBreak;Modifier=Over;Value=0.5"/>
-      <Phrase Caption="No" BetKind="Period=Set1;Kind=Total;Subject=TieBreak;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="Yes" BetKind="Ways=2;Period=Set1;Kind=Total;Subject=TieBreak;Modifier=Over;Value=0.5"/>
+      <Phrase Caption="No" BetKind="Ways=2;Period=Set1;Kind=Total;Subject=TieBreak;Modifier=Under;Value=0.5"/>
     </Section>
     <Section Caption="Will there be a tie-break in the match?">
-      <Phrase Caption="Yes" BetKind="Period=Match;Kind=Total;Subject=TieBreak;Modifier=Over;Value=0.5"/>
-      <Phrase Caption="No" BetKind="Period=Match;Kind=Total;Subject=TieBreak;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="Yes" BetKind="Ways=2;Period=Match;Kind=Total;Subject=TieBreak;Modifier=Over;Value=0.5"/>
+      <Phrase Caption="No" BetKind="Ways=2;Period=Match;Kind=Total;Subject=TieBreak;Modifier=Under;Value=0.5"/>
     </Section>
   </tennis>  
   <soccer>
     <Section Caption="1x2">
-      <Phrase Caption="Gamer1" BetKind="Period=Match;Kind=Win;Gamer=1;Modifier=Win"/>
-      <Phrase Caption="X" BetKind="Period=Match;Kind=Win;Modifier=Draw"/>
-      <Phrase Caption="Gamer2" BetKind="Period=Match;Kind=Win;Gamer=1;Modifier=Win"/>
+      <Phrase Caption="Gamer1" BetKind="Ways=3;Period=Match;Kind=Win;Gamer=1;Modifier=Win"/>
+      <Phrase Caption="X" BetKind="Ways=3;Period=Match;Kind=Win;Modifier=Draw"/>
+      <Phrase Caption="Gamer2" BetKind="Ways=3;Period=Match;Kind=Win;Gamer=1;Modifier=Win"/>
     </Section>
     <Section Caption="Double chance">
-      <Phrase Caption="Gamer1 or X" BetKind="Period=Match;Kind=Win;Gamer=1;Modifier=NoLose"/>
-      <Phrase Caption="X or Gamer2" BetKind="Period=Match;Kind=Win;Gamer=2;Modifier=NoLose"/>
-      <Phrase Caption="Gamer1 or Gamer2" BetKind="Period=Match;Kind=Win;Modifier=NoDraw"/>
-    <Phrase Caption="X or HJK" BetKind="Modifier=Unknown"/><Phrase Caption="Gamer1 or HJK" BetKind="Modifier=Unknown"/><Phrase Caption="X or Malkia" BetKind="Modifier=Unknown"/><Phrase Caption="Gamer1 or Malkia" BetKind="Modifier=Unknown"/></Section>
+      <Phrase Caption="Gamer1 or X" BetKind="Ways=3;Period=Match;Kind=Win;Gamer=1;Modifier=NoLose"/>
+      <Phrase Caption="X or Gamer2" BetKind="Ways=3;Period=Match;Kind=Win;Gamer=2;Modifier=NoLose"/>
+      <Phrase Caption="Gamer1 or Gamer2" BetKind="Ways=3;Period=Match;Kind=Win;Modifier=NoDraw"/>
+    </Section>
     <Section Caption="How many goals will be scored?">
-      <Phrase Caption="Over 2,5" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=2.5"/>
-      <Phrase Caption="Under 2,5" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=2.5"/>
-      <Phrase Caption="Over 1,5" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=1.5"/>
-      <Phrase Caption="Under 1,5" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=1.5"/>
-      <Phrase Caption="No goal" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=0.5"/>
-      <Phrase Caption="1" BetKind="Ignore"/>
-      <Phrase Caption="2" BetKind="Ignore"/>
-      <Phrase Caption="3" BetKind="Ignore"/>
-      <Phrase Caption="4" BetKind="Ignore"/>
-      <Phrase Caption="5 or more" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=4.5"/>
-      <Phrase Caption="Over 3,5" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=3.5"/>
-      <Phrase Caption="Under 3,5" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=3.5"/>
-      <Phrase Caption="Over 5,5" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=5.5"/>
-      <Phrase Caption="Under 5,5" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=5.5"/>
-      <Phrase Caption="Over 0,5" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=0.5"/>
-      <Phrase Caption="Under 0,5" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=0.5"/>
-      <Phrase Caption="Over 4,5" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=4.5"/>
-      <Phrase Caption="Under 4,5" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=4.5"/>
-      <Phrase Caption="Exactly 1 Goal" BetKind="Ignore"/>
-      <Phrase Caption="Exactly 2 Goals" BetKind="Ignore"/>
-      <Phrase Caption="Exactly 3 Goals" BetKind="Ignore"/>
-      <Phrase Caption="Exactly 4 Goals" BetKind="Ignore"/>
-      <Phrase Caption="Exactly 5 Goals" BetKind="Ignore"/>
-      <Phrase Caption="Exactly 6 Goals" BetKind="Ignore"/>
-      <Phrase Caption="Exactly 7 Goals" BetKind="Ignore"/>
-      <Phrase Caption="8 or more Goals" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=7.5"/>
+      <Phrase Caption="Over 2,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="Under 2,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=2.5"/>
+      <Phrase Caption="Over 1,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=1.5"/>
+      <Phrase Caption="Under 1,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=1.5"/>
+      <Phrase Caption="No goal" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="1" Ignore="1"/>
+      <Phrase Caption="2" Ignore="1"/>
+      <Phrase Caption="3" Ignore="1"/>
+      <Phrase Caption="4" Ignore="1"/>
+      <Phrase Caption="5 or more" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=4.5"/>
+      <Phrase Caption="Over 3,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=3.5"/>
+      <Phrase Caption="Under 3,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=3.5"/>
+      <Phrase Caption="Over 5,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=5.5"/>
+      <Phrase Caption="Under 5,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=5.5"/>
+      <Phrase Caption="Over 0,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=0.5"/>
+      <Phrase Caption="Under 0,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="Over 4,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=4.5"/>
+      <Phrase Caption="Under 4,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=4.5"/>
+      <Phrase Caption="Exactly 1 Goal" Ignore="1"/>
+      <Phrase Caption="Exactly 2 Goals" Ignore="1"/>
+      <Phrase Caption="Exactly 3 Goals" Ignore="1"/>
+      <Phrase Caption="Exactly 4 Goals" Ignore="1"/>
+      <Phrase Caption="Exactly 5 Goals" Ignore="1"/>
+      <Phrase Caption="Exactly 6 Goals" Ignore="1"/>
+      <Phrase Caption="Exactly 7 Goals" Ignore="1"/>
+      <Phrase Caption="8 or more Goals" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=7.5"/>
     </Section>
     <Section Caption="Will the number of goals scored be odd or even? (No goal counts as even)">
-      <Phrase Caption="Even" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Even"/>
-      <Phrase Caption="Odd" BetKind="Period=Match;Kind=Total;Subject=Goal;Modifier=Odd"/>
+      <Phrase Caption="Even" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Even"/>
+      <Phrase Caption="Odd" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Odd"/>
     </Section>
     <Section Caption="Handicap 0:1">
-      <Phrase Caption="Gamer1" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-1.5"/>
-      <Phrase Caption="X" BetKind="Ignore"/>
-      <Phrase Caption="Gamer2" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=1.5"/>
+      <Phrase Caption="Gamer1" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-1.5"/>
+      <Phrase Caption="X" Ignore="1"/>
+      <Phrase Caption="Gamer2" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=1.5"/>
     </Section>
     <Section Caption="Handicap 1:0">
-      <Phrase Caption="Gamer1" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=1.5"/>
-      <Phrase Caption="X" BetKind="Ignore"/>
-      <Phrase Caption="Gamer2" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-1.5"/>
+      <Phrase Caption="Gamer1" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=1.5"/>
+      <Phrase Caption="X" Ignore="1"/>
+      <Phrase Caption="Gamer2" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-1.5"/>
     </Section>
     <Section Caption="Result at half-time">
-      <Phrase Caption="Gamer1" BetKind="Period=Half1;Kind=Win;Gamer=1;Modifier=Win"/>
-      <Phrase Caption="X" BetKind="Period=Half1;Kind=Win;Modifier=Draw"/>
-      <Phrase Caption="Gamer2" BetKind="Period=Half1;Kind=Win;Gamer=2;Modifier=Win"/>
+      <Phrase Caption="Gamer1" BetKind="Ways=3;Period=Half1;Kind=Win;Gamer=1;Modifier=Win"/>
+      <Phrase Caption="X" BetKind="Ways=3;Period=Half1;Kind=Win;Modifier=Draw"/>
+      <Phrase Caption="Gamer2" BetKind="Ways=3;Period=Half1;Kind=Win;Gamer=2;Modifier=Win"/>
     </Section>
     <Section Caption="Halftime double chance">
-      <Phrase Caption="Gamer1 or X" BetKind="Period=Half1;Kind=Win;Gamer=1;Modifier=NoLose"/>
-      <Phrase Caption="X or Gamer2" BetKind="Period=Half1;Kind=Win;Gamer=2;Modifier=NoLose"/>
-      <Phrase Caption="Gamer1 or Gamer2" BetKind="Period=Half1;Kind=Win;Modifier=NoDraw"/>
+      <Phrase Caption="Gamer1 or X" BetKind="Ways=3;Period=Half1;Kind=Win;Gamer=1;Modifier=NoLose"/>
+      <Phrase Caption="X or Gamer2" BetKind="Ways=3;Period=Half1;Kind=Win;Gamer=2;Modifier=NoLose"/>
+      <Phrase Caption="Gamer1 or Gamer2" BetKind="Ways=3;Period=Half1;Kind=Win;Modifier=NoDraw"/>
     </Section>
     <Section Caption="2nd Half Over/Under goals 3,5">
-      <Phrase Caption="Over 3,5" BetKind="Period=Half2;Kind=Total;Subject=Goal;Modifier=Over;Value=3.5"/>
-      <Phrase Caption="Under 3,5" BetKind="Period=Half2;Kind=Total;Subject=Goal;Modifier=Under;Value=3.5"/>
+      <Phrase Caption="Over 3,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Over;Value=3.5"/>
+      <Phrase Caption="Under 3,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Under;Value=3.5"/>
     </Section>
     <Section Caption="How many goals will be scored in the 1st half?">
-      <Phrase Caption="Over 3,5" BetKind="Period=Half1;Kind=Total;Subject=Goal;Modifier=Over;Value=3.5"/>
-      <Phrase Caption="Under 3,5" BetKind="Period=Half1;Kind=Total;Subject=Goal;Modifier=Under;Value=3.5"/>
-      <Phrase Caption="Over 2,5" BetKind="Period=Half1;Kind=Total;Subject=Goal;Modifier=Over;Value=2.5"/>
-      <Phrase Caption="Under 2,5" BetKind="Period=Half1;Kind=Total;Subject=Goal;Modifier=Under;Value=2.5"/>
-      <Phrase Caption="No goal" BetKind="Period=Half1;Kind=Total;Subject=Goal;Modifier=Under;Value=0.5"/>
-      <Phrase Caption="1" BetKind="Ignore"/>
-      <Phrase Caption="2" BetKind="Ignore"/>
-      <Phrase Caption="3 or more" BetKind="Period=Half1;Kind=Total;Subject=Goal;Modifier=Over;Value=2.5"/>
-      <Phrase Caption="Over 0,5" BetKind="Period=Half1;Kind=Total;Subject=Goal;Modifier=Over;Value=0.5"/>
-      <Phrase Caption="Under 0,5" BetKind="Period=Half1;Kind=Total;Subject=Goal;Modifier=Under;Value=0.5"/>
-      <Phrase Caption="Over 1,5" BetKind="Period=Half1;Kind=Total;Subject=Goal;Modifier=Over;Value=1.5"/>
-      <Phrase Caption="Under 1,5" BetKind="Period=Half1;Kind=Total;Subject=Goal;Modifier=Under;Value=1.5"/>
+      <Phrase Caption="Over 3,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Over;Value=3.5"/>
+      <Phrase Caption="Under 3,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Under;Value=3.5"/>
+      <Phrase Caption="Over 2,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="Under 2,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Under;Value=2.5"/>
+      <Phrase Caption="No goal" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="1" Ignore="1"/>
+      <Phrase Caption="2" Ignore="1"/>
+      <Phrase Caption="3 or more" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="Over 0,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Over;Value=0.5"/>
+      <Phrase Caption="Under 0,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="Over 1,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Over;Value=1.5"/>
+      <Phrase Caption="Under 1,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Under;Value=1.5"/>
     </Section>
     <Section Caption="How many goals will be scored in the 2nd half?">
-      <Phrase Caption="Over 2,5" BetKind="Period=Half2;Kind=Total;Subject=Goal;Modifier=Over;Value=2.5"/>
-      <Phrase Caption="Under 2,5" BetKind="Period=Half2;Kind=Total;Subject=Goal;Modifier=Under;Value=2.5"/>
-      <Phrase Caption="Over 0,5" BetKind="Period=Half2;Kind=Total;Subject=Goal;Modifier=Over;Value=0.5"/>
-      <Phrase Caption="Under 0,5" BetKind="Period=Half2;Kind=Total;Subject=Goal;Modifier=Under;Value=0.5"/>
-      <Phrase Caption="Over 1,5" BetKind="Period=Half2;Kind=Total;Subject=Goal;Modifier=Over;Value=1.5"/>
-      <Phrase Caption="Under 1,5" BetKind="Period=Half2;Kind=Total;Subject=Goal;Modifier=Under;Value=1.5"/>
-      <Phrase Caption="No goal" BetKind="Period=Half2;Kind=Total;Subject=Goal;Modifier=Under;Value=0.5"/>
-      <Phrase Caption="1" BetKind="Ignore"/>
-      <Phrase Caption="2" BetKind="Ignore"/>
-      <Phrase Caption="3 or more" BetKind="Period=Half2;Kind=Total;Subject=Goal;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="Over 2,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="Under 2,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Under;Value=2.5"/>
+      <Phrase Caption="Over 0,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Over;Value=0.5"/>
+      <Phrase Caption="Under 0,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="Over 1,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Over;Value=1.5"/>
+      <Phrase Caption="Under 1,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Under;Value=1.5"/>
+      <Phrase Caption="No goal" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="1" Ignore="1"/>
+      <Phrase Caption="2" Ignore="1"/>
+      <Phrase Caption="3 or more" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Over;Value=2.5"/>
     </Section>
     <Section Caption="How many goals will Team 1 score in the 1st half?">
-      <Phrase Caption="No goal" BetKind="Period=Half1;Kind=Total;Subject=Goal;Gamer=1;Modifier=Under;Value=0.5"/>
-      <Phrase Caption="1" BetKind="Ignore"/>
-      <Phrase Caption="2" BetKind="Ignore"/>
-      <Phrase Caption="3 or more" BetKind="Period=Half1;Kind=Total;Subject=Goal;Gamer=1;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="No goal" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Gamer=1;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="1" Ignore="1"/>
+      <Phrase Caption="2" Ignore="1"/>
+      <Phrase Caption="3 or more" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Gamer=1;Modifier=Over;Value=2.5"/>
     </Section>
     <Section Caption="How many goals will Team 1 score in the 2nd half?">
-      <Phrase Caption="No goal" BetKind="Period=Half2;Kind=Total;Subject=Goal;Gamer=1;Modifier=Under;Value=0.5"/>
-      <Phrase Caption="1" BetKind="Ignore"/>
-      <Phrase Caption="2" BetKind="Ignore"/>
-      <Phrase Caption="3 or more" BetKind="Period=Half2;Kind=Total;Subject=Goal;Gamer=1;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="No goal" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Gamer=1;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="1" Ignore="1"/>
+      <Phrase Caption="2" Ignore="1"/>
+      <Phrase Caption="3 or more" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Gamer=1;Modifier=Over;Value=2.5"/>
     </Section>
     <Section Caption="How many goals will Team 1 score?">
-      <Phrase Caption="No goal" BetKind="Period=Match;Kind=Total;Subject=Goal;Gamer=1;Modifier=Under;Value=0.5"/>
-      <Phrase Caption="1" BetKind="Ignore"/>
-      <Phrase Caption="2" BetKind="Ignore"/>
-      <Phrase Caption="3 or more" BetKind="Period=Match;Kind=Total;Subject=Goal;Gamer=1;Modifier=Over;Value=2.5"/>
-      <Phrase Caption="Over 1,5" BetKind="Period=Match;Kind=Total;Subject=Goal;Gamer=1;Modifier=Over;Value=1.5"/>
-      <Phrase Caption="Under 1,5" BetKind="Period=Match;Kind=Total;Subject=Goal;Gamer=1;Modifier=Under;Value=1.5"/>
+      <Phrase Caption="No goal" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Gamer=1;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="1" Ignore="1"/>
+      <Phrase Caption="2" Ignore="1"/>
+      <Phrase Caption="3 or more" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Gamer=1;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="Over 1,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Gamer=1;Modifier=Over;Value=1.5"/>
+      <Phrase Caption="Under 1,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Gamer=1;Modifier=Under;Value=1.5"/>
     </Section>
     <Section Caption="How many goals will Team 2 score in the 1st half?">
-      <Phrase Caption="No goal" BetKind="Period=Half1;Kind=Total;Subject=Goal;Gamer=2;Modifier=Under;Value=0.5"/>
-      <Phrase Caption="1" BetKind="Ignore"/>
-      <Phrase Caption="2" BetKind="Ignore"/>
-      <Phrase Caption="3 or more" BetKind="Period=Half1;Kind=Total;Subject=Goal;Gamer=2;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="No goal" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Gamer=2;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="1" Ignore="1"/>
+      <Phrase Caption="2" Ignore="1"/>
+      <Phrase Caption="3 or more" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Gamer=2;Modifier=Over;Value=2.5"/>
     </Section>
     <Section Caption="How many goals will Team 2 score in the 2nd half?">
-      <Phrase Caption="No goal" BetKind="Period=Half2;Kind=Total;Subject=Goal;Gamer=2;Modifier=Under;Value=0.5"/>
-      <Phrase Caption="1" BetKind="Ignore"/>
-      <Phrase Caption="2" BetKind="Ignore"/>
-      <Phrase Caption="3 or more" BetKind="Period=Half2;Kind=Total;Subject=Goal;Gamer=2;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="No goal" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Gamer=2;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="1" Ignore="1"/>
+      <Phrase Caption="2" Ignore="1"/>
+      <Phrase Caption="3 or more" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Gamer=2;Modifier=Over;Value=2.5"/>
     </Section>
     <Section Caption="How many goals will Team 2 score?">
-      <Phrase Caption="No goal" BetKind="Period=Match;Kind=Total;Subject=Goal;Gamer=2;Modifier=Under;Value=0.5"/>
-      <Phrase Caption="1" BetKind="Ignore"/>
-      <Phrase Caption="2" BetKind="Ignore"/>
-      <Phrase Caption="3 or more" BetKind="Period=Match;Kind=Total;Subject=Goal;Gamer=2;Modifier=Over;Value=2.5"/>
-      <Phrase Caption="Over 1,5" BetKind="Period=Match;Kind=Total;Subject=Goal;Gamer=2;Modifier=Over;Value=1.5"/>
-      <Phrase Caption="Under 1,5" BetKind="Period=Match;Kind=Total;Subject=Goal;Gamer=2;Modifier=Under;Value=1.5"/>
+      <Phrase Caption="No goal" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Gamer=2;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="1" Ignore="1"/>
+      <Phrase Caption="2" Ignore="1"/>
+      <Phrase Caption="3 or more" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Gamer=2;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="Over 1,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Gamer=2;Modifier=Over;Value=1.5"/>
+      <Phrase Caption="Under 1,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Gamer=2;Modifier=Under;Value=1.5"/>
     </Section>
     <Section Caption="Will the number of goals scored in the 1st half be odd or even? (No Goal counts as Even)">
-      <Phrase Caption="Even" BetKind="Period=Half1;Kind=Total;Subject=Goal;Modifier=Even"/>
-      <Phrase Caption="Odd" BetKind="Period=Half1;Kind=Total;Subject=Goal;Modifier=Odd"/>
+      <Phrase Caption="Even" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Even"/>
+      <Phrase Caption="Odd" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Odd"/>
     </Section>
     <Section Caption="Handicap 0:2">
-      <Phrase Caption="Gamer1" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-2.5"/>
-      <Phrase Caption="X" BetKind="Ignore"/>
-      <Phrase Caption="Gamer2" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=2.5"/>
+      <Phrase Caption="Gamer1" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-2.5"/>
+      <Phrase Caption="X" Ignore="1"/>
+      <Phrase Caption="Gamer2" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=2.5"/>
     </Section>
     <Section Caption="Handicap 2:0">
-      <Phrase Caption="Gamer1" BetKind="Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=2.5"/>
-      <Phrase Caption="X" BetKind="Ignore"/>
-      <Phrase Caption="Gamer2" BetKind="Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-2.5"/>
+      <Phrase Caption="Gamer1" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=2.5"/>
+      <Phrase Caption="X" Ignore="1"/>
+      <Phrase Caption="Gamer2" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-2.5"/>
     </Section>
   </soccer>
 </Root>

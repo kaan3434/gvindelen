@@ -72,12 +72,13 @@
             <complexType name="TBet">
                 <simpleContent>
                     <extension base="string">
+                        <attribute name="Ways" type="byte" use="required" />
                         <attribute name="Period" type="string" use="required" />
                         <attribute name="Kind" type="string" use="required" />
                         <attribute name="Subject" type="string" />
                         <attribute name="Gamer" type="string" />
-                        <attribute name="Value" type="string" />
                         <attribute name="Modifier" type="string" />
+                        <attribute name="Value" type="string" />
                         <attribute name="Koef" type="float" />
                     </extension>
                 </simpleContent>

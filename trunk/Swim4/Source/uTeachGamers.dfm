@@ -138,9 +138,9 @@ object frmTeachGamers: TfrmTeachGamers
           Action = actAGamerAdd
         end
         object edAGamerName: TDBEditEh
-          Left = 41
+          Left = 45
           Top = 0
-          Width = 286
+          Width = 400
           Height = 21
           Anchors = [akLeft, akTop, akRight]
           EditButtons = <
@@ -155,13 +155,17 @@ object frmTeachGamers: TfrmTeachGamers
             item
               Action = aUpCaseFirst
               Style = ebsUpDownEh
+            end
+            item
+              Action = actSearchPair
+              Style = ebsMinusEh
             end>
           TabOrder = 0
           Visible = True
           OnChange = edAGamerNameChange
         end
         object lcbCountry: TDBLookupComboboxEh
-          Left = 376
+          Left = 498
           Top = 0
           Width = 89
           Height = 21
@@ -291,6 +295,7 @@ object frmTeachGamers: TfrmTeachGamers
     Top = 56
   end
   object trnRead: TpFIBTransaction
+    Active = True
     DefaultDatabase = dmFormMain.dbSwim
     TimeoutAction = TARollback
     TRParams.Strings = (
@@ -400,6 +405,9 @@ object frmTeachGamers: TfrmTeachGamers
     object actSearchPair: TAction
       Caption = 'actSearchPair'
       OnExecute = actSearchPairExecute
+    end
+    object Action1: TAction
+      Caption = 'Action1'
     end
   end
   object qryCountries: TpFIBDataSet
