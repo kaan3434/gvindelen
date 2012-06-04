@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Root>
   <Sports>
-    <Sport Id="10" Sign="tennis" Title="Теннис" Url="/en/all-events.htm" BookerSign="sup_cat_11"/>
-    <Sport Id="20" Sign="soccer" Title="Футбол" Url="/en/all-events.htm" BookerSign="sup_cat_5"/>
+    <Sport Id="10" Sign="tennis" Title="Теннис" Url="/en/all-events.htm" BookerSign="Tennis"/>
+    <Sport Id="20" Sign="soccer" Title="Футбол" Url="/en/all-events.htm" BookerSign="Football"/>
   </Sports>
  </Root>

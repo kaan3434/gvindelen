@@ -78,7 +78,11 @@
       <Phrase Caption="Under 15,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=15.5"/>
       <Phrase Caption="Over 20,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=20.5"/>
       <Phrase Caption="Under 20,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=20.5"/>
-    <Phrase Caption="Over 14,5" BetKind="Modifier=Unknown"/><Phrase Caption="Under 14,5" BetKind="Modifier=Unknown"/></Section>
+      <Phrase Caption="Over 14,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=14.5"/>
+      <Phrase Caption="Under 14,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=14.5"/>
+      <Phrase Caption="Over 7,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Over;Value=7.5"/>
+      <Phrase Caption="Under 7,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=1;Modifier=Under;Value=7.5"/>
+    </Section>
     <Section Caption="How many games will Gamer2 win in the match?">
       <Phrase Caption="Over 4,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=4.5"/>
       <Phrase Caption="Under 4,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=4.5"/>
@@ -94,6 +98,10 @@
       <Phrase Caption="Under 15,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=15.5"/>
       <Phrase Caption="Over 20,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=20.5"/>
       <Phrase Caption="Under 20,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=20.5"/>
+      <Phrase Caption="Over 12,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=12.5"/>
+      <Phrase Caption="Under 12,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=12.5"/>
+      <Phrase Caption="Over 18,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Over;Value=18.5"/>
+      <Phrase Caption="Under 18,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Gamer=2;Modifier=Under;Value=18.5"/>
     </Section>
     <Section Caption="Who will win the most games in the match? (player handicap)">
       <Phrase Caption="Gamer1 +7,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=7.5"/>
@@ -122,7 +130,15 @@
       <Phrase Caption="Gamer2 -1,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-1.5"/>
       <Phrase Caption="Gamer1 -9,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-9.5"/>
       <Phrase Caption="Gamer2 +9,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=9.5"/>
-    <Phrase Caption="Gamer1 +6,5" BetKind="Modifier=Unknown"/><Phrase Caption="Gamer2 -6,5" BetKind="Modifier=Unknown"/></Section>
+      <Phrase Caption="Gamer1 +6,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=6.5"/>
+      <Phrase Caption="Gamer2 -6,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-6.5"/>
+      <Phrase Caption="Gamer1 -6,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-6.5"/>
+      <Phrase Caption="Gamer2 +6,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=6.5"/>
+      <Phrase Caption="Gamer1 +2,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=2.5"/>
+      <Phrase Caption="Gamer2 -2,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-2.5"/>
+      <Phrase Caption="Gamer1 +9,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=9.5"/>
+      <Phrase Caption="Gamer2 -9,5" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-9.5"/>
+    </Section>
     <Section Caption="Will number of games played in the match be odd or even?">
       <Phrase Caption="Odd" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Odd"/>
       <Phrase Caption="Even" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Even"/>
@@ -141,6 +157,9 @@
       <Phrase Caption="Yes" BetKind="Ways=2;Period=Match;Kind=Total;Subject=TieBreak;Modifier=Over;Value=0.5"/>
       <Phrase Caption="No" BetKind="Ways=2;Period=Match;Kind=Total;Subject=TieBreak;Modifier=Under;Value=0.5"/>
     </Section>
+    <Section Caption="Who will win the fourth Set?">
+      <Phrase Caption="Gamer1" BetKind="Ways=2;Period=Set4;Kind=Win;Gamer=1;Modifier=Win"/>
+    <Phrase Caption="Tomas Berdych (CZE)" BetKind="Modifier=Unknown"/></Section>
   </tennis>  
   <soccer>
     <Section Caption="1x2">
@@ -152,7 +171,7 @@
       <Phrase Caption="Gamer1 or X" BetKind="Ways=3;Period=Match;Kind=Win;Gamer=1;Modifier=NoLose"/>
       <Phrase Caption="X or Gamer2" BetKind="Ways=3;Period=Match;Kind=Win;Gamer=2;Modifier=NoLose"/>
       <Phrase Caption="Gamer1 or Gamer2" BetKind="Ways=3;Period=Match;Kind=Win;Modifier=NoDraw"/>
-    <Phrase Caption="X or HJK" BetKind="Modifier=Unknown"/><Phrase Caption="Gamer1 or HJK" BetKind="Modifier=Unknown"/><Phrase Caption="X or Malkia" BetKind="Modifier=Unknown"/><Phrase Caption="Gamer1 or Malkia" BetKind="Modifier=Unknown"/></Section>
+    </Section>
     <Section Caption="How many goals will be scored?">
       <Phrase Caption="Over 2,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Over;Value=2.5"/>
       <Phrase Caption="Under 2,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Under;Value=2.5"/>
@@ -274,7 +293,7 @@
       <Phrase Caption="3 or more" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Gamer=2;Modifier=Over;Value=2.5"/>
       <Phrase Caption="Over 1,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Gamer=2;Modifier=Over;Value=1.5"/>
       <Phrase Caption="Under 1,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Gamer=2;Modifier=Under;Value=1.5"/>
-    </Section>
+    <Phrase Caption="Poland" BetKind="Modifier=Unknown"/><Phrase Caption="Greece" BetKind="Modifier=Unknown"/><Phrase Caption="Russia" BetKind="Modifier=Unknown"/><Phrase Caption="Czech Republic" BetKind="Modifier=Unknown"/><Phrase Caption="Spain" BetKind="Modifier=Unknown"/><Phrase Caption="Italy" BetKind="Modifier=Unknown"/><Phrase Caption="Croatia" BetKind="Modifier=Unknown"/><Phrase Caption="Republic of Ireland" BetKind="Modifier=Unknown"/><Phrase Caption="Netherlands" BetKind="Modifier=Unknown"/><Phrase Caption="Germany" BetKind="Modifier=Unknown"/><Phrase Caption="Portugal" BetKind="Modifier=Unknown"/><Phrase Caption="Denmark" BetKind="Modifier=Unknown"/></Section>
     <Section Caption="Will the number of goals scored in the 1st half be odd or even? (No Goal counts as Even)">
       <Phrase Caption="Even" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Even"/>
       <Phrase Caption="Odd" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Odd"/>
@@ -289,5 +308,168 @@
       <Phrase Caption="X" Ignore="1"/>
       <Phrase Caption="Gamer2" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-2.5"/>
     </Section>
-  </soccer>
+    <Section Caption="How many corners will be awarded in the 1st half?">
+      <Phrase Caption="Over 4,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Corner;Modifier=Over;Value=4.5"/>
+      <Phrase Caption="Under 4,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Corner;Modifier=Under;Value=4.5"/>
+    </Section>
+    <Section Caption="How many corners will be awarded in the 2nd half?">
+      <Phrase Caption="Over 5,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Corner;Modifier=Over;Value=5.5"/>
+      <Phrase Caption="Under 5,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Corner;Modifier=Under;Value=5.5"/>
+    </Section>
+    <Section Caption="How many corners will be awarded in the match (regular time)?">
+      <Phrase Caption="Over 10,5" BetKind="Ways=2;Period=Regular;Kind=Total;Subject=Corner;Modifier=Over;Value=10.5"/>
+      <Phrase Caption="Under 10,5" BetKind="Ways=2;Period=Regular;Kind=Total;Subject=Corner;Modifier=Under;Value=10.5"/>
+      <Phrase Caption="Over 11,5" BetKind="Ways=2;Period=Regular;Kind=Total;Subject=Corner;Modifier=Over;Value=11.5"/>
+      <Phrase Caption="Under 11,5" BetKind="Ways=2;Period=Regular;Kind=Total;Subject=Corner;Modifier=Under;Value=11.5"/>
+      <Phrase Caption="Over 9,5" BetKind="Ways=2;Period=Regular;Kind=Total;Subject=Corner;Modifier=Over;Value=9.5"/>
+      <Phrase Caption="Under 9,5" BetKind="Ways=2;Period=Regular;Kind=Total;Subject=Corner;Modifier=Under;Value=9.5"/>
+    </Section>
+    <Section Caption="How many corners will Team 1 be awarded in the 1st half?">
+      <Phrase Caption="Over 2,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Corner;Gamer=1;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="Under 2,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Corner;Gamer=1;Modifier=Under;Value=2.5"/>
+    </Section>
+    <Section Caption="How many corners will Team 1 be awarded in the 2nd half?">
+      <Phrase Caption="Over 3,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Corner;Gamer=1;Modifier=Over;Value=3.5"/>
+      <Phrase Caption="Under 3,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Corner;Gamer=1;Modifier=Under;Value=3.5"/>
+    </Section>
+    <Section Caption="How many corners will Team 1 be awarded?">
+      <Phrase Caption="Over 6,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Corner;Gamer=1;Modifier=Over;Value=6.5"/>
+      <Phrase Caption="Under 6,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Corner;Gamer=1;Modifier=Under;Value=6.5"/>
+    </Section>
+    <Section Caption="How many corners will Team 2 be awarded in the 1st half?">
+      <Phrase Caption="Over 2,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Corner;Gamer=2;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="Under 2,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Corner;Gamer=2;Modifier=Under;Value=2.5"/>
+    </Section>
+    <Section Caption="How many corners will Team 2 be awarded in the 2nd half?">
+      <Phrase Caption="Over 2,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Corner;Gamer=2;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="Under 2,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Corner;Gamer=2;Modifier=Under;Value=2.5"/>
+    </Section>
+    <Section Caption="How many corners will Team 2 be awarded?">
+      <Phrase Caption="Over 4,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Corner;Gamer=2;Modifier=Over;Value=4.5"/>
+      <Phrase Caption="Under 4,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Corner;Gamer=2;Modifier=Under;Value=6.5"/>
+    </Section>
+    <Section Caption="How many corners will there be between 0 minutes and 15:00 minutes?" Ignore="1"/>
+    <Section Caption="How many corners will there be between 15:01 minutes and 30:00 minutes?" Ignore="1"/>
+    <Section Caption="How many corners will there be between 30:01 minutes and Half time?" Ignore="1"/>
+    <Section Caption="How many corners will there be between 60:01 minutes and 75:00 minutes?" Ignore="1"/>
+    <Section Caption="How many corners will there be between 75:01 minutes and Full time?" Ignore="1"/>
+    <Section Caption="How many corners will there be between half time and 60:00 minutes?" Ignore="1"/>
+    <Section Caption="Which team will be awarded the 1st corner?" Ignore="1"/>
+    <Section Caption="Which team will be awarded the first corner in the 2nd half?" Ignore="1"/>
+    <Section Caption="Which team will be awarded the last corner?" Ignore="1"/>
+    <Section Caption="Which team will be awarded the most corners?" Ignore="1"/>
+    <Section Caption="Which team will have 3 corners first in the 2nd half?" Ignore="1"/>
+    <Section Caption="Which team will have 3 corners first in the match?" Ignore="1"/>
+    <Section Caption="Which team will have the most corners in the 2nd half?" Ignore="1"/>
+    <Section Caption="Which team will have the with most corners in the 1st half?" Ignore="1"/>
+    <Section Caption="Will there be more corners in the 1st or 2nd half?" Ignore="1"/>
+      <Section Caption="How many red cards will be awarded in the match?">
+      <Phrase Caption="No red card" BetKind="Ways=2;Period=Match;Kind=Total;Subject=RedCard;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="1" Ignore="1"/>
+      <Phrase Caption="2 or more Red Cards" BetKind="Ways=2;Period=Match;Kind=Total;Subject=RedCard;Modifier=Over;Value=1.5"/>
+    </Section>
+    <Section Caption="How many yellow cards will be awarded in the 1st half?">
+      <Phrase Caption="Over 1,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=YellowCard;Modifier=Over;Value=1.5"/>
+      <Phrase Caption="Under 1,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=YellowCard;Modifier=Under;Value=1.5"/>
+    </Section>
+    <Section Caption="How many yellow cards will be awarded in the 2nd half?">
+      <Phrase Caption="Over 2,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=YellowCard;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="Under 2,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=YellowCard;Modifier=Under;Value=2.5"/>
+    </Section>
+    <Section Caption="How many yellow cards will be awarded in the match? (regular time)">
+      <Phrase Caption="Over 4,5" BetKind="Ways=2;Period=Regular;Kind=Total;Subject=YellowCard;Modifier=Over;Value=4.5"/>
+      <Phrase Caption="Under 4,5" BetKind="Ways=2;Period=Regular;Kind=Total;Subject=YellowCard;Modifier=Under;Value=4.5"/>
+      <Phrase Caption="Over 5,5" BetKind="Ways=2;Period=Regular;Kind=Total;Subject=YellowCard;Modifier=Over;Value=5.5"/>
+      <Phrase Caption="Under 5,5" BetKind="Ways=2;Period=Regular;Kind=Total;Subject=YellowCard;Modifier=Under;Value=5.5"/>
+      <Phrase Caption="Over 3,5" BetKind="Ways=2;Period=Regular;Kind=Total;Subject=YellowCard;Modifier=Over;Value=3.5"/>
+      <Phrase Caption="Under 3,5" BetKind="Ways=2;Period=Regular;Kind=Total;Subject=YellowCard;Modifier=Under;Value=3.5"/>
+    </Section>
+    <Section Caption="How many yellow cards will Team 1 receive in the first half?">
+      <Phrase Caption="Over 0,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=YellowCard;Gamer=1;Modifier=Over;Value=0.5"/>
+      <Phrase Caption="Under 0,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=YellowCard;Gamer=1;Modifier=Under;Value=0.5"/>
+    </Section>
+      <Section Caption="How many yellow cards will Team 1 receive in the second half?">
+      <Phrase Caption="Over 0,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=YellowCard;Gamer=1;Modifier=Over;Value=0.5"/>
+      <Phrase Caption="Under 0,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=YellowCard;Gamer=1;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="Over 1,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=YellowCard;Gamer=1;Modifier=Over;Value=1.5"/>
+      <Phrase Caption="Under 1,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=YellowCard;Gamer=1;Modifier=Under;Value=1.5"/>
+    </Section>
+    <Section Caption="How many yellow cards will Team 1 receive?">
+      <Phrase Caption="Over 1,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=YellowCard;Gamer=1;Modifier=Over;Value=1.5"/>
+      <Phrase Caption="Under 1,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=YellowCard;Gamer=1;Modifier=Under;Value=1.5"/>
+      <Phrase Caption="Over 2,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=YellowCard;Gamer=1;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="Under 2,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=YellowCard;Gamer=1;Modifier=Under;Value=2.5"/>
+    </Section>
+      <Section Caption="How many yellow cards will Team 2 receive in the first half?">
+      <Phrase Caption="Over 0,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=YellowCard;Gamer=2;Modifier=Over;Value=0.5"/>
+      <Phrase Caption="Under 0,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=YellowCard;Gamer=2;Modifier=Under;Value=0.5"/>
+      </Section>
+      <Section Caption="How many yellow cards will Team 2 receive in the second half?">
+      <Phrase Caption="Over 1,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=YellowCard;Gamer=2;Modifier=Over;Value=1.5"/>
+      <Phrase Caption="Under 1,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=YellowCard;Gamer=2;Modifier=Under;Value=1.5"/>
+      </Section>
+      <Section Caption="How many yellow cards will Team 2 receive?">
+      <Phrase Caption="Over 2,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=YellowCard;Gamer=2;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="Under 2,5" BetKind="Ways=2;Period=Match;Kind=Total;Subject=YellowCard;Gamer=2;Modifier=Under;Value=2.5"/>
+      </Section>
+      <Section Caption="How many yellow cards will there be between 0 minutes and 15:00 minutes?" Ignore="1"/>
+      <Section Caption="How many yellow cards will there be between 15:01 minutes and 30:00 minutes?" Ignore="1"/>
+      <Section Caption="How many yellow cards will there be between 30:01 minutes and Half Time?" Ignore="1"/>
+      <Section Caption="How many yellow cards will there be between 60:01 minutes and 75:00 minutes?" Ignore="1"/>
+      <Section Caption="How many yellow cards will there be between 75:01 minutes and Full time?" Ignore="1"/>
+      <Section Caption="How many yellow cards will there be between Half Time and 60:00 minutes?" Ignore="1"/>
+      <Section Caption="Which team will collect the most yellow cards in the 2nd half?" Ignore="1"/>
+    <Section Caption="Which team will receive the 1st red card?">
+      <Phrase Caption="Gamer1" Ignore="1"/>
+      <Phrase Caption="Gamer2" Ignore="1"/>
+      <Phrase Caption="Both at the same time" Ignore="1"/>
+      <Phrase Caption="No red card" BetKind="Ways=2;Period=Match;Kind=Total;Subject=RedCard;Modifier=Under;Value=0.5"/>
+    </Section>
+    <Section Caption="Which team will receive the 1st yellow card in the 2nd half?">
+      <Phrase Caption="Gamer1" Ignore="1"/>
+      <Phrase Caption="Gamer2" Ignore="1"/>
+      <Phrase Caption="Both at the same time" Ignore="1"/>
+      <Phrase Caption="No yellow card" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=RedCard;Modifier=Under;Value=0.5"/>
+    </Section>
+    <Section Caption="Which team will receive the 1st yellow card?">
+      <Phrase Caption="Gamer1" Ignore="1"/>
+      <Phrase Caption="Gamer2" Ignore="1"/>
+      <Phrase Caption="Both at the same time" Ignore="1"/>
+      <Phrase Caption="No yellow card" BetKind="Ways=2;Period=Match;Kind=Total;Subject=YellowCard;Modifier=Under;Value=0.5"/>
+    </Section>
+    <Section Caption="Which team will receive the most yellow cards in the first half?" Ignore="1"/>
+    <Section Caption="Which team will receive the most yellow cards?" Ignore="1"/>
+    <Section Caption="Will more yellow cards be awarded in the 1st or 2nd half?" Ignore="1"/>
+    <Section Caption="Will the number of corner kicks be odd or even?">
+      <Phrase Caption="Even" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Corner;Modifier=Even"/>
+      <Phrase Caption="Odd" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Corner;Modifier=Odd"/>
+    </Section>
+      <Section Caption="Will the number of yellow cards be odd or even?">
+      <Phrase Caption="Even" BetKind="Ways=2;Period=Match;Kind=Total;Subject=YellowCard;Modifier=Even"/>
+      <Phrase Caption="Odd" BetKind="Ways=2;Period=Match;Kind=Total;Subject=YellowCard;Modifier=Odd"/>
+    </Section>
+    <Section Caption="Will the number of yellow cards in the 1st half be odd or even?">
+      <Phrase Caption="Even" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=YellowCard;Modifier=Even"/>
+      <Phrase Caption="Odd" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=YellowCard;Modifier=Odd"/>
+    </Section>
+    <Section Caption="Will the total number of corners in the 1st half be odd or even?">
+      <Phrase Caption="Even" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Corner;Modifier=Even"/>
+      <Phrase Caption="Odd" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Corner;Modifier=Odd"/>
+    </Section>
+    <Section Caption="Which team will concede the most goals in the tournament?" Ignore="1"/>
+    <Section Caption="How many corners will be awarded in the tournament? (regular time only)" Ignore="1"/>
+    <Section Caption="How many yellow cards will be awarded in the tournament? (regular time only)" Ignore="1"/>
+    <Section Caption="Will Croatia receive 1 or more red cards in the tournament?" Ignore="1"/>
+    <Section Caption="Will Czech Republic receive 1 or more red cards in the tournament?" Ignore="1"/>
+    <Section Caption="Will Denmark receive 1 or more red cards in the tournament?" Ignore="1"/>
+    <Section Caption="Will Germany receive 1 or more red cards in the tournament?" Ignore="1"/>
+    <Section Caption="Will Greece receive 1 or more red cards in the tournament?" Ignore="1"/>
+    <Section Caption="Will Italy receive 1 or more red cards in the tournament?" Ignore="1"/>
+    <Section Caption="Will Netherlands receive 1 or more red cards in the tournament?" Ignore="1"/>
+    <Section Caption="Will Poland receive 1 or more red cards in the tournament?" Ignore="1"/>
+    <Section Caption="Will Portugal receive 1 or more red cards in the tournament?" Ignore="1"/>
+    <Section Caption="Will Republic of Ireland receive 1 or more red cards in the tournament?" Ignore="1"/>
+    <Section Caption="Will Russia receive 1 or more red cards in the tournament?" Ignore="1"/>
+    <Section Caption="Will Spain receive 1 or more red cards in the tournament?" Ignore="1"/>
+  <Section Caption="&lt;h4&gt;Which team will concede most goals in Euro 2012? - 8:45 PM"/></soccer>
 </Root>

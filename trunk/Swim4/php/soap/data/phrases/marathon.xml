@@ -8,7 +8,7 @@
       <Phrase Caption="Hcap2" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win"/>
       <Phrase Caption="Totalunder" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under"/>
       <Phrase Caption="Totalover" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over"/>
-    </Section>
+     <Phrase Caption="X" BetKind="Modifier=Unknown"/><Phrase Caption="1X" BetKind="Modifier=Unknown"/><Phrase Caption="12" BetKind="Modifier=Unknown"/><Phrase Caption="X2" BetKind="Modifier=Unknown"/></Section>
   </tennis>
   <soccer>
     <Section Caption="Header">

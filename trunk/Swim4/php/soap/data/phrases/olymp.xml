@@ -144,7 +144,11 @@
       <Phrase Caption="Ф2(-3.5)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-3.5"/>
       <Phrase Caption="Ф1(-4)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-4"/>
       <Phrase Caption="Ф2(4)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=4"/>
-    <Phrase Caption="Ф1(-11)" BetKind="Modifier=Unknown"/><Phrase Caption="Ф2(11)" BetKind="Modifier=Unknown"/><Phrase Caption="Ф1(-7)" BetKind="Modifier=Unknown"/><Phrase Caption="Ф2(7)" BetKind="Modifier=Unknown"/></Section>
+      <Phrase Caption="Ф1(-11)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-11"/>
+      <Phrase Caption="Ф2(11)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=11"/>
+      <Phrase Caption="Ф1(-7)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-7"/>
+      <Phrase Caption="Ф2(7)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=7"/>
+    </Section>
   </tennis>
   <soccer>
     <Section Caption="Header">
@@ -251,7 +255,8 @@
       <Phrase Caption="Gamer2 не забьет" Ignore="1"/>
       <Phrase Caption="Гол с 1 по 15 мин: ДА" Ignore="1"/>
       <Phrase Caption="Гол с 1 по 15 мин: НЕТ" Ignore="1"/>
-    <Phrase Caption="Автогол - ДА" BetKind="Modifier=Unknown"/></Section>
+      <Phrase Caption="Автогол - ДА" Ignore="1"/>
+    </Section>
     <Section Caption="Дополнительные форы">
       <Phrase Caption="Ф1(0)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=0"/>
       <Phrase Caption="Ф2(0)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=0"/>
@@ -283,6 +288,12 @@
       <Phrase Caption="пенальти нет" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Penalty;Modifier=Under;Value=0.5"/>
       <Phrase Caption="удаление да" BetKind="Ways=2;Period=Match;Kind=Total;Subject=RedCard;Modifier=Over;Value=0.5"/>
       <Phrase Caption="удаление нет" BetKind="Ways=2;Period=Match;Kind=Total;Subject=RedCard;Modifier=Under;Value=0.5"/>
+    </Section>
+    <Section Caption="Показатели игроков" Ignore="1"/>
+    <Section Caption="Первое" Ignore="1"/>
+    <Section Caption="Углoвые">
+      <Phrase Caption="Угловые тотал: ЧЕТ" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Corner;Modifier=Even"/>
+      <Phrase Caption="Угловые тотал: НЕЧЕТ" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Corner;Modifier=Odd"/>
     </Section>
   </soccer>
 </Root>

@@ -51,6 +51,10 @@ type
     aUpCaseFirst: TAction;
     actSearchPair: TAction;
     Action1: TAction;
+    SpTBXSplitter3: TSpTBXSplitter;
+    DBGridEh1: TDBGridEh;
+    dsOpponents: TDataSource;
+    qryOpponents: TpFIBDataSet;
     procedure actFillEditFormExecute(Sender: TObject);
     procedure trnWriteAfterEnd(EndingTR: TFIBTransaction;
       Action: TTransactionAction; Force: Boolean);

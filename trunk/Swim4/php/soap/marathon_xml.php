@@ -17,7 +17,8 @@ class marathon_booker extends booker_xml {
   
   private function extract_league(&$tournirs_node, $html, $sport_sign) {
     //$html = kill_space($html);
-    $sport = copy_be($html, '<input ', '>', (string)$this->sport_node['BookerSign']);
+    $sport = copy_be($html, '<div', '</div>', 'main-sport-category', '&nbsp;'.(string)$this->sport_node['BookerSign']);
+    $sport = copy_be($sport, '<input ', '>');
     $tournirs = explode(',', copy_between($sport, '[',']'));
     foreach ($tournirs as $tournir_id) {
       $tournir = copy_be($html, '<a ', '</a>', 'displayCategoryData', $tournir_id);

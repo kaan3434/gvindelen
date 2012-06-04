@@ -49,7 +49,7 @@ object frmTeachGamers: TfrmTeachGamers
       object gridAGamers: TDBGridEh
         Left = 0
         Top = 40
-        Width = 792
+        Width = 467
         Height = 275
         Align = alClient
         AutoFitColWidths = True
@@ -138,7 +138,7 @@ object frmTeachGamers: TfrmTeachGamers
           Action = actAGamerAdd
         end
         object edAGamerName: TDBEditEh
-          Left = 45
+          Left = 41
           Top = 0
           Width = 400
           Height = 21
@@ -165,7 +165,7 @@ object frmTeachGamers: TfrmTeachGamers
           OnChange = edAGamerNameChange
         end
         object lcbCountry: TDBLookupComboboxEh
-          Left = 498
+          Left = 490
           Top = 0
           Width = 89
           Height = 21
@@ -180,6 +180,56 @@ object frmTeachGamers: TfrmTeachGamers
           TabOrder = 1
           Visible = True
           OnChange = lcbCountryChange
+        end
+      end
+      object SpTBXSplitter3: TSpTBXSplitter
+        Left = 467
+        Top = 40
+        Height = 275
+        Cursor = crSizeWE
+        Align = alRight
+        ExplicitLeft = 528
+        ExplicitTop = 184
+        ExplicitHeight = 100
+      end
+      object DBGridEh1: TDBGridEh
+        Left = 472
+        Top = 40
+        Width = 320
+        Height = 275
+        Align = alRight
+        AutoFitColWidths = True
+        Color = clBtnFace
+        DataGrouping.GroupLevels = <>
+        DataSource = dsOpponents
+        Flat = False
+        FooterColor = clWindow
+        FooterFont.Charset = DEFAULT_CHARSET
+        FooterFont.Color = clWindowText
+        FooterFont.Height = -11
+        FooterFont.Name = 'Tahoma'
+        FooterFont.Style = []
+        IndicatorOptions = [gioShowRowIndicatorEh]
+        TabOrder = 4
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
+        Columns = <
+          item
+            EditButtons = <>
+            FieldName = 'ATOURNIR_NAME'
+            Footers = <>
+            Width = 100
+          end
+          item
+            EditButtons = <>
+            FieldName = 'AGAMER_NAME'
+            Footers = <>
+            Width = 100
+          end>
+        object RowDetailData: TRowDetailPanelControlEh
         end
       end
     end
@@ -444,6 +494,33 @@ object frmTeachGamers: TfrmTeachGamers
     Transaction = trnRead
     Database = dmFormMain.dbSwim
     Left = 40
+    Top = 208
+  end
+  object dsOpponents: TDataSource
+    AutoEdit = False
+    DataSet = qryOpponents
+    Left = 208
+    Top = 208
+  end
+  object qryOpponents: TpFIBDataSet
+    SelectSQL.Strings = (
+      'select *'
+      
+        'from (select ae1.aevent_id, ae1.atournir_id, ae1.agamer2_id agam' +
+        'er_id'
+      'from aevents ae1'
+      'union'
+      'select ae2.aevent_id, ae2.atournir_id, ae2.agamer1_id'
+      'from aevents ae2) ae'
+      'inner join atournirs t on (t.atournir_id = ae.atournir_id)'
+      'inner join agamers g on (g.agamer_id = ae.agamer_id)'
+      'where ae.agamer_id = :agamer_id')
+    Active = True
+    Transaction = trnRead
+    Database = dmFormMain.dbSwim
+    UpdateTransaction = dmFormMain.trnWrite
+    DataSource = dsAGamers
+    Left = 136
     Top = 208
   end
 end
