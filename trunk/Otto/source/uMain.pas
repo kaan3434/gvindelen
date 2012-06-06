@@ -101,7 +101,6 @@ type
     btn8: TTBXItem;
     btn9: TTBXItem;
     tmrImportMessages: TTimer;
-    frxReport: TfrxReport;
     actInstallPatch: TAction;
     scrptUpdate: TpFIBScripter;
     btn10: TTBXItem;
@@ -142,7 +141,6 @@ type
     btnImportInfo2Pay: TTBXItem;
     actExportPrePacklist: TAction;
     btnPrePackList: TTBXItem;
-    frxInvoice: TfrxReport;
     btnCleanUp: TTBXItem;
     actDBClean: TAction;
     actMoneyBackBank: TAction;
@@ -152,6 +150,7 @@ type
     actMoneyBackAccount: TAction;
     actReestrReturns: TAction;
     btn16: TTBXItem;
+    frxReport: TfrxReport;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);

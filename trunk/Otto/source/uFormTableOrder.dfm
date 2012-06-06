@@ -980,6 +980,7 @@ inherited FormTableOrders: TFormTableOrders
     ShowProgress = False
     OverwritePrompt = False
     EmbeddedFonts = True
+    OpenAfterExport = True
     PrintOptimized = False
     Outline = False
     Background = False

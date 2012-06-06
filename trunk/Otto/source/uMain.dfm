@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 347
-  Top = 316
+  Left = 657
+  Top = 383
   Width = 845
   Height = 512
   Caption = 'PPZ'
@@ -1547,25 +1547,6 @@ object MainForm: TMainForm
     Left = 512
     Top = 72
   end
-  object frxReport: TfrxReport
-    Version = '4.9.64'
-    DotMatrixReport = False
-    IniFile = '\Software\Fast Reports'
-    PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
-    PreviewOptions.MDIChild = True
-    PreviewOptions.Modal = False
-    PreviewOptions.ShowCaptions = True
-    PreviewOptions.Zoom = 1.000000000000000000
-    PreviewOptions.ZoomMode = zmManyPages
-    PrintOptions.Printer = 'Default'
-    PrintOptions.PrintOnSheet = 0
-    ReportOptions.CreateDate = 41052.470927870400000000
-    ReportOptions.LastChange = 41052.579964861100000000
-    ScriptLanguage = 'PascalScript'
-    StoreInDFM = False
-    Left = 352
-    Top = 96
-  end
   object scrptUpdate: TpFIBScripter
     Database = dmOtto.dbOtto
     Transaction = trnWrite
@@ -1869,23 +1850,23 @@ object MainForm: TMainForm
     Left = 408
     Top = 144
   end
-  object frxInvoice: TfrxReport
+  object frxReport: TfrxReport
     Version = '4.9.64'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
+    PreviewOptions.AllowEdit = False
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
     PreviewOptions.MDIChild = True
-    PreviewOptions.Modal = False
     PreviewOptions.ShowCaptions = True
     PreviewOptions.Zoom = 1.000000000000000000
     PreviewOptions.ZoomMode = zmManyPages
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
-    ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 40939.979501435170000000
+    ReportOptions.CreateDate = 41052.470927870400000000
+    ReportOptions.LastChange = 41052.579964861100000000
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
     Left = 352
-    Top = 200
+    Top = 96
   end
 end

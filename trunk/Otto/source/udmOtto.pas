@@ -39,7 +39,7 @@ type
     errHandler: TpFibErrorHandler;
     frxProtocol: TfrxReport;
     frxFIBComponents1: TfrxFIBComponents;
-    frxExportPDF: TfrxPDFExport;
+    frxPDFExport: TfrxPDFExport;
     frxExportXLS: TfrxXLSExport;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
@@ -926,10 +926,17 @@ begin
 end;
 
 procedure TdmOtto.ShowProtocol(aTransaction: TpFIBTransaction; aMessageId: Integer);
+var
+  vFileName: string;
 begin
+  vFileName:= dbOtto.QueryValueAsStr(
+    'select file_name from messages where message_id = :message_id',
+    0, [aMessageId]);
+  frxPDFExport.FileName:= Path['Protocols']+vFileName+'.pdf';
   frxProtocol.LoadFromFile(Path['FastReport']+'protocol.fr3');
   frxProtocol.Variables.Variables['MessageId']:= aMessageId;
-  frxProtocol.ShowReport;
+  frxProtocol.PrepareReport;
+  frxProtocol.Export(frxPDFExport);
 end;
 
 procedure TdmOtto.CleanUp;

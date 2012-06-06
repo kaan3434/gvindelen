@@ -1,14 +1,14 @@
 inherited FrameMoneyBack: TFrameMoneyBack
-  Left = 253
-  Top = 148
-  Width = 942
-  Height = 487
+  Left = 232
+  Top = 152
+  Width = 960
+  Height = 512
   Caption = 'FrameMoneyBack'
   OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 13
   inherited dckTop: TTBXDock
-    Width = 934
+    Width = 952
     Height = 23
     inherited tlBarTop: TTBXToolbar
       object btnMakeReturn: TTBXItem
@@ -17,13 +17,13 @@ inherited FrameMoneyBack: TFrameMoneyBack
     end
   end
   inherited sb: TTBXStatusBar
-    Top = 431
-    Width = 934
+    Top = 456
+    Width = 952
   end
   object grpBankMovement: TJvGroupBox [2]
     Left = 0
-    Top = 174
-    Width = 934
+    Top = 217
+    Width = 952
     Height = 152
     Align = alTop
     Caption = #1040#1090#1088#1080#1073#1091#1090#1099' '#1073#1072#1085#1082#1086#1074#1089#1082#1086#1075#1086' '#1087#1077#1088#1077#1074#1086#1076#1072
@@ -98,8 +98,8 @@ inherited FrameMoneyBack: TFrameMoneyBack
   object grpCommon: TJvGroupBox [3]
     Left = 0
     Top = 23
-    Width = 934
-    Height = 103
+    Width = 952
+    Height = 146
     Align = alTop
     Caption = #1054#1073#1097#1080#1077' '#1072#1090#1088#1080#1073#1091#1090#1099
     TabOrder = 1
@@ -119,14 +119,14 @@ inherited FrameMoneyBack: TFrameMoneyBack
       FocusControl = edBonus
     end
     object edBelPostBarCode: TLabeledEdit
-      Left = 16
-      Top = 40
-      Width = 121
+      Left = 152
+      Top = 104
+      Width = 145
       Height = 21
       EditLabel.Width = 120
       EditLabel.Height = 13
       EditLabel.Caption = #1050#1086#1076' '#1087#1086#1089#1099#1083#1082#1080' '#1041#1077#1083#1055#1086#1095#1090#1099
-      TabOrder = 0
+      TabOrder = 6
     end
     object edPassportNum: TLabeledEdit
       Left = 152
@@ -182,11 +182,25 @@ inherited FrameMoneyBack: TFrameMoneyBack
       Enabled = False
       TabOrder = 5
     end
+    object rgArtReturnKind: TRadioGroup
+      Left = 16
+      Top = 24
+      Width = 129
+      Height = 105
+      Caption = #1042#1080#1076' '#1074#1086#1079#1074#1088#1072#1090#1072
+      Items.Strings = (
+        #1051#1080#1095#1085#1086
+        #1055#1086#1089#1099#1083#1082#1086#1081
+        #1055#1086' '#1079#1072#1103#1074#1083#1077#1085#1080#1102
+        #1053#1077#1074#1086#1089#1090#1088#1077#1073#1086#1074#1072#1085#1085#1099#1081)
+      TabOrder = 0
+      OnClick = rgArtReturnKindClick
+    end
   end
-  object rgReturnKind: TRadioGroup [4]
+  object rgMoneyBackKind: TRadioGroup [4]
     Left = 0
-    Top = 126
-    Width = 934
+    Top = 169
+    Width = 952
     Height = 48
     Align = alTop
     Caption = #1044#1077#1081#1089#1090#1074#1080#1103' '#1089' '#1086#1089#1090#1072#1090#1082#1086#1084
@@ -196,7 +210,7 @@ inherited FrameMoneyBack: TFrameMoneyBack
       #1055#1086#1095#1090#1086#1074#1099#1084' '#1087#1077#1088#1077#1074#1086#1076#1086#1084
       #1041#1072#1085#1082#1086#1074#1089#1082#1080#1084' '#1087#1077#1088#1077#1074#1086#1076#1086#1084' '#1085#1072' '#1089#1095#1077#1090)
     TabOrder = 2
-    OnClick = rgReturnKindClick
+    OnClick = rgMoneyBackKindClick
   end
   inherited trnRead: TpFIBTransaction
     Left = 48
@@ -212,71 +226,7 @@ inherited FrameMoneyBack: TFrameMoneyBack
       OnExecute = actCreateReturnExecute
     end
   end
-  object vldFrame: TJvValidators
-    ErrorIndicator = vldIndicator
-    Left = 48
-    Top = 336
-    object JvRequiredFieldValidator1: TJvRequiredFieldValidator
-      ControlToValidate = edBankAccount
-      PropertyToValidate = 'Text'
-      GroupName = 'BANK'
-      ErrorMessage = #1053#1077' '#1091#1082#1072#1079#1072#1085' 13-'#1079#1085#1072#1095#1085#1099#1081' '#1089#1095#1077#1090
-    end
-    object jvrngvldtr1: TJvRangeValidator
-      ControlToValidate = edBankAccount
-      PropertyToValidate = 'Text'
-      GroupName = 'BANK'
-      MinimumValue = 1000000000000
-      MaximumValue = 9999999999999
-    end
-    object JvRequiredFieldValidator2: TJvRequiredFieldValidator
-      ControlToValidate = edClientAccount
-      PropertyToValidate = 'Text'
-    end
-    object JvRequiredFieldValidator3: TJvRequiredFieldValidator
-      ControlToValidate = edBankName
-      PropertyToValidate = 'Text'
-      GroupName = 'BANK'
-    end
-    object JvRequiredFieldValidator4: TJvRequiredFieldValidator
-      ControlToValidate = edBankMFO
-      PropertyToValidate = 'Text'
-      GroupName = 'BANK'
-    end
-    object JvRequiredFieldValidator5: TJvRequiredFieldValidator
-      ControlToValidate = edBankUNP
-      PropertyToValidate = 'Text'
-      GroupName = 'BANK'
-    end
-    object JvRequiredFieldValidator6: TJvRequiredFieldValidator
-      ControlToValidate = edPersonalNum
-      PropertyToValidate = 'Text'
-      GroupName = 'BANK'
-    end
-    object JvRequiredFieldValidator7: TJvRequiredFieldValidator
-      ControlToValidate = edBelPostBarCode
-      PropertyToValidate = 'Text'
-      GroupName = 'COMMON'
-    end
-    object JvRequiredFieldValidator8: TJvRequiredFieldValidator
-      ControlToValidate = edPassportNum
-      PropertyToValidate = 'Text'
-      GroupName = 'COMMON'
-    end
-    object JvRequiredFieldValidator9: TJvRequiredFieldValidator
-      ControlToValidate = edtPassportIssued
-      PropertyToValidate = 'Value'
-      GroupName = 'COMMON'
-    end
-    object JvRequiredFieldValidator10: TJvRequiredFieldValidator
-      ControlToValidate = edPassportIssuer
-      PropertyToValidate = 'Text'
-      GroupName = 'COMMON'
-    end
-  end
-  object vldIndicator: TJvErrorIndicator
-    ImageIndex = 0
-    Left = 192
-    Top = 342
+  inherited imgList: TPngImageList
+    Top = 192
   end
 end

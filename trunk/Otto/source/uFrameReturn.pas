@@ -25,31 +25,21 @@ type
     edtPassportIssued: TDBDateTimeEditEh;
     lblPasportIssued: TLabel;
     edPassportIssuer: TLabeledEdit;
-    rgReturnKind: TRadioGroup;
+    rgMoneyBackKind: TRadioGroup;
     edBonus: TDBNumberEditEh;
     lblBonus: TLabel;
     chkPayByFirm: TCheckBox;
     btnMakeReturn: TTBXItem;
     actCreateReturn: TAction;
-    vldFrame: TJvValidators;
-    vldIndicator: TJvErrorIndicator;
-    JvRequiredFieldValidator1: TJvRequiredFieldValidator;
-    jvrngvldtr1: TJvRangeValidator;
-    JvRequiredFieldValidator2: TJvRequiredFieldValidator;
-    JvRequiredFieldValidator3: TJvRequiredFieldValidator;
-    JvRequiredFieldValidator4: TJvRequiredFieldValidator;
-    JvRequiredFieldValidator5: TJvRequiredFieldValidator;
-    JvRequiredFieldValidator6: TJvRequiredFieldValidator;
-    JvRequiredFieldValidator7: TJvRequiredFieldValidator;
-    JvRequiredFieldValidator8: TJvRequiredFieldValidator;
-    JvRequiredFieldValidator9: TJvRequiredFieldValidator;
-    JvRequiredFieldValidator10: TJvRequiredFieldValidator;
-    procedure rgReturnKindClick(Sender: TObject);
+    rgArtReturnKind: TRadioGroup;
+    procedure rgMoneyBackKindClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure actCreateReturnExecute(Sender: TObject);
+    procedure rgArtReturnKindClick(Sender: TObject);
   private
     function GetOrderId: Integer;
+    function Valid: Boolean;
     { Private declarations }
   public
     ndOrder: TXmlNode;
@@ -100,7 +90,7 @@ var
   ReturnKind: string;
 begin
   edBelPostBarCode.Text:= GetXmlAttr(ndOrder, 'BELPOST_BAR_CODE');
-  rgReturnKind.ItemIndex:= WordNo(GetXmlAttr(ndOrder, 'MONEYBACK_KIND'), 'LEAVE;BELPOST;BANK', ';');
+  rgMoneyBackKind.ItemIndex:= WordNo(GetXmlAttr(ndOrder, 'MONEYBACK_KIND'), 'LEAVE;BELPOST;BANK', ';');
 
   edPassportNum.Text:= GetXmlAttr(ndClient, 'PASSPORT_NUM');
   edtPassportIssued.Value:= GetXmlAttrValue(ndClient, 'PASSPORT_ISSUED');
@@ -114,9 +104,9 @@ begin
   edPersonalNum.Text:= GetXmlAttr(ndClient, 'PERSONAL_NUM');
 end;
 
-procedure TFrameMoneyBack.rgReturnKindClick(Sender: TObject);
+procedure TFrameMoneyBack.rgMoneyBackKindClick(Sender: TObject);
 begin
-  grpBankMovement.Enabled:= rgReturnKind.ItemIndex = 2;
+  grpBankMovement.Enabled:= rgMoneyBackKind.ItemIndex = 2;
 end;
 
 procedure TFrameMoneyBack.UpdateCaptions;
@@ -131,7 +121,7 @@ var
 begin
   trnWrite.SetSavePoint('OnMoneyBack');
   try
-    SetXmlAttr(ndOrder, 'MONEYBACK_KIND', ExtractWord(rgReturnKind.ItemIndex+1, 'LEAVE;BELPOST;BANK', ';'));
+    SetXmlAttr(ndOrder, 'MONEYBACK_KIND', ExtractWord(rgMoneyBackKind.ItemIndex+1, 'LEAVE;BELPOST;BANK', ';'));
     SetXmlAttr(ndOrder, 'BELPOST_BAR_CODE', edBelPostBarCode.Text);
     SetXmlAttr(ndOrder, 'BONUS_EUR', edBonus.text);
 
@@ -165,16 +155,53 @@ begin
     Key:= 0;
 end;
 
+function TFrameMoneyBack.Valid: Boolean;
+var
+  Msgs: TStringList;
+begin
+  Msgs:= TStringList.Create;
+  try
+    if rgArtReturnKind.ItemIndex = -1 then
+      Msgs.Add('Не узазан Вид возврата');
+    if Length(edPassportNum.Text) <> 9 then
+      Msgs.Add('Неправильно введен номер паспорта');
+    if edtPassportIssued.Value = null then
+      Msgs.Add('Отсутсвует дата выдачи паспорта');
+    if edPassportIssuer.Text = '' then
+      Msgs.Add('Отсутсвует орган, выдавший паспорт');
+    if (rgArtReturnKind.ItemIndex in [1..2]) and (edBelPostBarCode.Text = '') then
+      Msgs.Add('Отсутсвует номер почтового отправления');
+    if rgMoneyBackKind.ItemIndex = -1 then
+      Msgs.Add('Не указано действие с остатком');
+    if rgMoneyBackKind.ItemIndex = 2 then
+    begin
+      if Length(edBankAccount.Text) <> 13 then
+        Msgs.Add('Не верно указан номер счета в банке');
+      if edClientAccount.Text = '' then
+        Msgs.Add('Не указан счет клиента');
+      if edBankName.Text = '' then
+        Msgs.Add('Не указано наименование банка');
+      if edBankMFO.Text = '' then
+        Msgs.Add('Не указано МФО банка');
+      if edBankUNP.Text = '' then
+        Msgs.Add('Не указано УНП банка');
+      if Length(edPersonalNum.Text) <> 14 then
+        Msgs.Add('Не указан личный номер клиента');
+    end;
+    Result:= Msgs.Count = 0;
+    if Msgs.Count> 0 then
+      ShowMessage(Msgs.Text);
+  finally
+    Msgs.Free;
+  end;
+end;
+
 procedure TFrameMoneyBack.actCreateReturnExecute(Sender: TObject);
 var
   MoneyEur: Double;
-  Valid: Boolean;
 begin
   inherited;
   Write;
-  Valid:= vldFrame.Validate('COMMON');
-  if rgReturnKind.ItemIndex = 2 then
-    Valid:= Valid and vldFrame.Validate('BANK');
   if Valid then
   try
     SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'HAVERETURN');
@@ -196,6 +223,11 @@ begin
   except
     trnWrite.Rollback;
   end;
+end;
+
+procedure TFrameMoneyBack.rgArtReturnKindClick(Sender: TObject);
+begin
+  edBelPostBarCode.Enabled:= rgArtReturnKind.ItemIndex in [1..2];
 end;
 
 end.

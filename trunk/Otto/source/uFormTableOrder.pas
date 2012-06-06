@@ -158,7 +158,6 @@ begin
     frxInvoice.LoadFromFile(GetXmlAttr(ndProduct, 'PARTNER_NUMBER', Path['FastReport']+'invoice_', '.fr3'));
     frxInvoice.Variables.Variables['OrderId']:= Format('''%u''', [Integer(OrderId)]);
     frxInvoice.PrepareReport(true);
-    frxInvoice.Export(frxPDFExport);
     // Переносим сумму извещения на заявку
     InvoiceEUR:= trnWrite.DefaultDatabase.QueryValue(
       'select cost_eur from v_order_summary where order_id = :order_id',
@@ -178,7 +177,7 @@ begin
       'INVOICE_EUR_0=NEW.INVOICE_EUR;INVOICE_BYR_0=NEW.INVOICE_BYR');
     SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'INVOICED');
     dmOtto.ActionExecute(trnWrite, ndOrder);
-    frxInvoice.ShowPreparedReport;
+    frxInvoice.Export(frxPDFExport);
   finally
     Xml.Free;
   end;

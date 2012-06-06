@@ -8,7 +8,7 @@ object dmOtto: TdmOtto
   Width = 624
   object dbOtto: TpFIBDatabase
     Connected = True
-    DBName = 'localhost:D:\otto\Data\otto_ppz.fdb'
+    DBName = 'localhost:D:\otto\Data.Etalon\otto_ppz.fdb'
     DBParams.Strings = (
       'lc_ctype=CYRL'
       'user_name=sysdba'
@@ -307,10 +307,12 @@ object dmOtto: TdmOtto
     Left = 432
     Top = 248
   end
-  object frxExportPDF: TfrxPDFExport
+  object frxPDFExport: TfrxPDFExport
+    ShowDialog = False
     UseFileCache = True
-    ShowProgress = True
+    ShowProgress = False
     OverwritePrompt = False
+    OpenAfterExport = True
     PrintOptimized = False
     Outline = False
     Background = False

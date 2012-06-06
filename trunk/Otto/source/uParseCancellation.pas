@@ -66,12 +66,13 @@ begin
         if NewStatusSign = sl[11] then
         begin
           dmOtto.Notify(aMessageId,
-            '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестный DeliveryCode = [CANCEL_CODE]',
+            '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестный DeliveryCode = [CANCEL_MESSAGE]',
             'E',
             XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
             XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
             Value2Vars(LineNo, 'LINE_NO',
-            Strings2Vars(sl, 'CANCEL_MESSAGE=11')))))
+            Strings2Vars(sl, 'CANCEL_MESSAGE=11')))));
+          Exit;
         end;
         SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', NewStatusSign);
 
