@@ -6,14 +6,14 @@
   
 //  $sports = $booker->getSports();
 
-//  $tournirs = $booker->getTournirs(20);
+  $tournirs = $booker->getTournirs(20);
   
-//  foreach($tournirs->Tournirs->children() as $element_name=>$child) {
-//    $tournir_id = (string) $child['Id'];
-//    $events = $booker->getEvents(20, $tournir_id, '');
-//  }
-
-    $tournir_id = '12604';
+  foreach($tournirs->Tournirs->children() as $element_name=>$child) {
+    $tournir_id = (string) $child['Id'];
     $events = $booker->getEvents(20, $tournir_id, '');
+  }
+
+//    $tournir_id = '12604';
+//    $events = $booker->getEvents(20, $tournir_id, '');
   
 ?>

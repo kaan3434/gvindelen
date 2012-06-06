@@ -38,7 +38,9 @@ object Form1: TForm1
         Caption = 'Teacher'
         Page = RibbonPage2
       end>
-    TabIndex = 2
+    TabIndex = 1
+    ExplicitLeft = 8
+    ExplicitTop = 8
     DesignSize = (
       856
       143)
@@ -47,6 +49,23 @@ object Form1: TForm1
       ActionManager = actMngRibbon
       OptionItems = <>
       RecentItems = <>
+    end
+    object RibbonPage2: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 855
+      Height = 93
+      Caption = 'Teacher'
+      Index = 2
+      object RibbonGroup1: TRibbonGroup
+        Left = 4
+        Top = 3
+        Width = 100
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = 'Categories'
+        GroupIndex = 0
+      end
     end
     object RibbonPageScaner: TRibbonPage
       Left = 0
@@ -82,23 +101,6 @@ object Form1: TForm1
         GroupIndex = 0
       end
     end
-    object RibbonPage2: TRibbonPage
-      Left = 0
-      Top = 50
-      Width = 855
-      Height = 93
-      Caption = 'Teacher'
-      Index = 2
-      object RibbonGroup1: TRibbonGroup
-        Left = 4
-        Top = 3
-        Width = 100
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = 'Categories'
-        GroupIndex = 0
-      end
-    end
   end
   object StatusBar1: TStatusBar
     Left = 0
@@ -115,6 +117,58 @@ object Form1: TForm1
     Height = 17
     Align = alBottom
     TabOrder = 2
+  end
+  object dckLeft: TSpTBXMultiDock
+    Left = 0
+    Top = 143
+    Width = 9
+    Height = 249
+  end
+  object dckRight: TSpTBXMultiDock
+    Left = 847
+    Top = 143
+    Width = 9
+    Height = 249
+    Position = dpxRight
+    ExplicitLeft = 9
+  end
+  object pnlSwims: TSpTBXDockablePanel
+    Left = 9
+    Top = 143
+    Width = 838
+    Height = 249
+    Caption = #1042#1080#1083#1082#1080
+    Align = alClient
+    TabOrder = 5
+    Options.Close = False
+    ExplicitLeft = 360
+    ExplicitTop = 264
+    ExplicitWidth = 160
+    ExplicitHeight = 128
+    object DBGridEh1: TDBGridEh
+      Left = 0
+      Top = 19
+      Width = 838
+      Height = 230
+      Align = alClient
+      DataGrouping.GroupLevels = <>
+      Flat = True
+      FooterColor = clWindow
+      FooterFont.Charset = DEFAULT_CHARSET
+      FooterFont.Color = clWindowText
+      FooterFont.Height = -11
+      FooterFont.Name = 'Tahoma'
+      FooterFont.Style = []
+      IndicatorOptions = [gioShowRowIndicatorEh]
+      TabOrder = 1
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'Tahoma'
+      TitleFont.Style = []
+      object RowDetailData: TRowDetailPanelControlEh
+      end
+    end
   end
   object actMngRibbon: TActionManager
     ActionBars = <
@@ -927,5 +981,18 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000}
+  end
+  object dsSwim: TDataSource
+    AutoEdit = False
+    DataSet = qrySwim
+    Left = 616
+    Top = 8
+  end
+  object qrySwim: TpFIBDataSet
+    Transaction = dmFormMain.trnRead
+    Database = dmFormMain.dbSwim
+    UpdateTransaction = dmFormMain.trnWrite
+    Left = 664
+    Top = 8
   end
 end

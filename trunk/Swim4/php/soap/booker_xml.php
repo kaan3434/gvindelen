@@ -48,6 +48,9 @@ class booker_xml {
     if (!$sport_node) $sport_node = $this->phrases->addChild($sport_sign);
     foreach($sport_node->children() as $element_name => $child) {
       if ($child['Caption'] == $section) return $child;
+      if ($child['Mask']) {
+        if (preg_match('/^'.(string)$child['Mask'].'$/iU', $section)) return $child;
+      }
     }
     $section_node = $sport_node->addChild('Section');
     $section_node->addAttribute('Caption', $section);
@@ -58,9 +61,13 @@ class booker_xml {
     $section_node = $this->findSection($sport_sign, $section);
     foreach($section_node->children() as $element_name => $child) {
       if ($child['Caption'] == $caption) return $child;
+      if ($child['Mask']) {
+        if (preg_match((string)$child['Mask'], $section)) return $child;
+      }
     }
     $phrase = $section_node->addChild('Phrase');
     $phrase->addAttribute('Caption', $caption);
+    $phrase->addAttribute('Ignore', '1');
     $phrase->addAttribute('BetKind', 'Modifier=Unknown');
     return $phrase;
   }

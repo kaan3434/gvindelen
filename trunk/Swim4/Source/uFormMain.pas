@@ -10,7 +10,8 @@ uses
   Vcl.RibbonActnMenus, Data.Bind.EngExt, Vcl.Bind.DBEngExt, Data.Bind.Components,
   Vcl.StdCtrls, Vcl.ExtCtrls, DBGridEhGrouping, Vcl.ComCtrls, GridsEh, DBGridEh,
   Data.DB, Soap.InvokeRegistry, Soap.Rio, Soap.SOAPHTTPClient, ToolCtrlsEh,
-  GvVars, GvXml, JvComponentBase, JvMTComponents, uDmFormMain, uDmSwim;
+  GvVars, GvXml, JvComponentBase, JvMTComponents, uDmFormMain, uDmSwim, TB2Dock,
+  SpTBXDkPanels, SpTBXItem, FIBDataSet, pFIBDataSet;
 
 type
   TForm1 = class(TForm)
@@ -34,6 +35,12 @@ type
     actTeachTournirs: TAction;
     actTeachEvents: TAction;
     actRunThread: TAction;
+    dckLeft: TSpTBXMultiDock;
+    dckRight: TSpTBXMultiDock;
+    pnlSwims: TSpTBXDockablePanel;
+    DBGridEh1: TDBGridEh;
+    dsSwim: TDataSource;
+    qrySwim: TpFIBDataSet;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure actScanAllBookerExecute(Sender: TObject);

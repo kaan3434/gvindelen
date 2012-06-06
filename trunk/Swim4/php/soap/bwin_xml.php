@@ -195,11 +195,11 @@ class bwin_booker extends booker_xml {
         $row = copy_between($row, '<h3>', '</h3>');
         list($day_no, $month_no, $year_no) = $this->decode_date($row);
       } elseif (in_array($row_class_name, array('def', 'alt'))) {// игроки + время
-        if (preg_match('/<td.*>(<h4>)*?(.+) - (.+)( \(Neutral Venue\))? - (\d{1,2}:\d\d (PM|AM))(.*?)(<\/h4>)*?</Ui', $row, $matches)) {
+        if (preg_match('/<td.*>(<h4>)*?(.+)? - (.+)?( \(Neutral Venue\))? - (\d{1,2}:\d\d (PM|AM))(.*?)(<\/h4>)*?</Ui', $row, $matches)) {
           $gamer1_name = $matches[2];
           $gamer2_name = $matches[3];
           list($hour, $minute) = $this->decode_time($matches[4]);
-        } elseif (preg_match('/<td.*>(<h5>)*?(.+)(<\/h5>)*?</iU', $row, $matches)){
+        } elseif (preg_match('/<td.*>(<h[45]>)*?(.+)(<\/h[45]>)*?</iU', $row, $matches)){
           $phrase = $matches[2];
           $phrase = str_ireplace($gamer1_name, 'Gamer1', $phrase);
           $phrase = str_ireplace($gamer2_name, 'Gamer2', $phrase);
