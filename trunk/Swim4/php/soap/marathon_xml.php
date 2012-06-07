@@ -172,14 +172,17 @@ class marathon_booker extends booker_xml {
           if ($bettype['Kind'] == 'Total') {
             preg_match('/\((.+?)\)<br\/>(.+?)/iU', $cell, $matches);
             if ($matches[2]) {
+              $matches[2] = delete_all($matches[2], '<', '>');
               $this->addBet($event_node, $bettype_str.';Value='.$matches[1].';Koef='.$matches[2]);
             }
           } elseif ($bettype['Kind'] == 'Fora') {
             preg_match('/\(([\+\-]*?)(.+?)\)<br\/>(.+?)/iU', $cell, $matches);
             if ($matches[3]) {
+              $matches[3] = delete_all($matches[3], '<', '>');
               $this->addBet($event_node, $bettype_str.';Value='.$matches[1].$matches[2].';Koef='.$matches[3]);
             }
           } else {
+            $cell = delete_all($cell, '<', '>');
             $this->addBet($event_node, $bettype_str.';Koef='.$cell);
           }
         }

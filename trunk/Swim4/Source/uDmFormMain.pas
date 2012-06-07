@@ -6,10 +6,13 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uDmSwim, FIBDatabase, pFIBDatabase,
-  FIBQuery, pFIBQuery, pFIBStoredProc, GvXml;
+  FIBQuery, pFIBQuery, pFIBStoredProc, GvXml, Data.DB, FIBDataSet, pFIBDataSet;
 
 type
   TdmFormMain = class(TdmSwim)
+    qrySwim: TpFIBDataSet;
+    procedure DataModuleCreate(Sender: TObject);
+    procedure trnReadAfterStart(Sender: TObject);
   private
     { Private declarations }
   public
@@ -25,6 +28,12 @@ uses
   GvVars;
 
 { TdmFormMain }
+
+procedure TdmFormMain.DataModuleCreate(Sender: TObject);
+begin
+  inherited;
+  trnRead.StartTransaction;
+end;
 
 procedure TdmFormMain.SportsRequestAdd(aBooker: TGvXmlNode);
 var
@@ -50,6 +59,12 @@ begin
   finally
     Node.Free;
   end;
+end;
+
+procedure TdmFormMain.trnReadAfterStart(Sender: TObject);
+begin
+  inherited;
+  qrySwim.Open;
 end;
 
 end.

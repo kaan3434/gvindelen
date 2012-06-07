@@ -2,8 +2,8 @@ object Form1: TForm1
   Left = 488
   Top = 110
   Caption = 'Form1'
-  ClientHeight = 428
-  ClientWidth = 856
+  ClientHeight = 508
+  ClientWidth = 899
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,7 +20,7 @@ object Form1: TForm1
   object Ribbon: TRibbon
     Left = 0
     Top = 0
-    Width = 856
+    Width = 899
     Height = 143
     ActionManager = actMngRibbon
     ApplicationMenu.Menu = RibbonApplicationMenuBar1
@@ -39,10 +39,9 @@ object Form1: TForm1
         Page = RibbonPage2
       end>
     TabIndex = 1
-    ExplicitLeft = 8
-    ExplicitTop = 8
+    ExplicitWidth = 856
     DesignSize = (
-      856
+      899
       143)
     StyleName = 'Ribbon - Luna'
     object RibbonApplicationMenuBar1: TRibbonApplicationMenuBar
@@ -50,30 +49,14 @@ object Form1: TForm1
       OptionItems = <>
       RecentItems = <>
     end
-    object RibbonPage2: TRibbonPage
-      Left = 0
-      Top = 50
-      Width = 855
-      Height = 93
-      Caption = 'Teacher'
-      Index = 2
-      object RibbonGroup1: TRibbonGroup
-        Left = 4
-        Top = 3
-        Width = 100
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = 'Categories'
-        GroupIndex = 0
-      end
-    end
     object RibbonPageScaner: TRibbonPage
       Left = 0
       Top = 50
-      Width = 855
+      Width = 898
       Height = 93
       Caption = 'Scanner'
       Index = 0
+      ExplicitWidth = 855
       object tbScannerBookers: TRibbonGroup
         Left = 4
         Top = 3
@@ -84,13 +67,32 @@ object Form1: TForm1
         GroupIndex = 0
       end
     end
+    object RibbonPage2: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 898
+      Height = 93
+      Caption = 'Teacher'
+      Index = 2
+      ExplicitWidth = 855
+      object RibbonGroup1: TRibbonGroup
+        Left = 4
+        Top = 3
+        Width = 100
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = 'Categories'
+        GroupIndex = 0
+      end
+    end
     object RibbonPage1: TRibbonPage
       Left = 0
       Top = 50
-      Width = 855
+      Width = 898
       Height = 93
       Caption = 'Viewer'
       Index = 1
+      ExplicitWidth = 855
       object tbViewerBookers: TRibbonGroup
         Left = 4
         Top = 3
@@ -104,54 +106,60 @@ object Form1: TForm1
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 409
-    Width = 856
+    Top = 489
+    Width = 899
     Height = 19
     Panels = <>
     SimplePanel = True
+    ExplicitTop = 409
+    ExplicitWidth = 856
   end
   object ProgressBar1: TProgressBar
     Left = 0
-    Top = 392
-    Width = 856
+    Top = 472
+    Width = 899
     Height = 17
     Align = alBottom
     TabOrder = 2
+    ExplicitTop = 392
+    ExplicitWidth = 856
   end
   object dckLeft: TSpTBXMultiDock
     Left = 0
     Top = 143
     Width = 9
-    Height = 249
+    Height = 329
+    ExplicitHeight = 249
   end
   object dckRight: TSpTBXMultiDock
-    Left = 847
+    Left = 890
     Top = 143
     Width = 9
-    Height = 249
+    Height = 329
     Position = dpxRight
-    ExplicitLeft = 9
+    ExplicitLeft = 847
+    ExplicitHeight = 249
   end
   object pnlSwims: TSpTBXDockablePanel
     Left = 9
     Top = 143
-    Width = 838
-    Height = 249
+    Width = 881
+    Height = 329
     Caption = #1042#1080#1083#1082#1080
     Align = alClient
     TabOrder = 5
     Options.Close = False
-    ExplicitLeft = 360
-    ExplicitTop = 264
-    ExplicitWidth = 160
-    ExplicitHeight = 128
+    ExplicitWidth = 838
+    ExplicitHeight = 249
     object DBGridEh1: TDBGridEh
       Left = 0
       Top = 19
-      Width = 838
-      Height = 230
+      Width = 881
+      Height = 310
       Align = alClient
+      AutoFitColWidths = True
       DataGrouping.GroupLevels = <>
+      DataSource = dsSwim
       Flat = True
       FooterColor = clWindow
       FooterFont.Charset = DEFAULT_CHARSET
@@ -160,12 +168,93 @@ object Form1: TForm1
       FooterFont.Name = 'Tahoma'
       FooterFont.Style = []
       IndicatorOptions = [gioShowRowIndicatorEh]
+      SumList.Active = True
+      SumList.VirtualRecords = True
       TabOrder = 1
       TitleFont.Charset = DEFAULT_CHARSET
       TitleFont.Color = clWindowText
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = []
+      Columns = <
+        item
+          AutoFitColWidth = False
+          DisplayFormat = 'DD.MM HH:NN'
+          EditButtons = <>
+          FieldName = 'EVENT_DTM'
+          Footers = <>
+          Title.Alignment = taCenter
+          Title.Caption = #1044#1072#1090#1072
+          Width = 64
+        end
+        item
+          EditButtons = <>
+          FieldName = 'AGAMER1_NAME'
+          Footers = <>
+          Width = 150
+        end
+        item
+          EditButtons = <>
+          FieldName = 'BETKIND1_NAME'
+          Footers = <>
+          Width = 100
+        end
+        item
+          EditButtons = <>
+          FieldName = 'KOEF1'
+          Footers = <>
+          Width = 50
+        end
+        item
+          EditButtons = <>
+          FieldName = 'BOOKER1_NAME'
+          Footers = <>
+          Width = 64
+        end
+        item
+          AutoFitColWidth = False
+          EditButtons = <>
+          FieldName = 'VALUTE1_SIGN'
+          Footers = <>
+          Width = 24
+        end
+        item
+          EditButtons = <>
+          FieldName = 'AGAMER2_NAME'
+          Footers = <>
+          Width = 150
+        end
+        item
+          EditButtons = <>
+          FieldName = 'BETKIND2_NAME'
+          Footers = <>
+          Width = 100
+        end
+        item
+          EditButtons = <>
+          FieldName = 'KOEF2'
+          Footers = <>
+          Width = 50
+        end
+        item
+          EditButtons = <>
+          FieldName = 'BOOKER2_NAME'
+          Footers = <>
+          Width = 64
+        end
+        item
+          AutoFitColWidth = False
+          EditButtons = <>
+          FieldName = 'VALUTE2_SIGN'
+          Footers = <>
+          Width = 24
+        end
+        item
+          EditButtons = <>
+          FieldName = 'PROFICIT'
+          Footers = <>
+          Width = 50
+        end>
       object RowDetailData: TRowDetailPanelControlEh
       end
     end
@@ -984,15 +1073,8 @@ object Form1: TForm1
   end
   object dsSwim: TDataSource
     AutoEdit = False
-    DataSet = qrySwim
+    DataSet = dmFormMain.qrySwim
     Left = 616
-    Top = 8
-  end
-  object qrySwim: TpFIBDataSet
-    Transaction = dmFormMain.trnRead
-    Database = dmFormMain.dbSwim
-    UpdateTransaction = dmFormMain.trnWrite
-    Left = 664
     Top = 8
   end
 end

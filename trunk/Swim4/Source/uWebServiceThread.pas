@@ -188,9 +188,9 @@ begin
         Node.Attr['Event_Dtm'].AsDateTime:= Event.DateTime.AsDateTime;
         Node.Attr['BGamer1_Name'].AsString:= Event.Gamer1_Name;
         Node.Attr['BGamer2_Name'].AsString:= Event.Gamer2_Name;
-        dm.EventDetect(Node);
         dm.trnWrite.SetSavePoint('PutEvent');
         try
+          dm.EventDetect(Node);
           if Node.Attr['Ignore_Flg'].AsBooleanDef(false) then
             // Это игнорируемое событие?
           else

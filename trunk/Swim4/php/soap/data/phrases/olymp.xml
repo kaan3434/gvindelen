@@ -256,7 +256,7 @@
       <Phrase Caption="Гол с 1 по 15 мин: ДА" Ignore="1"/>
       <Phrase Caption="Гол с 1 по 15 мин: НЕТ" Ignore="1"/>
       <Phrase Caption="Автогол - ДА" Ignore="1"/>
-    </Section>
+    <Phrase Caption="Автогол - НЕТ" Ignore="1" BetKind="Modifier=Unknown"/></Section>
     <Section Caption="Дополнительные форы">
       <Phrase Caption="Ф1(0)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=0"/>
       <Phrase Caption="Ф2(0)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=0"/>

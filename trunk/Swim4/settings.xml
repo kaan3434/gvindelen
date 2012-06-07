@@ -17,7 +17,6 @@
   </Scaners>
   <Services Default="0">
     <Service Default="0" Url="http://localhost:8080/soap/ScanBooker.php"/>
-    <Service Default="0" Url="http://localhost:8080/soap/ScanBooker.php"/>
   </Services>
 </Settings>
 

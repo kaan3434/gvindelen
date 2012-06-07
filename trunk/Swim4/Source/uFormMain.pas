@@ -40,7 +40,6 @@ type
     pnlSwims: TSpTBXDockablePanel;
     DBGridEh1: TDBGridEh;
     dsSwim: TDataSource;
-    qrySwim: TpFIBDataSet;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure actScanAllBookerExecute(Sender: TObject);
