@@ -51,8 +51,30 @@ function copy_front_withotkey($Html, $FromPos, $KeyChars) {
 }
 
 function copy_be($Html, $Begin, $End, $Contain1=null, $Contain2=null, $Contain3=null) {
-//  $Begin = prepare_ereg_param($Begin);
-//  $BArr = spliti($Begin, $Html);
+  $BArr = explode($Begin, $Html);
+  for ($i=1, $m=count($BArr); $i<$m; $i++) {
+    $s = $BArr[$i];
+    $PSE = strpos($s, $End);
+    if ($PSE === false) continue;
+    $RSt = substr($s, 0, $PSE);
+    if ($Contain1) {
+      $PSC1 = strpos($RSt, $Contain1);
+      if ($PSC1 === false) continue;
+      if ($Contain2) {
+        $PSC2 = strpos($RSt, $Contain2, $PSC1+strlen($Contain1));
+        if ($PSC2 === false) continue;
+        if ($Contain3) {
+          $PSC3 = strpos($RSt, $Contain3, $PSC2+strlen($Contain2));
+          if ($PSC3 === false) continue;
+        }
+      }
+    }
+    return ($Begin.$RSt.$End);
+  }
+  return (null);
+}
+
+function copy_ibe($Html, $Begin, $End, $Contain1=null, $Contain2=null, $Contain3=null) {
   $BArr = explode($Begin, $Html);
   for ($i=1, $m=count($BArr); $i<$m; $i++) {
     $s = $BArr[$i];
@@ -79,14 +101,13 @@ function copy_be($Html, $Begin, $End, $Contain1=null, $Contain2=null, $Contain3=
 function take_be(&$Html, $Begin, $End, $Contain1=null, $Contain2=null, $Contain3=null) {
   $result = copy_be($Html, $Begin, $End, $Contain1, $Contain2, $Contain3);
   $parts = explode($result, $Html, 2);
-//  $Html = str_replace($result, '', $Html);
   $Html = implode('', $parts);
   return $result;
 }    
 
 function copy_between($Html, $Begin, $End, $Contain1=null, $Contain2=null, $Contain3=null) {
-  $Begin = prepare_ereg_param($Begin);
-  $BArr = spliti($Begin, $Html);
+  $Html= str_ireplace($Begin, strtolower($Begin), $Html);
+  $BArr = explode(strtolower($Begin), $Html);
   for ($i=1, $m=count($BArr); $i<$m; $i++) {
     $s = $BArr[$i];
     $PSE = stripos($s, $End);
@@ -142,8 +163,8 @@ function replace_all_contain($Html, $Begin, $End, $New, $Contain) {
 
 function replace_all($Html, $Begin, $End, $New='', $Contain1=null, $Contain2=null, $Contain3=null) {
   $Result = array();  
-  $Begin = prepare_ereg_param($Begin);
-  $BArr = spliti($Begin, $Html);
+  $Html = str_ireplace($Begin, strtolower($Begin), $Html);
+  $BArr = explode(strtolower($Begin), $Html);
   $i = -1;
   foreach ($BArr as $s) {
     $i++;
@@ -193,8 +214,8 @@ function delete_all($Html, $Begin, $End, $Contain1=null, $Contain2=null, $Contai
 
 function extract_all_tags($Html, $Begin, $End, $Contain1=null, $Contain2=null, $Contain3=null) {
   $Result = array();
-  $Begin = prepare_ereg_param($Begin);
-  $BArr = spliti($Begin, $Html);
+  $Html= str_ireplace($Begin, strtolower($Begin), $Html);
+  $BArr = explode(strtolower($Begin), $Html);
   $i = 0;
   foreach ($BArr as $s) {
     if ($i > 0) {
@@ -202,13 +223,13 @@ function extract_all_tags($Html, $Begin, $End, $Contain1=null, $Contain2=null, $
       if ($PSE === false) continue;
       $RSt = substr($s, 0, $PSE);
       if ($Contain1) {
-        $PSC1 = stripos($RSt, $Contain1);
+        $PSC1 = strpos($RSt, $Contain1);
         if ($PSC1 === false) continue;
         if ($Contain2) {
-          $PSC2 = stripos($RSt, $Contain2, $PSC1+strlen($Contain1));
+          $PSC2 = strpos($RSt, $Contain2, $PSC1+strlen($Contain1));
           if ($PSC2 === false) continue;
           if ($Contain3) {
-            $PSC3 = stripos($RSt, $Contain3, $PSC2+strlen($Contain2));
+            $PSC3 = strpos($RSt, $Contain3, $PSC2+strlen($Contain2));
             if ($PSC3 === false) continue;
           }
         }

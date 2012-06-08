@@ -256,7 +256,8 @@
       <Phrase Caption="Гол с 1 по 15 мин: ДА" Ignore="1"/>
       <Phrase Caption="Гол с 1 по 15 мин: НЕТ" Ignore="1"/>
       <Phrase Caption="Автогол - ДА" Ignore="1"/>
-    <Phrase Caption="Автогол - НЕТ" Ignore="1" BetKind="Modifier=Unknown"/></Section>
+      <Phrase Caption="Автогол - НЕТ" Ignore="1"/>
+    </Section>
     <Section Caption="Дополнительные форы">
       <Phrase Caption="Ф1(0)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=0"/>
       <Phrase Caption="Ф2(0)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=0"/>
@@ -279,7 +280,9 @@
       <Phrase Caption="Ф1(2)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=2"/>
       <Phrase Caption="Ф2(-2)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=-2"/>
       <Phrase Caption="Ф1(-4.5)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-4.5"/>
-    <Phrase Caption="Ф1(-3)" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="Ф2(3)" Ignore="1" BetKind="Modifier=Unknown"/></Section>
+      <Phrase Caption="Ф1(-3)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-3"/>
+      <Phrase Caption="Ф2(3)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win;Value=3"/>
+    </Section>
     <Section Caption="Победитель" Ignore="1"/>
     <Section Caption="Проход" Ignore="1"/>
     <Section Caption="Замeны" Ignore="1"/>
@@ -295,5 +298,6 @@
       <Phrase Caption="Угловые тотал: ЧЕТ" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Corner;Modifier=Even"/>
       <Phrase Caption="Угловые тотал: НЕЧЕТ" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Corner;Modifier=Odd"/>
     </Section>
-  <Section Caption="Двойноe условие"><Phrase Caption="12 и тот бол.(2.5)" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="12 и тот мен.(2.5)" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="Х2 и тот бол.(2.5)" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="Х2 и тот мен.(2.5)" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="П2 и тот бол.(2.5)" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="П2 и тот мен.(2.5)" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="ничья и тот. бол.(2.5)" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="ничья и тот. мен.(2.5)" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="1Х и тот. бол.(2.5)" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="1Х и тот. мен.(2.5)" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="П1 и тот бол.(2.5)" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="П1 и тот мен.(2.5)" Ignore="1" BetKind="Modifier=Unknown"/></Section></soccer>
+    <Section Caption="Двойноe условие" Ignore="1"/>
+  </soccer>
 </Root>

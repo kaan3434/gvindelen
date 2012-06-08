@@ -157,29 +157,32 @@ function extract_numbered_tags($Html, $TagName, $Separator, $Contain1="", $Conta
 
 function numbering_tag_count($Html, $TagName, &$TagNo) {
   $TagNo = 0;
-  $Begin = prepare_ereg_param("<$TagName");
-  $End = prepare_ereg_param("</$TagName");
+  $Begin = strtolower("<$TagName");
+  $End = strtolower("</$TagName");
+  $Html = str_ireplace("<$TagName", $Begin, $Html);
+  $Html = str_ireplace("</$TagName", $End, $Html);
+  $TagName = strtolower($TagName);
   do {
     $BArr = null;
-    $BArr = spliti($Begin, $Html);
+    $BArr = explode($Begin, $Html);
     if (count($BArr) == 1) break;
     for ($i=1, $m=count($BArr); $i<$m; $i++) {
       $s = $BArr[$i];
       if (($s[0] != ' ') and ($s[0] != '>')) continue;
-      $PSE = stripos($s, $End);
+      $PSE = strpos($s, $End);
       if ($PSE === false) continue;
       $TagNo++;
       $TagNoProp = "\tTagNo=\"$TagName$TagNo\"";
-      $EArr = spliti("</$TagName", $s);
+      $EArr = explode($End, $s);
       if (count($EArr) > 1) $EArr[1] = $TagNoProp . $EArr[1];
       $BArr[$i] = $TagNoProp . implode($End, $EArr);
     }
     $Html = implode($Begin, $BArr);
-    $Html = str_ireplace("<$TagName\t", "<|$TagName\t", $Html);
-    $Html = str_ireplace("</$TagName\t", "<|/$TagName\t", $Html);
+    $Html = str_replace("<$TagName\t", "<|$TagName\t", $Html);
+    $Html = str_replace("</$TagName\t", "<|/$TagName\t", $Html);
   } while (true);
-  $Html = str_ireplace("<|$TagName\t", "<$TagName\t", $Html);
-  $Html = str_ireplace("<|/$TagName\t", "</$TagName\t", $Html);
+  $Html = str_replace("<|$TagName\t", "<$TagName\t", $Html);
+  $Html = str_replace("<|/$TagName\t", "</$TagName\t", $Html);
   return ($Html);
 }
 
@@ -191,8 +194,8 @@ function kill_unclassed_tag($Html, $Tag) {
   $Html = numbering_tag_count($Html, $Tag, $TagCount);
   for ($i=1; $i<=$TagCount; $i++) {
     $count = 1;
-    $Html = str_ireplace("<$Tag\tTagNo=\"$Tag$i\">", '', $Html, $count);
-    if ($count == 1) $Html = str_ireplace("</$Tag\tTagNo=\"$Tag$i\">", '', $Html);
+    $Html = str_replace("<$Tag\tTagNo=\"$Tag$i\">", '', $Html, $count);
+    if ($count == 1) $Html = str_replace("</$Tag\tTagNo=\"$Tag$i\">", '', $Html);
   }
   $Html = kill_property($Html, 'TagNo');
   return $Html;
