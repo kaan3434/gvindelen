@@ -1,4 +1,6 @@
 inherited FrameOrder: TFrameOrder
+  Left = 253
+  Top = 114
   Width = 699
   Height = 423
   PixelsPerInch = 96

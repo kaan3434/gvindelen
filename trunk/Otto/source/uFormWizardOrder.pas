@@ -119,6 +119,9 @@ begin
   dmOtto.OrderItemsGet(ndOrderItems, OrderId, trnRead);
   dmOtto.OrderTaxsGet(ndOrderTaxs, OrderId, trnRead);
   dmOtto.OrderMoneysGet(ndOrderMoneys, OrderId, trnRead);
+  Caption:= Format('Заявка %s [ID=%s]',
+                   [GetXmlAttr(ndOrder, 'ORDER_CODE'),
+                    GetXmlAttr(ndOrder, 'ID')]);
 end;
 
 

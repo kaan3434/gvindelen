@@ -13,7 +13,7 @@ uses
   JvBaseDlg,
   gsFileVersionInfo, JvLogFile, JvProgressDialog,
   frxExportXML,
-  ComCtrls;
+  ComCtrls, TBXExtItems;
 
 type
   TMainForm = class(TForm)
@@ -151,6 +151,8 @@ type
     actReestrReturns: TAction;
     btn16: TTBXItem;
     frxReport: TfrxReport;
+    barInfo: TTBXToolbar;
+    lblBYR2EUR: TTBXLabelItem;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -191,6 +193,7 @@ type
     procedure actMoneyBackBelpostExecute(Sender: TObject);
     procedure actMoneyBackAccountExecute(Sender: TObject);
     procedure actReestrReturnsExecute(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -788,6 +791,12 @@ end;
 procedure TMainForm.actReestrReturnsExecute(Sender: TObject);
 begin
   ReportReturnedOrderItems(trnWrite, frxReport);
+end;
+
+procedure TMainForm.FormActivate(Sender: TObject);
+begin
+  lblBYR2EUR.Caption:= Format('Курс Евро: %s BYR',
+    [dmOtto.SettingGet(trnRead, 'BYR2EUR')]);
 end;
 
 end.

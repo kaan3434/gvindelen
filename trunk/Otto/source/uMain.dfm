@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 657
-  Top = 383
+  Left = 219
+  Top = 154
   Width = 845
   Height = 512
   Caption = 'PPZ'
@@ -15,6 +15,7 @@ object MainForm: TMainForm
   OldCreateOrder = False
   Position = poDesktopCenter
   WindowMenu = Window1
+  OnActivate = FormActivate
   OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
@@ -22,15 +23,16 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 837
-    Height = 47
+    Width = 829
+    Height = 69
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
+      Align = alLeft
       Caption = 'tbrMain'
       DockPos = 0
+      FullSize = True
       Images = imgListMainMenu
-      Stretch = True
       TabOrder = 0
       object btnOrderCreate: TTBXItem
         Action = actOrderCreate
@@ -212,19 +214,27 @@ object MainForm: TMainForm
         Layout = tbxlGlyphTop
       end
     end
+    object barInfo: TTBXToolbar
+      Left = 0
+      Top = 49
+      Caption = 'barInfo'
+      TabOrder = 1
+      object lblBYR2EUR: TTBXLabelItem
+      end
+    end
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 436
-    Width = 837
+    Top = 432
+    Width = 829
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object pbMain: TProgressBar
     Left = 0
-    Top = 419
-    Width = 837
+    Top = 415
+    Width = 829
     Height = 17
     Align = alBottom
     TabOrder = 1

@@ -6,24 +6,24 @@ inherited FrameClient: TFrameClient
   PixelsPerInch = 96
   TextHeight = 13
   inherited dckTop: TTBXDock
-    Width = 1158
+    Width = 1150
   end
   inherited sb: TTBXStatusBar
-    Top = 351
-    Width = 1158
+    Top = 347
+    Width = 1150
   end
   object pnlCenterOnClient: TPanel [2]
     Left = 0
     Top = 26
-    Width = 868
-    Height = 325
+    Width = 860
+    Height = 321
     Align = alClient
     BorderWidth = 4
     TabOrder = 1
     object splitClient: TJvNetscapeSplitter
       Left = 5
-      Top = 165
-      Width = 858
+      Top = 161
+      Width = 850
       Height = 10
       Cursor = crVSplit
       Align = alBottom
@@ -34,8 +34,8 @@ inherited FrameClient: TFrameClient
     object grdClient: TDBGridEh
       Left = 5
       Top = 5
-      Width = 858
-      Height = 160
+      Width = 850
+      Height = 156
       Align = alClient
       AutoFitColWidths = True
       DataGrouping.GroupLevels = <>
@@ -125,8 +125,8 @@ inherited FrameClient: TFrameClient
     end
     object grdClientOrders: TDBGridEh
       Left = 5
-      Top = 175
-      Width = 858
+      Top = 171
+      Width = 850
       Height = 145
       Align = alBottom
       AutoFitColWidths = True
@@ -329,10 +329,10 @@ inherited FrameClient: TFrameClient
     end
   end
   object pnlRightOnClient: TPanel [3]
-    Left = 868
+    Left = 860
     Top = 26
     Width = 290
-    Height = 325
+    Height = 321
     Align = alRight
     BorderWidth = 4
     Constraints.MaxWidth = 290
@@ -491,7 +491,7 @@ inherited FrameClient: TFrameClient
       Left = 5
       Top = 189
       Width = 280
-      Height = 131
+      Height = 127
       Align = alClient
       Caption = 'grBoxAdress'
       TabOrder = 1
@@ -499,7 +499,7 @@ inherited FrameClient: TFrameClient
         Left = 2
         Top = 15
         Width = 276
-        Height = 114
+        Height = 110
         Align = alClient
         AutoSize = False
         BorderStyle = sbsSunken

@@ -42,6 +42,7 @@ type
     btn2: TTBXItem;
     actStore: TAction;
     btn3: TTBXItem;
+    mmoNote: TMemo;
     procedure actSetStateDraftExecute(Sender: TObject);
     procedure actSetStateApprovedExecute(Sender: TObject);
     procedure actStoreExecute(Sender: TObject);
@@ -126,6 +127,7 @@ const
 begin
   trnWrite.SetSavePoint('OnSetStatus'+StatusSignNew);
   try
+    SetXmlAttr(ndOrder, 'NOTE', mmoNote.Text);
     SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', StatusSignNew);
     dmOtto.ActionExecute(trnWrite, ndOrder);
     trnWrite.Commit;
@@ -151,6 +153,7 @@ var
   OrderCode: string;
   ndOrderMoney: TXmlNode;
 begin
+  SetXmlAttr(ndOrder, 'NOTE', mmoNote.Text);
   if GetXmlAttrValue(ndOrder, 'ADRESS_ID') = null then
   begin
     ShowMessage('Не указан адрес клиента');
@@ -172,12 +175,7 @@ begin
       'ORDER_ID=ID');
     BatchMoveFields2(ndOrderMoney, ndAccount,
       'ACCOUNT_ID=ID;AMOUNT_EUR=REST_EUR');
-    if GetXmlAttrValue(ndAccount, 'REST_EUR', 0) < 0 then
-      dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_DEBITORDER',
-        XmlAttrs2Vars(ndAccount, 'ID;AMOUNT_EUR=REST_EUR',
-        XmlAttrs2Vars(ndOrder, 'ORDER_ID=ID')))
-    else
-    if GetXmlAttrValue(ndAccount, 'REST_EUR', 0) > 0 then
+    if GetXmlAttrValue(ndAccount, 'REST_EUR', 0) <> 0 then
       dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_CREDITORDER',
         XmlAttrs2Vars(ndAccount, 'ID;AMOUNT_EUR=REST_EUR',
         XmlAttrs2Vars(ndOrder, 'ORDER_ID=ID')))

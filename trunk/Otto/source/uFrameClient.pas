@@ -169,7 +169,6 @@ begin
   dmOtto.ActionExecute(trnWrite, ndOrder);
   dmOtto.ObjectGet(ndAccount, AccountId, trnWrite);
   dmOtto.ObjectGet(ndClient, ClientId, trnWrite);
-
 end;
 
 procedure TFrameClient.actClientSearchExecute(Sender: TObject);

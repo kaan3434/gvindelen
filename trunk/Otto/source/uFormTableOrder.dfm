@@ -181,7 +181,7 @@ inherited FormTableOrders: TFormTableOrders
             Top = 0
             Width = 778
             Height = 198
-            ActivePage = tsOrderItems
+            ActivePage = tsOrderAttrs
             Align = alClient
             TabOrder = 0
             object tsOrderAttrs: TTabSheet

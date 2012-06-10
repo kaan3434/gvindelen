@@ -172,6 +172,7 @@ begin
     'select m.file_name from messages m where m.message_id = :message_id', 0,
     [aMessageId]);
   MessageId:= aMessageId;
+  Caption:= SourceFileName;
   trnWrite.StartTransaction;
   ParseMessage(SourceFileName);
 end;
