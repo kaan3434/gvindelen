@@ -10,10 +10,15 @@ inherited dmFormMain: TdmFormMain
   object qrySwim: TpFIBDataSet
     SelectSQL.Strings = (
       'SELECT *'
-      'FROM'
-      '    V_SWIMS '
+      'FROM SWIMS S'
+      
+        '  inner join bookers b1 on (b1.booker_id = s.booker1_id and b1.s' +
+        'how_flg = 1)'
+      
+        '  inner join bookers b2 on (b2.booker_id = s.booker2_id and b2.s' +
+        'how_flg = 1)'
+      '  inner join aevents e on (e.aevent_id = s.aevent_id)'
       'ORDER BY PROFICIT, EVENT_DTM')
-    Active = True
     Transaction = trnRead
     Database = dbSwim
     UpdateTransaction = trnWrite
