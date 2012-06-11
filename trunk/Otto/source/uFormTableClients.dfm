@@ -352,8 +352,6 @@ inherited FormTableClients: TFormTableClients
       'order by '
       '  clients.Last_name, clients.First_name, clients.Mid_name'
       '')
-    Transaction = trnNSI
-    UpdateTransaction = trnNSI
   end
   inherited actListMain: TActionList
     object actAccountManualDebit: TAction
@@ -418,8 +416,9 @@ inherited FormTableClients: TFormTableClients
       end>
     Bitmap = {}
   end
-  inherited trnNSI: TpFIBTransaction
+  inherited trnRead: TpFIBTransaction
     Active = True
+    AfterStart = trnReadAfterStart
   end
   object qryAccountMovements: TpFIBDataSet [8]
     SelectSQL.Strings = (
@@ -434,7 +433,6 @@ inherited FormTableClients: TFormTableClients
       'where ao.account_id = :account_id'
       '  '
       'order by accoper_dtm desc')
-    Transaction = trnNSI
     Database = dmOtto.dbOtto
     DataSource = dsMain
     Left = 760
@@ -466,7 +464,7 @@ inherited FormTableClients: TFormTableClients
       'where'
       '    o.CLIENT_ID = :CLIENT_ID')
     Active = True
-    Transaction = trnNSI
+    Transaction = dmOtto.trnAutonomouse
     Database = dmOtto.dbOtto
     DataSource = dsMain
     Left = 760

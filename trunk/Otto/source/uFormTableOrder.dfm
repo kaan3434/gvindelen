@@ -181,7 +181,7 @@ inherited FormTableOrders: TFormTableOrders
             Top = 0
             Width = 778
             Height = 198
-            ActivePage = tsOrderAttrs
+            ActivePage = tsClientAttrs
             Align = alClient
             TabOrder = 0
             object tsOrderAttrs: TTabSheet
@@ -270,18 +270,6 @@ inherited FormTableOrders: TFormTableOrders
                     Visible = False
                   end
                   item
-                    EditButtons = <>
-                    FieldName = 'ORDER_ID'
-                    Footers = <>
-                    Visible = False
-                  end
-                  item
-                    EditButtons = <>
-                    FieldName = 'ARTICLE_ID'
-                    Footers = <>
-                    Visible = False
-                  end
-                  item
                     AutoFitColWidth = False
                     EditButtons = <>
                     FieldName = 'ORDERITEM_INDEX'
@@ -303,6 +291,7 @@ inherited FormTableOrders: TFormTableOrders
                     Footers = <>
                     Title.Alignment = taCenter
                     Title.Caption = #1053#1072#1080#1084#1077#1085#1086#1074#1072#1085#1080#1077
+                    Width = 100
                   end
                   item
                     EditButtons = <>
@@ -310,6 +299,7 @@ inherited FormTableOrders: TFormTableOrders
                     Footers = <>
                     Title.Alignment = taCenter
                     Title.Caption = #1056#1072#1079#1084#1077#1088
+                    Width = 30
                   end
                   item
                     EditButtons = <>
@@ -570,6 +560,48 @@ inherited FormTableOrders: TFormTableOrders
                 end
               end
             end
+            object tsClientAttrs: TTabSheet
+              Caption = #1040#1090#1088#1080#1073#1091#1090#1099' '#1082#1083#1080#1077#1085#1090#1072
+              ImageIndex = 5
+              object grdClientAttrs: TDBGridEh
+                Left = 0
+                Top = 0
+                Width = 770
+                Height = 170
+                Align = alClient
+                DataGrouping.GroupLevels = <>
+                DataSource = dsClientAttrs
+                Flat = True
+                FooterColor = clWindow
+                FooterFont.Charset = DEFAULT_CHARSET
+                FooterFont.Color = clWindowText
+                FooterFont.Height = -11
+                FooterFont.Name = 'MS Sans Serif'
+                FooterFont.Style = []
+                RowDetailPanel.Color = clBtnFace
+                TabOrder = 0
+                TitleFont.Charset = DEFAULT_CHARSET
+                TitleFont.Color = clWindowText
+                TitleFont.Height = -11
+                TitleFont.Name = 'MS Sans Serif'
+                TitleFont.Style = []
+                Columns = <
+                  item
+                    EditButtons = <>
+                    FieldName = 'ATTR_NAME'
+                    Footers = <>
+                    Width = 200
+                  end
+                  item
+                    EditButtons = <>
+                    FieldName = 'O_PARAM_VALUE'
+                    Footers = <>
+                    Width = 300
+                  end>
+                object RowDetailData: TRowDetailPanelControlEh
+                end
+              end
+            end
           end
         end
       end
@@ -641,8 +673,8 @@ inherited FormTableOrders: TFormTableOrders
     CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
     CacheModelOptions.BufferChunks = 100
     AfterScroll = qryMainAfterScroll
-    Transaction = trnNSI
-    UpdateTransaction = trnNSI
+    Transaction = trnRead
+    UpdateTransaction = trnRead
   end
   inherited actListMain: TActionList
     object actSendOrders: TAction
@@ -801,8 +833,15 @@ inherited FormTableOrders: TFormTableOrders
       end>
     Bitmap = {}
   end
-  inherited trnNSI: TpFIBTransaction
+  inherited trnRead: TpFIBTransaction
     Active = True
+    TRParams.Strings = (
+      'write'
+      'isc_tpb_nowait'
+      'read_committed'
+      'rec_version')
+    AfterStart = trnReadAfterStart
+    BeforeEnd = trnReadBeforeEnd
   end
   object qryOrderAttrs: TpFIBDataSet
     SelectSQL.Strings = (
@@ -814,7 +853,7 @@ inherited FormTableOrders: TFormTableOrders
       'where a.attr_sign in ('#39'PRODUCT_NAME'#39', '#39'WEIGHT'#39', '#39'COST_EUR'#39', '
       #39'PREPAID_EUR'#39', '#39'ADRESS_TEXT'#39')'
       'order by a.attr_name')
-    Transaction = trnNSI
+    Transaction = trnRead
     Database = dmOtto.dbOtto
     DataSource = dsMain
     Left = 736
@@ -857,7 +896,7 @@ inherited FormTableOrders: TFormTableOrders
       '  left join statuses ss on (ss.status_id = oi.state_id)'
       'WHERE ORDER_ID = :ORDER_ID'
       'ORDER BY ORDERITEM_ID')
-    Transaction = trnNSI
+    Transaction = trnRead
     Database = dmOtto.dbOtto
     DataSource = dsMain
     Left = 736
@@ -882,7 +921,7 @@ inherited FormTableOrders: TFormTableOrders
       'inner join statuses s on (s.status_id = ot.status_id)'
       'WHERE ot.ORDER_ID = :ORDER_ID'
       'ORDER BY ORDERTAX_ID')
-    Transaction = trnNSI
+    Transaction = trnRead
     Database = dmOtto.dbOtto
     DataSource = dsMain
     Left = 736
@@ -912,7 +951,7 @@ inherited FormTableOrders: TFormTableOrders
       '    FLAG_SIGN_LIST'
       'FROM'
       '    STATUSES ')
-    Transaction = trnNSI
+    Transaction = trnRead
     Database = dmOtto.dbOtto
     Left = 736
     Top = 152
@@ -927,7 +966,7 @@ inherited FormTableOrders: TFormTableOrders
       'FROM accopers ao'
       'where ao.order_id = :order_id'
       'order by ao.accoper_dtm')
-    Transaction = trnNSI
+    Transaction = trnRead
     Database = dmOtto.dbOtto
     DataSource = dsMain
     Left = 736
@@ -980,7 +1019,6 @@ inherited FormTableOrders: TFormTableOrders
     ShowProgress = False
     OverwritePrompt = False
     EmbeddedFonts = True
-    OpenAfterExport = True
     PrintOptimized = False
     Outline = False
     Background = False
@@ -1022,5 +1060,24 @@ inherited FormTableOrders: TFormTableOrders
     DefaultDatabase = dmOtto.dbOtto
     Left = 512
     Top = 144
+  end
+  object qryClientAttrs: TpFIBDataSet
+    SelectSQL.Strings = (
+      'select *'
+      'from object_read('#39'CLIENT'#39', :client_id) oa'
+      
+        'inner join attrs a on (a.attr_sign = oa.o_param_name and a.objec' +
+        't_sign = '#39'CLIENT'#39')')
+    Transaction = trnRead
+    Database = dmOtto.dbOtto
+    DataSource = dsMain
+    Left = 741
+    Top = 351
+  end
+  object dsClientAttrs: TDataSource
+    AutoEdit = False
+    DataSet = qryClientAttrs
+    Left = 813
+    Top = 351
   end
 end

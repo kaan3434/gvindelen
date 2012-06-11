@@ -20,15 +20,15 @@ object BaseNSIForm: TBaseNSIForm
   TextHeight = 13
   object StatusBar: TStatusBar
     Left = 0
-    Top = 498
-    Width = 1008
+    Top = 502
+    Width = 1016
     Height = 19
     Panels = <>
   end
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 1008
+    Width = 1016
     Height = 26
     object tlBarNsiActions: TTBXToolbar
       Left = 0
@@ -40,8 +40,8 @@ object BaseNSIForm: TBaseNSIForm
   object pnlMain: TJvPanel
     Left = 0
     Top = 26
-    Width = 1008
-    Height = 472
+    Width = 1016
+    Height = 476
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
@@ -53,16 +53,16 @@ object BaseNSIForm: TBaseNSIForm
     object grBoxMain: TJvGroupBox
       Left = 5
       Top = 5
-      Width = 998
-      Height = 462
+      Width = 1006
+      Height = 466
       Align = alClient
       Caption = 'grBoxMain'
       TabOrder = 0
       object grdMain: TDBGridEh
         Left = 2
         Top = 15
-        Width = 994
-        Height = 445
+        Width = 1002
+        Height = 449
         Align = alClient
         AutoFitColWidths = True
         DataGrouping.GroupLevels = <>
@@ -101,38 +101,25 @@ object BaseNSIForm: TBaseNSIForm
   end
   object actListMain: TActionList
     Images = imgListMain
-    OnUpdate = actListMainUpdate
     Left = 576
     Top = 16
-    object actEdit: TAction
-      Caption = #1048#1079#1084#1077#1085#1080#1090#1100
-      ImageIndex = 0
-      OnExecute = actEditExecute
-    end
-    object actCommit: TAction
-      Caption = #1055#1088#1080#1085#1103#1090#1100
-      ImageIndex = 1
-      OnExecute = actCommitExecute
-    end
-    object actRollback: TAction
-      Caption = #1054#1090#1084#1077#1085#1080#1090#1100
-      ImageIndex = 2
-      OnExecute = actRollbackExecute
-    end
-    object actWizard: TAction
-      Caption = 'actWizard'
-      ImageIndex = 3
-    end
   end
   object imgListMain: TPngImageList
     PngImages = <>
     Left = 632
     Top = 16
   end
-  object trnNSI: TpFIBTransaction
+  object trnRead: TpFIBTransaction
     DefaultDatabase = dmOtto.dbOtto
     TimeoutAction = TARollback
+    TRParams.Strings = (
+      'read'
+      'nowait'
+      'concurrency')
     MDTTransactionRole = mtrAutoDefine
+    AfterStart = trnReadAfterStart
+    BeforeEnd = trnReadBeforeEnd
+    TPBMode = tpbDefault
     Left = 688
     Top = 16
   end

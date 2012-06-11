@@ -32,6 +32,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure actAccountManualDebitExecute(Sender: TObject);
     procedure actAccountManualCreditExecute(Sender: TObject);
+    procedure trnReadAfterStart(Sender: TObject);
   private
     { Private declarations }
   public
@@ -51,11 +52,7 @@ uses
 procedure TFormTableClients.FormCreate(Sender: TObject);
 begin
   inherited;
-  trnNSI.StartTransaction;
-  qryMain.Open;
-  qryAccountMovements.Open;
-  qryClientOrders.Open;
-  qryAdresses.Open;
+  trnRead.StartTransaction;
   tlBarNsiActions.Visible:= dmOtto.isAdminRole;
 end;
 
@@ -171,6 +168,15 @@ begin
   finally
     DlgManualPayment.Free;
   end;
+end;
+
+procedure TFormTableClients.trnReadAfterStart(Sender: TObject);
+begin
+  inherited;
+  qryMain.Open;
+  qryAccountMovements.Open;
+  qryClientOrders.Open;
+  qryAdresses.Open;
 end;
 
 end.

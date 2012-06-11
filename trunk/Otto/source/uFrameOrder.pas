@@ -52,7 +52,7 @@ var
 implementation
 
 uses
-  udmOtto, GvNativeXml;
+  udmOtto, GvNativeXml, GvStr;
 
 {$R *.dfm}
 
@@ -64,7 +64,12 @@ begin
 end;
 
 procedure TFrameOrder.Read;
+var
+  HasDeleteableFlag: Boolean;
 begin
+  HasDeleteableFlag:= IsWordPresent('DELETEABLE', GetXmlAttr(ndOrder, 'STATUS_FLAG_LIST'), ',');
+  lcbProduct.Enabled:= HasDeleteableFlag;
+  lcbTaxPlan.Enabled:= HasDeleteableFlag;
   lcbProduct.Value:= GetXmlAttrValue(ndOrder, 'PRODUCT_ID',
     qryProducts.Lookup('STATUS_SIGN', 'DEFAULT', 'PRODUCT_ID'));
   lcbTaxPlan.Value:= GetXmlAttrValue(ndOrder, 'TAXPLAN_ID',

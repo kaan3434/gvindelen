@@ -21,21 +21,16 @@ type
     dsMain: TDataSource;
     actListMain: TActionList;
     imgListMain: TPngImageList;
-    actEdit: TAction;
-    actCommit: TAction;
-    actRollback: TAction;
-    actWizard: TAction;
-    trnNSI: TpFIBTransaction;
+    trnRead: TpFIBTransaction;
     tlBarNsiActions: TTBXToolbar;
     trnWrite: TpFIBTransaction;
-    procedure actEditExecute(Sender: TObject);
-    procedure actListMainUpdate(Action: TBasicAction;
-      var Handled: Boolean);
-    procedure actCommitExecute(Sender: TObject);
-    procedure actRollbackExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure trnReadBeforeEnd(EndingTR: TFIBTransaction;
+      Action: TTransactionAction; Force: Boolean);
+    procedure trnReadAfterStart(Sender: TObject);
   private
     { Private declarations }
+    FBookmark: TBookmark;
   public
     { Public declarations }
   end;
@@ -47,34 +42,30 @@ uses
 
 {$R *.dfm}
 
-procedure TBaseNSIForm.actEditExecute(Sender: TObject);
-begin
-  trnNSI.StartTransaction;
-  dsMain.AutoEdit:= True;
-end;
-
-procedure TBaseNSIForm.actListMainUpdate(Action: TBasicAction;
-  var Handled: Boolean);
-begin
-  actEdit.Enabled:= not trnNSI.Active;
-  actCommit.Enabled:= trnNSI.Active;
-  actRollback.Enabled:= trnNSI.Active;
-end;
-
-procedure TBaseNSIForm.actCommitExecute(Sender: TObject);
-begin
-  trnNSI.Commit;
-end;
-
-procedure TBaseNSIForm.actRollbackExecute(Sender: TObject);
-begin
-  trnNSI.Rollback;
-end;
-
 procedure TBaseNSIForm.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
   Action:= caFree;
+end;
+
+procedure TBaseNSIForm.trnReadBeforeEnd(EndingTR: TFIBTransaction;
+  Action: TTransactionAction; Force: Boolean);
+begin
+  FBookmark:= qryMain.GetBookMark;
+  qryMain.DisableControls;
+  qryMain.Close;
+end;
+
+procedure TBaseNSIForm.trnReadAfterStart(Sender: TObject);
+begin
+  qryMain.Open;
+  if Assigned(FBookmark) then
+  begin
+    qryMain.GotoBookmark(FBookmark);
+    qryMain.FreeBookmark(FBookmark);
+    FBookmark:= nil;
+    qryMain.EnableControls;
+  end;
 end;
 
 end.

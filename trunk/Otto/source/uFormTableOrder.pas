@@ -52,6 +52,10 @@ type
     frxPDFExport: TfrxPDFExport;
     frxInvoice: TfrxReport;
     frxFIBComponents1: TfrxFIBComponents;
+    tsClientAttrs: TTabSheet;
+    grdClientAttrs: TDBGridEh;
+    qryClientAttrs: TpFIBDataSet;
+    dsClientAttrs: TDataSource;
     procedure actFilterApprovedExecute(Sender: TObject);
     procedure actFilterAcceptRequestExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -70,6 +74,7 @@ type
     procedure frxInvoiceAfterPrintReport(Sender: TObject);
     procedure grdMainGetCellParams(Sender: TObject; Column: TColumnEh;
       AFont: TFont; var Background: TColor; State: TGridDrawState);
+    procedure trnReadAfterStart(Sender: TObject);
   private
     procedure ApplyFilter(aStatusSign: string);
     { Private declarations }
@@ -111,15 +116,7 @@ end;
 procedure TFormTableOrders.FormCreate(Sender: TObject);
 begin
   inherited;
-  trnNSI.StartTransaction;
-  qryMain.Open;
-  qryOrderAttrs.Open;
-  qryOrderItems.Open;
-  qryOrderTaxs.Open;
-  qryStatuses.Open;
-  qryAccountMovements.Open;
-  qryHistory.Open;
-  qryNextStatus.Open;
+  trnRead.StartTransaction;
   tlBarNsiActions.Visible:= dmOtto.isAdminRole;
 end;
 
@@ -158,6 +155,7 @@ begin
     frxInvoice.LoadFromFile(GetXmlAttr(ndProduct, 'PARTNER_NUMBER', Path['FastReport']+'invoice_', '.fr3'));
     frxInvoice.Variables.Variables['OrderId']:= Format('''%u''', [Integer(OrderId)]);
     frxInvoice.PrepareReport(true);
+    frxInvoice.Export(frxPDFExport);
     // Переносим сумму извещения на заявку
     InvoiceEUR:= trnWrite.DefaultDatabase.QueryValue(
       'select cost_eur from v_order_summary where order_id = :order_id',
@@ -177,7 +175,7 @@ begin
       'INVOICE_EUR_0=NEW.INVOICE_EUR;INVOICE_BYR_0=NEW.INVOICE_BYR');
     SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'INVOICED');
     dmOtto.ActionExecute(trnWrite, ndOrder);
-    frxInvoice.Export(frxPDFExport);
+    frxInvoice.ShowPreparedReport;
   finally
     Xml.Free;
   end;
@@ -197,9 +195,9 @@ begin
   Xml:= TNativeXml.CreateName('ORDER');
   ndOrder:= Xml.Root;
   try
-    dmOtto.ObjectGet(ndOrder, qryMain['ORDER_ID'], trnNSI);
+    dmOtto.ObjectGet(ndOrder, qryMain['ORDER_ID'], trnRead);
     ndClient:= ndOrder.NodeNew('CLIENT');
-    dmOtto.ObjectGet(ndClient, qryMain['CLIENT_ID'], trnNSI);
+    dmOtto.ObjectGet(ndClient, qryMain['CLIENT_ID'], trnRead);
 
     DlgManualPayment.Caption:= 'Ручное зачисление на заявку';
     DlgManualPayment.lblAmountEur.Caption:= 'Сумма, BYR';
@@ -236,11 +234,8 @@ begin
           end
       end;
     end;
-    qryMain.CloseOpen(True);
-    qryAccountMovements.CloseOpen(True);
-    qryOrderItems.CloseOpen(True);
-    qryOrderTaxs.CloseOpen(True);
-    qryOrderAttrs.CloseOpen(True);
+    trnRead.Commit;
+    trnRead.StartTransaction;
   finally
     Xml.Free;
     DlgManualPayment.Free;
@@ -253,6 +248,7 @@ var
   CompName: string;
   i: Integer;
 begin
+  if DataSet.ControlsDisabled then Exit;
   for i:= 0 to subSetStatuses.Count - 1 do
     subSetStatuses.Items[i].Visible:= False;
   if qryNextStatus.Active then
@@ -322,29 +318,28 @@ end;
 
 procedure TFormTableOrders.actDeleteOrderExecute(Sender: TObject);
 var
-  OrderId: variant;
+  OrderCode: variant;
   bm: TBookmark;
 begin
   if MessageDlg('Удалить заявку?', mtConfirmation, [mbOK,mbCancel], 0) = mrOk then
   begin
-    if not trnWrite.Active then
-      trnWrite.StartTransaction;
-    trnWrite.SetSavePoint('BeforeDeleteOrder');
+    trnWrite.StartTransaction;
     try
       bm:= qryMain.GetBookmark;
       qryMain.DisableControls;
       try
-        OrderId:= trnWrite.DefaultDatabase.QueryValue(
-          'delete from orders where order_id = :order_id returning order_id',
-          0, [OrderId], trnWrite);
-        ShowMessage('Заявка удалена');
+        OrderCode:= trnWrite.DefaultDatabase.QueryValueAsStr(
+          'delete from orders where order_id = :order_id returning order_code',
+          0, [qryMain['Order_Id']]);
+        trnWrite.Commit;
+        ShowMessage(Format('Заявка %s удалена', [OrderCode]));
       finally
         qryMain.GotoBookmark(bm);
         qryMain.FreeBookmark(bm);
         qryMain.EnableControls;
       end;
     except
-      trnWrite.RollBackToSavePoint('BeforeDeleteOrder');
+      trnWrite.RollBack;
       ShowMessage('Ошибка при удалении заявки');
     end;
   end;
@@ -406,7 +401,7 @@ begin
   else
     SQL:= '';
   if SQL<>'' then
-    dmOtto.FillComboStrings(Items, nil, SQL, trnNSI);
+    dmOtto.FillComboStrings(Items, nil, SQL, trnRead);
 end;
 
 procedure TFormTableOrders.frxInvoiceAfterPrintReport(Sender: TObject);
@@ -439,6 +434,25 @@ begin
     StatusSign:= grdMain.DataSource.DataSet['STATUS_SIGN'];
     if IsWordPresent(StatusSign, 'ANULLED,CANCELLED', ',') then
       AFont.Color:= clGray;
+  end;
+end;
+
+procedure TFormTableOrders.trnReadAfterStart(Sender: TObject);
+begin
+  inherited;
+  qryMain.DisableControls;
+  try
+    qryMain.Open;
+    qryOrderAttrs.Open;
+    qryOrderItems.Open;
+    qryOrderTaxs.Open;
+    qryStatuses.Open;
+    qryAccountMovements.Open;
+    qryHistory.Open;
+    qryNextStatus.Open;
+    qryClientAttrs.Open;
+  finally
+    qryMain.EnableControls;
   end;
 end;
 
