@@ -37,16 +37,12 @@ type
     FBookers: TGvXmlNode;
     FScaners: TGvXmlNode;
     FServices: TGvXmlNode;
-    function GetNeedScan(BookerId: Integer): Boolean;
-    procedure SetNeedScan(BookerId: Integer; const Value: Boolean);
   public
     constructor Create; override;
     function DefaultService: TGvXmlNode;
     function RandomService: TGvXmlNode;
     property Services: TGvXmlNode read FServices;
     property Bookers: TGvXmlNode read FBookers;
-    property Scaners: TGvXmlNode read FScaners;
-    property ScanerOn[BookerId: Integer]: Boolean read GetNeedScan write SetNeedScan;
   end;
 
 var
@@ -150,19 +146,6 @@ begin
   end;
 end;
 
-function TScanSettings.GetNeedScan(BookerId: Integer): Boolean;
-var
-  Node: TGvXmlNode;
-begin
-  Node:= Root.FindOrCreate('Scaners').FindOrCreate('Scaner', 'BookerId', BookerId);
-  if Not Node.HasAttribute('NeedScan') then
-  begin
-    FChanged:= true;
-    Node['NeedScan']:= false;
-  end;
-  Result:= Node['NeedScan']
-end;
-
 function TScanSettings.RandomService: TGvXmlNode;
 var
   Idx: integer;
@@ -172,12 +155,6 @@ begin
     Result:= DefaultService
   else
     Result:= FServices.ChildNodes[Random(Idx)];
-end;
-
-procedure TScanSettings.SetNeedScan(BookerId: Integer; const Value: Boolean);
-begin
-  Root.FindOrCreate('Scaners').FindOrCreate('Scaner', 'BookerId', BookerId)['NeedScan']:= Value;
-  FChanged:= true;
 end;
 
 initialization
