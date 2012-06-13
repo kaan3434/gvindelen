@@ -38,8 +38,6 @@ object Form1: TForm1
         Caption = 'Teacher'
         Page = RibbonPage2
       end>
-    TabIndex = 1
-    ExplicitWidth = 856
     DesignSize = (
       899
       143)
@@ -49,18 +47,17 @@ object Form1: TForm1
       OptionItems = <>
       RecentItems = <>
     end
-    object RibbonPageScaner: TRibbonPage
+    object RibbonPage1: TRibbonPage
       Left = 0
       Top = 50
       Width = 898
       Height = 93
-      Caption = 'Scanner'
-      Index = 0
-      ExplicitWidth = 855
-      object tbScannerBookers: TRibbonGroup
+      Caption = 'Viewer'
+      Index = 1
+      object tbViewerBookers: TRibbonGroup
         Left = 4
         Top = 3
-        Width = 123
+        Width = 50
         Height = 86
         ActionManager = actMngRibbon
         Caption = 'Bookers'
@@ -74,7 +71,6 @@ object Form1: TForm1
       Height = 93
       Caption = 'Teacher'
       Index = 2
-      ExplicitWidth = 855
       object RibbonGroup1: TRibbonGroup
         Left = 4
         Top = 3
@@ -85,18 +81,17 @@ object Form1: TForm1
         GroupIndex = 0
       end
     end
-    object RibbonPage1: TRibbonPage
+    object RibbonPageScaner: TRibbonPage
       Left = 0
       Top = 50
       Width = 898
       Height = 93
-      Caption = 'Viewer'
-      Index = 1
-      ExplicitWidth = 855
-      object tbViewerBookers: TRibbonGroup
+      Caption = 'Scanner'
+      Index = 0
+      object tbScannerBookers: TRibbonGroup
         Left = 4
         Top = 3
-        Width = 50
+        Width = 123
         Height = 86
         ActionManager = actMngRibbon
         Caption = 'Bookers'
@@ -111,8 +106,6 @@ object Form1: TForm1
     Height = 19
     Panels = <>
     SimplePanel = True
-    ExplicitTop = 409
-    ExplicitWidth = 856
   end
   object ProgressBar1: TProgressBar
     Left = 0
@@ -121,15 +114,12 @@ object Form1: TForm1
     Height = 17
     Align = alBottom
     TabOrder = 2
-    ExplicitTop = 392
-    ExplicitWidth = 856
   end
   object dckLeft: TSpTBXMultiDock
     Left = 0
     Top = 143
     Width = 9
     Height = 329
-    ExplicitHeight = 249
   end
   object dckRight: TSpTBXMultiDock
     Left = 890
@@ -137,8 +127,6 @@ object Form1: TForm1
     Width = 9
     Height = 329
     Position = dpxRight
-    ExplicitLeft = 847
-    ExplicitHeight = 249
   end
   object pnlSwims: TSpTBXDockablePanel
     Left = 9
@@ -149,8 +137,6 @@ object Form1: TForm1
     Align = alClient
     TabOrder = 5
     Options.Close = False
-    ExplicitWidth = 838
-    ExplicitHeight = 249
     object DBGridEh1: TDBGridEh
       Left = 0
       Top = 19
@@ -185,7 +171,6 @@ object Form1: TForm1
           Footers = <>
           Title.Alignment = taCenter
           Title.Caption = #1044#1072#1090#1072
-          Width = 64
         end
         item
           EditButtons = <>
@@ -209,7 +194,6 @@ object Form1: TForm1
           EditButtons = <>
           FieldName = 'BOOKER1_NAME'
           Footers = <>
-          Width = 64
         end
         item
           AutoFitColWidth = False
@@ -240,7 +224,6 @@ object Form1: TForm1
           EditButtons = <>
           FieldName = 'BOOKER2_NAME'
           Footers = <>
-          Width = 64
         end
         item
           AutoFitColWidth = False

@@ -115,7 +115,7 @@ end;
 procedure TForm1.actNeedScanExecute(Sender: TObject);
 begin
   if (Sender is TAction) then
-    Settings.ScanerOn[TAction(Sender).Tag]:= TAction(Sender).Checked;
+    dm.ScanerOnOff(TAction(Sender).Tag, TAction(Sender).Checked);
 end;
 
 procedure TForm1.actRunThreadExecute(Sender: TObject);
@@ -128,6 +128,7 @@ var
   Booker: TGvXmlNode;
   BookerId: Integer;
 begin
+
   for Booker in Settings.Bookers.ChildNodes do
   begin
     if Settings.ScanerOn[Booker['Id']] then

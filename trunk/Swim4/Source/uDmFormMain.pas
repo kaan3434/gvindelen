@@ -11,13 +11,16 @@ uses
 type
   TdmFormMain = class(TdmSwim)
     qrySwim: TpFIBDataSet;
+    qryTemp: TpFIBDataSet;
     procedure DataModuleCreate(Sender: TObject);
     procedure trnReadAfterStart(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
+    procedure MakeSportsRequests;
     procedure SportsRequestAdd(aBooker: TGvXmlNode);
+    procedure ScanerOnOff(aBookerId: Integer; aChecked: Boolean);
   end;
 
 implementation
@@ -33,6 +36,39 @@ procedure TdmFormMain.DataModuleCreate(Sender: TObject);
 begin
   inherited;
   trnRead.StartTransaction;
+end;
+
+procedure TdmFormMain.MakeSportsRequests;
+begin
+  qryTemp.SelectSQL.Text:= 'select * from bookers b where b.scan_flg = 1';
+  qryTemp.Open;
+  try
+    while not qryTemp.Eof do
+    begin
+      a
+      qryTemp.Next;
+    end;
+  finally
+    qryTemp.Close;
+  end;
+end;
+
+procedure TdmFormMain.ScanerOnOff(aBookerId: Integer; aChecked: Boolean);
+begin
+  trnWrite.StartTransaction;
+  try
+    with spTemp do
+    begin
+      StoredProcName := 'BOOKER_ONOFF_SCAN';
+      Params.ClearValues;
+      Params.ParamByName('I_BOOKER_ID').AsInteger := aBookerId;
+      Params.ParamByName('I_ONOFF').AsInteger := Byte(aChecked);
+      ExecProc;
+    end;
+    trnWrite.Commit;
+  Except
+    trnWrite.Rollback;
+  end;
 end;
 
 procedure TdmFormMain.SportsRequestAdd(aBooker: TGvXmlNode);

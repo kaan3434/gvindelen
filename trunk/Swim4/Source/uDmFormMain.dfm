@@ -23,6 +23,13 @@ inherited dmFormMain: TdmFormMain
     Database = dbSwim
     UpdateTransaction = trnWrite
     Left = 128
-    Top = 160
+    Top = 168
+  end
+  object qryTemp: TpFIBDataSet
+    Transaction = trnRead
+    Database = dbSwim
+    UpdateTransaction = trnWrite
+    Left = 208
+    Top = 40
   end
 end
