@@ -47,23 +47,6 @@ object Form1: TForm1
       OptionItems = <>
       RecentItems = <>
     end
-    object RibbonPage1: TRibbonPage
-      Left = 0
-      Top = 50
-      Width = 898
-      Height = 93
-      Caption = 'Viewer'
-      Index = 1
-      object tbViewerBookers: TRibbonGroup
-        Left = 4
-        Top = 3
-        Width = 50
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = 'Bookers'
-        GroupIndex = 0
-      end
-    end
     object RibbonPage2: TRibbonPage
       Left = 0
       Top = 50
@@ -78,6 +61,23 @@ object Form1: TForm1
         Height = 86
         ActionManager = actMngRibbon
         Caption = 'Categories'
+        GroupIndex = 0
+      end
+    end
+    object RibbonPage1: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 898
+      Height = 93
+      Caption = 'Viewer'
+      Index = 1
+      object tbViewerBookers: TRibbonGroup
+        Left = 4
+        Top = 3
+        Width = 50
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = 'Bookers'
         GroupIndex = 0
       end
     end
@@ -373,7 +373,7 @@ object Form1: TForm1
     Left = 560
     Top = 8
     Bitmap = {
-      494C010103000900480010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
+      494C0101030009004C0010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000101010F010101170101011A0101
       011A0101011A0101011A0101011A0101011A0101011A0101011A0101011A0101
@@ -519,7 +519,7 @@ object Form1: TForm1
     Left = 472
     Top = 8
     Bitmap = {
-      494C010103000900400020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010103000900440020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000101010F0101010F010101170101
       01170101011A0101011A0101011A0101011A0101011A0101011A0101011A0101

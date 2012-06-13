@@ -19,7 +19,6 @@ type
   public
     { Public declarations }
     procedure MakeSportsRequests;
-    procedure SportsRequestAdd(aBooker: TGvXmlNode);
     procedure ScanerOnOff(aBookerId: Integer; aChecked: Boolean);
   end;
 
@@ -39,17 +38,37 @@ begin
 end;
 
 procedure TdmFormMain.MakeSportsRequests;
+var
+  ndBooker: TGvXmlNode;
+  ScanId : integer;
 begin
-  qryTemp.SelectSQL.Text:= 'select * from bookers b where b.scan_flg = 1';
-  qryTemp.Open;
+  ndBooker:= TGvXmlNode.Create;
+  ndBooker.NodeName:= 'getSport';
   try
-    while not qryTemp.Eof do
-    begin
-      a
-      qryTemp.Next;
+    trnWrite.StartTransaction;
+    try
+      qryTemp.SelectSQL.Text:= 'select * from bookers b where b.scan_flg = 1';
+      qryTemp.Open;
+      try
+        while not qryTemp.Eof do
+        begin
+          ndBooker['Booker_Sign']:= qryTemp['Booker_Sign'];
+          ndBooker['Booker_Id']:= qryTemp['Booker_Id'];
+          ndBooker['Booker_Title']:= qryTemp['Booker_Name'];
+          ScanId := dbSwim.QueryValue('select o_scan_id from scan_new(:i_booker_id)',
+                    0, [qryTemp['Booker_Id']], trnWrite);
+          RequestAdd(ScanId, 'getSports', ndBooker.WriteToString);
+          qryTemp.Next;
+        end;
+      finally
+        qryTemp.Close;
+      end;
+      trnWrite.Commit;
+    except
+      trnWrite.Rollback;
     end;
   finally
-    qryTemp.Close;
+    ndBooker.Free;
   end;
 end;
 
@@ -68,32 +87,6 @@ begin
     trnWrite.Commit;
   Except
     trnWrite.Rollback;
-  end;
-end;
-
-procedure TdmFormMain.SportsRequestAdd(aBooker: TGvXmlNode);
-var
-  ScanId: Integer;
-  Node: TGvXmlNode;
-begin
-  Node:= TGvXmlNode.Create;
-  Node.NodeName:= 'getSport';
-  try
-    trnWrite.StartTransaction;
-    try
-      // получаем очередной Scan_id
-      ScanId := dbSwim.QueryValue('select o_scan_id from scan_new(:i_booker_id)',
-        0, [aBooker['Id']], trnWrite);
-      Node['Booker_Sign']:= aBooker['Sign'];
-      Node['Booker_Id']:= aBooker['Id'];
-      Node['Booker_Title']:= aBooker['Title'];
-      RequestAdd(ScanId, 'getSports', Node.WriteToString);
-      trnWrite.Commit;
-    except
-      trnWrite.Rollback;
-    end;
-  finally
-    Node.Free;
   end;
 end;
 

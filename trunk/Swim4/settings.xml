@@ -10,11 +10,7 @@
     <Booker Id="2" Sign="olymp" Url="https://olympbet.com" Title="Olymp" ImgIndex="4"/>
     <Booker Id="3" Sign="marathon" Url="http://marathonbet.com" Title="Марафон" ImgIndex="5"/>
   </Bookers>
-  <Scaners ThreadCount="10" AutoStart="0">
-    <Scaner BookerId="1" NeedScan="1"/>
-    <Scaner BookerId="2" NeedScan="1"/>
-    <Scaner BookerId="3" NeedScan="1"/>
-  </Scaners>
+  <Scaners ThreadCount="10" AutoStart="0"/>
   <Services Default="0">
     <Service Default="0" Url="http://localhost:8080/soap/ScanBooker.php"/>
   </Services>

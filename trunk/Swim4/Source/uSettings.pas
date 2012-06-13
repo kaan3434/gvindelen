@@ -42,6 +42,7 @@ type
     function DefaultService: TGvXmlNode;
     function RandomService: TGvXmlNode;
     property Services: TGvXmlNode read FServices;
+    property Scaners: TGvXmlNode read FScaners;
     property Bookers: TGvXmlNode read FBookers;
   end;
 

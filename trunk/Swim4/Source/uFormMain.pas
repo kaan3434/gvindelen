@@ -124,16 +124,8 @@ begin
 end;
 
 procedure TForm1.actScanAllBookerExecute(Sender: TObject);
-var
-  Booker: TGvXmlNode;
-  BookerId: Integer;
 begin
-
-  for Booker in Settings.Bookers.ChildNodes do
-  begin
-    if Settings.ScanerOn[Booker['Id']] then
-      dm.SportsRequestAdd(Booker);
-  end;
+  dm.MakeSportsRequests;
   StartThreads;
 end;
 
@@ -190,7 +182,7 @@ begin
   ImgIndex:= AppendPngToImageList(imgListRibbon, ImgName);
   aBooker.Attr['ImgIndex'].AsInteger:= ImgIndex;
   AppendPngToImageList(imgListRibbonLarge, ImgName);
-  AppendActionToGroup(tbScannerBookers, aBooker, settings.ScanerOn[aBooker['Id']], actNeedScan.OnExecute);
+  AppendActionToGroup(tbScannerBookers, aBooker, false, actNeedScan.OnExecute);
   AppendActionTogroup(tbViewerBookers, aBooker, false, actDummy.OnExecute);
 end;
 
@@ -215,7 +207,8 @@ begin
   FThreadList:= TList.Create;
   for Booker in Settings.Bookers.ChildNodes do
     CreateButtons(Booker);
-  ThreadCount:= Settings.Scaners.Attr['ThreadCount'].AsIntegerDef(1);
+  end;
+//  ThreadCount:= Settings.Scaners.Attr['ThreadCount'].AsIntegerDef(1);
   dm.trnWrite.StartTransaction;
   try
     dm.RequestsClean;
