@@ -160,6 +160,12 @@ inherited FormTableOrders: TFormTableOrders
             Footers = <>
           end
           item
+            EditButtons = <>
+            FieldName = 'SOURCE'
+            Footers = <>
+            Title.Caption = #1048#1089#1090#1086#1095#1085#1080#1082
+          end
+          item
             AutoFitColWidth = False
             Checkboxes = True
             EditButtons = <>
@@ -179,7 +185,7 @@ inherited FormTableOrders: TFormTableOrders
           object pcDetailInfo: TPageControl
             Left = 0
             Top = 0
-            Width = 778
+            Width = 843
             Height = 198
             ActivePage = tsClientAttrs
             Align = alClient
@@ -189,7 +195,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdOrderProperties: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 770
+                Width = 835
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -566,7 +572,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdClientAttrs: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 770
+                Width = 835
                 Height = 170
                 Align = alClient
                 DataGrouping.GroupLevels = <>
@@ -657,6 +663,7 @@ inherited FormTableOrders: TFormTableOrders
       '    orders.bar_code,'
       '    orders.user_sign,'
       '    orders.account_id,'
+      '    orders.source,'
       '    1 is_invoiced,'
       '    0 is_invoiceprinted'
       'FROM ORDERS '
@@ -840,8 +847,6 @@ inherited FormTableOrders: TFormTableOrders
       'isc_tpb_nowait'
       'read_committed'
       'rec_version')
-    AfterStart = trnReadAfterStart
-    BeforeEnd = trnReadBeforeEnd
   end
   object qryOrderAttrs: TpFIBDataSet
     SelectSQL.Strings = (

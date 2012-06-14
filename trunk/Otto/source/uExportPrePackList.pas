@@ -36,7 +36,7 @@ begin
     Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
     Line.Add(GetXmlAttr(ndOrder, 'PACKLIST_NO'));
     Line.Add(CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5));
-    Line.Add(CostByr+'.00');
+    Line.Add(string(CostByr)+'.00');
     SetXmlAttr(ndOrder, 'INVOICE_BYR_0', CostByr);
     SetXmlAttr(ndOrder, 'INVOICE_EUR_0', CostEur);
     SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'PREPACKSENT');

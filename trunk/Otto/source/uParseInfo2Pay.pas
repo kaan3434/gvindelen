@@ -118,7 +118,8 @@ end;
 procedure ParseInfo2Pay(aMessageId: Integer; ndOrders: TXmlNode;
   aTransaction: TpFIBTransaction);
 var
-  LineNo: Integer;
+  LineNo, ErrorCount: Integer;
+  NeedCommit: Boolean;
   Lines: TStringList;
   MessageFileName: variant;
   ndOrder, ndOrderItems: TXmlNode;
@@ -161,9 +162,20 @@ begin
         Value2Vars(MessageFileName, 'FILE_NAME'));
       Lines.Free;
     end;
+    ErrorCount:= aTransaction.DefaultDatabase.QueryValue(
+      'select count(n.notify_id) from notifies n where n.notify_class = ''E'' and n.message_id = :message_id',
+      0, [aMessageId], aTransaction);
     dmOtto.MessageRelease(aTransaction, aMessageId);
-    dmOtto.MessageSuccess(aTransaction, aMessageId);
-    aTransaction.Commit;
+    NeedCommit:= ErrorCount = 0;
+    if not NeedCommit then
+      NeedCommit:= MessageDlg(Format('При обработке файла было получено %u ошибок. Принять вносимые изменения с ошибками?',[ErrorCount]), mtConfirmation, mbYesNoCancel, 0) = mrYes;
+    if NeedCommit then
+    begin
+      dmOtto.MessageSuccess(aTransaction, aMessageId);
+      aTransaction.Commit;
+    end
+    else
+      aTransaction.Rollback;
   except
     aTransaction.Rollback;
   end;

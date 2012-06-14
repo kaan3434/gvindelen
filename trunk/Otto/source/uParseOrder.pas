@@ -28,6 +28,7 @@ var
   strStream: TStringStream;
   St: string;
   ndClient, ndAdress, ndPlace: TXmlNode;
+  ProductId: Integer;
 begin
   sl:= TStringList.Create;
   ndAdress:= ndOrder.NodeFindOrCreate('ADRESS');
@@ -86,7 +87,13 @@ begin
     begin
       SetXmlAttr(ndPlace, 'REGION_NAME', UpCaseFirst(EscapeString(sl[10])));
     end;
-    SetXmlAttr(ndOrder, 'PRODUCT_NAME', EscapeString(sl[14]));
+    try
+      ProductId:= dmOtto.Recode('ORDER', 'PRODUCT_NAME2ID', EscapeString(sl[14]));
+      SetXmlAttr(ndOrder, 'PRODUCT_ID', ProductId)
+    except
+      ShowMessage(Format('Неизвеcтный тип продукта. Выставьте правильный тип. В заявке указан "%s"',
+       [sl[14]]));
+    end;
   finally
     sl.Free;
   end;
@@ -129,6 +136,7 @@ begin
     sl.DelimitedText:= '"'+ReplaceAll(aLine, ';', '";"')+'"';
     SetXmlAttr(ndOrderItem, 'ID', dmOtto.GetNewObjectId('ORDERITEM'));
     st:= FilterString(sl[1], '0123456789');
+    CatalogId:= null;
     if st='' then
       CatalogId:= CatalogDetect('Internet');
     SetXmlAttr(ndOrderItem, 'PAGE_NO', st);

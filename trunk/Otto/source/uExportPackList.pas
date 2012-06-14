@@ -77,7 +77,7 @@ begin
       'NRART=ARTICLE_CODE;BZARTORG=DESCRIPTION;MENGE=AMOUNT;PRVK=PRICE_EUR;'+
       'NREGWG;ZNAK="1";INSUM="1";NRAUFPOS=ORDERITEM_INDEX');
     BatchMoveFields2(tblCons, ndTaxSSbor,
-      'SBOR=COST_EUR');
+        'SBOR=COST_EUR');
     BatchMoveFields2(tblCons, ndAdress,
       'GOSNUM=POSTINDEX');
     BatchMoveFields2(tblCons, ndClient,

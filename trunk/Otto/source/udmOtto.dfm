@@ -8,7 +8,7 @@ object dmOtto: TdmOtto
   Width = 624
   object dbOtto: TpFIBDatabase
     Connected = True
-    DBName = 'localhost:D:\otto\Data.Etalon\otto_ppz.fdb'
+    DBName = 'localhost:D:\otto\Data\otto_ppz.fdb'
     DBParams.Strings = (
       'lc_ctype=CYRL'
       'user_name=sysdba'

@@ -86,6 +86,7 @@ constructor TFormWizardOrder.CreateBlank(AOwner: TComponent);
 begin
   inherited;
   OrderId:= dmOtto.GetNewObjectId(ndOrder.Name);
+  SetXmlAttr(ndOrder, 'SOURCE', 'Телефон/Лично');
   SetXmlAttr(ndOrder, 'ID', ObjectId);
   SetXmlAttr(ndOrder, 'BYR2EUR', dmOtto.SettingGet(trnRead, 'BYR2EUR'));
   SetXmlAttr(ndOrder, 'CREATE_DTM', Now);
@@ -99,6 +100,7 @@ constructor TFormWizardOrder.CreateMessage(AOwner: TComponent;
 begin
   inherited;
   OrderId:= dmOtto.GetNewObjectId(ndOrder.Name);
+  SetXmlAttr(ndOrder, 'SOURCE', 'Internet');
   SetXmlAttr(ndOrder, 'ID', ObjectId);
   SetXmlAttr(ndOrder, 'BYR2EUR', dmOtto.SettingGet(trnRead, 'BYR2EUR'));
   SetXmlAttr(ndOrder, 'CREATE_DTM', Now);

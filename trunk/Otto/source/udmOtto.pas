@@ -105,7 +105,7 @@ type
       aPriceEUR: Single; aWeight: Variant; aDescription, aBrand : string;
       aTransaction: TpFIBTransaction): integer;
     procedure SetKeyLayout(aTag: Integer);
-    function Recode(aObjectSign, aAttrSign, aValue: String): String;
+    function Recode(aObjectSign, aAttrSign, aValue: String): Variant;
     function GetNextCounterValue(aObjectSign, aCounterSign: string; aObjectId: Integer): WideString;
     function GetArticleSign(aArticleCode: string; aMagazineId: Integer): string;
     procedure ClearNotify(aMessageId: integer);
@@ -681,7 +681,7 @@ begin
     RestoreSysKbd;
 end;
 
-function TdmOtto.Recode(aObjectSign, aAttrSign, aValue: String): String;
+function TdmOtto.Recode(aObjectSign, aAttrSign, aValue: String): Variant;
 var
   NewValue: variant;
 begin
