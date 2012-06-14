@@ -11,7 +11,7 @@ procedure BatchMoveFields(aDestNode: TGvXmlNode; aSrcDataSet: TDataSet;
 implementation
 
 uses
-  GvStr, SysUtils.Excetions;
+  GvStr, SysUtils;
 
 procedure BatchMoveFields(aDestNode: TGvXmlNode; aSrcDataSet: TDataSet;
   aMapping: String);
