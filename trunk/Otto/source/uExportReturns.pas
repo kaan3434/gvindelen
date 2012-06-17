@@ -31,9 +31,10 @@ begin
     Line.Add(GetXmlAttr(ndOrderItem, 'ARTICLE_CODE'));
     Line.Add(dmOtto.Recode('ARTICLE', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION')));
     Line.Add('1');
-    Line.Add('');
-    Line.Add('');
-    Line.Add('');
+    Line.Add(GetXmlAttr(ndOrderItem, 'NRRETCODE'));
+    Line.Add(GetXmlAttr(ndOrderItem, 'NREGWG'));
+    Line.Add(GetXmlAttr(ndOrder, 'PACKLIST_NO'));
+    Line.Add(GetXmlAttr(ndOrderItem, 'PRICE_EUR'));
     Line.Add(GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR'));
     SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'RETURNSENT');
     Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;

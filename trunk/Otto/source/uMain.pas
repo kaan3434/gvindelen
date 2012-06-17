@@ -153,6 +153,8 @@ type
     frxReport: TfrxReport;
     barInfo: TTBXToolbar;
     lblBYR2EUR: TTBXLabelItem;
+    actExportReturn: TAction;
+    btnExportReturns: TTBXItem;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -194,6 +196,7 @@ type
     procedure actMoneyBackAccountExecute(Sender: TObject);
     procedure actReestrReturnsExecute(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure actExportReturnExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -216,7 +219,8 @@ uses
   uFormWizardOrder, uSetByr2Eur, uExportSMSReject,
   uExportCancellation, uExportOrder, uExportInvoices, uExportPackList,
   uParseArtN, uParseCancellation, uFormWizardReturn, uParseInfo2Pay,
-  uExportToSite, uExportPrePackList, uMoneyBack, uReportReturnedOrderItems;
+  uExportToSite, uExportPrePackList, uMoneyBack, uReportReturnedOrderItems, 
+  uExportReturns;
 
 procedure TMainForm.actParseOrderXmlExecute(Sender: TObject);
 var
@@ -805,6 +809,11 @@ procedure TMainForm.FormActivate(Sender: TObject);
 begin
   lblBYR2EUR.Caption:= Format('Курс Евро: %s BYR',
     [dmOtto.SettingGet(trnRead, 'BYR2EUR')]);
+end;
+
+procedure TMainForm.actExportReturnExecute(Sender: TObject);
+begin
+  ExportReturns(trnWrite);
 end;
 
 end.

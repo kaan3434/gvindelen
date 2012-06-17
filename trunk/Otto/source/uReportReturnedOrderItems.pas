@@ -2,14 +2,14 @@ unit uReportReturnedOrderItems;
 
 interface
 uses
-  NativeXml, FIBDatabase, pFIBDatabase, frxClass;
+  Classes, NativeXml, FIBDatabase, pFIBDatabase, frxClass;
 
 procedure ReportReturnedOrderItems(aTransaction: TpFIBTransaction; frxReport: TFrxReport);
 
 implementation
 
 uses
-  udmOtto;
+  udmOtto, GvNativeXml, GvStr;
 
 procedure ReportReturnedOrderItems(aTransaction: TpFIBTransaction; frxReport: TFrxReport);
 var

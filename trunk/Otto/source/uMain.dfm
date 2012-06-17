@@ -23,8 +23,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 837
-    Height = 65
+    Width = 829
+    Height = 69
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -108,6 +108,9 @@ object MainForm: TMainForm
         end
         object btn16: TTBXItem
           Action = actReestrReturns
+        end
+        object btnExportReturns: TTBXItem
+          Action = actExportReturn
         end
       end
       object btnParseOrder: TTBXItem
@@ -216,7 +219,7 @@ object MainForm: TMainForm
     end
     object barInfo: TTBXToolbar
       Left = 0
-      Top = 47
+      Top = 49
       Caption = 'barInfo'
       TabOrder = 1
       object lblBYR2EUR: TTBXLabelItem
@@ -225,16 +228,16 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 436
-    Width = 837
+    Top = 432
+    Width = 829
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object pbMain: TProgressBar
     Left = 0
-    Top = 419
-    Width = 837
+    Top = 415
+    Width = 829
     Height = 17
     Align = alBottom
     TabOrder = 1
@@ -243,7 +246,7 @@ object MainForm: TMainForm
     Images = imgListMainMenu
     OnUpdate = alMainUpdate
     Left = 128
-    Top = 96
+    Top = 104
     object actExportOrders: TAction
       Category = 'Export'
       Caption = #1054#1090#1087#1088#1072#1074#1080#1090#1100' '#1079#1072#1103#1074#1082#1080
@@ -431,6 +434,11 @@ object MainForm: TMainForm
       Category = 'Export'
       Caption = #1056#1077#1077#1089#1090#1088' '#1074#1086#1079#1074#1088#1072#1097#1072#1077#1084#1099#1093' '#1072#1088#1090#1080#1082#1091#1083#1086#1074
       OnExecute = actReestrReturnsExecute
+    end
+    object actExportReturn: TAction
+      Category = 'Export'
+      Caption = #1069#1082#1089#1087#1086#1088#1090' '#1074#1086#1079#1074#1088#1072#1090#1072
+      OnExecute = actExportReturnExecute
     end
   end
   object imgListMainMenu: TPngImageList
