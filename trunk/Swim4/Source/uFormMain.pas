@@ -54,7 +54,8 @@ type
     { Private declarations }
     FThreadList: TList;
     dm: TDmFormMain;
-    procedure CreateButtons(aBooker: TGvXmlNode);
+    procedure CreateBookerButtons;
+    procedure CreateButtons(aBookerDataSet: TDataSet);
     function AppendPngToImageList(aImageList: TImageList;
       aPngFileName: String): integer;
     procedure AppendActionToGroup(aGroup: TRibbonGroup;
@@ -173,6 +174,21 @@ begin
   end;
 end;
 
+procedure TForm1.CreateBookerButtons;
+begin
+  with dm.qryTemp do
+  begin
+    SelectSQL.Text:= 'select * from bookers order by booker_id';
+    Open;
+    while not Eof do
+    begin
+      CreateButtons(dm.qryTemp);
+      Next;
+    end;
+    Close;
+  end;
+end;
+
 procedure TForm1.CreateButtons(aBooker: TGvXmlNode);
 var
   ImgIndex: integer;
@@ -201,13 +217,18 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 var
-  Booker: TGvXmlNode;
+  Bookers, Booker: TGvXmlNode;
 begin
   dm:= TDmFormMain.Create(self);
-  FThreadList:= TList.Create;
-  for Booker in Settings.Bookers.ChildNodes do
-    CreateButtons(Booker);
+  dm;
+  try
+    dm.Bookers2Xml(Bookers);
+    for Booker in Bookers.ChildNodes do
+      CreateButtons(Booker);
+  finally
+    Bookers.Free;
   end;
+  FThreadList:= TList.Create;
 //  ThreadCount:= Settings.Scaners.Attr['ThreadCount'].AsIntegerDef(1);
   dm.trnWrite.StartTransaction;
   try

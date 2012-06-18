@@ -20,6 +20,8 @@ type
     { Public declarations }
     procedure MakeSportsRequests;
     procedure ScanerOnOff(aBookerId: Integer; aChecked: Boolean);
+    procedure Query2Xml(aXmlNode: TGvXmlNode; aSelectSQL, aRowNodeName, aMapping: string);
+    procedure Bookers2Xml(aXmlNode: TGvXmlNode);
   end;
 
 implementation
@@ -27,9 +29,15 @@ implementation
 {$R *.dfm}
 
 uses
-  GvVars;
+  GvVars, GvXmlUtils;
 
 { TdmFormMain }
+
+procedure TdmFormMain.Bookers2Xml(aXmlNode: TGvXmlNode);
+begin
+  Query2Xml(aXmlNode, 'select booker_id, booker_sign, booker_name from bookers order by booker_id',
+    'Booker', 'Booker_Id;Booker_Sign;Booker_Title=Booker_Name');
+end;
 
 procedure TdmFormMain.DataModuleCreate(Sender: TObject);
 begin
@@ -69,6 +77,17 @@ begin
     end;
   finally
     ndBooker.Free;
+  end;
+end;
+
+procedure TdmFormMain.Query2Xml(aXmlNode: TGvXmlNode; aSelectSQL, aRowNodeName, aMapping: string);
+begin
+  qryTemp.SelectSQL.Text:= aSelectSQL;
+  qryTemp.Open;
+  try
+    BatchMove(aXmlNode, qryTemp, aRowNodeName, aMapping);
+  finally
+    qryTemp.Close;
   end;
 end;
 

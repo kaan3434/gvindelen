@@ -38,6 +38,7 @@ object Form1: TForm1
         Caption = 'Teacher'
         Page = RibbonPage2
       end>
+    TabIndex = 2
     DesignSize = (
       899
       143)
@@ -47,20 +48,20 @@ object Form1: TForm1
       OptionItems = <>
       RecentItems = <>
     end
-    object RibbonPage2: TRibbonPage
+    object RibbonPageScaner: TRibbonPage
       Left = 0
       Top = 50
       Width = 898
       Height = 93
-      Caption = 'Teacher'
-      Index = 2
-      object RibbonGroup1: TRibbonGroup
+      Caption = 'Scanner'
+      Index = 0
+      object tbScannerBookers: TRibbonGroup
         Left = 4
         Top = 3
-        Width = 100
+        Width = 123
         Height = 86
         ActionManager = actMngRibbon
-        Caption = 'Categories'
+        Caption = 'Bookers'
         GroupIndex = 0
       end
     end
@@ -81,20 +82,20 @@ object Form1: TForm1
         GroupIndex = 0
       end
     end
-    object RibbonPageScaner: TRibbonPage
+    object RibbonPage2: TRibbonPage
       Left = 0
       Top = 50
       Width = 898
       Height = 93
-      Caption = 'Scanner'
-      Index = 0
-      object tbScannerBookers: TRibbonGroup
+      Caption = 'Teacher'
+      Index = 2
+      object RibbonGroup1: TRibbonGroup
         Left = 4
         Top = 3
-        Width = 123
+        Width = 100
         Height = 86
         ActionManager = actMngRibbon
-        Caption = 'Bookers'
+        Caption = 'Categories'
         GroupIndex = 0
       end
     end
