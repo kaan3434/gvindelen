@@ -5,13 +5,18 @@ interface
 uses
   GvXml, DB;
 
+
 procedure BatchMoveFields(aDestNode: TGvXmlNode; aSrcDataSet: TDataSet;
   aMapping: String);
+
+procedure BatchMove(aDestNode: TGvXmlNode; aSrcDataSet: TDataSet;
+  aRowNodeName: String; aMapping: String);
 
 implementation
 
 uses
   GvStr, SysUtils;
+
 
 procedure BatchMoveFields(aDestNode: TGvXmlNode; aSrcDataSet: TDataSet;
   aMapping: String);
@@ -32,11 +37,25 @@ begin
       if FieldSrc = nil then
         raise Exception.CreateFmt('Field "%s" not found in source', [FldSrc])
       else
-      if FieldSrc.DataType in [ftFloat] then
-        SetXmlAttrAsFloat(aDestNode, FldDest, FieldSrc.Value, aMandatory)
-      else
-        SetXmlAttr(aDestNode, FldDest, FieldSrc.Value, aMandatory);
+        aDestNode.Attr[FldDest].Value:= FieldSrc.Value;
     end;
+  end;
+end;
+
+
+procedure BatchMove(aDestNode: TGvXmlNode; aSrcDataSet: TDataSet;
+  aRowNodeName: String; aMapping: String);
+begin
+  aSrcDataSet.DisableControls;
+  try
+    aSrcDataSet.First;
+    while not aSrcDataSet.Eof do
+    begin
+      BatchMoveFields(aDestNode.AddChild(aRowNodeName), aSrcDataSet, aMapping);
+      aSrcDataSet.Next;
+    end;
+  finally
+    aSrcDataSet.EnableControls;
   end;
 end;
 
