@@ -189,7 +189,7 @@ begin
   end;
 end;
 
-procedure TForm1.CreateButtons(aBooker: TGvXmlNode);
+procedure TForm1.CreateButtons(aBookerDataSet: TDataSet);
 var
   ImgIndex: integer;
   ImgName: string;
