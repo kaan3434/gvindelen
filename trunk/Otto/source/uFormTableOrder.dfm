@@ -180,12 +180,17 @@ inherited FormTableOrders: TFormTableOrders
             FieldName = 'IS_INVOICEPRINTED'
             Footers = <>
             Width = 20
+          end
+          item
+            EditButtons = <>
+            FieldName = 'BYR2EUR'
+            Footers = <>
           end>
         inherited RowDetailData: TRowDetailPanelControlEh
           object pcDetailInfo: TPageControl
             Left = 0
             Top = 0
-            Width = 843
+            Width = 908
             Height = 198
             ActivePage = tsClientAttrs
             Align = alClient
@@ -195,7 +200,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdOrderProperties: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 835
+                Width = 900
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -572,7 +577,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdClientAttrs: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 835
+                Width = 900
                 Height = 170
                 Align = alClient
                 DataGrouping.GroupLevels = <>
@@ -665,7 +670,8 @@ inherited FormTableOrders: TFormTableOrders
       '    orders.account_id,'
       '    orders.source,'
       '    1 is_invoiced,'
-      '    0 is_invoiceprinted'
+      '    0 is_invoiceprinted,'
+      '    orders.byr2eur'
       'FROM ORDERS '
       
         '  inner join v_clients_fio on (v_clients_fio.client_id = orders.' +
