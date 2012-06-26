@@ -25,7 +25,7 @@ type
     imgListRibbonLarge: TImageList;
     tbViewerBookers: TRibbonGroup;
     tbScannerBookers: TRibbonGroup;
-    actViewAll: TAction;
+    actNeedShow: TAction;
     StatusBar1: TStatusBar;
     ProgressBar1: TProgressBar;
     actDummy: TAction;
@@ -55,11 +55,11 @@ type
     FThreadList: TList;
     dm: TDmFormMain;
     procedure CreateBookerButtons;
-    procedure CreateButtons(aBookerDataSet: TDataSet);
+    procedure CreateButtons(aBookerDataSet: TFIBDataSet);
     function AppendPngToImageList(aImageList: TImageList;
-      aPngFileName: String): integer;
+      aPngField: TBlobField): integer;
     procedure AppendActionToGroup(aGroup: TRibbonGroup;
-      ndBookersBooker: TGvXmlNode; aChecked: Boolean; aEvent: TNotifyEvent);
+      aDataSet: TDataSet; aImgIndex: Integer; aEvent: TNotifyEvent);
     procedure OnThreadTerminate(Sender: TObject);
     function GetThreadCount: Integer;
     procedure SetThreadCount(const Value: Integer);
@@ -84,15 +84,17 @@ begin
   actScanAllBooker.ImageIndex:= actScanAllBooker.ImageIndex + 1;
 end;
 
-function TForm1.AppendPngToImageList(aImageList: TImageList; aPngFileName: String): integer;
+function TForm1.AppendPngToImageList(aImageList: TImageList; aPngField: TBlobField): integer;
 var
   png: TPngImage;
   Bmp: TBitMap;
+  Stream: TStream;
 begin
   Result:= aImageList.Count;
   png := TPngImage.Create;
+  Stream:= aPngField.DataSet.CreateBlobStream(aPngField, bmRead);
   try
-    png.LoadFromFile(aPngFileName);
+    png.LoadFromStream(Stream);
     Bmp:= TBitmap.Create;
     try
       Bmp.Width:= aImageList.Width;
@@ -104,6 +106,7 @@ begin
       Bmp.Free;
     end;
   finally
+    Stream.Free;
     png.Free;
   end;
 end;
@@ -152,7 +155,7 @@ begin
 end;
 
 procedure TForm1.AppendActionToGroup(aGroup: TRibbonGroup;
-  ndBookersBooker: TGvXmlNode; aChecked: Boolean; aEvent: TNotifyEvent);
+  aDataSet: TDataSet; aImgIndex: Integer; aEvent: TNotifyEvent);
 var
   actClientItem: TActionClientItem;
   act: TAction;
@@ -162,13 +165,13 @@ begin
   begin
     act:= TAction.Create(Self);
     Action := act;
-    act.Tag:= ndBookersBooker['Id'];
+    act.Tag:= aDataSet['Id'];
     act.AutoCheck:= true;
     act.OnExecute:= aEvent;
-    act.Caption:= ndBookersBooker['Title'];
+    act.Caption:= aDataSet['booker_name'];
     act.Visible:= true;
-    act.ImageIndex:= ndBookersBooker['ImgIndex'];
-    act.Checked:= aChecked;
+    act.ImageIndex:= aImgIndex;
+    act.Checked:= aDataSet.FieldByName('scan_flg').AsBoolean;;
     CommandStyle:= csButton;
     (actClientItem.CommandProperties as TButtonProperties).ButtonSize:= bsLarge;
   end;
@@ -189,17 +192,14 @@ begin
   end;
 end;
 
-procedure TForm1.CreateButtons(aBookerDataSet: TDataSet);
+procedure TForm1.CreateButtons(aBookerDataSet: TFIBDataSet);
 var
   ImgIndex: integer;
-  ImgName: string;
 begin
-  ImgName:= settings.Path['Images']+aBooker['Sign']+'.png';
-  ImgIndex:= AppendPngToImageList(imgListRibbon, ImgName);
-  aBooker.Attr['ImgIndex'].AsInteger:= ImgIndex;
-  AppendPngToImageList(imgListRibbonLarge, ImgName);
-  AppendActionToGroup(tbScannerBookers, aBooker, false, actNeedScan.OnExecute);
-  AppendActionTogroup(tbViewerBookers, aBooker, false, actDummy.OnExecute);
+  ImgIndex:= AppendPngToImageList(imgListRibbon, TBlobField(aBookerDataSet.FieldByName('small_img')));
+  AppendPngToImageList(imgListRibbonLarge, TBlobField(aBookerDataSet.FieldByName('small_img')));
+  AppendActionToGroup(tbScannerBookers, aBookerDataSet, ImgIndex, actNeedScan.OnExecute);
+  AppendActionTogroup(tbViewerBookers, aBookerDataSet, ImgIndex, actNeedShow.OnExecute);
 end;
 
 procedure TForm1.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -220,8 +220,9 @@ var
   Bookers, Booker: TGvXmlNode;
 begin
   dm:= TDmFormMain.Create(self);
-  dm;
   try
+    dm.qryBookers.Open;
+
     dm.Bookers2Xml(Bookers);
     for Booker in Bookers.ChildNodes do
       CreateButtons(Booker);

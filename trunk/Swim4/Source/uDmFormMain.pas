@@ -12,6 +12,7 @@ type
   TdmFormMain = class(TdmSwim)
     qrySwim: TpFIBDataSet;
     qryTemp: TpFIBDataSet;
+    qryBookers: TpFIBDataSet;
     procedure DataModuleCreate(Sender: TObject);
     procedure trnReadAfterStart(Sender: TObject);
   private

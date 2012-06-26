@@ -32,4 +32,15 @@ inherited dmFormMain: TdmFormMain
     Left = 208
     Top = 40
   end
+  object qryBookers: TpFIBDataSet
+    SelectSQL.Strings = (
+      'select * '
+      'from bookers'
+      'order by teach_order')
+    Transaction = trnRead
+    Database = dbSwim
+    UpdateTransaction = trnWrite
+    Left = 208
+    Top = 104
+  end
 end
