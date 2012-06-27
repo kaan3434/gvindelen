@@ -33,6 +33,10 @@ type
     procedure actAccountManualDebitExecute(Sender: TObject);
     procedure actAccountManualCreditExecute(Sender: TObject);
     procedure trnReadAfterStart(Sender: TObject);
+    procedure grdMainRowDetailPanelShow(Sender: TCustomDBGridEh;
+      var CanShow: Boolean);
+    procedure grdMainRowDetailPanelHide(Sender: TCustomDBGridEh;
+      var CanHide: Boolean);
   private
     { Private declarations }
   public
@@ -65,8 +69,11 @@ var
   ndClient: TXmlNode;
   DlgManualPayment: TDlgManualPayment;
   Annotate: string;
+  bm: TBookmark;
 begin
   DlgManualPayment:= TDlgManualPayment.Create(self);
+  qryMain.DisableControls;
+  bm:= qryMain.GetBookmark;
   try
     DlgManualPayment.Caption:= 'Ручное зачисление на счет';
     if DlgManualPayment.ShowModal = mrOk then
@@ -106,10 +113,13 @@ begin
         Xml.Free;
       end;
     end;
-    qryMain.CloseOpen(True);
-    qryAccountMovements.CloseOpen(True);
+    trnRead.Commit;
+    trnRead.StartTransaction;
   finally
     DlgManualPayment.Free;
+    qryMain.GotoBookmark(bm);
+    qryMain.FreeBookmark(bm);
+    qryMain.EnableControls;
   end;
 end;
 
@@ -122,8 +132,11 @@ var
   ndClient: TXmlNode;
   DlgManualPayment: TDlgManualPayment;
   Annotate: string;
+  bm : TBookmark;
 begin
   DlgManualPayment:= TDlgManualPayment.Create(self);
+  qryMain.DisableControls;
+  bm:= qryMain.GetBookmark;
   try
     DlgManualPayment.Caption:= 'Ручное списание со счета';
     if DlgManualPayment.ShowModal = mrOk then
@@ -163,10 +176,13 @@ begin
         Xml.Free;
       end;
     end;
-    qryMain.CloseOpen(True);
-    qryAccountMovements.CloseOpen(True);
+    trnRead.Commit;
+    trnRead.StartTransaction;
   finally
     DlgManualPayment.Free;
+    qryMain.GotoBookmark(bm);
+    qryMain.FreeBookmark(bm);
+    qryMain.EnableControls;
   end;
 end;
 
@@ -174,9 +190,24 @@ procedure TFormTableClients.trnReadAfterStart(Sender: TObject);
 begin
   inherited;
   qryMain.Open;
-  qryAccountMovements.Open;
-  qryClientOrders.Open;
+end;
+
+procedure TFormTableClients.grdMainRowDetailPanelShow(
+  Sender: TCustomDBGridEh; var CanShow: Boolean);
+begin
+  inherited;
   qryAdresses.Open;
+  qryClientOrders.Open;
+  qryAccountMovements.Open;
+end;
+
+procedure TFormTableClients.grdMainRowDetailPanelHide(
+  Sender: TCustomDBGridEh; var CanHide: Boolean);
+begin
+  inherited;
+  qryAdresses.Close;
+  qryClientOrders.Close;
+  qryAccountMovements.Close;
 end;
 
 end.

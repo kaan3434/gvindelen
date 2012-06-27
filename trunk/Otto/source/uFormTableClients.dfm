@@ -27,6 +27,8 @@ inherited FormTableClients: TFormTableClients
         RowDetailPanel.Active = True
         RowDetailPanel.Height = 200
         RowDetailPanel.BevelEdges = [beLeft, beTop, beBottom]
+        OnRowDetailPanelHide = grdMainRowDetailPanelHide
+        OnRowDetailPanelShow = grdMainRowDetailPanelShow
         Columns = <
           item
             EditButtons = <>
@@ -111,7 +113,7 @@ inherited FormTableClients: TFormTableClients
             Top = 0
             Width = 765
             Height = 198
-            ActivePage = tsClientOrders
+            ActivePage = tsClientAccountMovements
             Align = alClient
             TabOrder = 0
             object tsAdresses: TTabSheet
@@ -352,6 +354,11 @@ inherited FormTableClients: TFormTableClients
       'order by '
       '  clients.Last_name, clients.First_name, clients.Mid_name'
       '')
+    CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
+    CacheModelOptions.BufferChunks = 100
+    Transaction = trnRead
+    UpdateTransaction = trnWrite
+    AutoCommit = True
   end
   inherited actListMain: TActionList
     object actAccountManualDebit: TAction
@@ -418,7 +425,11 @@ inherited FormTableClients: TFormTableClients
   end
   inherited trnRead: TpFIBTransaction
     Active = True
-    AfterStart = trnReadAfterStart
+    TRParams.Strings = (
+      'read'
+      'nowait'
+      'rec_version'
+      'read_committed')
   end
   object qryAccountMovements: TpFIBDataSet [8]
     SelectSQL.Strings = (
@@ -433,6 +444,8 @@ inherited FormTableClients: TFormTableClients
       'where ao.account_id = :account_id'
       '  '
       'order by accoper_dtm desc')
+    CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
+    CacheModelOptions.BufferChunks = 100
     Database = dmOtto.dbOtto
     DataSource = dsMain
     Left = 760
@@ -462,10 +475,13 @@ inherited FormTableClients: TFormTableClients
       '  inner join v_clientadress ca on (ca.adress_id = o.adress_id)'
       '  inner join statuses s on (s.status_id = o.status_id)'
       'where'
-      '    o.CLIENT_ID = :CLIENT_ID')
-    Active = True
-    Transaction = dmOtto.trnAutonomouse
+      '    o.CLIENT_ID = :CLIENT_ID'
+      'order by o.order_code')
+    CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
+    CacheModelOptions.BufferChunks = 100
+    Transaction = trnRead
     Database = dmOtto.dbOtto
+    UpdateTransaction = trnWrite
     DataSource = dsMain
     Left = 760
     Top = 80
@@ -495,10 +511,13 @@ inherited FormTableClients: TFormTableClients
       'FROM'
       '    V_CLIENTADRESS '
       'WHERE'
-      '   CLIENT_ID = :CLIENT_ID')
-    Active = True
-    Transaction = dmOtto.trnAutonomouse
+      '   CLIENT_ID = :CLIENT_ID'
+      'order by adress_id')
+    CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
+    CacheModelOptions.BufferChunks = 100
+    Transaction = trnRead
     Database = dmOtto.dbOtto
+    UpdateTransaction = trnWrite
     DataSource = dsMain
     Left = 761
     Top = 133

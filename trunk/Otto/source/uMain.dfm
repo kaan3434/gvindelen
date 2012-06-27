@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 350
-  Top = 273
+  Left = 328
+  Top = 128
   Width = 845
   Height = 512
   Caption = 'PPZ'
@@ -1519,7 +1519,6 @@ object MainForm: TMainForm
       'nowait'
       'rec_version'
       'read_committed')
-    MDTTransactionRole = mtrAutoDefine
     TPBMode = tpbDefault
     Left = 192
     Top = 96
@@ -1532,7 +1531,6 @@ object MainForm: TMainForm
       'nowait'
       'rec_version'
       'read_committed')
-    MDTTransactionRole = mtrAutoDefine
     TPBMode = tpbDefault
     Left = 272
     Top = 96

@@ -1,6 +1,6 @@
 inherited FormTableOrders: TFormTableOrders
-  Left = 328
-  Top = 162
+  Left = 271
+  Top = 210
   Caption = #1047#1072#1103#1074#1082#1080
   OnCreate = FormCreate
   PixelsPerInch = 96
@@ -687,7 +687,7 @@ inherited FormTableOrders: TFormTableOrders
     CacheModelOptions.BufferChunks = 100
     AfterScroll = qryMainAfterScroll
     Transaction = trnRead
-    UpdateTransaction = trnRead
+    UpdateTransaction = trnWrite
   end
   inherited actListMain: TActionList
     object actSendOrders: TAction
@@ -864,6 +864,8 @@ inherited FormTableOrders: TFormTableOrders
       'where a.attr_sign in ('#39'PRODUCT_NAME'#39', '#39'WEIGHT'#39', '#39'COST_EUR'#39', '
       #39'PREPAID_EUR'#39', '#39'ADRESS_TEXT'#39')'
       'order by a.attr_name')
+    CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
+    CacheModelOptions.BufferChunks = 100
     Transaction = trnRead
     Database = dmOtto.dbOtto
     DataSource = dsMain
@@ -907,6 +909,8 @@ inherited FormTableOrders: TFormTableOrders
       '  left join statuses ss on (ss.status_id = oi.state_id)'
       'WHERE ORDER_ID = :ORDER_ID'
       'ORDER BY ORDERITEM_ID')
+    CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
+    CacheModelOptions.BufferChunks = 100
     Transaction = trnRead
     Database = dmOtto.dbOtto
     DataSource = dsMain
@@ -932,6 +936,8 @@ inherited FormTableOrders: TFormTableOrders
       'inner join statuses s on (s.status_id = ot.status_id)'
       'WHERE ot.ORDER_ID = :ORDER_ID'
       'ORDER BY ORDERTAX_ID')
+    CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
+    CacheModelOptions.BufferChunks = 100
     Transaction = trnRead
     Database = dmOtto.dbOtto
     DataSource = dsMain
@@ -977,6 +983,8 @@ inherited FormTableOrders: TFormTableOrders
       'FROM accopers ao'
       'where ao.order_id = :order_id'
       'order by ao.accoper_dtm')
+    CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
+    CacheModelOptions.BufferChunks = 100
     Transaction = trnRead
     Database = dmOtto.dbOtto
     DataSource = dsMain
@@ -1000,6 +1008,8 @@ inherited FormTableOrders: TFormTableOrders
       'left join statuses s2 on (s2.status_id = oh.state_id)'
       'where oh.order_id = :order_id'
       'order by oh.action_dtm desc')
+    CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
+    CacheModelOptions.BufferChunks = 100
     Transaction = dmOtto.trnAutonomouse
     Database = dmOtto.dbOtto
     DataSource = dsMain
@@ -1059,7 +1069,7 @@ inherited FormTableOrders: TFormTableOrders
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 40998.019255509260000000
+    ReportOptions.LastChange = 41088.116852141200000000
     ScriptLanguage = 'PascalScript'
     ShowProgress = False
     StoreInDFM = False
@@ -1078,7 +1088,8 @@ inherited FormTableOrders: TFormTableOrders
       'from object_read('#39'CLIENT'#39', :client_id) oa'
       
         'inner join attrs a on (a.attr_sign = oa.o_param_name and a.objec' +
-        't_sign = '#39'CLIENT'#39')')
+        't_sign = '#39'CLIENT'#39')'
+      'order by a.attr_id')
     Transaction = trnRead
     Database = dmOtto.dbOtto
     DataSource = dsMain
