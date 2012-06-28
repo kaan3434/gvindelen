@@ -56,14 +56,12 @@
       <li>
         <div class="widetxt">
           <div class="hl">
-            <a href="">Внимание!</a>
+            <a href="">Уважаемые клиенты!</a>
           </div>
-          <font color='blue'>
-          <p>Изменились номера телефонов офиса ЗАО BALT-POST в ТЦ Глобо на Уманской, 54-49.</p>
-          <p>Вместо номеров телефонов <font color="red"><strike>306-01-59</strike></font> и 
-             <font color="red" ><strike>306-01-81</strike></font> с сегодняшнего дня действуют 
-             номера <font color="green" size="3"><b>(017)&nbsp;228-67-79</b></font> 
-             и <font color="green" size="3"><b>(017)&nbsp;228-67-80</b></font>!</p>
+          <font color='blue' size="3">
+          <p><font color='green'>30 июня 2012 года</font> мы работаем до <font color='green'>13&nbsp;часов</font>.</p>
+          <p><font color='red'>1, 2 и 3 июля -  выходной</font>.<br/><br/></p> 
+          <p>Пожалуйста, оставляйте заявки на наших сайтах!</p>
           </font>
         </div>
       </li>
