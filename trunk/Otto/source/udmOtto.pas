@@ -97,6 +97,7 @@ type
     function GetStatusBySign(aNode: TXmlNode; aStatusSign: string): Variant; overload;
     function GetStatusBySign(aObjectSign, aStatusSign: string): Variant; overload;
     function GetFlagListById(aStatusId: Integer): string;
+    function GetFlagListBySign(aStatusSign: String): string;
     function FlagExists(aNode: TXmlNode; aFlagSign: string): Boolean;
     function SettingGet(aTransaction: TpFIBTransaction; aSettingSign: string): variant; overload;
     function SettingGet(aTransaction: TpFIBTransaction; aSettingSign: string;
@@ -745,6 +746,19 @@ begin
   SignList:= dbOtto.QueryValue(
     'select s.flag_sign_list from statuses s where s.status_id = :status_id',
     0, [aStatusId]);
+  if SignList = null then
+    Result:= ',,'
+  else
+    Result:= SignList;
+end;
+
+function TdmOtto.GetFlagListBySign(aStatusSign: String): string;
+var
+  SignList: Variant;
+begin
+  SignList:= dbOtto.QueryValue(
+    'select s.flag_sign_list from statuses s where s.status_sign = :status_sign',
+    0, [aStatusSign]);
   if SignList = null then
     Result:= ',,'
   else

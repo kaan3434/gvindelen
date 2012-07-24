@@ -17,7 +17,7 @@ procedure ParseLieferLine(aMessageId, LineNo: Integer; aLine: string; ndOrders: 
 var
   OrderId: variant;
   sl: TStringList;
-  ndOrder, ndOrderItem: TXmlNode;
+  ndOrder, ndOrderItems, ndOrderItem: TXmlNode;
   NewStatusSign: variant;
   StateSign: Variant;
   StatusName, MessageClass: Variant;
@@ -35,13 +35,14 @@ begin
     begin
       ndOrder:= ndOrders.NodeNew('ORDER');
       dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
+      ndOrderItems:= ndOrder.NodeNew('ORDERITEMS');
+      dmOtto.OrderItemsGet(ndOrderItems, OrderId, aTransaction);
 
       Dimension:= dmOtto.Recode('ARTICLE', 'DIMENSION', sl[6]);
 
-      dmOtto.OrderItemsGet(ndOrder.NodeNew('ORDERITEMS'), OrderId, aTransaction);
-      ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
-        'ARTICLE_CODE;DIMENSION;ORDERITEM_INDEX',
-        [sl[5], VarArrayOf([Dimension, sl[6]]), sl[4]]);
+      ndOrderItem:= ChildByAttributes(ndOrderItems,
+        'AUFTRAG_ID;ORDERITEM_INDEX',
+        [sl[3], sl[4]]);
       if ndOrderItem = nil then
         ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
           'ARTICLE_CODE;DIMENSION;ORDERITEM_INDEX;STATUS_SIGN',
@@ -58,9 +59,9 @@ begin
         if GetXmlAttrAsMoney(ndOrderItem, 'NEW.PRICE_EUR') <> GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') then
         begin
           dmOtto.Notify(aMessageId,
-            '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Измнена цена [PRICE_EUR] => [NEW.PRICE_EUR].',
+            '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Измнена цена [PRICE_EUR] => [NEW.PRICE_EUR].',
             'W',
-            XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;NEW.PRICE_EUR',
+            XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION;PRICE_EUR;NEW.PRICE_EUR',
             XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
             Value2Vars(LineNo, 'LINE_NO'))));
           SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', sl[9]);
@@ -71,15 +72,15 @@ begin
         if StateSign = sl[10] then
         begin
           dmOtto.Notify(aMessageId,
-            '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестный DeliveryCode = [DELIVERY_CODE]',
+            '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестный DeliveryCode = [DELIVERY_CODE]',
             'E',
-            XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION',
-            XmlAttrs2Vars(ndOrder, 'ORDER_CODE;CLIENT_ID',
+            XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
+            XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
             Value2Vars(LineNo, 'LINE_NO',
             Strings2Vars(sl, 'DELIVERY_CODE=10')))))
         end
         else
-        if Pos(','+StateSign+',', ',ANULLED,REJECTED,') <> 0 then
+        if IsWordPresent(StateSign, 'ANULLED,REJECTED', ',') then
         begin
           SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', StateSign);
           MessageClass:= 'W';
@@ -98,44 +99,40 @@ begin
         end;
 
         NewDeliveryMessage:= dmOtto.Recode('ORDERITEM', 'DELIVERY_MESSAGE_RUS', sl[11]);
-        StatusName:= aTransaction.DefaultDatabase.QueryValue(
-          'select status_name from statuses where object_sign=''ORDERITEM'' and status_sign = :status_sign',
-          0, [GetXmlAttrValue(ndOrderItem, 'STATUS_SIGN')]);
         try
           ndOrderItem.ValueAsBool:= True;
           dmOtto.ActionExecute(aTransaction, ndOrderItem);
           dmOtto.Notify(aMessageId,
-            '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [STATUS_NAME] ([DELIVERY_MESSAGE_RUS])',
+            '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [STATUS_NAME] ([DELIVERY_MESSAGE_RUS])',
             MessageClass,
-            XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION',
-            XmlAttrs2Vars(ndOrder, 'ORDER_CODE;CLIENT_ID',
+            XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION;STATUS_NAME',
+            XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
             Value2Vars(NewDeliveryMessage, 'DELIVERY_MESSAGE_RUS',
-            Value2Vars(LineNo, 'LINE_NO',
-            Value2Vars(StatusName, 'STATUS_NAME'))))));
+            Value2Vars(LineNo, 'LINE_NO')))));
         except
           on E: Exception do
             dmOtto.Notify(aMessageId,
-              '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Ошибка ([ERROR_TEXT])',
+              '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Ошибка ([ERROR_TEXT])',
               'E',
-              XmlAttrs2Vars(ndOrderItem, 'ORDERITEM_ID=ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION',
-              XmlAttrs2Vars(ndOrder, 'ORDER_CODE;CLIENT_ID',
+              XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION',
+              XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
               Value2Vars(LineNo, 'LINE_NO',
               Value2Vars(Trim(E.Message), 'ERROR_TEXT')))));
         end;
       end
       else
         dmOtto.Notify(aMessageId,
-          '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Позиция не найдена в заявке [ORDER_CODE].',
+          '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Позиция не найдена в заявке [ORDER_CODE].',
           'E',
-          Strings2Vars(sl, 'ORDERITEM_INDEX=4;ARTICLE_CODE=5;DIMENSION=6',
-          XmlAttrs2Vars(ndOrder, 'ORDER_CODE;CLIENT_ID;ORDER_ID=ID',
+          Strings2Vars(sl, 'AUFTRAG_ID=3;ORDERITEM_INDEX=4;ARTICLE_CODE=5;DIMENSION=6',
+          XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
           Value2Vars(LineNo, 'LINE_NO'))));
     end
     else
       dmOtto.Notify(aMessageId,
-        '[LINE_NO]. Заявка [ORDER_CODE]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестная заявка [OTTO_ORDER_CODE].',
+        '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестная заявка [OTTO_ORDER_CODE].',
         'E',
-        Strings2Vars(sl, 'CLIENT_ID=1;ORDER_CODE=2;ORDERITEM_INDEX=4;ARTICLE_CODE=5;DIMENSION=6;OTTO_ORDER_CODE=2',
+        Strings2Vars(sl, 'CLIENT_ID=1;ORDER_CODE=2;AUFTRAG_ID=3;ORDERITEM_INDEX=4;ARTICLE_CODE=5;DIMENSION=6;OTTO_ORDER_CODE=2',
         Value2Vars(LineNo, 'LINE_NO')));
   finally
     sl.Free;

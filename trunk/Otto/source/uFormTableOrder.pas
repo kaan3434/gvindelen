@@ -56,6 +56,8 @@ type
     grdClientAttrs: TDBGridEh;
     qryClientAttrs: TpFIBDataSet;
     dsClientAttrs: TDataSource;
+    tsNote: TTabSheet;
+    mmoNote: TMemo;
     procedure actFilterApprovedExecute(Sender: TObject);
     procedure actFilterAcceptRequestExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -249,6 +251,7 @@ var
   i: Integer;
 begin
   if DataSet.ControlsDisabled then Exit;
+  mmoNote.Text:= qryMain.FieldByName('Note').AsString;
   for i:= 0 to subSetStatuses.Count - 1 do
     subSetStatuses.Items[i].Visible:= False;
   if qryNextStatus.Active then

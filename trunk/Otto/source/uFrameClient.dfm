@@ -214,12 +214,20 @@ inherited FrameClient: TFrameClient
           Footers = <>
           Title.Alignment = taCenter
           Title.Caption = #1054#1073#1085#1086#1074#1083#1077#1085
+        end
+        item
+          AutoFitColWidth = False
+          EditButtons = <>
+          FieldName = 'BAR_CODE'
+          Footers = <>
+          Title.Caption = #1050#1086#1076' '#1087#1086#1089#1099#1083#1082#1080
+          Width = 100
         end>
       object RowDetailData: TRowDetailPanelControlEh
         object grdClientOrderItems: TDBGridEh
           Left = 0
           Top = 0
-          Width = 341
+          Width = 442
           Height = 110
           Align = alClient
           AutoFitColWidths = True
@@ -507,6 +515,9 @@ inherited FrameClient: TFrameClient
       end
     end
   end
+  inherited trnWrite: TpFIBTransaction
+    Active = True
+  end
   inherited actList: TActionList
     object actClientSearch: TAction
       Caption = #1053#1072#1081#1090#1080
@@ -601,9 +612,10 @@ inherited FrameClient: TFrameClient
       '    o.CREATE_DTM,'
       '    o.STATUS_ID,'
       '    s.STATUS_NAME,'
-      '    o.STATUS_DTM'
+      '    o.STATUS_DTM,'
+      '    o.BAR_CODE'
       'FROM ORDERS o'
-      'inner join statuses s on (s.status_id = o.status_id)'
+      '  inner join statuses s on (s.status_id = o.status_id)'
       'WHERE '
       '    CLIENT_ID = :CLIENT_ID'
       'ORDER BY'

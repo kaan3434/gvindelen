@@ -22,7 +22,6 @@ object dmOtto: TdmOtto
     DesignDBOptions = [ddoIsDefaultDatabase, ddoStoreConnected]
     UseRepositories = []
     LibraryName = 'fbclient.dll'
-    GeneratorsCache.GeneratorList = <>
     AliasName = 'Otto'
     WaitForRestoreConnect = 0
     AfterConnect = dbOttoAfterConnect
@@ -119,7 +118,6 @@ object dmOtto: TdmOtto
       'write'
       'nowait'
       'concurrency')
-    MDTTransactionRole = mtrAutoDefine
     TPBMode = tpbDefault
     Left = 232
     Top = 16

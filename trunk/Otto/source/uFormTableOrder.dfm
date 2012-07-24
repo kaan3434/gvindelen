@@ -1,6 +1,6 @@
 inherited FormTableOrders: TFormTableOrders
-  Left = 271
-  Top = 210
+  Left = 246
+  Top = 164
   Caption = #1047#1072#1103#1074#1082#1080
   OnCreate = FormCreate
   PixelsPerInch = 96
@@ -192,7 +192,7 @@ inherited FormTableOrders: TFormTableOrders
             Top = 0
             Width = 908
             Height = 198
-            ActivePage = tsClientAttrs
+            ActivePage = tsOrderAttrs
             Align = alClient
             TabOrder = 0
             object tsOrderAttrs: TTabSheet
@@ -613,6 +613,22 @@ inherited FormTableOrders: TFormTableOrders
                 end
               end
             end
+            object tsNote: TTabSheet
+              Caption = #1055#1088#1080#1084#1077#1095#1072#1085#1080#1103
+              ImageIndex = 6
+              object mmoNote: TMemo
+                Left = 0
+                Top = 0
+                Width = 900
+                Height = 170
+                Align = alClient
+                Lines.Strings = (
+                  'mmoNote')
+                ReadOnly = True
+                ScrollBars = ssBoth
+                TabOrder = 0
+              end
+            end
           end
         end
       end
@@ -671,7 +687,8 @@ inherited FormTableOrders: TFormTableOrders
       '    orders.source,'
       '    1 is_invoiced,'
       '    0 is_invoiceprinted,'
-      '    orders.byr2eur'
+      '    orders.byr2eur,'
+      '    v_order_attrs.attr_value note'
       'FROM ORDERS '
       
         '  inner join v_clients_fio on (v_clients_fio.client_id = orders.' +
@@ -680,6 +697,9 @@ inherited FormTableOrders: TFormTableOrders
       
         '  inner join v_order_summary on (v_order_summary.order_id = orde' +
         'rs.order_id)'
+      
+        '  left join v_order_attrs on (v_order_attrs.object_id = orders.o' +
+        'rder_id and v_order_attrs.attr_sign='#39'NOTE'#39')'
       'where '
       '/*FILTER*/ 1=1'
       'order by Create_dtm desc')
