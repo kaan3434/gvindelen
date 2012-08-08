@@ -67,7 +67,8 @@ begin
       'inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign = ''PREPACKED'') '+
       'left join statuses s2 on (s2.status_id = o.state_id and s2.status_sign = ''PREPACKSENT'') '+
       'where coalesce(s2.status_sign, '''')  <> ''PREPACKSENT'' '+
-      '  and oa.attr_value = :packlist_no',
+      '  and oa.attr_value = :packlist_no '+
+      'order by o.order_code',
       0, [aPacklistNo], aTransaction);
     dmOtto.InitProgress(WordCount(OrderList,','), 'Формирование ответа на ПреПаклист');
     while OrderList <> '' do
@@ -109,7 +110,8 @@ begin
         'inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign = ''PREPACKED'') '+
         'left join statuses s2 on (s2.status_id = o.state_id and s2.status_sign = ''PREPACKSENT'') '+
         'where coalesce(s2.status_sign, '''')  <> ''PREPACKSENT'' '+
-        '  and o.product_id = :product_id',
+        '  and o.product_id = :product_id '+
+        'order by oa.attr_value',
         0, [aProductId], aTransaction);
       while PackList <> '' do
       begin
@@ -140,7 +142,8 @@ begin
       'from orders o '+
       'inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign = ''PREPACKED'') '+
       'left join statuses s2 on (s2.status_id = o.state_id and s2.status_sign = ''PREPACKSENT'') '+
-      'where coalesce(s2.status_sign, '''')  <> ''PREPACKSENT''',
+      'where coalesce(s2.status_sign, '''')  <> ''PREPACKSENT'' ' +
+      'order by o.product_id',
        0, aTransaction);
     while ProductList <> '' do
     begin

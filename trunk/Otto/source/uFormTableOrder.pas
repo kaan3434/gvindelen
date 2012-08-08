@@ -58,6 +58,10 @@ type
     dsClientAttrs: TDataSource;
     tsNote: TTabSheet;
     mmoNote: TMemo;
+    qryRest: TpFIBDataSet;
+    dsRest: TDataSource;
+    grdRests: TDBGridEh;
+    spl1: TSplitter;
     procedure actFilterApprovedExecute(Sender: TObject);
     procedure actFilterAcceptRequestExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -451,6 +455,7 @@ begin
     qryOrderTaxs.Open;
     qryStatuses.Open;
     qryAccountMovements.Open;
+    qryRest.Open;
     qryHistory.Open;
     qryNextStatus.Open;
     qryClientAttrs.Open;

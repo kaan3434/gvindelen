@@ -192,7 +192,7 @@ inherited FormTableOrders: TFormTableOrders
             Top = 0
             Width = 908
             Height = 198
-            ActivePage = tsOrderAttrs
+            ActivePage = ts1
             Align = alClient
             TabOrder = 0
             object tsOrderAttrs: TTabSheet
@@ -371,7 +371,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdOrderTaxs: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 728
+                Width = 900
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -455,10 +455,16 @@ inherited FormTableOrders: TFormTableOrders
             object ts1: TTabSheet
               Caption = #1044#1074#1080#1078#1077#1085#1080#1077' '#1089#1088#1077#1076#1089#1090#1074
               ImageIndex = 3
+              object spl1: TSplitter
+                Left = 565
+                Top = 0
+                Height = 170
+                Align = alRight
+              end
               object grdAccountMovements: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 728
+                Width = 565
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -483,6 +489,9 @@ inherited FormTableOrders: TFormTableOrders
                     AutoFitColWidth = False
                     EditButtons = <>
                     FieldName = 'ACCOPER_DTM'
+                    Footer.Alignment = taRightJustify
+                    Footer.Value = #1054#1089#1090#1072#1090#1086#1082
+                    Footer.ValueType = fvtStaticText
                     Footers = <>
                     Title.Alignment = taCenter
                     Title.Caption = #1044#1072#1090#1072
@@ -495,6 +504,11 @@ inherited FormTableOrders: TFormTableOrders
                     Title.Alignment = taCenter
                     Title.Caption = #1057#1091#1084#1084#1072', EUR'
                     Width = 70
+                  end
+                  item
+                    EditButtons = <>
+                    FieldName = 'AMOUNT_BYR'
+                    Footers = <>
                   end
                   item
                     AutoFitColWidth = False
@@ -515,6 +529,61 @@ inherited FormTableOrders: TFormTableOrders
                 object RowDetailData: TRowDetailPanelControlEh
                 end
               end
+              object grdRests: TDBGridEh
+                Left = 568
+                Top = 0
+                Width = 332
+                Height = 170
+                Align = alRight
+                AutoFitColWidths = True
+                DataGrouping.GroupLevels = <>
+                DataSource = dsRest
+                Flat = False
+                FooterColor = clWindow
+                FooterFont.Charset = DEFAULT_CHARSET
+                FooterFont.Color = clWindowText
+                FooterFont.Height = -11
+                FooterFont.Name = 'MS Sans Serif'
+                FooterFont.Style = []
+                RowDetailPanel.Color = clBtnFace
+                TabOrder = 1
+                TitleFont.Charset = DEFAULT_CHARSET
+                TitleFont.Color = clWindowText
+                TitleFont.Height = -11
+                TitleFont.Name = 'MS Sans Serif'
+                TitleFont.Style = []
+                Columns = <
+                  item
+                    EditButtons = <>
+                    FieldName = 'BYR2EUR'
+                    Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = #1050#1091#1088#1089
+                  end
+                  item
+                    EditButtons = <>
+                    FieldName = 'REST_EUR'
+                    Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = 'EUR'
+                  end
+                  item
+                    EditButtons = <>
+                    FieldName = 'REST_BYR'
+                    Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = 'BYR'
+                  end
+                  item
+                    EditButtons = <>
+                    FieldName = 'REST_DTM'
+                    Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = #1044#1072#1090#1072
+                  end>
+                object RowDetailData: TRowDetailPanelControlEh
+                end
+              end
             end
             object tsHistory: TTabSheet
               Caption = #1048#1089#1090#1086#1088#1080#1103' '#1089#1090#1072#1090#1091#1089#1086#1074
@@ -522,7 +591,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdHistory: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 770
+                Width = 900
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -622,8 +691,6 @@ inherited FormTableOrders: TFormTableOrders
                 Width = 900
                 Height = 170
                 Align = alClient
-                Lines.Strings = (
-                  'mmoNote')
                 ReadOnly = True
                 ScrollBars = ssBoth
                 TabOrder = 0
@@ -998,6 +1065,7 @@ inherited FormTableOrders: TFormTableOrders
       'SELECT'
       '    ACCOPER_DTM,'
       '    -AMOUNT_EUR amount_eur,'
+      '    -AMOUNT_BYR amount_byr,'
       '    BYR2EUR,'
       '    NOTES'
       'FROM accopers ao'
@@ -1121,5 +1189,26 @@ inherited FormTableOrders: TFormTableOrders
     DataSet = qryClientAttrs
     Left = 813
     Top = 351
+  end
+  object qryRest: TpFIBDataSet
+    SelectSQL.Strings = (
+      'SELECT *'
+      'FROM accrests ar'
+      'where ar.account_id = :account_id'
+      '--  and ar.rest_byr <> 0'
+      '--  and ar.rest_eur <> 0'
+      'order by ar.account_id, ar.rest_dtm')
+    Active = True
+    Transaction = dmOtto.trnAutonomouse
+    Database = dmOtto.dbOtto
+    DataSource = dsMain
+    Left = 741
+    Top = 407
+  end
+  object dsRest: TDataSource
+    AutoEdit = False
+    DataSet = qryRest
+    Left = 813
+    Top = 407
   end
 end

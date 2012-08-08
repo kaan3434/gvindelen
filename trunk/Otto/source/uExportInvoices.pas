@@ -50,7 +50,8 @@ begin
         'from orders o '+
         '  inner join statuses s on (s.status_id = o.status_id and s.status_sign in (''ACCEPTED'',''PAID'')) '+
         '  inner join v_order_paid op on (op.order_id = o.order_id) '+
-        'where o.product_id = :product_id',
+        'where o.product_id = :product_id '+
+        'order by o.order_code',
         0, [aProductId], aTransaction);
       while OrderList <> '' do
       begin
@@ -88,7 +89,8 @@ begin
       'select list(distinct o.product_id) '+
       'from orders o '+
       '  inner join statuses s on (s.status_id = o.status_id and s.status_sign in (''ACCEPTED'',''PAID'')) '+
-      '  inner join v_order_paid op on (op.order_id = o.order_id)',
+      '  inner join v_order_paid op on (op.order_id = o.order_id) '+
+      'order by o.product_id',
       0, aTransaction);
     while ProductList <> '' do
     begin

@@ -57,7 +57,8 @@ begin
       'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''CANCELREQUEST'') '+
       'left join statuses s2 on (s2.status_id = oi.state_id) '+
       'where coalesce(s2.status_sign, '''')  <> ''CANCELREQUESTSENT'' '+
-      '  and oi.order_id = :order_id',
+      '  and oi.order_id = :order_id '+
+      'order by oi.orderitem_id',
       0, [aOrderId], aTransaction);
     while OrderItemList <> '' do
     begin
@@ -90,7 +91,8 @@ begin
         'left join statuses s2 on (s2.status_id = oi.state_id) '+
         'inner join orders o on (o.order_id = oi.order_id) '+
         'where coalesce(s2.status_sign, '''')  <> ''CANCELREQUESTSENT'' '+
-        '  and o.product_id = :product_id',
+        '  and o.product_id = :product_id '+
+        'order by o.order_code',
         0, [aProductId], aTransaction);
       while OrderList <> '' do
       begin
@@ -128,7 +130,8 @@ begin
       'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''CANCELREQUEST'') '+
       'left join statuses s2 on (s2.status_id = oi.state_id) '+
       'inner join orders o on (o.order_id = oi.order_id)' +
-      'where coalesce(s2.status_sign, '''')  <> ''CANCELREQUESTSENT''',
+      'where coalesce(s2.status_sign, '''')  <> ''CANCELREQUESTSENT'' '+
+      'order by o.product_id',
        0, aTransaction);
     while ProductList <> '' do
     begin

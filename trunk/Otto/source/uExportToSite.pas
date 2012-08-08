@@ -56,7 +56,8 @@ begin
       'select list(o.order_id) '+
       'from orders o '+
       'where o.create_dtm >= current_date - 100 '+
-      ' and o.order_code is not null',
+      ' and o.order_code is not null '+
+      'order by o.order_id',
        0, aTransaction);
     OrderCount:= WordCount(OrderList, ',');
     dmOtto.InitProgress(OrderCount, 'Выгрузка данных для сайта');

@@ -46,7 +46,7 @@ procedure ParseProtocolLine200(aMessageId, LineNo, DealId: Integer;
 var
   OrderId, OrderItemId: Variant;
   ndOrder, ndOrderItems, ndOrderItem: TXmlNode;
-  StateSign, StateId, StatusName: variant;
+  StatusSign, StateSign, StateId, StatusName: variant;
   NewDeliveryMessage, Dimension: string;
 begin
   OrderId:= aTransaction.DefaultDatabase.QueryValue(
@@ -106,10 +106,10 @@ begin
       end;
 
       NewDeliveryMessage:= dmOtto.Recode('ORDERITEM', 'DELIVERY_MESSAGE_RUS', sl[11]);
-      if IsWordPresent('AVAILABLE', dmOtto.GetFlagListBySign(StatusSign))then
-        StateSign:= 'ACCEPTED'
+      if IsWordPresent('AVAILABLE', dmOtto.GetFlagListBySign(NewDeliveryMessage),',') then
+        StatusSign:= 'ACCEPTED'
       else
-        StateSign:= 'REJECTED';
+        StatusSign:= 'REJECTED';
 
       try
         ndOrderItem.ValueAsBool:= True;
