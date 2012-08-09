@@ -13,8 +13,8 @@ uses
   Classes, SysUtils, GvStr, udmOtto, Variants, GvNativeXml,
   Dialogs, Controls;
 
-procedure ParseConsignmentLine100(aMessageId, LineNo: Integer;
-  sl: TStringList; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseConsignmentLine100(aMessageId, LineNo: Integer; sl: TStringList;
+  ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 begin
   SetXmlAttr(ndOrders, 'PACKLIST_NO', sl[1]);
   SetXmlAttr(ndOrders, 'PALETTE_NO', sl[3]);
@@ -23,31 +23,31 @@ begin
   ndOrders.Document.SaveToFile('order.xml');
 end;
 
-procedure ParseConsignmentLine200(aMessageId, LineNo: Integer;
-  sl: TStringList; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseConsignmentLine200(aMessageId, LineNo: Integer; sl: TStringList;
+  ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
-  ndOrder, ndOrderItem: TXmlNode;
+  ndOrder, ndOrderItems, ndOrderItem: TXmlNode;
   OrderId, NewStatusSign, StatusId, StatusName, OrderItemId: variant;
   NewDeliveryMessage: string;
   Dimension: string;
 begin
-  OrderId:= aTransaction.DefaultDatabase.QueryValue(
-    'select order_id from orders where order_code like ''_''||:order_code',
-    0, [FillFront(sl[2], 5, '0')], aTransaction);
+  OrderId:= dmOtto.DetectOrderId(ndProduct, sl[2], aTransaction);
   if OrderId<>null then
   begin
-    ndOrder:= ndOrders.NodeByAttributeValue('ORDER', 'ID', OrderId);
+    ndOrder:= ndOrders.NodeByAttributeValue('ORDER', 'ID', OrderId, false);
     if ndOrder = nil then
     begin
       ndOrder:= ndOrders.NodeNew('ORDER');
+      ndOrderItems:= ndOrder.NodeNew('ORDERITEMS');
       dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
-      dmOtto.OrderItemsGet(ndOrder.NodeNew('ORDERITEMS'), OrderId, aTransaction);
-    end;
+      dmOtto.OrderItemsGet(ndOrderItems, OrderId, aTransaction);
+    end
+    else
+      ndOrderItems:= ndOrder.NodeByName('ORDERITEMS');
 
     Dimension:= dmOtto.Recode('ARTICLE', 'DIMENSION', sl[5]);
 
-    ndOrderItem:= ChildByAttributes(ndOrder.NodeByName('ORDERITEMS'),
-      'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
+    ndOrderItem:= ChildByAttributes(ndOrderItems, 'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
       [sl[4], VarArrayOf([Dimension, sl[5]]), VarArrayOf(['BUNDLING', 'ACCEPTREQUEST', 'ACCEPTED', 'PREPACKED'])]);
     if ndOrderItem <> nil then
     begin
@@ -117,34 +117,25 @@ begin
   Result:= GetXmlAttr(ndProduct, 'BARCODE_SIGN')+Body+CalcControlChar(Body)+'LT';
 end;
 
-procedure ParseConsignmentLine300(aMessageId, LineNo: Integer;
-  sl: TStringList; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseConsignmentLine300(aMessageId, LineNo: Integer; sl: TStringList;
+  ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
   OrderId: Variant;
-  ndProduct, ndOrder: TXmlNode;
+  ndOrder: TXmlNode;
 begin
-  OrderId:= aTransaction.DefaultDatabase.QueryValue(
-    'select order_id from orders where order_code like ''_''||:order_code',
-    0, [FillFront(sl[2], 5, '0')], aTransaction);
+  OrderId:= dmOtto.DetectOrderId(ndProduct, sl[2], aTransaction);
   if OrderId<>null then
   begin
-    ndOrder:= ndOrders.NodeByAttributeValue('ORDER', 'ID', OrderId);
+    ndOrder:= ndOrders.NodeByAttributeValue('ORDER', 'ID', OrderId, false);
     if ndOrder <> nil then
     begin
-      ndProduct := ndOrder.NodeByName('PRODUCT');
-      if ndProduct = nil then
-      begin
-         ndProduct:= ndOrder.NodeNew('PRODUCT');
-         dmOtto.ObjectGet(ndProduct, GetXmlAttrValue(ndOrder, 'PRODUCT_ID'), aTransaction);
-      end;
       SetXmlAttr(ndOrder, 'WEIGHT', sl[6]);
       SetXmlAttrAsMoney(ndOrder, 'ITEMSCOST_EUR', sl[3]);
       SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'PACKED');
       BatchMoveFields2(ndOrder, ndOrders, 'PACKLIST_NO;PACKLIST_DT;PALETTE_NO');
       SetXmlAttr(ndOrder, 'PACKET_NO', sl[1]);
       SetXmlAttr(ndOrder, 'BAR_CODE', GetBarCode(ndOrder, ndProduct));
-      ndOrder.Document.XmlFormat:= xfReadable;
-      ndOrder.Document.SaveToFile('order.xml');
+
       try
         dmOtto.ActionExecute(aTransaction, ndOrder);
         dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
@@ -166,13 +157,17 @@ begin
   end;
 end;
 
-procedure ParseConsignmentLine400(aMessageId, LineNo: Integer;
-  sl: TStringList; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseConsignmentLine400(aMessageId, LineNo: Integer; sl: TStringList;
+  ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 begin
-
+   dmOtto.Notify(aMessageId,
+     '[LINE_NO]',
+     'I',
+     Value2Vars(LineNo, 'LINE_NO'));
 end;
 
-procedure ParseConsignmentLine(aMessageId, LineNo: Integer; aLine: string; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseConsignmentLine(aMessageId, LineNo: Integer; aLine: string;
+  ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
   sl: TStringList;
 begin
@@ -181,46 +176,49 @@ begin
     sl.Delimiter:= ';';
     sl.DelimitedText:= '"'+ReplaceAll(aLine, ';', '";"')+'"';
     if sl[0] = '100' then
-      ParseConsignmentLine100(aMessageId, LineNo, sl, ndOrders, aTransaction)
+      ParseConsignmentLine100(aMessageId, LineNo, sl, ndProduct, ndOrders, aTransaction)
     else
     if sl[0] = '200' then
-      ParseConsignmentLine200(aMessageId, LineNo, sl, ndOrders, aTransaction)
+      ParseConsignmentLine200(aMessageId, LineNo, sl, ndProduct, ndOrders, aTransaction)
     else
     if sl[0] = '300' then
-      ParseConsignmentLine300(aMessageId, LineNo, sl, ndOrders, aTransaction)
+      ParseConsignmentLine300(aMessageId, LineNo, sl, ndProduct, ndOrders, aTransaction)
     else
     if sl[0] = '400' then
-      ParseConsignmentLine400(aMessageId, LineNo, sl, ndOrders, aTransaction);
+      ParseConsignmentLine400(aMessageId, LineNo, sl, ndProduct, ndOrders, aTransaction);
   finally
     sl.Free;
   end;
 end;
 
-procedure ParseConsignment(aMessageId: Integer; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseConsignment(aMessageId: Integer; ndMessage: TXmlNode; aTransaction: TpFIBTransaction);
 var
   LineNo: Integer;
   Lines: TStringList;
   MessageFileName: variant;
-  ndOrder, ndOrderItems: TXmlNode;
+  ndProduct, ndOrders: TXmlNode;
 begin
   dmOtto.ClearNotify(aMessageId);
-  MessageFileName:= dmOtto.dbOtto.QueryValue(
-    'select m.file_name from messages m where m.message_id = :message_id', 0,
-    [aMessageId]);
-  dmOtto.Notify(aMessageId,
-    'Начало обработки файла: [FILE_NAME]', '',
-    Value2Vars(MessageFileName, 'FILE_NAME'));
-  // загружаем файл
   if not aTransaction.Active then
     aTransaction.StartTransaction;
   try
+    dmOtto.ObjectGet(ndMessage, aMessageId, aTransaction);
+    ndProduct:= ndMessage.NodeFindOrCreate('PRODUCT');
+    dmOtto.ObjectGet(ndProduct, dmOtto.DetectProductId(ndMessage, aTransaction), aTransaction);
+    ndOrders:= ndMessage.NodeFindOrCreate('ORDERS');
+
+    MessageFileName:= GetXmlAttrValue(ndMessage, 'FILE_NAME');
+    dmOtto.Notify(aMessageId,
+      'Начало обработки файла: [FILE_NAME]', '',
+      Value2Vars(MessageFileName, 'FILE_NAME'));
+
     if FileExists(Path['Messages.In']+MessageFileName) then
     begin
       Lines:= TStringList.Create;
       try
         Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
         For LineNo:= 0 to Lines.Count - 1 do
-          ParseConsignmentLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
+          ParseConsignmentLine(aMessageId, LineNo, Lines[LineNo], ndProduct, ndOrders, aTransaction);
       finally
         Lines.Free;
       end;
@@ -232,9 +230,8 @@ begin
     dmOtto.Notify(aMessageId,
       'Конец обработки файла: [FILE_NAME]', '',
       Value2Vars(MessageFileName, 'FILE_NAME'));
-    dmOtto.MessageRelease(aTransaction, aMessageId);
-    dmOtto.MessageSuccess(aTransaction, aMessageId);
-    aTransaction.Commit;
+    dmOtto.ShowProtocol(aTransaction, aMessageId);
+    dmOtto.MessageCommit(aTransaction, aMessageId);
   except
     aTransaction.Rollback;
   end
@@ -245,10 +242,8 @@ var
   aXml: TNativeXml;
 begin
   aXml:= TNativeXml.CreateName('MESSAGE');
-  SetXmlAttr(aXml.Root, 'MESSAGE_ID', aMessageId);
   try
     ParseConsignment(aMessageId, aXml.Root, aTransaction);
-    dmOtto.ShowProtocol(aTransaction, aMessageId);
   finally
     aXml.Free;
   end;

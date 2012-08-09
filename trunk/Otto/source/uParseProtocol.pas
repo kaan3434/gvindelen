@@ -14,47 +14,46 @@ uses
   Dialogs, Controls, StrUtils;
 
 procedure ParseProtocolLine100(aMessageId, LineNo, DealId: Integer;
-  sl: TStringList; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+  sl: TStringList; ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
   OrderId: variant;
-  OrderCode: widestring;
-  ndOrder, ndClient: TXmlNode;
+  ndOrder, ndOrderItems: TXmlNode;
   StatusSign, StatusName: Variant;
 begin
-  OrderCode:= FillFront(sl[1],5, '0');
-  OrderId:= aTransaction.DefaultDatabase.QueryValue(
-    'select o.order_id from orders o where order_code like ''_''||:order_code',
-    0, [OrderCode], aTransaction);
+  OrderId:= dmOtto.DetectOrderId(ndProduct, sl[1], aTransaction);
   if OrderId <> null then
   begin
+    ndOrder:= ndOrders.NodeNew('ORDER');
+    dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
+    ndOrderItems:= ndOrder.NodeNew('ORDERITEMS');
+    dmOtto.OrderItemsGet(ndOrderItems, OrderId, aTransaction);
     dmOtto.Notify(aMessageId,
       '[LINE_NO]. Заявка [ORDER_CODE]. [RESOLUTION]',
       'I',
       Value2Vars(LineNo, 'LINE_NO',
-      Strings2Vars(sl, 'ORDER_CODE=1;RESOLUTION=13')));
+      XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
+      Strings2Vars(sl, 'RESOLUTION=13'))));
   end
   else
     dmOtto.Notify(aMessageId,
       '[LINE_NO]. Заявка [ORDER_CODE] не найдена.',
       'E',
       Value2Vars(LineNo, 'LINE_NO',
-      Strings2Vars(sl, 'ORDER_CODE=1')));
+      Value2Vars(dmOtto.DetectOrderCode(ndProduct, sl[1]), 'ORDER_CODE')));
 end;
 
 procedure ParseProtocolLine200(aMessageId, LineNo, DealId: Integer;
-  sl: TStringList; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+  sl: TStringList; ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
   OrderId, OrderItemId: Variant;
   ndOrder, ndOrderItems, ndOrderItem: TXmlNode;
   StatusSign, StateSign, StateId, StatusName: variant;
-  NewDeliveryMessage, Dimension: string;
+  DeliveryMessageRus, Dimension: string;
 begin
-  OrderId:= aTransaction.DefaultDatabase.QueryValue(
-    'select o.order_id from orders o where order_code like ''_''||:order_code',
-    0, [FillFront(sl[1],5, '0')], aTransaction);
+  OrderId:= dmOtto.DetectOrderId(ndProduct, sl[1], aTransaction);
   if OrderId <> null then
   begin
-    ndOrder:= ndOrders.NodeByAttributeValue('ORDER', 'ID', OrderId);
+    ndOrder:= ndOrders.NodeByAttributeValue('ORDER', 'ID', OrderId, False);
     if ndOrder = nil then
     begin
       ndOrder:= ndOrders.NodeNew('ORDER');
@@ -68,16 +67,15 @@ begin
     Dimension:= dmOtto.Recode('ARTICLE', 'DIMENSION', sl[6]);
 
     ndOrderItem:= ChildByAttributes(ndOrderItems, 'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
-      [sl[5], VarArrayOf([Dimension, sl[6]]), 'ACCEPTREQUEST']);
+      [sl[5], VarArrayOf([Dimension, sl[6]]), VarArrayOf(['ACCEPTREQUEST', 'APPROVED'])]);
     if ndOrderItem <> nil then
     begin
       OrderItemId:= GetXmlAttrValue(ndOrderItem, 'ID');
       SetXmlAttr(ndOrderItem, 'DIMENSION', Dimension);
-      ndOrder.ValueAsBool:= True;
-      SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', sl[8]);
-      SetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX', sl[4]);
       SetXmlAttr(ndOrderItem, 'AUFTRAG_ID', sl[3]);
+      SetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX', sl[4]);
 
+      SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', sl[8]);
       if GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') <> GetXmlAttrAsMoney(ndOrderItem, 'COST_EUR') then
       begin
         dmOtto.Notify(aMessageId,
@@ -105,12 +103,12 @@ begin
         end;
       end;
 
-      NewDeliveryMessage:= dmOtto.Recode('ORDERITEM', 'DELIVERY_MESSAGE_RUS', sl[11]);
-      if IsWordPresent('AVAILABLE', dmOtto.GetFlagListBySign(NewDeliveryMessage),',') then
+      if IsWordPresent('AVAILABLE', dmOtto.GetFlagListBySign(StateSign),',') then
         StatusSign:= 'ACCEPTED'
       else
         StatusSign:= 'REJECTED';
 
+      DeliveryMessageRus:= dmOtto.Recode('ORDERITEM', 'DELIVERY_MESSAGE_RUS', sl[11]);
       try
         ndOrderItem.ValueAsBool:= True;
         dmOtto.ActionExecute(aTransaction, ndOrderItem, StatusSign);
@@ -120,7 +118,7 @@ begin
           'I',
           XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
           XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION;STATUS_NAME',
-          Value2Vars(NewDeliveryMessage, 'DELIVERY_MESSAGE_RUS',
+          Value2Vars(DeliveryMessageRus, 'DELIVERY_MESSAGE_RUS',
           Value2Vars(LineNo, 'LINE_NO')))));
       except
         on E: Exception do
@@ -148,7 +146,8 @@ begin
       Value2Vars(LineNo, 'LINE_NO')));
 end;
 
-procedure ParseProtocolLine(aMessageId, LineNo, DealId: Integer; aLine: string; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseProtocolLine(aMessageId, LineNo, DealId: Integer; aLine: string;
+  ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
   sl: TStringList;
 begin
@@ -158,49 +157,52 @@ begin
       sl.Delimiter:= ';';
       sl.DelimitedText:= '"'+ReplaceAll(aLine, ';', '";"')+'"';
       if sl[2] = '100' then
-        ParseProtocolLine100(aMessageId, LineNo, DealId, sl, ndOrders, aTransaction)
+        ParseProtocolLine100(aMessageId, LineNo, DealId, sl, ndProduct, ndOrders, aTransaction)
       else
-        ParseProtocolLine200(aMessageId, LineNo, DealId, sl, ndOrders, aTransaction);
+        ParseProtocolLine200(aMessageId, LineNo, DealId, sl, ndProduct, ndOrders, aTransaction);
     except
       on E: Exception do
       dmOtto.Notify(aMessageId,
         '[LINE_NO]. [ERROR_TEXT]',
         'E',
         Value2Vars(LineNo, 'LINE_NO',
-        Value2Vars(e.Message, 'ERROR_TEXT')));
+        Value2Vars(DeleteChars(e.Message, #10#13), 'ERROR_TEXT')));
     end;
   finally
     sl.Free;
   end;
 end;
 
-procedure ParseProtocol(aMessageId: Integer; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseProtocol(aMessageId: Integer; ndMessage: TXmlNode; aTransaction: TpFIBTransaction);
 var
   LineNo, DealId, n: Integer;
   Lines: TStringList;
-  MessageFileName: variant;
-  ndOrder, ndOrderItems: TXmlNode;
+  MessageFileName: string;
+  ndProduct, ndOrders, ndOrder, ndOrderItems: TXmlNode;
 begin
   dmOtto.ClearNotify(aMessageId);
-  MessageFileName:= dmOtto.dbOtto.QueryValue(
-    'select m.file_name from messages m where m.message_id = :message_id', 0,
-    [aMessageId]);
-  dmOtto.Notify(aMessageId, 'Начало обработки файла: [FILE_NAME]', '',
-    Value2Vars(MessageFileName, 'FILE_NAME'));
-  // загружаем файл
   if not aTransaction.Active then
     aTransaction.StartTransaction;
   try
+    dmOtto.ObjectGet(ndMessage, aMessageId, aTransaction);
+    ndProduct:= ndMessage.NodeFindOrCreate('PRODUCT');
+    dmOtto.ObjectGet(ndProduct, dmOtto.DetectProductId(ndMessage, aTransaction), aTransaction);
+    ndOrders:= ndMessage.NodeFindOrCreate('ORDERS');
+
+    MessageFileName:= GetXmlAttrValue(ndMessage, 'FILE_NAME');
+    dmOtto.Notify(aMessageId, 'Начало обработки файла: [FILE_NAME]', '',
+      Value2Vars(MessageFileName, 'FILE_NAME'));
+
     Lines:= TStringList.Create;
     try
       if FileExists(Path['Messages.In']+MessageFileName) then
       begin
         Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
         ndOrder:= ndOrders.NodeNew('ORDER');
-        dmOtto.InitProgress(Lines.Count*2, Format('Ообработка файла %s ...', [MessageFileName]));
+        dmOtto.InitProgress(Lines.Count*2, Format('Обработка файла %s ...', [MessageFileName]));
         For LineNo:= 0 to Lines.Count - 1 do
         begin
-          ParseProtocolLine(aMessageId, LineNo, DealId, Lines[LineNo], ndOrders, aTransaction);
+          ParseProtocolLine(aMessageId, LineNo, DealId, Lines[LineNo], ndProduct, ndOrders, aTransaction);
           dmOtto.StepProgress;
         end;
 
@@ -223,9 +225,8 @@ begin
         Value2Vars(MessageFileName, 'FILE_NAME'));
       Lines.Free;
     end;
-    dmOtto.MessageRelease(aTransaction, aMessageId);
-    dmOtto.MessageSuccess(aTransaction, aMessageId);
-    aTransaction.Commit;
+    dmOtto.ShowProtocol(aTransaction, aMessageId);
+    dmOtto.MessageCommit(aTransaction, aMessageId);
   except
     aTransaction.Rollback;
   end
@@ -236,10 +237,8 @@ var
   aXml: TNativeXml;
 begin
   aXml:= TNativeXml.CreateName('MESSAGE');
-  SetXmlAttr(aXml.Root, 'MESSAGE_ID', aMessageId);
   try
     ParseProtocol(aMessageId, aXml.Root, aTransaction);
-    dmOtto.ShowProtocol(aTransaction, aMessageId);
   finally
     aXml.Free;
   end;

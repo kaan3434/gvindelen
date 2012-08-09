@@ -90,24 +90,26 @@ begin
   end;
 end;
 
-procedure ParsePayment(aMessageId: Integer; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParsePayment(aMessageId: Integer; ndMessage: TXmlNode; aTransaction: TpFIBTransaction);
 var
   LineNo: Integer;
   Lines: TStringList;
   MessageFileName: variant;
-  ndOrder, ndOrderItems: TXmlNode;
+  ndOrders: TXmlNode;
 begin
   dmOtto.ClearNotify(aMessageId);
-  MessageFileName:= dmOtto.dbOtto.QueryValue(
-    'select m.file_name from messages m where m.message_id = :message_id', 0,
-    [aMessageId]);
-  dmOtto.Notify(aMessageId,
-    'Начало обработки файла: [FILE_NAME]', '',
-    Value2Vars(MessageFileName, 'FILE_NAME'));
-  // загружаем файл
   if not aTransaction.Active then
     aTransaction.StartTransaction;
   try
+    dmOtto.ObjectGet(ndMessage, aMessageId, aTransaction);
+    ndOrders:= ndMessage.NodeFindOrCreate('ORDERS');
+
+    MessageFileName:= GetXmlAttrValue(ndMessage, 'FILE_NAME');
+    dmOtto.Notify(aMessageId,
+      'Начало обработки файла: [FILE_NAME]', '',
+      Value2Vars(MessageFileName, 'FILE_NAME'));
+
+
     if FileExists(Path['Messages.In']+MessageFileName) then
     begin
       Lines:= TStringList.Create;
@@ -120,13 +122,15 @@ begin
       end;
     end
     else
+      dmOtto.Notify(aMessageId,
+        'Файл [FILE_NAME] не найден.', 'E',
+        Value2Vars(MessageFileName, 'FILE_NAME'));
 
     dmOtto.Notify(aMessageId,
       'Конец обработки файла: [FILE_NAME]', '',
       Value2Vars(MessageFileName, 'FILE_NAME'));
-    dmOtto.MessageSuccess(aTransaction, aMessageId);
-    dmOtto.MessageRelease(aTransaction, aMessageId);
-    aTransaction.Commit;
+    dmOtto.ShowProtocol(aTransaction, aMessageId);
+    dmOtto.MessageCommit(aTransaction, aMessageId);
   except
     aTransaction.Rollback;
   end
@@ -137,10 +141,8 @@ var
   aXml: TNativeXml;
 begin
   aXml:= TNativeXml.CreateName('MESSAGE');
-  SetXmlAttr(aXml.Root, 'MESSAGE_ID', aMessageId);
   try
     ParsePayment(aMessageId, aXml.Root, aTransaction);
-    dmOtto.ShowProtocol(aTransaction, aMessageId);
   finally
     aXml.Free;
   end;

@@ -192,7 +192,7 @@ inherited FormTableOrders: TFormTableOrders
             Top = 0
             Width = 908
             Height = 198
-            ActivePage = ts1
+            ActivePage = tsOrderItems
             Align = alClient
             TabOrder = 0
             object tsOrderAttrs: TTabSheet
@@ -253,7 +253,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdOrderItems: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 770
+                Width = 900
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -274,6 +274,13 @@ inherited FormTableOrders: TFormTableOrders
                 TitleFont.Name = 'MS Sans Serif'
                 TitleFont.Style = []
                 Columns = <
+                  item
+                    EditButtons = <>
+                    FieldName = 'AUFTRAG_ID'
+                    Footers = <>
+                    Title.Alignment = taCenter
+                    Title.Caption = 'Auftrag'
+                  end
                   item
                     EditButtons = <>
                     FieldName = 'ORDERITEM_ID'
@@ -984,7 +991,8 @@ inherited FormTableOrders: TFormTableOrders
       '    oi.ORDERITEM_INDEX,'
       
         '    coalesce(oia1.attr_value, '#39#39')||'#39' '#39'||coalesce(oia2.attr_value' +
-        ', '#39#39') name_rus'
+        ', '#39#39') name_rus,'
+      '    oi.auftrag_id'
       'FROM ORDERITEMS oi'
       '  inner join statuses s on (s.status_id = oi.status_id)'
       

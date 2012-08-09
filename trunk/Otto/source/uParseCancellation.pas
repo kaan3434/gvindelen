@@ -13,7 +13,8 @@ uses
   Classes, SysUtils, GvStr, udmOtto, Variants, GvNativeXml,
   Dialogs, Controls, StrUtils;
 
-procedure ParseCancelLine(aMessageId, LineNo: Integer; aLine: string; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseCancelLine(aMessageId, LineNo: Integer; aLine: string;
+  ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
   Dimension: string;
   OrderId, OrderItemId: variant;
@@ -29,12 +30,10 @@ begin
     sl.Delimiter:= ';';
     sl.DelimitedText:= '"'+ReplaceAll(aLine, ';', '";"')+'"';
 
-    OrderId:= aTransaction.DefaultDatabase.QueryValue(
-      'select order_id from orders where order_code like ''_''||:order_code',
-      0, [FilterString(sl[1], '0123456789')], aTransaction);
+    OrderId:= dmOtto.DetectOrderId(ndProduct, sl[1], aTransaction);
     if OrderId<>null then
     begin
-      ndOrder:= ndOrders.NodeByAttributeValue('ORDER', 'ID', OrderId);
+      ndOrder:= ndOrders.NodeByAttributeValue('ORDER', 'ID', OrderId, true);
       if ndOrder = nil then
       begin
         ndOrder:= ndOrders.NodeNew('ORDER');
@@ -44,11 +43,14 @@ begin
       end
       else
         ndOrderItems:= ndOrder.NodeByName('ORDERITEMS');
+
       sl[6]:= SkipLeadingZero(sl[6]);
       sl[4]:= SkipLeadingZero(sl[4]);
 
-      ndOrderItem:= ChildByAttributes(ndOrderItems, 'AUFTRAG_ID;ORDERITEM_INDEX',
-        [sl[3], sl[4]]);
+      Dimension:= dmOtto.Recode('ARTICLE', 'DIMENSION', sl[6]);
+
+      ndOrderItem:= ChildByAttributes(ndOrderItems, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
+        [sl[3], sl[4], sl[5], VarArrayOf([Dimension, sl[6]])]);
       if ndOrderItem <> nil then
       begin
         OrderItemId:= GetXmlAttr(ndOrderItem, 'ID');
@@ -64,7 +66,6 @@ begin
             XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
             Value2Vars(LineNo, 'LINE_NO',
             Strings2Vars(sl, 'CANCEL_MESSAGE=11')))));
-          Exit;
         end;
         SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', NewStatusSign);
 
@@ -107,31 +108,33 @@ begin
   end;
 end;
 
-procedure ParseCancellation(aMessageId: Integer; ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseCancellation(aMessageId: Integer; ndMessage: TXmlNode; aTransaction: TpFIBTransaction);
 var
   LineNo: Integer;
   Lines: TStringList;
   MessageFileName: variant;
-  ndOrder, ndOrderItems: TXmlNode;
+  ndProduct, ndOrders: TXmlNode;
 begin
   dmOtto.ClearNotify(aMessageId);
-  MessageFileName:= dmOtto.dbOtto.QueryValue(
-    'select m.file_name from messages m where m.message_id = :message_id', 0,
-    [aMessageId]);
-  dmOtto.Notify(aMessageId,
-    'Начало обработки файла: [FILE_NAME]', '',
-    Value2Vars(MessageFileName, 'FILE_NAME'));
-  // загружаем файл
   if not aTransaction.Active then
     aTransaction.StartTransaction;
   try
+    dmOtto.ObjectGet(ndMessage, aMessageId, aTransaction);
+    ndProduct:= ndMessage.NodeFindOrCreate('PRODUCT');
+    dmOtto.ObjectGet(ndProduct, dmOtto.DetectProductId(ndMessage, aTransaction), aTransaction);
+    ndOrders:= ndMessage.NodeFindOrCreate('ORDERS');
+
+    MessageFileName:= GetXmlAttrValue(ndMessage, 'FILE_NAME');
+    dmOtto.Notify(aMessageId,
+      'Начало обработки файла: [FILE_NAME]', '',
+      Value2Vars(MessageFileName, 'FILE_NAME'));
     Lines:= TStringList.Create;
     try
       if FileExists(Path['Messages.In']+MessageFileName) then
       begin
         Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
         For LineNo:= 0 to Lines.Count - 1 do
-          ParseCancelLine(aMessageId, LineNo, Lines[LineNo], ndOrders, aTransaction);
+          ParseCancelLine(aMessageId, LineNo, Lines[LineNo], ndProduct, ndOrders, aTransaction);
       end
       else
         dmOtto.Notify(aMessageId,
@@ -144,9 +147,8 @@ begin
         Value2Vars(MessageFileName, 'FILE_NAME'));
       Lines.Free;
     end;
-    dmOtto.MessageRelease(aTransaction, aMessageId);
-    dmOtto.MessageSuccess(aTransaction, aMessageId);
-    aTransaction.Commit;
+    dmOtto.ShowProtocol(aTransaction, aMessageId);
+    dmOtto.MessageCommit(aTransaction, aMessageId);
   except
     aTransaction.Rollback;
   end;
@@ -157,10 +159,8 @@ var
   aXml: TNativeXml;
 begin
   aXml:= TNativeXml.CreateName('MESSAGE');
-  SetXmlAttr(aXml.Root, 'MESSAGE_ID', aMessageId);
   try
     ParseCancellation(aMessageId, aXml.Root, aTransaction);
-    dmOtto.ShowProtocol(aTransaction, aMessageId);
   finally
     aXml.Free;
   end;

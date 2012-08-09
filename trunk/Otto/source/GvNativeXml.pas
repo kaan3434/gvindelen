@@ -522,7 +522,7 @@ begin
   Vars:= TVarList.Create;
   try
     Vars.Text:= aVars;
-    Vars[aAttrName]:= aValue;
+    Vars[aAttrName]:= DeleteChars(aValue, #10#13);
     Result:= Vars.Text;
   finally
     Vars.Free;

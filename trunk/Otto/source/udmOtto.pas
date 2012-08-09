@@ -74,7 +74,9 @@ type
     function GetDefaultStatusId(aObjectSign: string): Integer;
     procedure FillMemTable(aMemTable: TMemTableEh; aSQLClause: String);
     function MessageBusy(aTemplateId: Integer): Integer;
-    procedure MessageRelease(aTransaction: TpFIBTransaction; aMessageId: Integer);
+    procedure MessageRelease(aTransaction: TpFIBTransaction; aTemplateId: Integer);
+    procedure MessageCommit(aTransaction: TpFIBTransaction;
+      aMessageId: Integer);
     procedure MessageSuccess(aTransaction: TpFIBTransaction; aMessageId: Integer);
     procedure MessagePostpone(aTransaction: TpFIBTransaction; aMessageId: Integer);
     procedure MessageError(aTransaction: TpFIBTransaction; aMessageId: Integer);
@@ -121,8 +123,13 @@ type
     procedure ShowProtocol(aTransaction: TpFIBTransaction;
       aMessageId: Integer);
     procedure CleanUp;
+    function DetectProductId(ndMessage: TXmlNode; aTransaction: TpFIBTransaction): Integer;
     property UserName: string read FUserName;
     property isAdminRole: boolean read isAdminRoleGet;
+    function DetectOrderCode(ndProduct: TXmlNode; aPostFix: string): WideString;
+    function DetectOrderId(ndProduct: TXmlNode; aPostFix: string;
+      aTransaction: TpFIBTransaction): Variant;
+
   end;
 
 var
@@ -323,27 +330,64 @@ function TdmOtto.MessageBusy(aTemplateId: Integer): Integer;
 begin
   with spMessage do
   begin
-    StoredProcName:= 'MESSAGE_BUSY';
-    Params.ClearValues;
-    ParamByName('I_TEMPLATE_ID').AsInteger:= aTemplateId;
-    ExecProc;
-    if not VarIsNull(ParamValue('O_MESSAGE_ID')) then
-      Result:= ParamValue('O_MESSAGE_ID')
-    else
-      Result:= 0;
+    Transaction.StartTransaction;
+    try
+      StoredProcName:= 'MESSAGE_BUSY';
+      Params.ClearValues;
+      ParamByName('I_TEMPLATE_ID').AsInteger:= aTemplateId;
+      ExecProc;
+      if not VarIsNull(ParamValue('O_MESSAGE_ID')) then
+        Result:= ParamValue('O_MESSAGE_ID')
+      else
+        Result:= 0;
+      Transaction.Commit;
+    except
+      Transaction.Rollback;
+    end;
   end;
 end;
 
-procedure TdmOtto.MessageRelease(aTransaction: TpFIBTransaction; aMessageId: Integer);
+procedure TdmOtto.MessageRelease(aTransaction: TpFIBTransaction; aTemplateId: Integer);
+var
+  NeedAutoCommit: Boolean;
+begin
+  //проапдейтить все записи по пользователю по даннму шаблону
+
+end;
+
+procedure TdmOtto.MessageCommit(aTransaction: TpFIBTransaction; aMessageId: Integer);
+var
+  WarningCount, ErrorCount: Integer;
+  Msg: String;
+  mr: Word;
 begin
   with spMessage do
   begin
-    StoredProcName:= 'MESSAGE_RELEASE';
-    Params.ClearValues;
-    ParamByName('I_MESSAGE_ID').AsInteger:= aMessageId;
-    ExecProc;
+  end;
+  ErrorCount:= aTransaction.DefaultDatabase.QueryValue(
+    'select count(n.notify_id) from notifies n where n.notify_class = ''E'' and n.message_id = :message_id',
+     0, [aMessageId], aTransaction);
+  WarningCount:= aTransaction.DefaultDatabase.QueryValue(
+    'select count(n.notify_id) from notifies n where n.notify_class = ''W'' and n.message_id = :message_id',
+     0, [aMessageId], aTransaction);
+  if ErrorCount+WarningCount = 0 then
+    Msg:= 'Файл успешно обработан.'#13'Принять вносимые изменения?'
+  else
+    Msg:= Format('При обработке файла было получено %u ошибок и %u предупреждений.'#13'Принять вносимые изменения с имеющимися ошибками и предупреждениями?',[ErrorCount, WarningCount]);
+  mr:= MessageDlg(Msg, mtConfirmation, [mbYes,mbNo], 0);
+  if mr = mrYes then
+  begin
+    dmOtto.MessageSuccess(aTransaction, aMessageId);
+    aTransaction.Commit;
+    ShowMessage('Изменения приняты');
+  end
+  else
+  begin
+    ShowMessage('Изменения отменены');
+    aTransaction.Rollback;
   end;
 end;
+
 
 procedure TdmOtto.MessageError(aTransaction: TpFIBTransaction; aMessageId: Integer);
 begin
@@ -964,6 +1008,35 @@ end;
 function TdmOtto.isAdminRoleGet: boolean;
 begin
   result:= FRole = 'RDB$ADMIN';
+end;
+
+function TdmOtto.DetectProductId(ndMessage: TXmlNode; aTransaction: TpFIBTransaction): Integer;
+var
+  PartnerNumber: string;
+begin
+  PartnerNumber:= GetXmlAttrValue(ndMessage, 'PARTNER_NUMBER');
+  Result:= aTransaction.DefaultDatabase.QueryValue(
+    'select pa.object_id from v_product_attrs pa '+
+    'where pa.attr_sign = ''PARTNER_NUMBER'' and pa.attr_value = :partner_number',
+    0, [PartnerNumber], aTransaction);
+end;
+
+function TdmOtto.DetectOrderCode(ndProduct: TXmlNode; aPostFix: string): WideString;
+begin
+  aPostFix:= FilterString(aPostFix, '0123456789');
+  aPostFix:= FillFront(CopyLast(aPostFix, 5), 5, '0');
+  Result:= ndProduct.ReadAttributeString('PRODUCT_CODE')+aPostFix;
+end;
+
+function TdmOtto.DetectOrderId(ndProduct: TXmlNode;
+  aPostFix: string; aTransaction: TpFIBTransaction): Variant;
+var
+  OrderCode: WideString;
+begin
+  OrderCode:= dmOtto.DetectOrderCode(ndProduct, aPostFix);
+  Result:= aTransaction.DefaultDatabase.QueryValue(
+    'select o.order_id from orders o where order_code = :order_code',
+    0, [OrderCode], aTransaction);
 end;
 
 initialization

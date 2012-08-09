@@ -14,7 +14,7 @@ uses
   Dialogs, Controls, GvFile, GvDtTm;
 
 procedure ParseInfo2PayLine(aMessageId, LineNo: Integer; aLine: string;
-  ndOrders: TXmlNode; aOnDate: TDateTime; aTransaction: TpFIBTransaction);
+  ndProduct, ndOrders: TXmlNode; aOnDate: TDateTime; aTransaction: TpFIBTransaction);
 var
   OrderId, OrderItemId: variant;
   sl: TStringList;
@@ -29,34 +29,37 @@ begin
     sl.Delimiter:= ';';
     sl.DelimitedText:= '"'+ReplaceAll(aLine, ';', '";"')+'"';
 
-    OrderId:= aTransaction.DefaultDatabase.QueryValue(
-      'select order_id from orders where order_code like ''_''||:order_code',
-      0, [FilterString(sl[2], '0123456789')], aTransaction);
+    OrderId:= dmOtto.DetectOrderId(ndProduct, sl[2], aTransaction);
     if OrderId<>null then
     begin
-      ndOrder:= ndOrders.NodeNew('ORDER');
-      ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
-      dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
-      SetXmlAttr(ndorder, 'INVOICE_DT_0', aOnDate);
-      SetXmlAttr(ndOrder, 'BYR2EUR', dmOtto.SettingGet(aTransaction, 'BYR2EUR', aOnDate+1));
-      SetXmlAttr(ndOrder, 'PACKLIST_NO', sl[1]);
-      dmOtto.ActionExecute(aTransaction, ndOrder, 'PREPACKED');
-      dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
+      ndOrder:= ndOrders.NodeByAttributeValue('ORDER', 'ID', OrderId, false);
+      if ndOrder = nil then
+      begin
+        ndOrder:= ndOrders.NodeNew('ORDER');
+        ndOrderItems:= ndOrder.NodeNew('ORDERITEMS');
+        dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
+        SetXmlAttr(ndorder, 'INVOICE_DT_0', aOnDate);
+        SetXmlAttr(ndOrder, 'BYR2EUR', dmOtto.SettingGet(aTransaction, 'BYR2EUR', aOnDate+1));
+        SetXmlAttr(ndOrder, 'PACKLIST_NO', sl[1]);
+        dmOtto.ActionExecute(aTransaction, ndOrder, 'PREPACKED');
+        dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
+        dmOtto.OrderItemsGet(ndOrderItems, OrderId, aTransaction);
+      end
+      else
+        ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
 
       Dimension:= dmOtto.Recode('ARTICLE', 'DIMENSION', sl[9]);
 
-      dmOtto.OrderItemsGet(ndOrderItems, OrderId, aTransaction);
-      ndOrderItem:= ChildByAttributes(ndOrderItems, 'AUFTRAG_ID;ORDERITEM_INDEX',
-        [sl[6], sl[7]]);
+      ndOrderItem:= ChildByAttributes(ndOrderItems, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
+                    [sl[6], sl[7], sl[8], VarArrayOf([Dimension, sl[9]])]);
+      if ndOrderItem = nil then
+        ndOrderItem:= ChildByAttributes(ndOrderItems, 'ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION;STATUS_SIGN',
+                      [sl[7], sl[8], VarArrayOf([Dimension, sl[9]]), VarArrayOf(['ACCEPTED','BUNDLING','PREPACK','CANCELREQUEST'])]);
       if ndOrderItem <> nil then
       begin
         OrderItemId:= GetXmlAttrValue(ndOrderItem, 'ID');
-        if GetXmlAttrValue(ndOrderItem, 'ORDERITEM_INDEX') = null then
-          SetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX', sl[7]);
-        MergeXmlAttr(ndOrderItem, 'AUFTRAG_ID', sl[6]);
 
         SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', sl[3]);
-
         if GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') <> GetXmlAttrAsMoney(ndOrderItem, 'COST_EUR') then
         begin
           dmOtto.Notify(aMessageId,
@@ -86,16 +89,17 @@ begin
               XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
               XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
               Value2Vars(LineNo, 'LINE_NO',
-              Value2Vars(E.Message, 'ERROR_TEXT')))));
+              Value2Vars(DeleteChars(E.Message, #10#13), 'ERROR_TEXT')))));
         end;
       end
       else
         dmOtto.Notify(aMessageId,
           '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Позиция не найдена в заявке [ORDER_CODE].',
           'E',
-          Strings2Vars(sl, 'AUFTRAG_ID=6;ORDERITEM_INDEX=7;ARTICLE_CODE=8;DIMENSION=9',
+          Strings2Vars(sl, 'AUFTRAG_ID=6;ORDERITEM_INDEX=7;ARTICLE_CODE=8',
+          Value2Vars(Dimension, 'DIMENSION',
           XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
-          Value2Vars(LineNo, 'LINE_NO'))));
+          Value2Vars(LineNo, 'LINE_NO')))));
     end
     else
       dmOtto.Notify(aMessageId,
@@ -108,28 +112,31 @@ begin
   end;
 end;
 
-procedure ParseInfo2Pay(aMessageId: Integer; ndOrders: TXmlNode;
+procedure ParseInfo2Pay(aMessageId: Integer; ndMessage: TXmlNode;
   aTransaction: TpFIBTransaction);
 var
   LineNo, ErrorCount: Integer;
   NeedCommit: Boolean;
   Lines: TStringList;
-  MessageFileName: variant;
-  ndOrder, ndOrderItems: TXmlNode;
-  DayNo: Variant;
+  MessageFileName: String;
+  ndProduct, ndOrders, ndOrder, ndOrderItems: TXmlNode;
+  OnDate: TDateTime;
 begin
   dmOtto.ClearNotify(aMessageId);
-  MessageFileName:= dmOtto.dbOtto.QueryValue(
-    'select m.file_name from messages m where m.message_id = :message_id', 0,
-    [aMessageId]);
-  DayNo:= CopyBack4(ExtractFileNameOnly(MessageFileName), '_');
-  dmOtto.Notify(aMessageId,
-    'Начало обработки файла: [FILE_NAME]', '',
-    Value2Vars(MessageFileName, 'FILE_NAME'));
-  // загружаем файл
   if not aTransaction.Active then
     aTransaction.StartTransaction;
   try
+    dmOtto.ObjectGet(ndMessage, aMessageId, aTransaction);
+    ndProduct:= ndMessage.NodeFindOrCreate('PRODUCT');
+    dmOtto.ObjectGet(ndProduct, dmOtto.DetectProductId(ndMessage, aTransaction), aTransaction);
+    ndOrders:= ndMessage.NodeFindOrCreate('ORDERS');
+
+    MessageFileName:= GetXmlAttrValue(ndMessage, 'FILE_NAME');
+    OnDate:= DateOfYear(GetXmlAttrValue(ndMessage, 'DAYNO'));
+    dmOtto.Notify(aMessageId,
+      'Начало обработки файла: [FILE_NAME]', '',
+      Value2Vars(MessageFileName, 'FILE_NAME'));
+
     Lines:= TStringList.Create;
     try
       if FileExists(Path['Messages.In']+MessageFileName) then
@@ -140,7 +147,7 @@ begin
         For LineNo:= 0 to Lines.Count - 1 do
         begin
           if Lines[LineNo] <> '' then
-            ParseInfo2PayLine(aMessageId, LineNo, Lines[LineNo], ndOrders, DateOfYear(DayNo), aTransaction);
+            ParseInfo2PayLine(aMessageId, LineNo, Lines[LineNo], ndProduct, ndOrders, OnDate, aTransaction);
           dmOtto.StepProgress;
         end;
       end
@@ -155,20 +162,8 @@ begin
         Value2Vars(MessageFileName, 'FILE_NAME'));
       Lines.Free;
     end;
-    ErrorCount:= aTransaction.DefaultDatabase.QueryValue(
-      'select count(n.notify_id) from notifies n where n.notify_class = ''E'' and n.message_id = :message_id',
-      0, [aMessageId], aTransaction);
-    dmOtto.MessageRelease(aTransaction, aMessageId);
-    NeedCommit:= ErrorCount = 0;
-    if not NeedCommit then
-      NeedCommit:= MessageDlg(Format('При обработке файла было получено %u ошибок. Принять вносимые изменения с ошибками?',[ErrorCount]), mtConfirmation, mbYesNoCancel, 0) = mrYes;
-    if NeedCommit then
-    begin
-      dmOtto.MessageSuccess(aTransaction, aMessageId);
-      aTransaction.Commit;
-    end
-    else
-      aTransaction.Rollback;
+    dmOtto.ShowProtocol(aTransaction, aMessageId);
+    dmOtto.MessageCommit(aTransaction, aMessageId);
   except
     aTransaction.Rollback;
   end;
@@ -179,10 +174,8 @@ var
   aXml: TNativeXml;
 begin
   aXml:= TNativeXml.CreateName('MESSAGE');
-  SetXmlAttr(aXml.Root, 'MESSAGE_ID', aMessageId);
   try
     ParseInfo2Pay(aMessageId, aXml.Root, aTransaction);
-    dmOtto.ShowProtocol(aTransaction, aMessageId);
   finally
     aXml.Free;
   end;

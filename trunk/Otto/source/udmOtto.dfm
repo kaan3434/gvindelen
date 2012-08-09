@@ -112,6 +112,7 @@ object dmOtto: TdmOtto
     Top = 176
   end
   object trnAutonomouse: TpFIBTransaction
+    Active = True
     DefaultDatabase = dbOtto
     TimeoutAction = TARollback
     TRParams.Strings = (
@@ -142,8 +143,6 @@ object dmOtto: TdmOtto
     Database = dbOtto
     Left = 408
     Top = 96
-    qoAutoCommit = True
-    qoStartTransaction = True
   end
   object mtblControlSets: TMemTableEh
     Active = True

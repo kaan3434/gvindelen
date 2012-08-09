@@ -1,7 +1,7 @@
 unit uExportOrder;
 interface
 uses
-  Classes, SysUtils, FIBDatabase, pFIBDatabase, JvProgressComponent;
+  Classes, SysUtils, FIBDatabase, pFIBDatabase, JvProgressComponent, Controls;
 
 procedure ExportApprovedOrder(aTransaction: TpFIBTransaction);
 
@@ -157,12 +157,14 @@ begin
   try
     dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
     OrderList:= aTransaction.DefaultDatabase.QueryValue(
-      'select list(distinct o.order_id) '+
+      'select list(distinct order_id) from ( '+
+      'select o.order_id, o.order_code '+
       'from orderitems oi '+
       'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''APPROVED'') '+
       'left join statuses s2 on (s2.status_id = oi.state_id and s2.status_sign <> ''ACCEPTREQUESTSENT'') '+
       'inner join orders o on (o.order_id = oi.order_id) '+
-      'where o.product_id = :product_id',
+      'where o.product_id = :product_id '+
+      'order by o.order_code)',
       0, [aProductId], aTransaction);
     while OrderList <> '' do
     begin
@@ -213,7 +215,10 @@ begin
     finally
       Xml.Free;
     end;
-    aTransaction.Commit;
+    if MessageDlg('Файлы на отправку сформированы. Сохранить изменения?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+      aTransaction.Commit
+    else
+      aTransaction.Rollback;
   except
     aTransaction.Rollback;
   end;
