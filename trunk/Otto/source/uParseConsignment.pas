@@ -212,24 +212,29 @@ begin
       'Начало обработки файла: [FILE_NAME]', '',
       Value2Vars(MessageFileName, 'FILE_NAME'));
 
-    if FileExists(Path['Messages.In']+MessageFileName) then
-    begin
-      Lines:= TStringList.Create;
-      try
+    Lines:= TStringList.Create;
+    try
+      if FileExists(Path['Messages.In']+MessageFileName) then
+      begin
         Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
+        dmOtto.InitProgress(Lines.Count, Format('Обработка файла %s ...', [MessageFileName]));
         For LineNo:= 0 to Lines.Count - 1 do
+        begin
           ParseConsignmentLine(aMessageId, LineNo, Lines[LineNo], ndProduct, ndOrders, aTransaction);
-      finally
-        Lines.Free;
-      end;
-    end
-    else
+          dmOtto.StepProgress;
+        end;
+      end
+      else
+        dmOtto.Notify(aMessageId,
+          'Файл [FILE_NAME] не найден.', 'E',
+          Value2Vars(MessageFileName, 'FILE_NAME'));
+    finally
+      dmOtto.InitProgress;
       dmOtto.Notify(aMessageId,
-        'Файл [FILE_NAME] не найден.', 'E',
+        'Конец обработки файла: [FILE_NAME]', '',
         Value2Vars(MessageFileName, 'FILE_NAME'));
-    dmOtto.Notify(aMessageId,
-      'Конец обработки файла: [FILE_NAME]', '',
-      Value2Vars(MessageFileName, 'FILE_NAME'));
+      Lines.Free;
+    end;
     dmOtto.ShowProtocol(aTransaction, aMessageId);
     dmOtto.MessageCommit(aTransaction, aMessageId);
   except

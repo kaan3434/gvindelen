@@ -74,7 +74,7 @@ type
     function GetDefaultStatusId(aObjectSign: string): Integer;
     procedure FillMemTable(aMemTable: TMemTableEh; aSQLClause: String);
     function MessageBusy(aTemplateId: Integer): Integer;
-    procedure MessageRelease(aTransaction: TpFIBTransaction; aTemplateId: Integer);
+    procedure MessageRelease(aTemplateId: Integer);
     procedure MessageCommit(aTransaction: TpFIBTransaction;
       aMessageId: Integer);
     procedure MessageSuccess(aTransaction: TpFIBTransaction; aMessageId: Integer);
@@ -347,12 +347,21 @@ begin
   end;
 end;
 
-procedure TdmOtto.MessageRelease(aTransaction: TpFIBTransaction; aTemplateId: Integer);
-var
-  NeedAutoCommit: Boolean;
+procedure TdmOtto.MessageRelease(aTemplateId: Integer);
 begin
-  //проапдейтить все записи по пользователю по даннму шаблону
-
+  with spMessage do
+  begin
+    Transaction.StartTransaction;
+    try
+      StoredProcName:= 'MESSAGE_RELEASE';
+      Params.ClearValues;
+      ParamByName('I_TEMPLATE_ID').AsInteger:= aTemplateId;
+      ExecProc;
+      Transaction.Commit;
+    except
+      Transaction.Rollback;
+    end;
+  end;
 end;
 
 procedure TdmOtto.MessageCommit(aTransaction: TpFIBTransaction; aMessageId: Integer);

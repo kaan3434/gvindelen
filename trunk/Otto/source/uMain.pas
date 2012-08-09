@@ -296,6 +296,7 @@ begin
       Application.ProcessMessages;
     end;
   until vMessageId = 0;
+  dmOtto.MessageRelease(3);
 end;
 
 procedure TMainForm.actProcessLieferExecute(Sender: TObject);
@@ -310,6 +311,7 @@ begin
       Application.ProcessMessages;
     end;
   until vMessageId = 0;
+  dmOtto.MessageRelease(4);
 end;
 
 procedure TMainForm.actProcessConsignmentExecute(Sender: TObject);
@@ -324,6 +326,7 @@ begin
       Application.ProcessMessages;
     end;
   until vMessageId = 0;
+  dmOtto.MessageRelease(6);
 end;
 
 procedure TMainForm.actProcessPackListExecute(Sender: TObject);

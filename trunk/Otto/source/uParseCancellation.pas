@@ -60,7 +60,7 @@ begin
         if NewStatusSign = sl[11] then
         begin
           dmOtto.Notify(aMessageId,
-            '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестный DeliveryCode = [CANCEL_MESSAGE]',
+            '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестный DeliveryCode = [CANCEL_MESSAGE]',
             'E',
             XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
             XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
@@ -73,7 +73,7 @@ begin
           dmOtto.ActionExecute(aTransaction, ndOrderItem);
           dmOtto.ObjectGet(ndOrderItem, OrderItemId, aTransaction);
           dmOtto.Notify(aMessageId,
-            '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [STATUS_NAME]',
+            '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [STATUS_NAME]',
             IfThen(NewStatusSign='ANULLED', 'W', 'I'),
             XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION;STATUS_NAME',
             XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
@@ -81,7 +81,7 @@ begin
         except
           on E: Exception do
             dmOtto.Notify(aMessageId,
-              '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Ошибка ([ERROR_TEXT])',
+              '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Ошибка ([ERROR_TEXT])',
               'E',
               XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
               XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
@@ -91,7 +91,7 @@ begin
       end
       else
         dmOtto.Notify(aMessageId,
-          '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Позиция не найдена в заявке [ORDER_CODE].',
+          '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Позиция не найдена в заявке [ORDER_CODE].',
           'E',
           Strings2Vars(sl, 'AUFTRAG_ID=3;ORDERITEM_INDEX=4;ARTICLE_CODE=5;DIMENSION=6',
           XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
@@ -99,7 +99,7 @@ begin
     end
     else
       dmOtto.Notify(aMessageId,
-        '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестная заявка [ORDER_CODE].',
+        '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестная заявка [ORDER_CODE].',
         'E',
         Strings2Vars(sl, 'ORDER_CODE=1;AUFTRAG_ID=3;ORDERITEM_INDEX=4;ARTICLE_CODE=5;DIMENSION=6',
         Value2Vars(LineNo, 'LINE_NO')));
@@ -133,8 +133,12 @@ begin
       if FileExists(Path['Messages.In']+MessageFileName) then
       begin
         Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
+        dmOtto.InitProgress(Lines.Count, Format('Обработка файла %s ...', [MessageFileName]));
         For LineNo:= 0 to Lines.Count - 1 do
+        begin
           ParseCancelLine(aMessageId, LineNo, Lines[LineNo], ndProduct, ndOrders, aTransaction);
+          dmOtto.StepProgress;
+        end
       end
       else
         dmOtto.Notify(aMessageId,
