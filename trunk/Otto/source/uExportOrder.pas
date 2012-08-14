@@ -173,8 +173,6 @@ begin
       ClientText:= ClientText + ExportClient(aTransaction, ndProduct, OrderId);
     end;
 
-
-
     FileName:= GetNextFileName(Format('%sa%s_%%.2u.%.3d', [
       Path['OrderRequests'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
       DayOfTheYear(Date)]));
