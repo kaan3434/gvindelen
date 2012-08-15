@@ -202,7 +202,7 @@ begin
         dmOtto.InitProgress(Lines.Count*2, Format('Обработка файла %s ...', [MessageFileName]));
         For LineNo:= 0 to Lines.Count - 1 do
         begin
-          ParseProtocolLine(aMessageId, LineNo, DealId, Lines[LineNo], ndProduct, ndOrders, aTransaction);
+          ParseProtocolLine(aMessageId, LineNo+1, DealId, Lines[LineNo], ndProduct, ndOrders, aTransaction);
           dmOtto.StepProgress;
         end;
 

@@ -69,6 +69,7 @@ begin
         end;
         SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', NewStatusSign);
 
+        if IsWordPresent('CREDIT', GetXmlAttrValue(ndOrderItem, 'STATUS_FLAG_LIST'), ',') then
         try
           dmOtto.ActionExecute(aTransaction, ndOrderItem);
           dmOtto.ObjectGet(ndOrderItem, OrderItemId, aTransaction);
@@ -87,7 +88,14 @@ begin
               XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
               Value2Vars(LineNo, 'LINE_NO',
               Value2Vars(E.Message, 'ERROR_TEXT')))));
-        end;
+        end
+        else
+          dmOtto.Notify(aMessageId,
+            '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Уже в статусе [STATUS_NAME]',
+            IfThen(NewStatusSign='ANULLED', 'W', 'I'),
+            XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION;STATUS_NAME',
+            XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
+            Value2Vars(LineNo, 'LINE_NO'))));
       end
       else
         dmOtto.Notify(aMessageId,
@@ -136,7 +144,7 @@ begin
         dmOtto.InitProgress(Lines.Count, Format('Обработка файла %s ...', [MessageFileName]));
         For LineNo:= 0 to Lines.Count - 1 do
         begin
-          ParseCancelLine(aMessageId, LineNo, Lines[LineNo], ndProduct, ndOrders, aTransaction);
+          ParseCancelLine(aMessageId, LineNo+1, Lines[LineNo], ndProduct, ndOrders, aTransaction);
           dmOtto.StepProgress;
         end
       end
