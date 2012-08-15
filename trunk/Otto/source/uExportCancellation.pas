@@ -1,7 +1,7 @@
 unit uExportCancellation;
 interface
 uses
-  Classes, SysUtils, FIBDatabase, pFIBDatabase, JvProgressComponent;
+  Classes, Controls, SysUtils, FIBDatabase, pFIBDatabase;
 
 procedure ExportCancelRequest(aTransaction: TpFIBTransaction);
 
@@ -10,18 +10,15 @@ implementation
 uses
   NativeXml, GvNativeXml, udmOtto, GvStr, GvFile, GvDtTm, DateUtils, Dialogs;
 
-var
-  ProgressIndicator: TJvProgressComponent;
-
 function ExportOrderItem(aTransaction: TpFIBTransaction;
-  ndProduct, ndOrder: TXmlNode; aOrderItemId: integer): string;
+  ndProduct, ndOrder, ndOrderItems: TXmlNode; aOrderItemId: integer): string;
 var
   ndOrderItem: TXmlNode;
   Line: TStringList;
 begin
-  ndOrderItem:= ndOrder.NodeFindOrCreate('ORDERITEMS').NodeFindOrCreate('ORDERITEM');
   Line:= TStringList.Create;
   try
+    ndOrderItem:= ndOrderItems.NodeNew('ORDERITEM');
     dmOtto.ObjectGet(ndOrderItem, aOrderItemId, aTransaction);
     Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
     Line.Add(CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5));
@@ -31,58 +28,56 @@ begin
     Line.Add(GetXmlAttr(ndOrderItem, 'ARTICLE_CODE'));
     Line.Add(dmOtto.Recode('ARTICLE', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION')));
     Line.Add('1');
-    SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'CANCELREQUESTSENT');
     Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
+    SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'CANCELREQUESTSENT');
     dmOtto.ActionExecute(aTransaction, ndOrderItem);
   finally
     Line.Free;
-    ndOrderItem.Clear;
   end;
 end;
 
 function ExportOrder(aTransaction: TpFIBTransaction;
-  ndProduct: TXmlNode; aOrderId: integer): string;
+  ndProduct, ndOrders: TXmlNode; aOrderId: integer): string;
 var
   OrderItemList: string;
-  ndOrder: TXmlNode;
+  ndOrder, ndOrderItems: TXmlNode;
   OrderItemId: Variant;
 begin
   Result:= '';
-  ndOrder:= ndProduct.NodeFindOrCreate('ORDERS').NodeFindOrCreate('ORDER');
-  try
-    dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
-    OrderItemList:= aTransaction.DefaultDatabase.QueryValue(
-      'select list(oi.orderitem_id) '+
-      'from orderitems oi '+
-      'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''CANCELREQUEST'') '+
-      'left join statuses s2 on (s2.status_id = oi.state_id) '+
-      'where coalesce(s2.status_sign, '''')  <> ''CANCELREQUESTSENT'' '+
-      '  and oi.order_id = :order_id '+
-      'order by oi.orderitem_id',
-      0, [aOrderId], aTransaction);
-    while OrderItemList <> '' do
-    begin
-      OrderItemId:= TakeFront5(OrderItemList, ',');
-      result:= Result + ExportOrderItem(aTransaction, ndProduct, ndOrder, OrderItemId);
-    end;
-  finally
-    ndOrder.Clear;
+  ndOrder:= ndOrders.NodeNew('ORDER');
+  ndOrderItems:= ndOrder.NodeNew('ORDERITEMS');
+  dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
+  OrderItemList:= aTransaction.DefaultDatabase.QueryValue(
+    'select list(orderitem_id) from '+
+    '(select oi.orderitem_id '+
+    ' from orderitems oi '+
+    '  inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''CANCELREQUEST'') '+
+    '  left join statuses s2 on (s2.status_id = oi.state_id) '+
+    ' where coalesce(s2.status_sign, '''')  <> ''CANCELREQUESTSENT'' '+
+    '  and oi.order_id = :order_id '+
+    'order by oi.auftrag_id,oi.orderitem_index)',
+    0, [aOrderId], aTransaction);
+  while OrderItemList <> '' do
+  begin
+    OrderItemId:= TakeFront5(OrderItemList, ',');
+    result:= Result + ExportOrderItem(aTransaction, ndProduct, ndOrder, ndOrderItems, OrderItemId);
   end;
 end;
 
 procedure ExportProduct(aTransaction: TpFIBTransaction;
-  ndProduct: TXmlNode; aProductId: integer);
+  ndProducts: TXmlNode; aProductId: integer);
 var
-  ndProduct: TXmlNode;
+  ndProduct, ndOrders: TXmlNode;
   OrderList, FileName, Text: string;
   OrderId: variant;
 begin
   Text:= '';
   try
     ndProduct:= ndProducts.NodeNew('PRODUCT');
+    ndOrders:= ndProduct.NodeNew('ORDERS');
     dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
     OrderList:= aTransaction.DefaultDatabase.QueryValue(
-      'select list(distinct o.order_id) from ('
+      'select list(distinct order_id) from ('+
       'select o.order_id, o.order_code '+
       'from orderitems oi '+
       'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''CANCELREQUEST'') '+
@@ -95,7 +90,7 @@ begin
     while OrderList <> '' do
     begin
       OrderId:= TakeFront5(OrderList, ',');
-      Text:= Text + ExportOrder(aTransaction, ndProduct, OrderId);
+      Text:= Text + ExportOrder(aTransaction, ndProduct, ndOrders, OrderId);
     end;
     ForceDirectories(Path['CancelRequests']);
     FileName:= GetNextFileName(Format('%ss%s_%%.2u.%.3d', [
