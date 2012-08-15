@@ -1,16 +1,13 @@
 unit uExportOrder;
 interface
 uses
-  Classes, SysUtils, FIBDatabase, pFIBDatabase, JvProgressComponent, Controls;
+  Classes, SysUtils, FIBDatabase, pFIBDatabase, Controls;
 
 procedure ExportApprovedOrder(aTransaction: TpFIBTransaction);
 
 implementation
 uses
   udmOtto, NativeXml, GvNativeXml, GvStr, GvMath, GvFile, DateUtils, Dialogs;
-
-var
-  ProgressIndicator: TJvProgressComponent;
 
 function GetPlace(ndPlace: TXmlNode; MaxLen: integer): string;
 begin
@@ -41,15 +38,13 @@ begin
 end;
 
 function ExportClient(aTransaction: TpFIBTransaction;
-  ndProduct: TXmlNode; aOrderId: integer): string;
+  ndProduct, ndOrders: TXmlNode; aOrderId: integer): string;
 var
-  OrderItemList: string;
   ndOrder, ndClient, ndAdress, ndPlace: TXmlNode;
-  OrderItemId: Variant;
   Line: TStringList;
 begin
   Result:= '';
-  ndOrder:= ndProduct.NodeFindOrCreate('ORDERS').NodeFindOrCreate('ORDER');
+  ndOrder:= ndOrders.NodeNew('ORDER');
   ndClient:= ndOrder.NodeFindOrCreate('CLIENT');
   ndAdress:= ndOrder.NodeFindOrCreate('ADRESS');
   ndPlace:= ndAdress.NodeFindOrCreate('PLACE');
@@ -59,9 +54,6 @@ begin
     dmOtto.ObjectGet(ndClient, GetXmlAttrValue(ndOrder, 'CLIENT_ID'), aTransaction);
     dmOtto.ObjectGet(ndAdress, GetXmlAttrValue(ndOrder, 'ADRESS_ID'), aTransaction);
     dmOtto.ObjectGet(ndPlace, GetXmlAttrValue(ndAdress, 'PLACE_ID'), aTransaction);
-    ndOrder.ValueAsBool:= True;
-    ndOrder.Document.XmlFormat:= xfReadable;
-    ndOrder.Document.SaveToFile('Order.xml');
     if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'APPROVED') then
     begin
       Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
@@ -77,22 +69,21 @@ begin
       Line.Add(GetPlace(ndPlace, 24));
       Line.Add('N');
       Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
-      if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'APPROVED') then
-        dmOtto.ActionExecute(aTransaction, ndOrder, 'ACCEPTREQUEST');
+      SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'ACCEPTREQUEST');
+      dmOtto.ActionExecute(aTransaction, ndOrder);
     end;
   finally
     Line.Free;
-    ndOrder.Clear;
   end;
 end;
 
 function ExportOrderItem(aTransaction: TpFIBTransaction;
-  ndProduct, ndOrder: TXmlNode; aOrderItemId: integer): string;
+  ndProduct, ndOrder, ndOrderItems: TXmlNode; aOrderItemId: integer): string;
 var
   ndOrderItem: TXmlNode;
   Line: TStringList;
 begin
-  ndOrderItem:= ndOrder.NodeFindOrCreate('ORDERITEMS').NodeFindOrCreate('ORDERITEM');
+  ndOrderItem:= ndOrderItems.NodeNew('ORDERITEM');
   Line:= TStringList.Create;
   try
     dmOtto.ObjectGet(ndOrderItem, aOrderItemId, aTransaction);
@@ -110,79 +101,77 @@ begin
     Line.Add('');
     Line.Add('0');
     Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
-    if not XmlAttrIn(ndOrder, 'STATUS_SIGN', 'APPROVED') then
-      dmOtto.ActionExecute(aTransaction, ndOrderItem, 'ACCEPTREQUEST');
+    SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'ACCEPTREQUEST');
+    dmOtto.ActionExecute(aTransaction, ndOrderItem);
   finally
     Line.Free;
-    ndOrderItem.Clear;
   end;
 end;
 
 function ExportOrder(aTransaction: TpFIBTransaction;
-  ndProduct: TXmlNode; aOrderId: integer): string;
+  ndProduct, ndOrders: TXmlNode; aOrderId: Integer): string;
 var
   OrderItemList: string;
-  ndOrder: TXmlNode;
+  ndOrder, ndOrderItems: TXmlNode;
   OrderItemId: Variant;
 begin
   Result:= '';
-  ndOrder:= ndProduct.NodeFindOrCreate('ORDERS').NodeFindOrCreate('ORDER');
-  try
+  ndOrder:= ndOrders.NodeByAttributeValue('ORDER', 'ID', IntToStr(aOrderId), false);
+  if ndOrder = nil then
+  begin
+    ndOrder:= ndOrders.NodeNew('ORDER');
     dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
-    OrderItemList:= aTransaction.DefaultDatabase.QueryValue(
-      'select list(oi.orderitem_id) '+
-      'from orderitems oi '+
-      'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''APPROVED'') '+
-      'left join statuses s2 on (s2.status_id = oi.state_id and s2.status_sign <> ''ACCEPTREQUESTSENT'') '+
-      'where oi.order_id = :order_id',
-      0, [aOrderId], aTransaction);
-    while OrderItemList <> '' do
-    begin
-      OrderItemId:= TakeFront5(OrderItemList, ',');
-      result:= Result + ExportOrderItem(aTransaction, ndProduct, ndOrder, OrderItemId);
-    end;
-  finally
-    ndOrder.Clear;
+  end;
+  ndOrderItems:= ndOrder.NodeNew('ORDERITEMS');
+
+  dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
+  OrderItemList:= aTransaction.DefaultDatabase.QueryValue(
+    'select list(orderitem_id) from ('+
+    'select oi.orderitem_id '+
+    'from orderitems oi '+
+    '  inner join statuses s on (s.status_id = oi.status_id and s.status_sign = ''APPROVED'') '+
+    'where oi.order_id = :order_id '+
+    'order by oi.orderitem_id)',
+    0, [aOrderId], aTransaction);
+  while OrderItemList <> '' do
+  begin
+    OrderItemId:= TakeFront5(OrderItemList, ',');
+    result:= Result + ExportOrderItem(aTransaction, ndProduct, ndOrder, ndOrderItems, OrderItemId);
   end;
 end;
 
 procedure ExportProduct(aTransaction: TpFIBTransaction;
   ndProducts: TXmlNode; aProductId: integer);
 var
-  ndProduct: TXmlNode;
+  ndProduct, ndOrders: TXmlNode;
   OrderList, FileName, ClientText, OrderItemText: string;
   OrderId: variant;
 begin
   ndProduct:= ndProducts.NodeFindOrCreate('PRODUCT');
-  try
-    dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
-    OrderList:= aTransaction.DefaultDatabase.QueryValue(
-      'select list(distinct order_id) from ( '+
-      'select o.order_id, o.order_code '+
-      'from orderitems oi '+
-      'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''APPROVED'') '+
-      'left join statuses s2 on (s2.status_id = oi.state_id and s2.status_sign <> ''ACCEPTREQUESTSENT'') '+
-      'inner join orders o on (o.order_id = oi.order_id) '+
-      'where o.product_id = :product_id '+
-      'order by o.order_code)',
-      0, [aProductId], aTransaction);
-    while OrderList <> '' do
-    begin
-      OrderId:= TakeFront5(OrderList, ',');
-      OrderItemText:= OrderItemText + ExportOrder(aTransaction, ndProduct, OrderId);
-      ClientText:= ClientText + ExportClient(aTransaction, ndProduct, OrderId);
-    end;
-
-    FileName:= GetNextFileName(Format('%sa%s_%%.2u.%.3d', [
-      Path['OrderRequests'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
-      DayOfTheYear(Date)]));
-    ForceDirectories(ExtractFileDir(FileName));
-    SaveStringAsFile(ClientText+OrderItemText, FileName);
-    dmOtto.CreateAlert('Отправка заявок', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
-    // CreateOutgoingMessage(FileName);
-  finally
-    ndProduct.Clear;
+  ndOrders:= ndProduct.NodeNew('ORDERS');
+  dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
+  OrderList:= aTransaction.DefaultDatabase.QueryValue(
+    'select list(distinct order_id) from ( '+
+    'select o.order_id, o.order_code '+
+    'from orderitems oi '+
+    'inner join statuses s on (s.status_id = oi.status_id and s.status_sign = ''APPROVED'') '+
+    'inner join orders o on (o.order_id = oi.order_id) '+
+    'where o.product_id = :product_id '+
+    'order by o.order_code)',
+    0, [aProductId], aTransaction);
+  while OrderList <> '' do
+  begin
+    OrderId:= TakeFront5(OrderList, ',');
+    ClientText:= ClientText + ExportClient(aTransaction, ndProduct, ndOrders, OrderId);
+    OrderItemText:= OrderItemText + ExportOrder(aTransaction, ndProduct, ndOrders, OrderId);
   end;
+
+  ForceDirectories(Path['OrderRequests']);
+  FileName:= GetNextFileName(Format('%sa%s_%%.2u.%.3d', [
+    Path['OrderRequests'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
+    DayOfTheYear(Date)]));
+  SaveStringAsFile(ClientText+OrderItemText, FileName);
+  dmOtto.CreateAlert('Отправка заявок', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
 end;
 
 procedure ExportApprovedOrder(aTransaction: TpFIBTransaction);
@@ -201,8 +190,7 @@ begin
       ProductList:= aTransaction.DefaultDatabase.QueryValue(
         'select list(distinct o.product_id) '+
         'from orderitems oi '+
-        'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''APPROVED'') '+
-        'left join statuses s2 on (s2.status_id = oi.state_id and s2.status_sign <> ''ACCEPTREQUESTSENT'') '+
+        'inner join statuses s on (s.status_id = oi.status_id and s.status_sign = ''APPROVED'') '+
         'inner join orders o on (o.order_id = oi.order_id)',
         0, aTransaction);
       while ProductList <> '' do

@@ -17,26 +17,21 @@ var
   OrderCode, FileName: string;
 begin
   ndOrder:= ndOrders.NodeNew('ORDER');
-  try
-    ndClient:= ndOrder.NodeNew('CLIENT');
-    ndOrderItems:= ndOrder.NodeNew('ORDERITEMS');
-    ndOrderTaxs:= ndOrder.NodeNew('ORDERTAXS');
-    ndOrderMoneys:= ndOrder.NodeNew('ORDERMONEYS');
-    dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
-    dmOtto.OrderItemsGet(ndOrderItems, aOrderId, aTransaction);
-    dmOtto.OrderTaxsGet(ndOrderTaxs, aOrderId, aTransaction);
-    dmOtto.OrderMoneysGet(ndOrderMoneys, aOrderId, aTransaction);
-    dmOtto.ObjectGet(ndClient, GetXmlAttrValue(ndOrder, 'CLIENT_ID'), aTransaction);
-    OrderCode:= GetXmlAttrValue(ndOrder, 'ORDER_CODE');
-    FileName:= Format('%s%s.xml',[
-      Path['ExportToSite'],
-      FillFront(FilterString(OrderCode, '0123456789'), 5, '0')]);
-    ndOrder.Document.EncodingString:= 'Windows-1251';
-    ndOrder.Document.XmlFormat:= xfReadable;
-    ndOrder.Document.SaveToFile(FileName);
-  finally
-    ndOrder.Delete;
-  end;
+  ndClient:= ndOrder.NodeNew('CLIENT');
+  ndOrderItems:= ndOrder.NodeNew('ORDERITEMS');
+  ndOrderTaxs:= ndOrder.NodeNew('ORDERTAXS');
+  ndOrderMoneys:= ndOrder.NodeNew('ORDERMONEYS');
+  dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
+  dmOtto.OrderItemsGet(ndOrderItems, aOrderId, aTransaction);
+  dmOtto.OrderTaxsGet(ndOrderTaxs, aOrderId, aTransaction);
+  dmOtto.OrderMoneysGet(ndOrderMoneys, aOrderId, aTransaction);
+  dmOtto.ObjectGet(ndClient, GetXmlAttrValue(ndOrder, 'CLIENT_ID'), aTransaction);
+  OrderCode:= GetXmlAttrValue(ndOrder, 'ORDER_CODE');
+  ForceDirectories(Path['ExportToSite']);
+  FileName:= Format('%s%s.xml',[Path['ExportToSite'], OrderCode]);
+  ndOrder.Document.EncodingString:= 'Windows-1251';
+  ndOrder.Document.XmlFormat:= xfReadable;
+  ndOrder.Document.SaveToFile(FileName);
 end;
 
 procedure ExportToSite(aTransaction: TpFIBTransaction);
@@ -53,11 +48,22 @@ begin
   try
     ndOrders:= Xml.Root;
     OrderList:= aTransaction.DefaultDatabase.QueryValue(
-      'select list(o.order_id) '+
-      'from orders o '+
-      'where o.create_dtm >= current_date - 100 '+
-      ' and o.order_code is not null '+
-      'order by o.order_id',
+      'select list(order_id) from ('+
+      'select order_id, max(status_dtm) status_dtm from ('+
+      'select o.order_id, o.status_dtm '+
+      '  from orders o '+
+      'union '+
+      'select oi.order_id, oi.status_dtm '+
+      '  from orderitems oi '+
+      'union '+
+      'select om.order_id, om.status_dtm '+
+      '  from ordermoneys om '+
+      'union '+
+      'select ot.order_id, ot.status_dtm '+
+      '  from ordertaxs ot) '+
+      'where order_id in (select order_id from orders where order_code is not null) '+
+      'group by order_id '+
+      'having max(status_dtm) > current_date-10)',
        0, aTransaction);
     OrderCount:= WordCount(OrderList, ',');
     dmOtto.InitProgress(OrderCount, 'Выгрузка данных для сайта');
