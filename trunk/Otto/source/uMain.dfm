@@ -23,8 +23,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 837
-    Height = 65
+    Width = 829
+    Height = 69
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -219,7 +219,7 @@ object MainForm: TMainForm
     end
     object barInfo: TTBXToolbar
       Left = 0
-      Top = 47
+      Top = 49
       Caption = 'barInfo'
       TabOrder = 1
       object lblBYR2EUR: TTBXLabelItem
@@ -228,16 +228,16 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 436
-    Width = 837
+    Top = 432
+    Width = 829
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object pbMain: TProgressBar
     Left = 0
-    Top = 419
-    Width = 837
+    Top = 415
+    Width = 829
     Height = 17
     Align = alBottom
     TabOrder = 1
@@ -1879,8 +1879,8 @@ object MainForm: TMainForm
     PreviewOptions.ZoomMode = zmManyPages
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
-    ReportOptions.CreateDate = 41052.470927870400000000
-    ReportOptions.LastChange = 41085.691627338000000000
+    ReportOptions.CreateDate = 40773.818275636600000000
+    ReportOptions.LastChange = 40907.121787245400000000
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
     Left = 352

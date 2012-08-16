@@ -183,8 +183,6 @@ var
   ProductId: Variant;
   ProductList: string;
 begin
-  if aTransaction.Active then
-    ShowMessage('Активная транзакция');
   aTransaction.StartTransaction;
   try
     xml:= TNativeXml.CreateName('PRODUCTS');

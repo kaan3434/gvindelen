@@ -8,7 +8,8 @@ procedure ExportPackList(aTransaction: TpFIBTransaction);
 
 implementation
 uses
-  SysUtils, GvNativeXml, udmOtto, GvStr, Dbf, GvFile, uMain, Dialogs, GvVariant;
+  SysUtils, GvNativeXml, udmOtto, GvStr, Dbf, GvFile, uMain, Dialogs, GvVariant,
+  frxClass, frxExportXLS;
 
 function GetPlace(ndPlace: TXmlNode): string;
 begin
@@ -170,8 +171,25 @@ begin
   end;
 end;
 
+procedure MakeXls(aPacklistNo: Integer; aFileName: string);
+var
+  frxReport: TfrxReport;
+  frxExportXLS: TfrxXLSExport;
+begin
+  with dmOtto do
+  begin
+    frxExportXLS.DefaultPath:= Path['DbfPackLists'];
+    frxExportXLS.FileName:= aFileName;
+    frxReport.LoadFromFile(Path['FastReport'] + 'packlistpi3.fr3');
+    frxReport.Variables.Variables['PackList_No']:= Format('''%u''', [aPacklistNo]);
+    frxReport.PrepareReport(true);
+    frxReport.Export(frxExportXLS);
+  end;
+end;
+
+
 procedure ExportPack(aTransaction: TpFIBTransaction;
-  ndProduct: TXmlNode; aPackNo: integer);
+  ndProduct, ndOrders: TXmlNode; aPacklistNo: integer);
 const
   HeaderText = 'Формирование паклиста';
 var
@@ -179,78 +197,73 @@ var
   OrderList: string;
   OrderId: variant;
   dbfCons, dbfConsPi3: TDbf;
-  ndOrders: TXmlNode;
 begin
-  ndOrders:= ndProduct.NodeNew('ORDERS');
+  SetXmlAttr(ndOrders, 'PACKLIST_NO', aPackListNo);
+  dbfCons:= TDbf.Create(nil);
+  dbfConsPi3:= TDbf.Create(nil);
+  ForceDirectories(Path['DbfPackLists']);
+  ConsName:= Format('t-cons_%s_%uv.dbf',
+      [GetXmlAttr(ndProduct, 'PARTNER_NUMBER'), aPacklistNo]);
+  copyFile(Path['Stru']+'tcons.dbf', Path['DbfPackLists'] + ConsName);
+  ConsPi3Name:= Format('t-cons_%s_%uvpi3',
+      [GetXmlAttr(ndProduct, 'PARTNER_NUMBER'), aPacklistNo]);
+  copyFile(Path['Stru']+'tconspi3.dbf', Path['DbfPackLists'] + ConsPi3Name+'.dbf');
+
+  MakeXls(aPacklistNo, ConsPi3Name+'.xls');
+  
+  dbfCons.FilePath:= Path['DbfPackLists'];
+  dbfCons.TableName:= ConsName;
+  dbfConsPi3.FilePath:= Path['DbfPackLists'];
+  dbfConsPi3.TableName:= ConsPi3Name+'.dbf';
   try
-    SetXmlAttr(ndOrders, 'PACKLIST_NO', aPackNo);
-    dbfCons:= TDbf.Create(nil);
-    dbfConsPi3:= TDbf.Create(nil);
-    ConsName:= Format('t-cons_%s_%uv.dbf',
-      [GetXmlAttr(ndProduct, 'PARTNER_NUMBER'), aPackNo]);
-    copyFile(Path['Stru']+'tcons.dbf', Path['DbfPackLists'] + ConsName);
-    ConsPi3Name:= Format('t-cons_%s_%uvpi3',
-      [GetXmlAttr(ndProduct, 'PARTNER_NUMBER'), aPackNo]);
-    copyFile(Path['Stru']+'tconspi3.dbf', Path['DbfPackLists'] + ConsPi3Name+'.dbf');
-    MainForm.PrintPackList(aTransaction, aPackNo, ConsPi3Name+'.xls');
-    dbfCons.FilePath:= Path['DbfPackLists'];
-    dbfCons.TableName:= ConsName;
-    dbfConsPi3.FilePath:= Path['DbfPackLists'];
-    dbfConsPi3.TableName:= ConsPi3Name+'.dbf';
+    dbfCons.Open;
+    dbfConsPi3.Open;
     try
-      dbfCons.Open;
-      dbfConsPi3.Open;
-      try
-        OrderList:= aTransaction.DefaultDatabase.QueryValue(
-          'select list(distinct o.order_id) '+
-          'from orders o '+
-          'inner join statuses s on (s.status_id = o.status_id and s.status_sign = ''PACKED'') '+
-          'inner join v_order_attrs oa on (oa.object_id = o.order_id and oa.attr_sign = ''PACKLIST_NO'') '+
-          'where oa.attr_value = :pack_no',
-          0, [aPackNo], aTransaction);
-        while OrderList <> '' do
-        begin
-          OrderId:= TakeFront5(OrderList, ',');
-          ExportOrder(aTransaction, ndProduct, ndOrders, dbfCons, dbfConsPi3, OrderId);
-        end;
-      finally
-        dbfCons.Close;
-        dbfConsPi3.Close;
+      OrderList:= aTransaction.DefaultDatabase.QueryValue(
+        'select list(distinct o.order_id) '+
+        'from orders o '+
+        'inner join statuses s on (s.status_id = o.status_id and s.status_sign = ''PACKED'') '+
+        'inner join v_order_attrs oa on (oa.object_id = o.order_id and oa.attr_sign = ''PACKLIST_NO'') '+
+        'where oa.attr_value = :pack_no',
+        0, [aPacklistNo], aTransaction);
+      while OrderList <> '' do
+      begin
+        OrderId:= TakeFront5(OrderList, ',');
+        ExportOrder(aTransaction, ndProduct, ndOrders, dbfCons, dbfConsPi3, OrderId);
       end;
     finally
-      dbfConsPi3.Free;
-      dbfCons.Free;
+      dbfCons.Close;
+      dbfConsPi3.Close;
     end;
-    dmOtto.CreateAlert(HeaderText, Format('Сформирован паклист %u', [aPackNo]), mtInformation);
   finally
-    ndOrders.Clear;
+    dbfConsPi3.Free;
+    dbfCons.Free;
   end;
+  dmOtto.CreateAlert(HeaderText, Format('Сформирован паклист %u', [aPacklistNo]), mtInformation);
 end;
 
 procedure ExportProduct(aTransaction: TpFIBTransaction;
   ndProducts: TXmlNode; aProductId: integer);
 var
-  ndProduct: TXmlNode;
+  ndProduct, ndOrders: TXmlNode;
   PackList, FileName, OrderText: string;
-  PackNo: variant;
+  PacklistNo: variant;
 begin
   ndProduct:= ndProducts.NodeFindOrCreate('PRODUCT');
-  try
-    dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
-    PackList:= aTransaction.DefaultDatabase.QueryValue(
-      'select list(distinct oa.attr_value) '+
-      'from orders o '+
-      'inner join statuses s on (s.status_id = o.status_id and s.status_sign = ''PACKED'') '+
-      'inner join v_order_attrs oa on (oa.object_id = o.order_id and oa.attr_sign = ''PACKLIST_NO'') '+
-      'where o.product_id = :product_id',
-      0, [aProductId], aTransaction);
-    while PackList <> '' do
-    begin
-      PackNo:= TakeFront5(PackList, ',');
-      ExportPack(aTransaction, ndProduct, PackNo);
-    end;
-  finally
-    ndProduct.Clear;
+  ndOrders:= ndProduct.NodeNew('ORDERS');
+
+  dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
+  PackList:= aTransaction.DefaultDatabase.QueryValue(
+    'select list(distinct oa.attr_value) '+
+    'from orders o '+
+    'inner join statuses s on (s.status_id = o.status_id and s.status_sign = ''PACKED'') '+
+    'inner join v_order_attrs oa on (oa.object_id = o.order_id and oa.attr_sign = ''PACKLIST_NO'') '+
+    'where o.product_id = :product_id',
+    0, [aProductId], aTransaction);
+  while PackList <> '' do
+  begin
+    PacklistNo:= TakeFront5(PackList, ',');
+    ExportPack(aTransaction, ndProduct, ndOrders, PacklistNo);
   end;
 end;
 
@@ -260,9 +273,7 @@ var
   ndProducts: TXmlNode;
   ProductId: Variant;
   ProductList: string;
-  Files: TStringList;
 begin
-  if aTransaction.Active then aTransaction.Rollback;
   aTransaction.StartTransaction;
   try
     xml:= TNativeXml.CreateName('PRODUCTS');
@@ -278,12 +289,16 @@ begin
         ProductId:= TakeFront5(ProductList, ',');
         ExportProduct(aTransaction, ndProducts, ProductId);
       end;
+      dmOtto.ExportCommitRequest(ndProducts, aTransaction);
     finally
       Xml.Free;
     end;
-    aTransaction.Commit;
   except
-    aTransaction.Rollback;
+    on E: Exception do
+    begin
+      aTransaction.Rollback;
+      ShowMessage('Ошибка при формировании файлов: '+e.Message);
+    end;
   end;
 end;
 

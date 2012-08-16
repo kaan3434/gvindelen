@@ -14,12 +14,12 @@ var
   ProgressIndicator: TJvProgressComponent;
 
 function ExportOrderItem(aTransaction: TpFIBTransaction;
-  ndProduct, ndOrder: TXmlNode; aOrderItemId: integer): string;
+  ndProduct, ndOrder, ndOrderItems: TXmlNode; aOrderItemId: integer): string;
 var
   ndOrderItem: TXmlNode;
   Line: TStringList;
 begin
-  ndOrderItem:= ndOrder.NodeFindOrCreate('ORDERITEMS').NodeFindOrCreate('ORDERITEM');
+  ndOrderItem:= ndOrderItems.NodeNew('ORDERITEM');
   Line:= TStringList.Create;
   try
     dmOtto.ObjectGet(ndOrderItem, aOrderItemId, aTransaction);
@@ -36,87 +36,77 @@ begin
     Line.Add(GetXmlAttr(ndOrder, 'PACKLIST_NO'));
     Line.Add(GetXmlAttr(ndOrderItem, 'PRICE_EUR'));
     Line.Add(GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR'));
-    SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'RETURNSENT');
     Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
+    SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'RETURNSENT');
     dmOtto.ActionExecute(aTransaction, ndOrderItem);
   finally
     Line.Free;
-    ndOrderItem.Clear;
   end;
 end;
 
 function ExportOrder(aTransaction: TpFIBTransaction;
-  ndProduct: TXmlNode; aOrderId: integer): string;
+  ndProduct, ndOrders: TXmlNode; aOrderId: integer): string;
 var
   OrderItemList: string;
-  ndOrder: TXmlNode;
+  ndOrder, ndOrderItems: TXmlNode;
   OrderItemId: Variant;
 begin
   Result:= '';
-  ndOrder:= ndProduct.NodeFindOrCreate('ORDERS').NodeFindOrCreate('ORDER');
-  try
-    dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
-    OrderItemList:= aTransaction.DefaultDatabase.QueryValue(
-      'select list(oi.orderitem_id) '+
-      'from orderitems oi '+
-      'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign in (''RETURNING'',''DISCARDED'')) '+
-      'left join statuses s2 on (s2.status_id = oi.state_id) '+
-      'where coalesce(s2.status_sign, '''')  <> ''RETURNSENT'' '+
-      '  and oi.order_id = :order_id '+
-      'order by oi.orderitem_id',
-      0, [aOrderId], aTransaction);
-    while OrderItemList <> '' do
-    begin
-      OrderItemId:= TakeFront5(OrderItemList, ',');
-      result:= Result + ExportOrderItem(aTransaction, ndProduct, ndOrder, OrderItemId);
-    end;
-  finally
-    ndOrder.Clear;
+  ndOrder:= ndOrders.NodeNew('ORDER');
+  ndOrderItems:= ndOrder.NodeNew('ORDERITEMS');
+
+  dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
+  OrderItemList:= aTransaction.DefaultDatabase.QueryValue(
+    'select list(orderitem_id) from ('+
+    'select oi.orderitem_id '+
+    'from orderitems oi '+
+    '  inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign in (''RETURNING'',''DISCARDED'')) '+
+    '  left join statuses s2 on (s2.status_id = oi.state_id) '+
+    'where coalesce(s2.status_sign, '''')  <> ''RETURNSENT'' '+
+    '  and oi.order_id = :order_id '+
+    'order by oi.auftrag_id,oi.orderitem_index)',
+    0, [aOrderId], aTransaction);
+  while OrderItemList <> '' do
+  begin
+    OrderItemId:= TakeFront5(OrderItemList, ',');
+    result:= Result + ExportOrderItem(aTransaction, ndProduct, ndOrder, ndOrderItems, OrderItemId);
   end;
 end;
 
 procedure ExportProduct(aTransaction: TpFIBTransaction;
   ndProducts: TXmlNode; aProductId: integer);
 var
-  ndProduct: TXmlNode;
+  ndProduct, ndOrders: TXmlNode;
   OrderList, FileName, Text: string;
   OrderId: variant;
 begin
   Text:= '';
   ndProduct:= ndProducts.NodeFindOrCreate('PRODUCT');
-  try
-    if not aTransaction.Active then
-      aTransaction.StartTransaction;
-    try
-      dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
-      OrderList:= aTransaction.DefaultDatabase.QueryValue(
-        'select list(distinct o.order_id) '+
-        'from orderitems oi '+
-        'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign in (''RETURNING'',''DISCARDED'')) '+
-        'left join statuses s2 on (s2.status_id = oi.state_id) '+
-        'inner join orders o on (o.order_id = oi.order_id) '+
-        'where coalesce(s2.status_sign, '''')  <> ''RETURNSENT'' '+
-        '  and o.product_id = :product_id '+
-        'order by o.order_code',
-        0, [aProductId], aTransaction);
-      while OrderList <> '' do
-      begin
-        OrderId:= TakeFront5(OrderList, ',');
-        Text:= Text + ExportOrder(aTransaction, ndProduct, OrderId);
-      end;
-      ForceDirectories(Path['ReturnRequests']);
-      FileName:= GetNextFileName(Format('%ss%s_%%.2u.%.3d', [
-        Path['ReturnRequests'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
-        DayOfTheYear(Date)]));
-      SaveStringAsFile(Text, FileName);
-      dmOtto.CreateAlert('Запрос на возврат', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
-      aTransaction.Commit;
-    except
-      aTransaction.Rollback;
-    end;
-  finally
-    ndProduct.Clear;
+  ndOrders:= ndProduct.NodeNew('ORDERS');
+
+  dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
+  OrderList:= aTransaction.DefaultDatabase.QueryValue(
+    'select list(distinct order_id) from ('+
+    'select o.order_id '+
+    'from orderitems oi '+
+    '  inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign in (''RETURNING'',''DISCARDED'')) '+
+    '  left join statuses s2 on (s2.status_id = oi.state_id) '+
+    '  inner join orders o on (o.order_id = oi.order_id) '+
+    'where coalesce(s2.status_sign, '''')  <> ''RETURNSENT'' '+
+    '  and o.product_id = :product_id '+
+    'order by o.order_code)',
+    0, [aProductId], aTransaction);
+  while OrderList <> '' do
+  begin
+    OrderId:= TakeFront5(OrderList, ',');
+    Text:= Text + ExportOrder(aTransaction, ndProduct, ndOrders, OrderId);
   end;
+  ForceDirectories(Path['ReturnRequests']);
+  FileName:= GetNextFileName(Format('%ss%s_%%.2u.%.3d', [
+    Path['ReturnRequests'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
+    DayOfTheYear(Date)]));
+  SaveStringAsFile(Text, FileName);
+  dmOtto.CreateAlert('Запрос на возврат', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
 end;
 
 procedure ExportReturns(aTransaction: TpFIBTransaction);
@@ -126,26 +116,36 @@ var
   ProductId: Variant;
   ProductList: string;
 begin
-  xml:= TNativeXml.CreateName('PRODUCTS');
+  aTransaction.StartTransaction;
   try
-    ndProducts:= Xml.Root;
-    ProductList:= aTransaction.DefaultDatabase.QueryValue(
-      'select list(distinct o.product_id) '+
-      'from orderitems oi '+
-      'inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign in (''RETURNING'',''DISCARDED'')) '+
-      'left join statuses s2 on (s2.status_id = oi.state_id) '+
-      'inner join orders o on (o.order_id = oi.order_id)' +
-      'where coalesce(s2.status_sign, '''')  <> ''RETURNSENT'' '+
-      'order by o.product_id',
-       0, aTransaction);
-    while ProductList <> '' do
-    begin
-      ProductId:= TakeFront5(ProductList, ',');
-      ExportProduct(aTransaction, ndProducts, ProductId);
+    xml:= TNativeXml.CreateName('PRODUCTS');
+    try
+      ndProducts:= Xml.Root;
+      ProductList:= aTransaction.DefaultDatabase.QueryValue(
+        'select list(distinct o.product_id) '+
+        'from orderitems oi '+
+        '  inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign in (''RETURNING'',''DISCARDED'')) '+
+        '  left join statuses s2 on (s2.status_id = oi.state_id) '+
+        '  inner join orders o on (o.order_id = oi.order_id) ' +
+        'where coalesce(s2.status_sign, '''')  <> ''RETURNSENT''',
+         0, aTransaction);
+      while ProductList <> '' do
+      begin
+        ProductId:= TakeFront5(ProductList, ',');
+        ExportProduct(aTransaction, ndProducts, ProductId);
+      end;
+      dmOtto.ExportCommitRequest(ndProducts, aTransaction);
+    finally
+      Xml.Free;
     end;
-  finally
-    Xml.Free;
+  except
+    on E: Exception do
+    begin
+      aTransaction.Rollback;
+      ShowMessage('Ошибка при формировании файлов: '+e.Message);
+    end;
   end;
+
 end;
 
 end.

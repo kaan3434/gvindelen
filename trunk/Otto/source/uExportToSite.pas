@@ -11,27 +11,32 @@ uses
   NativeXml, GvNativeXml, udmOtto, GvStr, GvFile, Dialogs;
 
 procedure ExportOrder(aTransaction: TpFIBTransaction;
-  ndOrders: TXmlNode; aOrderId: integer);
+  aOrderId: integer);
 var
+  xml: TNativeXml;
   ndOrder, ndClient, ndOrderItems, ndOrderTaxs, ndOrderMoneys: TXmlNode;
   OrderCode, FileName: string;
 begin
-  ndOrder:= ndOrders.NodeNew('ORDER');
-  ndClient:= ndOrder.NodeNew('CLIENT');
-  ndOrderItems:= ndOrder.NodeNew('ORDERITEMS');
-  ndOrderTaxs:= ndOrder.NodeNew('ORDERTAXS');
-  ndOrderMoneys:= ndOrder.NodeNew('ORDERMONEYS');
-  dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
-  dmOtto.OrderItemsGet(ndOrderItems, aOrderId, aTransaction);
-  dmOtto.OrderTaxsGet(ndOrderTaxs, aOrderId, aTransaction);
-  dmOtto.OrderMoneysGet(ndOrderMoneys, aOrderId, aTransaction);
-  dmOtto.ObjectGet(ndClient, GetXmlAttrValue(ndOrder, 'CLIENT_ID'), aTransaction);
-  OrderCode:= GetXmlAttrValue(ndOrder, 'ORDER_CODE');
-  ForceDirectories(Path['ExportToSite']);
-  FileName:= Format('%s%s.xml',[Path['ExportToSite'], OrderCode]);
-  ndOrder.Document.EncodingString:= 'Windows-1251';
-  ndOrder.Document.XmlFormat:= xfReadable;
-  ndOrder.Document.SaveToFile(FileName);
+  xml:= TNativeXml.CreateName('ORDERS');
+  try
+    ndOrder:= xml.Root.NodeNew('ORDER');
+    ndClient:= ndOrder.NodeNew('CLIENT');
+    ndOrderItems:= ndOrder.NodeNew('ORDERITEMS');
+    ndOrderTaxs:= ndOrder.NodeNew('ORDERTAXS');
+    ndOrderMoneys:= ndOrder.NodeNew('ORDERMONEYS');
+    dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
+    dmOtto.OrderItemsGet(ndOrderItems, aOrderId, aTransaction);
+    dmOtto.OrderTaxsGet(ndOrderTaxs, aOrderId, aTransaction);
+    dmOtto.OrderMoneysGet(ndOrderMoneys, aOrderId, aTransaction);
+    dmOtto.ObjectGet(ndClient, GetXmlAttrValue(ndOrder, 'CLIENT_ID'), aTransaction);
+    OrderCode:= GetXmlAttrValue(ndOrder, 'ORDER_CODE');
+    FileName:= Format('%s%s.xml',[Path['ExportToSite'], OrderCode]);
+    xml.EncodingString:= 'Windows-1251';
+    xml.XmlFormat:= xfReadable;
+    xml.SaveToFile(FileName);
+  finally
+    xml.Free;
+  end;
 end;
 
 procedure ExportToSite(aTransaction: TpFIBTransaction);
@@ -42,11 +47,10 @@ var
   OrderList: string;
   OrderCount: Integer;
 begin
-  ForceDirectories(Path['ExportToSite']);
-  DeleteFiles(Path['ExportToSite']+'*.*');
-  xml:= TNativeXml.CreateName('ORDERS');
+  aTransaction.StartTransaction;
   try
-    ndOrders:= Xml.Root;
+    ForceDirectories(Path['ExportToSite']);
+    DeleteFiles(Path['ExportToSite']+'*.*');
     OrderList:= aTransaction.DefaultDatabase.QueryValue(
       'select list(order_id) from ('+
       'select order_id, max(status_dtm) status_dtm from ('+
@@ -70,13 +74,17 @@ begin
     while OrderList <> '' do
     begin
       OrderId:= TakeFront5(OrderList, ',');
-      ExportOrder(aTransaction, ndOrders, OrderId);
+      ExportOrder(aTransaction, OrderId);
       dmOtto.StepProgress;
     end;
     dmOtto.CreateAlert('Выгрузка данных для сайта', Format('%u файлов выгружено', [OrderCount]), mtInformation, 30000);
     dmOtto.InitProgress;
-  finally
-    Xml.Free;
+  except
+    on E: Exception do
+    begin
+      aTransaction.Rollback;
+      ShowMessage('Ошибка при формировании файлов: '+e.Message);
+    end;
   end;
 end;
 

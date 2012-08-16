@@ -107,8 +107,7 @@ var
   St: string;
 begin
   dmOtto.ClearNotify(aMessageId);
-  if not aTransaction.Active then
-    aTransaction.StartTransaction;
+  aTransaction.StartTransaction;
   try
     dmOtto.ObjectGet(ndMessage, aMessageId, aTransaction);
     ndProduct:= ndMessage.NodeFindOrCreate('PRODUCT');

@@ -128,7 +128,7 @@ begin
               XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ORDER_ID;ARTICLE_CODE;DIMENSION',
               XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
               Value2Vars(LineNo, 'LINE_NO',
-              Value2Vars(Trim(E.Message), 'ERROR_TEXT')))));
+              Value2Vars(DeleteChars(e.Message, #10#13), 'ERROR_TEXT')))));
         end;
       end
       else
@@ -158,8 +158,7 @@ var
   ndProduct, ndOrders, ndOrder, ndOrderItems: TXmlNode;
 begin
   dmOtto.ClearNotify(aMessageId);
-  if not aTransaction.Active then
-    aTransaction.StartTransaction;
+  aTransaction.StartTransaction;
   try
     dmOtto.ObjectGet(ndMessage, aMessageId, aTransaction);
     ndProduct:= ndMessage.NodeFindOrCreate('PRODUCT');

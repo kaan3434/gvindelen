@@ -1053,9 +1053,15 @@ procedure TdmOtto.ExportCommitRequest(aNode: TXmlNode;
 begin
   if aNode.NodeCount > 0 then
     if MessageDlg('Файлы на отправку сформированы. Сохранить изменения?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-      aTransaction.Commit
+    begin
+      aTransaction.Commit;
+      ShowMessage('Данные сохранены');
+    end
     else
-      aTransaction.Rollback
+    begin
+      aTransaction.Rollback;
+      ShowMessage('Изменения отменены');
+    end
   else
   begin
     aTransaction.Rollback;

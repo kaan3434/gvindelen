@@ -13,7 +13,7 @@ uses
   JvBaseDlg,
   gsFileVersionInfo, JvLogFile, JvProgressDialog,
   frxExportXML,
-  ComCtrls, TBXExtItems;
+  ComCtrls, TBXExtItems, frxExportXLS;
 
 type
   TMainForm = class(TForm)

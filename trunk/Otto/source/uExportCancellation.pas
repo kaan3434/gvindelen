@@ -111,26 +111,34 @@ var
   ProductList: string;
 begin
   aTransaction.StartTransaction;
-  xml:= TNativeXml.CreateName('PRODUCTS');
   try
-    ndProducts:= Xml.Root;
-    ProductList:= aTransaction.DefaultDatabase.QueryValue(
-      'select list(distinct o.product_id) '+
-      'from orderitems oi '+
-      'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''CANCELREQUEST'') '+
-      'left join statuses s2 on (s2.status_id = oi.state_id) '+
-      'inner join orders o on (o.order_id = oi.order_id)' +
-      'where coalesce(s2.status_sign, '''')  <> ''CANCELREQUESTSENT''',
-       0, aTransaction);
-    while ProductList <> '' do
-    begin
-      ProductId:= TakeFront5(ProductList, ',');
-      ExportProduct(aTransaction, ndProducts, ProductId);
-    end;
+    xml:= TNativeXml.CreateName('PRODUCTS');
+    try
+      ndProducts:= Xml.Root;
+      ProductList:= aTransaction.DefaultDatabase.QueryValue(
+        'select list(distinct o.product_id) '+
+        'from orderitems oi '+
+        'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''CANCELREQUEST'') '+
+        'left join statuses s2 on (s2.status_id = oi.state_id) '+
+        'inner join orders o on (o.order_id = oi.order_id)' +
+        'where coalesce(s2.status_sign, '''')  <> ''CANCELREQUESTSENT''',
+         0, aTransaction);
+      while ProductList <> '' do
+      begin
+        ProductId:= TakeFront5(ProductList, ',');
+        ExportProduct(aTransaction, ndProducts, ProductId);
+      end;
 
-    dmOtto.ExportCommitRequest(ndProducts, aTransaction);
-  finally
-    Xml.Free;
+      dmOtto.ExportCommitRequest(ndProducts, aTransaction);
+    finally
+      Xml.Free;
+    end;
+  except
+    on E: Exception do
+    begin
+      aTransaction.Rollback;
+      ShowMessage('Ошибка при формировании файлов: '+e.Message);
+    end;
   end;
 end;
 

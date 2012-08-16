@@ -45,30 +45,28 @@ begin
     dmOtto.ActionExecute(aTransaction, ndOrder);
   finally
     Line.Free;
-    ndOrder.Clear;
   end;
 end;
 
 procedure ExportPacklist(aTransaction: TpFIBTransaction;
-  ndProduct: TXmlNode; aPacklistNo: integer);
+  ndProduct, ndOrders: TXmlNode; aPacklistNo: integer);
 var
   OrderList, FileName, Text: string;
-  ndOrders: TXmlNode;
   OrderId: Variant;
   PartnerNumber: Word;
 begin
   Text:= '';
-  ndOrders:= ndProduct.NodeFindOrCreate('ORDERS');
   try
     OrderList:= aTransaction.DefaultDatabase.QueryValue(
-      'select list(distinct o.order_id) '+
+      'select list(distinct order_id) from ('+
+      'select o.order_id '+
       'from orders o '+
-      'inner join v_order_attrs oa on (oa.object_id = o.order_id and oa.attr_sign = ''PACKLIST_NO'') '+
-      'inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign = ''PREPACKED'') '+
-      'left join statuses s2 on (s2.status_id = o.state_id and s2.status_sign = ''PREPACKSENT'') '+
+      '  inner join v_order_attrs oa on (oa.object_id = o.order_id and oa.attr_sign = ''PACKLIST_NO'') '+
+      '  inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign = ''PREPACKED'') '+
+      '  left join statuses s2 on (s2.status_id = o.state_id and s2.status_sign = ''PREPACKSENT'') '+
       'where coalesce(s2.status_sign, '''')  <> ''PREPACKSENT'' '+
       '  and oa.attr_value = :packlist_no '+
-      'order by o.order_code',
+      'order by o.order_code)',
       0, [aPacklistNo], aTransaction);
     dmOtto.InitProgress(WordCount(OrderList,','), 'Формирование ответа на ПреПаклист');
     while OrderList <> '' do
@@ -85,45 +83,34 @@ begin
     dmOtto.CreateAlert('Ответ на ПреПаклист', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
   finally
     dmOtto.InitProgress;
-    ndOrders.Delete;
   end
 end;
 
 procedure ExportProduct(aTransaction: TpFIBTransaction;
   ndProducts: TXmlNode; aProductId: integer);
 var
-  ndProduct: TXmlNode;
+  ndProduct, ndOrders: TXmlNode;
   PackList, FileName, Text: string;
   PacklistNo: variant;
 begin
   Text:= '';
   ndProduct:= ndProducts.NodeFindOrCreate('PRODUCT');
-  try
-    if not aTransaction.Active then
-      aTransaction.StartTransaction;
-    try
-      dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
-      PackList:= aTransaction.DefaultDatabase.QueryValue(
+  ndOrders:= ndProduct.NodeNew('ORDERS');
+  dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
+
+  PackList:= aTransaction.DefaultDatabase.QueryValue(
         'select list(distinct oa.attr_value) '+
         'from orders o '+
         'inner join v_order_attrs oa on (oa.object_id = o.order_id and oa.attr_sign = ''PACKLIST_NO'') '+
         'inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign = ''PREPACKED'') '+
         'left join statuses s2 on (s2.status_id = o.state_id and s2.status_sign = ''PREPACKSENT'') '+
         'where coalesce(s2.status_sign, '''')  <> ''PREPACKSENT'' '+
-        '  and o.product_id = :product_id '+
-        'order by oa.attr_value',
+        '  and o.product_id = :product_id',
         0, [aProductId], aTransaction);
-      while PackList <> '' do
-      begin
-        PacklistNo:= TakeFront5(PackList, ',');
-        ExportPacklist(aTransaction, ndProduct, PacklistNo);
-      end;
-      aTransaction.Commit;
-    except
-      aTransaction.Rollback;
-    end;
-  finally
-    ndProduct.Delete;
+  while PackList <> '' do
+  begin
+    PacklistNo:= TakeFront5(PackList, ',');
+    ExportPacklist(aTransaction, ndProduct, ndOrders, PacklistNo);
   end;
 end;
 
@@ -134,24 +121,33 @@ var
   ProductId: Variant;
   ProductList: string;
 begin
-  xml:= TNativeXml.CreateName('PRODUCTS');
+  aTransaction.StartTransaction;
   try
-    ndProducts:= Xml.Root;
-    ProductList:= aTransaction.DefaultDatabase.QueryValue(
-      'select list(distinct o.product_id) '+
-      'from orders o '+
-      'inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign = ''PREPACKED'') '+
-      'left join statuses s2 on (s2.status_id = o.state_id and s2.status_sign = ''PREPACKSENT'') '+
-      'where coalesce(s2.status_sign, '''')  <> ''PREPACKSENT'' ' +
-      'order by o.product_id',
-       0, aTransaction);
-    while ProductList <> '' do
-    begin
-      ProductId:= TakeFront5(ProductList, ',');
-      ExportProduct(aTransaction, ndProducts, ProductId);
+    xml:= TNativeXml.CreateName('PRODUCTS');
+    try
+      ndProducts:= Xml.Root;
+      ProductList:= aTransaction.DefaultDatabase.QueryValue(
+        'select list(distinct o.product_id) '+
+        'from orders o '+
+        ' inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign = ''PREPACKED'') '+
+        ' left join statuses s2 on (s2.status_id = o.state_id and s2.status_sign = ''PREPACKSENT'') '+
+        'where coalesce(s2.status_sign, '''')  <> ''PREPACKSENT''',
+         0, aTransaction);
+      while ProductList <> '' do
+      begin
+        ProductId:= TakeFront5(ProductList, ',');
+        ExportProduct(aTransaction, ndProducts, ProductId);
+      end;
+      dmOtto.ExportCommitRequest(ndProducts, aTransaction);
+    finally
+      Xml.Free;
     end;
-  finally
-    Xml.Free;
+  except
+    on E: Exception do
+    begin
+      aTransaction.Rollback;
+      ShowMessage('Ошибка при формировании файлов: '+e.Message);
+    end;
   end;
 end;
 
