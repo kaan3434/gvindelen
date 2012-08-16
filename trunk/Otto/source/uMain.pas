@@ -197,6 +197,7 @@ type
     procedure actReestrReturnsExecute(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure actExportReturnExecute(Sender: TObject);
+    procedure trnWriteBeforeStart(Sender: TObject);
   private
     { Private declarations }
   public
@@ -507,8 +508,7 @@ var
   p: Integer;
   FileName: string;
 begin
-  if MessageDlg('Сформировать файл с заявками?', mtConfirmation, mbOkCancel, 0) = mrOk then
-    ExportApprovedOrder(trnWrite);
+  ExportApprovedOrder(trnWrite);
 end;
 
 procedure TMainForm.actSetByr2EurExecute(Sender: TObject);
@@ -817,6 +817,12 @@ end;
 procedure TMainForm.actExportReturnExecute(Sender: TObject);
 begin
   ExportReturns(trnWrite);
+end;
+
+procedure TMainForm.trnWriteBeforeStart(Sender: TObject);
+begin
+  if TpFIBTransaction(Sender).Active then
+    ShowMessage('Повторное открытие транзакции'); 
 end;
 
 end.

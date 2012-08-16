@@ -17,6 +17,7 @@ procedure SetXmlAttrAsFloat(aNode: TXmlNode; aAttributeName: string; aValue: Var
 procedure SetXmlAttrAsMoney(aNode: TXmlNode; aAttributeName: string; aValue: Variant);
 procedure MergeXmlAttr(aNode: TXmlNode; aAttributeName: string; aValue: Variant);
 procedure DelXmlAttr(aNode: TXmlNode; aAttributeName: string);
+procedure IncXmlAttr(aNode: TXmlNode; aAttributeName: string);
 
 function AttrsAsString(aNode: TXmlNode): string;
 
@@ -283,6 +284,14 @@ begin
   idx:= aNode.AttributeIndexByname(aAttributeName);
   if idx >= 0 then
     aNode.AttributeDelete(idx);
+end;
+
+procedure IncXmlAttr(aNode: TXmlNode; aAttributeName: string);
+var
+  Value: Integer;
+begin
+  Value:= aNode.ReadAttributeInteger(aAttributeName);
+  aNode.WriteAttributeInteger(aAttributeName, Value+1);
 end;
 
 procedure BatchMoveFields2(aDestDataSet, aSrcDataSet: TDataSet; aMapping: string); overload;

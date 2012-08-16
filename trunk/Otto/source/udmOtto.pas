@@ -129,7 +129,7 @@ type
     function DetectOrderCode(ndProduct: TXmlNode; aPostFix: string): WideString;
     function DetectOrderId(ndProduct: TXmlNode; aPostFix: string;
       aTransaction: TpFIBTransaction): Variant;
-
+    procedure ExportCommitRequest(aNode: TXmlNode; aTransaction: TpFIBTransaction);
   end;
 
 var
@@ -1046,6 +1046,21 @@ begin
   Result:= aTransaction.DefaultDatabase.QueryValue(
     'select o.order_id from orders o where order_code = :order_code',
     0, [OrderCode], aTransaction);
+end;
+
+procedure TdmOtto.ExportCommitRequest(aNode: TXmlNode;
+  aTransaction: TpFIBTransaction);
+begin
+  if aNode.NodeCount > 0 then
+    if MessageDlg('Файлы на отправку сформированы. Сохранить изменения?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+      aTransaction.Commit
+    else
+      aTransaction.Rollback
+  else
+  begin
+    aTransaction.Rollback;
+    ShowMessage('Данных для отправки не обнаружено');
+  end;
 end;
 
 initialization

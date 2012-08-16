@@ -55,7 +55,7 @@ begin
     '  left join statuses s2 on (s2.status_id = oi.state_id) '+
     ' where coalesce(s2.status_sign, '''')  <> ''CANCELREQUESTSENT'' '+
     '  and oi.order_id = :order_id '+
-    'order by oi.auftrag_id,oi.orderitem_index)',
+    'order by oi.auftrag_id, oi.orderitem_index)',
     0, [aOrderId], aTransaction);
   while OrderItemList <> '' do
   begin
@@ -110,7 +110,6 @@ var
   ProductId: Variant;
   ProductList: string;
 begin
-  if aTransaction.Active then aTransaction.Rollback;
   aTransaction.StartTransaction;
   xml:= TNativeXml.CreateName('PRODUCTS');
   try
@@ -128,10 +127,8 @@ begin
       ProductId:= TakeFront5(ProductList, ',');
       ExportProduct(aTransaction, ndProducts, ProductId);
     end;
-    if MessageDlg('Файлы на отправку сформированы. Сохранить изменения?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-      aTransaction.Commit
-    else
-      aTransaction.Rollback;
+
+    dmOtto.ExportCommitRequest(ndProducts, aTransaction);
   finally
     Xml.Free;
   end;

@@ -41,17 +41,19 @@ begin
   OrderText:= '';
   ndProduct:= ndProducts.NodeFindOrCreate('PRODUCT');
   try
-    if not aTransaction.Active then
-      aTransaction.StartTransaction;
     try
       dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
+      ndOrders.
       OrderList:= aTransaction.DefaultDatabase.QueryValue(
-        'select list(distinct o.order_id) '+
+        'select list(distinct order_id) from ('+
+        'select o.order_id '+
         'from orders o '+
-        '  inner join statuses s on (s.status_id = o.status_id and s.status_sign in (''ACCEPTED'',''PAID'')) '+
+        '  inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign in (''ACCEPTED'',''PAID'')) '+
+        '  left join statuses s2 on (s2.status_id = o.state_id and s2.status_sign = ''PAYSENT'') '+
         '  inner join v_order_paid op on (op.order_id = o.order_id) '+
         'where o.product_id = :product_id '+
-        'order by o.order_code',
+        '  and coalesce(s2.status_sign, '') <> ''PAYSENT'' '+
+        'order by o.order_code)',
         0, [aProductId], aTransaction);
       while OrderList <> '' do
       begin
@@ -82,6 +84,7 @@ var
   ProductList: string;
   Files: TStringList;
 begin
+  aTransaction.StartTransaction;
   xml:= TNativeXml.CreateName('PRODUCTS');
   try
     ndProducts:= Xml.Root;
@@ -89,14 +92,14 @@ begin
       'select list(distinct o.product_id) '+
       'from orders o '+
       '  inner join statuses s on (s.status_id = o.status_id and s.status_sign in (''ACCEPTED'',''PAID'')) '+
-      '  inner join v_order_paid op on (op.order_id = o.order_id) '+
-      'order by o.product_id',
+      '  inner join v_order_paid op on (op.order_id = o.order_id)',
       0, aTransaction);
     while ProductList <> '' do
     begin
       ProductId:= TakeFront5(ProductList, ',');
       ExportProduct(aTransaction, ndProducts, ProductId);
     end;
+    dmOtto.ExportCommitRequest(ndProducts, aTransaction);
   finally
     Xml.Free;
   end;

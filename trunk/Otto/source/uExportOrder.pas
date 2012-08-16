@@ -71,6 +71,7 @@ begin
       Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
       SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'ACCEPTREQUEST');
       dmOtto.ActionExecute(aTransaction, ndOrder);
+      IncXmlAttr(ndProduct, 'ORDER_COUNT');
     end;
   finally
     Line.Free;
@@ -103,6 +104,7 @@ begin
     Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
     SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'ACCEPTREQUEST');
     dmOtto.ActionExecute(aTransaction, ndOrderItem);
+    IncXmlAttr(ndProduct, 'ORDERITEM_COUNT');
   finally
     Line.Free;
   end;
@@ -181,7 +183,8 @@ var
   ProductId: Variant;
   ProductList: string;
 begin
-  if aTransaction.Active then aTransaction.Rollback;
+  if aTransaction.Active then
+    ShowMessage('Активная транзакция');
   aTransaction.StartTransaction;
   try
     xml:= TNativeXml.CreateName('PRODUCTS');
@@ -198,15 +201,17 @@ begin
         ProductId:= TakeFront5(ProductList, ',');
         ExportProduct(aTransaction, ndProducts, ProductId);
       end;
+
+      dmOtto.ExportCommitRequest(ndProducts, aTransaction);
     finally
       Xml.Free;
     end;
-    if MessageDlg('Файлы на отправку сформированы. Сохранить изменения?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-      aTransaction.Commit
-    else
-      aTransaction.Rollback;
   except
-    aTransaction.Rollback;
+    on E: Exception do
+    begin
+      aTransaction.Rollback;
+      ShowMessage('Ошибка при формировании файлов: '+e.Message);
+    end;
   end;
 end;
 
