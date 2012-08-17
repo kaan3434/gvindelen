@@ -149,7 +149,7 @@ ALTER TABLE MESSAGES ADD CONSTRAINT FK_MESSAGES_STATUS FOREIGN KEY (STATUS_ID) R
 ALTER TABLE MESSAGES ADD CONSTRAINT FK_MESSAGES_TEMPLATE FOREIGN KEY (TEMPLATE_ID) REFERENCES TEMPLATES (TEMPLATE_ID) ON UPDATE CASCADE;
 ALTER TABLE MESSAGE_ATTRS ADD CONSTRAINT FK_MESSAGE_ATTRS_ATTR FOREIGN KEY (ATTR_ID) REFERENCES ATTRS (ATTR_ID) ON UPDATE CASCADE;
 ALTER TABLE MESSAGE_ATTRS ADD CONSTRAINT FK_MESSAGE_ATTRS_MESSAGE FOREIGN KEY (OBJECT_ID) REFERENCES MESSAGES (MESSAGE_ID) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE MONEYBACKS ADD CONSTRAINT FK_MONEYBACKS_ACCOUNT FOREIGN KEY (ACCOUNT_ID) REFERENCES ACCOUNTS (ACCOUNT_ID) ON UPDATE CASCADE;
+ALTER TABLE MONEYBACKS ADD CONSTRAINT FK_MONEYBACKS_ACCOUNT FOREIGN KEY (ACCOUNT_ID) REFERENCES ACCOUNTS (ACCOUNT_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE MONEYBACKS ADD CONSTRAINT FK_MONEYBACKS_ORDER FOREIGN KEY (ORDER_ID) REFERENCES ORDERS (ORDER_ID) ON UPDATE CASCADE;
 ALTER TABLE MONEYBACKS ADD CONSTRAINT FK_MONEYBACKS_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE MONEYBACK_ATTRS ADD CONSTRAINT FK_MONEYBACK_ATTRS_ATTR FOREIGN KEY (ATTR_ID) REFERENCES ATTRS (ATTR_ID) ON UPDATE CASCADE;
@@ -299,31 +299,33 @@ begin
   if (new.amount_byr is null) then
     new.amount_byr = round(new.amount_eur * new.byr2eur, -1);
   if (new.amount_eur is null) then
-    new.amount_eur = round(new.amount_byr, 2) / new.byr2eur;
+    new.amount_eur = (0.00 + new.amount_byr) / new.byr2eur;
 
   v_amount_byr = new.amount_byr;
---  v_amount_eur = new.amount_eur;
+  v_amount_eur = new.amount_eur;
   if (v_amount_byr < 0) then
   begin
     for select ar.accrest_id, ar.rest_byr, ar.byr2eur
           from accrests ar
           where ar.account_id = new.account_id
-            and ar.rest_byr > 0
-          order by ar.byr2eur desc
+            and ar.rest_byr <> 0
+          order by ar.accrest_id desc
           into :v_accrest_id, :v_rest_byr, :v_byr2eur do
     begin
-      if (abs(v_amount_byr) < v_rest_byr) then
-        v_delta_byr = abs(v_amount_byr);
+      if (abs(v_amount_byr) < abs(v_rest_byr)) then
+        v_delta_byr = v_amount_byr;
       else
         v_delta_byr = v_rest_byr;
       v_amount_byr = v_amount_byr + v_delta_byr;
---      v_delta_eur = round(v_delta_byr, 2) * :v_byr2eur;
---      v_amount_eur = v_amount_eur + v_delta_eur;
+      v_delta_eur = (0.00 + v_delta_byr) / v_byr2eur;
+      v_amount_eur = v_amount_eur + v_delta_eur;
       update accrests ar
         set ar.rest_byr = ar.rest_byr - :v_delta_byr,
-            ar.rest_eur = null
---            ar.rest_eur = ar.rest_eur - :v_delta_eur
-        where ar.accrest_id = :v_accrest_id;
+            ar.rest_eur = ar.rest_eur - :v_delta_eur
+        where ar.accrest_id = :v_accrest_id
+        returning accrest_id
+        into new.accrest_id;
+
     end
   end
 
@@ -336,15 +338,17 @@ begin
 
   if (:v_accrest_id is null) then
     insert into accrests (account_id, byr2eur, rest_eur, rest_byr)
-      values(new.account_id, :v_byr2eur, :v_amount_eur, :v_amount_byr)
+      values(new.account_id, :v_byr2eur, new.amount_eur, new.amount_byr)
       returning accrest_id
-      into :v_accrest_id;
+      into new.accrest_id;
   else
+  if (:v_amount_byr <> 0) then
     update accrests ar
-      set ar.rest_byr = ar.rest_byr + :v_amount_byr,
-          ar.rest_eur = null
---          ar.rest_eur = ar.rest_eur + :v_amount_eur
-      where ar.accrest_id = :v_accrest_id;
+      set ar.rest_byr = ar.rest_byr + new.amount_byr,
+          ar.rest_eur = ar.rest_eur + new.amount_eur
+      where ar.accrest_id = :v_accrest_id
+      returning accrest_id
+      into new.accrest_id;
 end
 ^
 
@@ -391,7 +395,7 @@ begin
     new.rest_byr = round(new.rest_eur * new.byr2eur, -1);
 
   if (new.rest_eur is null and new.rest_byr is not null) then
-    new.rest_eur = new.rest_byr / new.byr2eur;
+    new.rest_eur = cast(new.rest_byr as numeric(12,2)) / new.byr2eur;
 end
 ^
 
@@ -401,10 +405,11 @@ ACTIVE BEFORE UPDATE POSITION 0
 AS
 begin
   new.rest_dtm = current_timestamp;
-  if (new.rest_byr is null and new.rest_eur is not null) then
+  if (new.rest_byr = old.rest_byr and new.rest_eur <> old.rest_eur) then
     new.rest_byr = old.rest_byr + round(new.rest_eur * old.byr2eur, -1);
-  if (new.rest_eur is null and new.rest_byr is not null) then
-    new.rest_eur = old.rest_eur + round(new.rest_byr, 2) / old.byr2eur;
+  else
+  if (new.rest_eur = old.rest_eur and new.rest_byr <> old.rest_byr) then
+    new.rest_eur = old.rest_eur + new.rest_byr / old.byr2eur;
 end
 ^
 
@@ -767,6 +772,7 @@ AS
 declare variable v_flaglist list_signs;
 begin
   new.article_code = upper(new.article_code);
+  new.dimension = upper(new.dimension);
   if (new.status_id <> old.status_id) then
   begin
     new.status_dtm = current_timestamp;
@@ -1134,10 +1140,22 @@ begin
 
   execute procedure param_set(:i_param_id, 'ID', :i_object_id);
 
-  select o_value from param_get(:i_param_id, 'AMOUNT_BYR') into :v_amount_byr;
-  select o_value from param_get(:i_param_id, 'AMOUNT_EUR') into :v_amount_eur;
+  select cast(o_value as money_byr) from param_get(:i_param_id, 'AMOUNT_BYR') into :v_amount_byr;
+  select cast(o_value as money_eur) from param_get(:i_param_id, 'AMOUNT_EUR') into :v_amount_eur;
   select o_value from param_get(:i_param_id, 'BYR2EUR') into :v_byr2eur;
   select o_value from param_get(:i_param_id, 'NOTES') into :v_notes;
+
+  if (v_amount_byr is null and v_amount_eur is not null) then
+  begin
+    v_amount_byr = round(:v_amount_eur*:v_byr2eur,  -1);
+    execute procedure param_set(:i_param_id, 'AMOUNT_BYR', :v_amount_byr);
+  end
+
+  if (v_amount_eur is null and v_amount_byr is not null) then
+  begin
+    v_amount_eur = (1.00*v_amount_byr)/v_byr2eur;
+    execute procedure param_set(:i_param_id, 'AMOUNT_EUR', :v_amount_eur);
+  end
 
   select o_pattern from param_fillpattern(:i_param_id, :v_notes) into :v_notes;
 
@@ -1152,37 +1170,47 @@ CREATE OR ALTER PROCEDURE ACT_ACCOUNT_CREDITORDER (
     I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ACCOUNT')
 AS
 declare variable V_AMOUNT_EUR type of MONEY_EUR;
-declare variable V_BYR2EUR type of MONEY_BYR;
 declare variable V_ORDER_ID type of ID_ORDER;
 declare variable V_NOTES type of VALUE_ATTR;
 declare variable V_ACC_AMOUNT_EUR type of MONEY_EUR;
 declare variable V_ACC_BYR2EUR type of MONEY_BYR;
+declare variable V_DELTA_EUR type of MONEY_EUR;
+declare variable V_DELTA_BYR type of MONEY_BYR;
+declare variable V_ORDERMONEY_ID type of ID_ORDERITEM;
 begin
   update paramheads set object_id = :i_object_id where param_id = :i_param_id;
 
   execute procedure param_set(:i_param_id, 'ID', :i_object_id);
 
-  select o_value from param_get(:i_param_id, 'AMOUNT_EUR') into :v_amount_eur;
+  select cast(o_value as money_eur) from param_get(:i_param_id, 'AMOUNT_EUR') into :v_amount_eur;
   select o_value from param_get(:i_param_id, 'ORDER_ID') into :v_order_id;
 
   for select ao.byr2eur, sum(ao.amount_eur)
         from accopers ao
         where ao.account_id = :i_object_id
         group by ao.byr2eur
-        having sum(ao.amount_eur) > 0
+        having sum(ao.amount_eur) <> 0
         into :v_acc_byr2eur, :v_acc_amount_eur do
   begin
-    if (v_amount_eur < :v_acc_amount_eur) then
-      v_acc_amount_eur = v_amount_eur;
-    v_amount_eur = v_amount_eur - v_acc_amount_eur;
+    if (abs(v_amount_eur) < abs(v_acc_amount_eur)) then
+      v_delta_eur = v_amount_eur;
+    else
+      v_delta_eur = v_acc_amount_eur;
 
+    v_amount_eur = v_amount_eur - v_delta_eur;
+    v_delta_byr = round(v_acc_byr2eur * v_delta_eur, -1);
+
+    execute procedure param_set(:i_param_id, 'AMOUNT_BYR', :v_delta_byr);
+    execute procedure param_set(:i_param_id, 'AMOUNT_EUR', :v_delta_eur);
     select o_value from param_get(:i_param_id, 'NOTES') into :v_notes;
     select o_pattern from param_fillpattern(:i_param_id, :v_notes) into :v_notes;
 
-    insert into accopers (account_id, amount_eur, byr2eur, order_id, notes)
-      values(:i_object_id, -:v_acc_amount_eur, :v_acc_byr2eur, :v_order_id, :v_notes);
-    insert into ordermoneys (account_id, amount_eur, byr2eur, order_id)
-      values(:i_object_id, :v_acc_amount_eur, :v_acc_byr2eur, :v_order_id);
+    insert into ordermoneys (account_id, amount_eur, byr2eur, order_id, amount_byr)
+      values(:i_object_id, :v_delta_eur, :v_acc_byr2eur, :v_order_id, :v_delta_byr)
+      returning ordermoney_id
+      into :v_ordermoney_id;
+    insert into accopers (account_id, amount_eur, byr2eur, amount_byr, order_id, notes, ordermoney_id)
+      values(:i_object_id, -:v_delta_eur, :v_acc_byr2eur, -:v_delta_byr, :v_order_id, :v_notes, :v_ordermoney_id);
     if (v_amount_eur = 0) then break;
   end
 end^
@@ -1205,14 +1233,27 @@ begin
   execute procedure param_set(:i_param_id, 'ID', :i_object_id);
 
   select o_value from param_get(:i_param_id, 'AMOUNT_EUR') into :v_amount_eur;
+  select o_value from param_get(:i_param_id, 'AMOUNT_BYR') into :v_amount_byr;
   select o_value from param_get(:i_param_id, 'BYR2EUR') into :v_byr2eur;
   select o_value from param_get(:i_param_id, 'ORDER_ID') into :v_order_id;
   select o_value from param_get(:i_param_id, 'NOTES') into :v_notes;
 
+  if (v_amount_byr is null and v_amount_eur is not null) then
+  begin
+    v_amount_byr = round(:v_amount_eur*:v_byr2eur,  -1);
+    execute procedure param_set(:i_param_id, 'AMOUNT_BYR', :v_amount_byr);
+  end
+
+  if (v_amount_eur is null and v_amount_byr is not null) then
+  begin
+    v_amount_eur = (1.00*v_amount_byr)/v_byr2eur;
+    execute procedure param_set(:i_param_id, 'AMOUNT_EUR', :v_amount_eur);
+  end
+
   select o_pattern from param_fillpattern(:i_param_id, :v_notes) into :v_notes;
 
-  insert into accopers (account_id, amount_eur, byr2eur, order_id, notes)
-    values(:i_object_id, :v_amount_eur, :v_byr2eur, :v_order_id, :v_notes);
+  insert into accopers (account_id, amount_eur, byr2eur, order_id, notes, amount_byr)
+    values(:i_object_id, :v_amount_eur, :v_byr2eur, :v_order_id, :v_notes, :v_amount_byr);
 end^
 
 
@@ -1724,8 +1765,10 @@ declare variable V_OBJECT_ID type of ID_OBJECT;
 declare variable V_NEW_STATUS_SIGN type of SIGN_ATTR;
 declare variable V_ACTION_ID type of ID_ACTION;
 declare variable V_ACTIONTREEITEM_ID type of ID_ACTIONTREEITEM;
+declare variable V_NEW_FLAG_SIGN type of SIGN_OBJECT;
 begin
   select o_value from param_get(:i_param_id, 'NEW.STATUS_SIGN') into :v_new_status_sign;
+  select o_value from param_get(:v_param_id, 'NEW.FLAG_SIGN') into :v_new_flag_sign;
   select o_value from param_get(:i_param_id, 'ACTIONTREEITEM_ID') into :v_actiontreeitem_id;
 
   for select oi.orderitem_id
@@ -1741,7 +1784,7 @@ begin
         where p.param_id = :i_param_id
           and atp.actiontreeitem_id = :v_actiontreeitem_id;
 
-    select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign)
+    select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign, :v_new_flag_sign)
       into :v_action_sign;
 
     if (:v_action_sign is null) then
@@ -1765,8 +1808,10 @@ declare variable V_OBJECT_ID type of ID_OBJECT;
 declare variable V_NEW_STATUS_SIGN type of SIGN_ATTR;
 declare variable V_ACTION_ID type of ID_ACTION;
 declare variable V_ACTIONTREEITEM_ID type of ID_ACTIONTREEITEM;
+declare variable V_NEW_FLAG_SIGN type of SIGN_OBJECT;
 begin
   select o_value from param_get(:i_param_id, 'NEW.STATUS_SIGN') into :v_new_status_sign;
+  select o_value from param_get(:i_param_id, 'NEW.FLAG_SIGN') into :v_new_flag_sign;
   select o_value from param_get(:i_param_id, 'ACTIONTREEITEM_ID') into :v_actiontreeitem_id;
 
   for select oi.orderitem_id
@@ -1782,7 +1827,7 @@ begin
         where p.param_id = :i_param_id
           and atp.actiontreeitem_id = :v_actiontreeitem_id;
 
-    select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign)
+    select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign, :v_new_flag_sign)
       into :v_action_sign;
 
     if (:v_action_sign is null) then
@@ -1806,8 +1851,10 @@ declare variable V_OBJECT_ID type of ID_OBJECT;
 declare variable V_NEW_STATUS_SIGN type of SIGN_ATTR;
 declare variable V_ACTION_ID type of ID_ACTION;
 declare variable V_ACTIONTREEITEM_ID type of ID_ACTIONTREEITEM;
+declare variable V_NEW_FLAG_SIGN type of SIGN_OBJECT;
 begin
   select o_value from param_get(:i_param_id, 'NEW.STATUS_SIGN') into :v_new_status_sign;
+  select o_value from param_get(:i_param_id, 'NEW.FLAG_SIGN') into :v_new_flag_sign;
   select o_value from param_get(:i_param_id, 'ACTIONTREEITEM_ID') into :v_actiontreeitem_id;
 
   for select ordertax_id
@@ -1823,7 +1870,7 @@ begin
         where p.param_id = :i_param_id
           and atp.actiontreeitem_id = :v_actiontreeitem_id;
 
-    select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign)
+    select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign, :v_new_flag_sign)
       into :v_action_sign;
 
     if (:v_action_sign is null) then
@@ -1850,9 +1897,11 @@ declare variable V_TAX_PROCEDURE type of NAME_PROCEDURE;
 declare variable V_COST_EUR type of MONEY_EUR;
 declare variable V_OBJECT_ID type of ID_OBJECT;
 declare variable V_ACTIONTREEITEM_ID type of ID_ACTIONTREEITEM;
+declare variable V_NEW_FLAG_SIGN type of SIGN_OBJECT;
 begin
   select o_value from param_get(:i_param_id, 'NEW.STATUS_SIGN') into :v_new_status_sign;
   select o_value from param_get(:i_param_id, 'ACTIONTREEITEM_ID') into :v_actiontreeitem_id;
+  select o_value from param_get(:i_param_id, 'NEW.FLAG_SIGN') into :v_new_flag_sign;
 
   for select tr.taxrate_id, tr.tax_procedure
     from orders o
@@ -1877,17 +1926,14 @@ begin
     execute statement ('select o_cost_eur from '||v_tax_procedure||'(:taxrate_id, :param_id)')
       (taxrate_id := :v_taxrate_id, param_id := :v_param_id)
       into :v_cost_eur;
-    if (v_cost_eur > 0) then
-    begin
-      select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign)
-        into :v_action_sign;
+    select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign, :v_new_flag_sign)
+      into :v_action_sign;
 
-      if (v_action_sign is not null) then
-      begin
-        execute procedure param_set(:v_param_id, 'TAXRATE_ID', :v_taxrate_id);
-        execute procedure action_run(:i_object_sign, :v_action_sign, :v_param_id, :v_object_id)
-          returning_values :v_action_id;
-      end
+    if (v_action_sign is not null) then
+    begin
+      execute procedure param_set(:v_param_id, 'TAXRATE_ID', :v_taxrate_id);
+      execute procedure action_run(:i_object_sign, :v_action_sign, :v_param_id, :v_object_id)
+        returning_values :v_action_id;
     end
   end
 end^
@@ -2315,9 +2361,10 @@ end^
 
 
 CREATE OR ALTER PROCEDURE ACTION_DETECT (
-    I_OBJECT_SIGN TYPE OF SIGN_OBJECT,
-    I_OBJECT_ID TYPE OF ID_OBJECT,
-    I_NEW_STATUS_SIGN TYPE OF SIGN_OBJECT)
+    I_OBJECT_SIGN TYPE OF SIGN_OBJECT NOT NULL,
+    I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL,
+    I_NEW_STATUS_SIGN TYPE OF SIGN_OBJECT,
+    I_NEW_FLAG_SIGN TYPE OF SIGN_OBJECT)
 RETURNS (
     O_ACTION_SIGN TYPE OF SIGN_ACTION)
 AS
@@ -2348,11 +2395,34 @@ begin
       and s.object_sign = :i_object_sign
     into :v_now_status_sign;
 
-  select s.status_id
-    from statuses s
-    where s.status_sign = :i_new_status_sign
-      and s.object_sign = :i_object_sign
-    into :v_new_status_id;
+  if (:i_new_status_sign is not null) then
+  begin
+    -- search action by status_sign
+    select s.status_id
+      from statuses s
+      where s.status_sign = :i_new_status_sign
+        and s.object_sign = :i_object_sign
+      into :v_new_status_id;
+  end
+  else
+  begin
+    -- search action by flag_sign
+    select sr.new_status_id
+      from status_rules sr
+        inner join flags2statuses f2s on (f2s.status_id = sr.new_status_id)
+      where sr.old_status_id = :v_now_status_id
+        and f2s.flag_sign = :i_new_flag_sign
+      into :v_new_status_id;
+  when sqlcode -811 do
+    begin
+      select RDB$MESSAGE
+        from RDB$EXCEPTIONS
+        where RDB$EXCEPTION_NAME = 'EX_UNDETECTED_ACTIONCODE'
+        into :v_error_message;
+      v_error = v_error_message||' (объект="'||:i_object_sign||'" id="'||:i_object_id||'" переход из="'||:v_now_status_sign||'" по флагу="'||:i_new_flag_sign||'")';
+      exception ex_undetected_actioncode :v_error;
+    end
+  end
 
   if (v_now_status_id = v_new_status_id) then
     o_action_sign = :i_object_sign||'_STORE';
@@ -2405,6 +2475,7 @@ declare variable V_ACTION_ID type of ID_ACTION;
 declare variable V_LOG_ID type of ID_LOG;
 declare variable V_NOW_STATUS_ID type of ID_STATUS;
 declare variable V_NOW_STATUS_SIGN type of SIGN_OBJECT;
+declare variable V_NEW_FLAG_SIGN type of SIGN_OBJECT;
 begin
   select o_param_id
     from param_create(:i_object_sign)
@@ -2423,10 +2494,11 @@ begin
     select o_value from param_get(:v_param_id, 'ID') into :i_object_id;
 
   select o_value from param_get(:v_param_id, 'NEW.STATUS_SIGN') into :v_new_status_sign;
+  select o_value from param_get(:v_param_id, 'NEW.FLAG_SIGN') into :v_new_flag_sign;
 
   if (i_action_sign is null) then
     select o_action_sign
-      from action_detect(:i_object_sign, :i_object_id, :v_new_status_sign)
+      from action_detect(:i_object_sign, :i_object_id, :v_new_status_sign, :v_new_flag_sign)
       into :i_action_sign;
 
   if (i_action_sign is null) then
@@ -2600,6 +2672,9 @@ begin
     if (v_procedure_name = 'MONEYBACK_STORE') then
       execute procedure act_moneyback_store(:i_param_id, :i_object_id);
     else
+    if (v_procedure_name = 'ACCOUNT_CREDITORDER') then
+      execute procedure act_account_creditorder(:i_param_id, :i_object_id);
+    else
     if (v_procedure_name = 'ACCOUNT_DEBITORDER') then
       execute procedure act_account_debitorder(:i_param_id, :i_object_id);
     else
@@ -2635,6 +2710,12 @@ begin
     else
     if (v_procedure_name = 'MAGAZINE_STORE') then
       execute procedure act_magazine_store(:i_param_id, :i_object_id);
+    else
+    if (v_procedure_name = 'ACCOUNT_PAYMENTIN') then
+      execute procedure act_account_paymentin(:i_param_id, :i_object_id);
+    else
+    if (v_procedure_name = 'ACCOUNT_PAYMENTOUT') then
+      execute procedure act_account_paymentout(:i_param_id, :i_object_id);
     else
     begin
     -- run main action
@@ -3145,15 +3226,33 @@ begin
 end^
 
 
-CREATE OR ALTER PROCEDURE MESSAGE_RELEASE (
-    I_MESSAGE_ID TYPE OF ID_MESSAGE NOT NULL)
+CREATE OR ALTER PROCEDURE MESSAGE_READ (
+    I_OBJECT_ID TYPE OF ID_MESSAGE)
+RETURNS (
+    O_PARAM_NAME TYPE OF SIGN_OBJECT,
+    O_PARAM_VALUE TYPE OF VALUE_ATTR)
 AS
 begin
-  in autonomous transaction do
-    update messages m
-      set m.busy_id = null
-      where m.busy_id = current_connection
-        and m.message_id = :i_message_id;
+  /* Procedure Text */
+  for select d.param_sign, recode(m.file_name, d.value_mask)
+        from messages m
+          inner join detector d on (d.object_sign = 'MESSAGE' and d.object_id = m.template_id)
+        where m.message_id = :i_object_id
+        into :o_param_name, :o_param_value do
+  begin
+    suspend;
+  end
+end^
+
+
+CREATE OR ALTER PROCEDURE MESSAGE_RELEASE (
+    I_TEMPLATE_ID TYPE OF ID_MESSAGE NOT NULL)
+AS
+begin
+  update messages m
+    set m.busy_id = null
+    where m.busy_id = current_connection
+      and m.template_id = :i_template_id;
 end^
 
 
@@ -3500,12 +3599,13 @@ declare variable V_ACCOUNT_ID type of ID_ACCOUNT;
 declare variable V_STATUS_FLAG_LIST type of LIST_SIGNS;
 declare variable V_STATUS_NAME type of NAME_OBJECT;
 begin
-  select p.product_name, vc.client_fio, va.adress_text,
+  select p.product_name, vc.client_fio,
+         ca.postindex||'. '||ca.place_text||', '||ca.adress_text adress_text,
          s.status_sign, s.flag_sign_list, s.status_name
     from orders o
       left join products p on (p.product_id = o.product_id)
       left join v_clients_fio vc on (vc.client_id = o.client_id)
-      left join v_adress_text va on (va.adress_id = o.adress_id)
+      left join v_clientadress ca on (ca.adress_id = o.adress_id)
       left join statuses s on (s.status_id = o.status_id)
     where o.order_id = :i_object_id
     into :v_product_name, :v_client_fio, :v_adress_text,
