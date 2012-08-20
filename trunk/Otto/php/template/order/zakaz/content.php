@@ -6,7 +6,18 @@
   </div>
 
 <?php  
-    $order_name = "zakaz-".date("Y")."-".date("m")."-".date("d")."-".date("H").date("i").date("s");
+  require_once "libs/GvXmlUtils.php";
+  $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><ORDER/>');
+  $client_node = $xml->addChild('CLIENT');
+  $adress_node = $client_node->addChild('ADRESS');
+  $place_node = $adress_node->addChild('PLACE');
+  $product_node = $xml->addChild('PRODUCT');
+  Hash2Attrs($client_node, $_POST, 'LAST_NAME=LastName;FIRST_NAME=FirstName;MID_NAME=MidName;EMAIL=Email;PHONE_NUMBER=Phone;MOBILE_PHONE=MobPhone');
+  Hash2Attrs($adress_node, $_POST, 'POSTINDEX=PostIndex;STREETTYPE_ID=StreetTypeId;STREET_NAME=Street;HOUSE=House;BUILDING=Corpus;FLAT=Flat');
+  Hash2Attrs($place_node, $_POST, 'PLACETYPE_ID=CityTypeId;PLACE_NAME=City;AREA_NAME=Area;REGION_NAME=Region');
+  Hash2Attrs($product_node, $_POST, 'PARTNER_NUMBER=PayForm');
+  $streettypes = file('references/streettypes.txt');
+  $placetypes = file('references/placetypes.txt');
 ?>
 
   <div class="content" id="terms">
@@ -35,7 +46,7 @@
                </tr> 
                <tr> 
                  <td width="40%">Улица</td> 
-                 <td width="60%"><? echo $_POST['StreetType'];?> <? echo $_POST['Street'];?></td> 
+                 <td width="60%"><? echo $streettypes[$_POST['StreetTypeId']];?> <? echo $_POST['Street'];?></td> 
                </tr> 
                <tr> 
                  <td width="40%">№&nbsp;дома</td> 
@@ -55,15 +66,15 @@
                </tr> 
                <tr> 
                  <td width="40%">Город</td> 
-                 <td width="60%"><? echo $_POST['CityType'];?> <? echo $_POST['City'];?></td> 
-               </tr> 
-               <tr> 
-                 <td width="40%">Район</td> 
-                 <td width="60%"><? echo $_POST['Area'];?></td> 
+                 <td width="60%"><? echo $placetypes[$_POST['CityTypeId']];?> <? echo $_POST['City'];?></td> 
                </tr> 
                <tr> 
                  <td width="40%">Район</td> 
                  <td width="60%"><? echo $_POST['Region'];?></td> 
+               </tr> 
+               <tr> 
+                 <td width="40%">Область</td> 
+                 <td width="60%"><? echo $_POST['Area'];?></td> 
                </tr> 
                <tr> 
                  <td width="40%">Контактный&nbsp;тел.<font size="2">(Домашн/Рабочий)</font></td> 
@@ -71,21 +82,17 @@
                </tr> 
                <tr> 
                  <td width="40%">Контактный&nbsp;тел.<font size="2">(Мобилъный тел.)</font></td> 
-                 <td width="60%">(8-<? echo $_POST['MobPrefix'];?>)-<? echo $_POST['MobPhone'];?></td> 
+                 <td width="60%"><? echo $_POST['MobPhone'];?></td> 
                </tr> 
                <tr> 
                  <td width="40%">Форма оплаты</td> 
-                 <td width="60%"><? echo $_POST['PayForm'];?></td> 
+                 <td width="60%"><? if ($_POST['PayForm'] == 73105061) {echo "Предоплата";} else {echo "Наложенный платеж";}?></td> 
                </tr> 
              </tbody></table>
              <h4 class="head">Состав заказа</h4>
              <table cellspacing="2" cellpadding="0" border="1" class="catalog_tbl">
                <thead>
                <tr align="center" valign="middle">
-                 <th><font size="1">Каталог</font></th>
-                 <th><font size="1">Tип</font></th>
-                 <th><font size="1">Стр.</font></th>
-                 <th><font size="1">№<br/>поз.</font></th>
                  <th><font size="1">Артикул<br/>ЛАТИНСКИМ</font></th>
                  <th><font size="1">Разм</font></th>
                  <th><font size="1">Цена<br/>EUR</th>
@@ -95,25 +102,15 @@
                </thead>
                <tbody>
 <?php 
-  $header = $_POST['LastName'].";".$_POST['FirstName'].";".$_POST['MidName'].";". // Фамилия / Имя / Отчество
-           $_POST['Email'].";".  //Email
-           trim($_POST['StreetType']." ".$_POST['Street']).";". // Улица
-           $_POST['House'].";".$_POST['Corpus'].";".$_POST['Flat'].";". // Дом / Корпус / Квартира
-           $_POST['PostIndex'].";". // Индекс
-           trim($_POST['CityType']." ".$_POST['City']).";".// Населеный пункт
-           trim($_POST['Area']." ".$_POST['Region']).";".   // Район, область
-           $_POST['Phone'].";".$_POST['MobPhone'].";".$_POST['MobPrefix'].";". // телефоны
-           $_POST['PayForm'].";"; // тип оплаты
+  $orderitems_node = $xml->addChild('ORDERITEMS');
            
 for($i=1;$i<=12; $i++) { 
    if ($_POST["Articul$i"]) {
      $_POST["Price$i"] = str_replace(',', '.', $_POST["Price$i"]);
-     $order_items[] = $_POST["Catalog$i"].";".$_POST["CatalogPage$i"].";".$_POST["ItemPos$i"].";".$_POST["Articul$i"].";".$_POST["Size$i"].";".$_POST["Price$i"].";".$_POST["RusName$i"]." ".$_POST["RusInfo$i"];?>
+     $orderitem_node = $orderitems_node->addChild('ORDERITEM');
+     Hash2Attrs($orderitem_node, $_POST, "ARTICLE_CODE=Articul$i;DIMENSION=Size$i;PRICE_EUR=Price$i;NAME_RUS=RusName$i;KIND_RUS=RusInfo$i");
+?>     
                <tr align="center">
-                 <td width="54"><? echo $_POST["Catalog$i"];?>&nbsp;</td>
-                 <td width="25"><? echo $_POST["CatalogType$i"];?>&nbsp;</td>
-                 <td width="25"><? echo $_POST["CatalogPage$i"];?>&nbsp;</td>
-                 <td width="25"><? echo $_POST["ItemPos$i"];?>&nbsp;</td>
                  <td width="40"><? echo $_POST["Articul$i"];?>&nbsp;</td>
                  <td width="30"><? echo $_POST["Size$i"];?>&nbsp;</td>
                  <td width="41"><? echo $_POST["Price$i"];?>&nbsp;</td>
@@ -125,15 +122,19 @@ for($i=1;$i<=12; $i++) {
 }?>
           </tbody></table>
 <?php
-  if (count($order_items) > 0) {
-    $attach = $header . "\r\n" . implode("\r\n", $order_items);
-    if ($_POST['PayForm'] == 'Предоплата') {
-      $partner_code = '73105061';
-    } else {
-      $partner_code = '73105050';
-    }
-    $order_filename = "orders/$partner_code/$order_name.dat";
-    file_put_contents($order_filename, utf8_to_ansi_ru($attach));
+  if ($orderitems_node->children()) {
+    // получаем номер файла
+    $file_counter = 'cache/orders.'.date('Ydm').'.cnt';
+    $handle = fopen($file_counter, 'a+');
+    fputs($handle, "\r\n".session_id());
+    fclose($handle);
+    $sessions = explode("\r\n", file_get_contents($file_counter));
+    
+    $idx = array_search(session_id(), $sessions);
+    
+    $order_name = date('Ymd').'_'.str_pad($idx, 3, '0', STR_PAD_LEFT);
+    $order_filename = "orders/$order_name.xml"; 
+    $xml->asXML($order_filename);
 ?>
            <font color='blue'>С условиями оформления заявки по интернету и с условиями получения международной посылки с товаром по каталогам OTTO ознакомилась / ознакомился.</font><br>
            <br>
@@ -148,7 +149,7 @@ for($i=1;$i<=12; $i++) {
     $mail->FromName = $_POST["FirstName"]." ".$_POST["LastName"];   // от кого
   //  $mail->IsHTML(true);        // выставляем фомат письма HTML
     $mail->Subject = "заказ-интернет $order_name";  // тема письма   
-    $mail->Body = "$attach";
+    $mail->Body = "";
     $mail->AddAttachment($order_filename, $order_name);
     // отправляем наше письмо
     if ($mail->Send()) {

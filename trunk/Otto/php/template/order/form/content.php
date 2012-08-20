@@ -1,3 +1,31 @@
+<?php
+  require_once "libs/GvXmlUtils.php";
+  $file_counter = 'cache/orders.'.date('Ydm').'.cnt';
+  $sessions = array();
+  if (file_exists($file_counter)) $sessions = explode("\r\n", file_get_contents($file_counter));
+  $idx = array_search(session_id(), $sessions);
+  if ($idx) {
+    $order_name = date('Ymd').'_'.str_pad($idx, 3, '0', STR_PAD_LEFT);
+    $order_filename = "orders/$order_name.xml"; 
+    $xml=  simplexml_load_file($order_filename);
+    $client_node = $xml->CLIENT;
+    $adress_node = $client_node->ADRESS;
+    $place_node = $adress_node->PLACE;
+    $product_node = $xml->PRODUCT;
+    $orderitems_node = $xml->ORDERITEMS;
+
+    Attrs2Hash($_POST, $client_node, 'LastName=LAST_NAME;FirstName=FIRST_NAME;MidName=MID_NAME;Email=EMAIL;Phone=PHONE_NUMBER;MobPhone=MOBILE_PHONE');
+    Attrs2Hash($_POST, $adress_node, 'PostIndex=POSTINDEX;StreetTypeId=STREETTYPE_ID;Street=STREET_NAME;House=HOUSE;Corpus=BUILDING;Flat=FLAT');
+    Attrs2Hash($_POST, $place_node, 'CityTypeId=PLACETYPE_ID;City=PLACE_NAME;Area=AREA_NAME;Region=REGION_NAME');
+    Attrs2Hash($_POST, $product_node, 'PayForm=PARTNER_NUMBER');
+    $i = 1;
+    foreach ($orderitems_node->children() as $orderitem_node) {
+      Attrs2Hash($_POST, $orderitem_node, "Articul$i=ARTICLE_CODE;Size$i=DIMENSION;Price$i=PRICE_EUR;RusName$i=NAME_RUS;RusInfo$i=KIND_RUS");
+    }
+  } else {
+    $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><ORDER/>');
+  }
+?>
 <div class="maincontent" id="ordercontent">
   <div id="headline_item">
     <div class="text">
@@ -34,15 +62,20 @@
                </tr> 
                <tr> 
                  <td width="30%"><font color="red">Улица</font></td> 
-                 <td width="30%"><select size="1" name="StreetType" class="cat_tables_form"> 
-                                   <option value="" <? if ($_POST['StreetType'] == "") echo "selected"; ?>>улица</option>
-                                   <option value="п-т"<? if ($_POST['StreetType'] == "п-т") echo "selected"; ?>>проспект</option>
-                                   <option value="пер"<? if ($_POST['StreetType'] == "пер") echo "selected"; ?>>переулок</option>
-                                   <option value="проезд"<? if ($_POST['StreetType'] == "проезд") echo "selected"; ?>>проезд</option>
-                                   <option value="м-н"<? if ($_POST['StreetType'] == "м-н") echo "selected"; ?>>микрорайон</option>
-                                   <option value="тракт"<? if ($_POST['StreetType'] == "тракт") echo "selected"; ?>>тракт</option>
-                                   <option value="площадь"<? if ($_POST['StreetType'] == "площадь") echo "selected"; ?>>площадь</option>
-                                   <option value="б-р"<? if ($_POST['StreetType'] == "б-р") echo "selected"; ?>>бульвар</option>
+                 <td width="30%"><select size="1" name="StreetTypeId" class="cat_tables_form"> 
+                                   <option value="1" <? if ($_POST['StreetTypeId'] == "1") echo "selected"; ?>>улица</option>
+                                   <option value="2"<? if ($_POST['StreetTypeId'] == "2") echo "selected"; ?>>проспект</option>
+                                   <option value="3"<? if ($_POST['StreetTypeId'] == "3") echo "selected"; ?>>переулок</option>
+                                   <option value="4"<? if ($_POST['StreetTypeId'] == "4") echo "selected"; ?>>проезд</option>
+                                   <option value="5"<? if ($_POST['StreetTypeId'] == "5") echo "selected"; ?>>микрорайон</option>
+                                   <option value="6"<? if ($_POST['StreetTypeId'] == "6") echo "selected"; ?>>тракт</option>
+                                   <option value="7"<? if ($_POST['StreetTypeId'] == "7") echo "selected"; ?>>площадь</option>
+                                   <option value="8"<? if ($_POST['StreetTypeId'] == "8") echo "selected"; ?>>бульвар</option>
+                                   <option value="9"<? if ($_POST['StreetTypeId'] == "9") echo "selected"; ?>>шоссе</option>
+                                   <option value="10"<? if ($_POST['StreetTypeId'] == "10") echo "selected"; ?>>павильон</option>
+                                   <option value="11"<? if ($_POST['StreetTypeId'] == "11") echo "selected"; ?>>квартал</option>
+                                   <option value="12"<? if ($_POST['StreetTypeId'] == "12") echo "selected"; ?>>мжк</option>
+                                   <option value="13"<? if ($_POST['StreetTypeId'] == "13") echo "selected"; ?>>станция</option>
                                  </select>&nbsp;<input type="text" size="18" name="Street" class="cat_tables_form" value="<? echo $_POST['Street'];?>"></td> 
                  <td width="40%"><font color="red"><? echo $_POST['Street_Error'];?></font></td>
                </tr> 
@@ -68,12 +101,14 @@
                </tr> 
                <tr> 
                  <td width="30%"><font color="red">Город <font size="2">(гп пос дер)</font></font></td> 
-                 <td width="30%"><select size="1" name="CityType" class="cat_tables_form"> 
-                                   <option value="" <? if ($_POST['CityType'] == "") echo "selected"; ?>>город</option>
-                                   <option value="гп"<? if ($_POST['CityType'] == "гп") echo "selected"; ?>>городской поселок</option>
-                                   <option value="пос"<? if ($_POST['CityType'] == "пос") echo "selected"; ?>>поселок</option>
-                                   <option value="дер"<? if ($_POST['CityType'] == "дер") echo "selected"; ?>>деревня</option>
-                                 </select> <input type="text" size="11" name="City" class="cat_tables_form" value="<? echo $_POST['City'];?>"></td> 
+                 <td width="30%"><select size="1" name="CityTypeId" class="cat_tables_form"> 
+                                   <option value="4"<? if ($_POST['CityTypeId'] == "4") echo "selected"; ?>>город</option>
+                                   <option value="5"<? if ($_POST['CityTypeId'] == "5") echo "selected"; ?>>городской поселок</option>
+                                   <option value="6"<? if ($_POST['CityTypeId'] == "6") echo "selected"; ?>>поселок</option>
+                                   <option value="7"<? if ($_POST['CityTypeId'] == "7") echo "selected"; ?>>деревня</option>
+                                   <option value="8"<? if ($_POST['CityTypeId'] == "8") echo "selected"; ?>>военная часть</option>
+                                   <option value="9"<? if ($_POST['CityTypeId'] == "9") echo "selected"; ?>>военный городок</option>
+                                 </select> <input type="text" size="12" name="City" class="cat_tables_form" value="<? echo $_POST['City'];?>"></td> 
                  <td width="40%"><font color="red"><? echo $_POST['City_Error'];?></font></td>
                </tr> 
                <tr> 
@@ -93,30 +128,21 @@
                </tr> 
                <tr> 
                  <td width="30%"><font color="red">Контактный&nbsp;тел.</font><font size="2">(Мобилъный тел.)</font></td> 
-                 <td width="30%"><select size="1" name="MobPrefix" class="cat_tables_form"> 
-                                    <option value="029" <? if ($_POST['MobPrefix'] == "") echo "selected"; ?>>029</option>
-                                    <option value="044" <? if ($_POST['MobPrefix'] == "") echo "selected"; ?>>044</option>
-                                    <option value="033" <? if ($_POST['MobPrefix'] == "") echo "selected"; ?>>033</option>
-                                    <option value="025" <? if ($_POST['MobPrefix'] == "") echo "selected"; ?>>025</option>
-                                  </select>&nbsp;<input type="text" maxlength="7" size="26" name="MobPhone" class="cat_tables_form" value="<? echo $_POST['MobPhone'];?>"></td> 
+                 <td width="30%"><input type="text" maxlength="28" size="35" name="MobPhone" class="cat_tables_form" value="<? echo $_POST['MobPhone'];?>"></td> 
                  <td width="40%"><font color="red"><? echo $_POST['MobPhone_Error'];?></font></td>
                </tr> 
                <tr> 
                  <td width="30%"><font color="red">Форма оплаты</font></td> 
                  <td width="30%"><select size="1" name="PayForm" class="cat_tables_form"> 
-                                    <option value="Предоплата" <? if ($_POST['PayForm'] == "Предоплата") echo "selected"; ?>>Предоплата</option>
-                                    <option value="Наложенный платеж" <? if ($_POST['PayForm'] == "Наложенный платеж") echo "selected"; ?>>Наложенным платежом</option>
+                                    <option value="73105061" <? if ($_POST['PayForm'] == "73105061") echo "selected"; ?>>Предоплата</option>
+                                    <option value="73105050" <? if ($_POST['PayForm'] == "73105050") echo "selected"; ?>>Наложенным платежом</option>
                                   </select></td> 
                </tr> 
              </tbody></table>
              <h4 class="head">Состав заказа</h4>
-             <table cellspacing="2" cellpadding="0" border="0" class="catalog_tbl">
+             <table cellspacing="2" cellpadding="0" border="0" class="catalog_tbl" align="center">
                <thead>
                <tr align="center" valign="middle">
-                 <th><font color="red" size="1">Каталог</font></th>
-                 <!--th><font size="1">Tип</font></th-->
-                 <th><font size="1">Стр.</font></th>
-                 <th><font size="1">№<br/>поз.</font></th>
                  <th><font color="red" size="1">Артикул<br/>ЛАТИНСКИМ</font></th>
                  <th><font color="red" size="1">Разм</font></th>
                  <th><font color="red" size="1">Цена<br/>EUR</th>
@@ -127,34 +153,11 @@
                <tbody>
 <?php for($i=1;$i<=12; $i++) { ?>
                <tr align="center">
-                 <td width="54"><select selectindex=-1 id="Catalog<?php echo $i;?>" name="Catalog<?php echo $i;?>" class="cat_tables_form">
-                   <option value="ALBA MODA" <? if ($_POST["Catalog$i"] == "ALBA MODA") echo "selected"; ?>>Alba Moda</option>
-                   <option value="APART" <? if ($_POST["Catalog$i"] == "APART") echo "selected"; ?>>Apart</option>
-                   <option value="BAUR" <? if ($_POST["Catalog$i"] == "BAUR") echo "selected"; ?>>Baur</option>
-                   <option value="CFL" <? if ($_POST["Catalog$i"] == "CFL") echo "selected"; ?>>CFL</option>
-                   <option value="CREATION" <? if ($_POST["Catalog$i"] == "CREATIONA") echo "selected"; ?>>Creation</option>
-                   <option value="EXTRA" <? if ($_POST["Catalog$i"] == "EXTRA") echo "selected"; ?>>Extra</option>
-                   <option value="EXTRA SELECTION" <? if ($_POST["Catalog$i"] == "EXTRA SELECTION") echo "selected"; ?>>Extra Selection</option>
-                   <option value="EXTRA SPECIAL" <? if ($_POST["Catalog$i"] == "EXTRA SPECIAL") echo "selected"; ?>>Extra Special</option>
-                   <option value="HEINE" <? if ($_POST["Catalog$i"] == "HEINE") echo "selected"; ?>>Heine</option>
-                   <option value="KLITZEKLEIN" <? if ($_POST["Catalog$i"] == "KLITZEKLEIN") echo "selected"; ?>>Klitzeklein</option>
-                   <option value="OTTO-de" <? if ($_POST["Catalog$i"] == "OTTO-de") echo "selected"; ?>>OTTO-de ~1100стр.</option>
-                   <option value="OTTO-ru" <? if ($_POST["Catalog$i"] == "OTTO-ru") echo "selected"; ?>>OTTO-ru ~500стр.</option>
-                   <option value="OTTO-by" <? if ($_POST["Catalog$i"] == "OTTO-by") echo "selected"; ?>>OTTO-ru ~300стр.</option>
-                   <option value="SCHENKEN" <? if ($_POST["Catalog$i"] == "ALBA MODA") echo "selected"; ?>>Schenken</option>
-                   <option value="SCHUH" <? if ($_POST["Catalog$i"] == "SCHENKEN") echo "selected"; ?>>Schuh</option>
-                   <option value="SHEEGO" <? if ($_POST["Catalog$i"] == "SHEEGO") echo "selected"; ?>>Sheego</option>
-                   <option value="SPECIAL" <? if ($_POST["Catalog$i"] == "SPECIAL") echo "selected"; ?>>Special</option>
-                   <option value="VENCA" <? if ($_POST["Catalog$i"] == "VENCA") echo "selected"; ?>>Venca</option>
-                   <option value="3 PAGEN" <? if ($_POST["Catalog$i"] == "3 PAGEN") echo "selected"; ?>>3 PAGEN</option>
-                   <option value="Internet"  <? if ($_POST["Catalog$i"] == "") echo "selected"; ?>>Интернет</option>
-                 </select></td>
-                 <td width="25"><input type="text" maxlength="4" size="5" name="CatalogPage<?php echo $i;?>" class="cat_tables_form"></td>
-                 <td width="25"><input type="text" maxlength="4" size="3" name="ItemPos<?php echo $i;?>" class="cat_tables_form"></td>
-                 <td width="40"><input type="text" maxlength="8" size="10" name="Articul<?php echo $i;?>" class="cat_tables_form"></td>
-                 <td width="30"><input type="text" maxlength="3" size="3" name="Size<?php echo $i;?>" class="cat_tables_form"></td>
-                 <td width="48"><input type="text" maxlength="16" size="10" name="RusName<?php echo $i;?>" class="cat_tables_form"></td>
-                 <td width="66"><input type="text" maxlength="11" size="14" name="RusInfo<?php echo $i;?>" class="cat_tables_form"></td>
+                 <td width="40"><input type="text" maxlength="8" size="10" name="Articul<?echo $i;?>" value="<?echo $_POST["Articul$i"];?>" class="cat_tables_form"></td>
+                 <td width="30"><input type="text" maxlength="3" size="3" name="Size<?php echo $i;?>" value="<?echo $_POST["Size$i"];?>" class="cat_tables_form"></td>
+                 <td width="40"><input type="text" maxlength="6" size="10" name="Price<?php echo $i;?>" value="<?echo $_POST["Price$i"];?>" class="cat_tables_form"></td>
+                 <td width="48"><input type="text" maxlength="20" size="20" name="RusName<?php echo $i;?>" value="<?echo $_POST["RusName$i"];?>" class="cat_tables_form"></td>
+                 <td width="66"><input type="text" maxlength="24" size="24" name="RusInfo<?php echo $i;?>" value="<?echo $_POST["RusInfo$i"];?>" class="cat_tables_form"></td>
                </tr>
                
                <tr>
