@@ -209,7 +209,10 @@ begin
         begin
           ndOrder:= ndOrders[n];
           if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'ACCEPTREQUEST') then
-            dmOtto.ActionExecute(aTransaction, ndOrder, 'ACCEPTED');
+          begin
+            SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'ACCEPTED');
+            dmOtto.ActionExecute(aTransaction, ndOrder);
+          end;
           dmOtto.StepProgress;
         end;
       end
