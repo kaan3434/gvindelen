@@ -165,15 +165,14 @@ begin
   begin
     act:= TAction.Create(Self);
     Action := act;
-    act.Tag:= aDataSet['Id'];
+    act.Tag:= aDataSet['Booker_Id'];
     act.AutoCheck:= true;
     act.OnExecute:= aEvent;
-    act.Caption:= aDataSet['booker_name'];
+    act.Caption:= aDataSet['Booker_Name'];
     act.Visible:= true;
     act.ImageIndex:= aImgIndex;
-    act.Checked:= aDataSet.FieldByName('scan_flg').AsBoolean;;
+    act.Checked:= aDataSet.FieldByName('Scan_Flg').AsBoolean;;
     CommandStyle:= csButton;
-    (actClientItem.CommandProperties as TButtonProperties).ButtonSize:= bsLarge;
   end;
 end;
 
@@ -196,8 +195,8 @@ procedure TForm1.CreateButtons(aBookerDataSet: TFIBDataSet);
 var
   ImgIndex: integer;
 begin
-  ImgIndex:= AppendPngToImageList(imgListRibbon, TBlobField(aBookerDataSet.FieldByName('small_img')));
-  AppendPngToImageList(imgListRibbonLarge, TBlobField(aBookerDataSet.FieldByName('small_img')));
+  ImgIndex:= AppendPngToImageList(imgListRibbon, TBlobField(aBookerDataSet.FieldByName('small_icon')));
+  AppendPngToImageList(imgListRibbonLarge, TBlobField(aBookerDataSet.FieldByName('small_icon')));
   AppendActionToGroup(tbScannerBookers, aBookerDataSet, ImgIndex, actNeedScan.OnExecute);
   AppendActionTogroup(tbViewerBookers, aBookerDataSet, ImgIndex, actNeedShow.OnExecute);
 end;
@@ -220,15 +219,7 @@ var
   Bookers, Booker: TGvXmlNode;
 begin
   dm:= TDmFormMain.Create(self);
-  try
-    dm.qryBookers.Open;
-
-    dm.Bookers2Xml(Bookers);
-    for Booker in Bookers.ChildNodes do
-      CreateButtons(Booker);
-  finally
-    Bookers.Free;
-  end;
+  CreateBookerButtons;
   FThreadList:= TList.Create;
 //  ThreadCount:= Settings.Scaners.Attr['ThreadCount'].AsIntegerDef(1);
   dm.trnWrite.StartTransaction;

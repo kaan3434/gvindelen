@@ -2,8 +2,8 @@ object Form1: TForm1
   Left = 488
   Top = 110
   Caption = 'Form1'
-  ClientHeight = 508
-  ClientWidth = 899
+  ClientHeight = 429
+  ClientWidth = 732
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,7 +20,7 @@ object Form1: TForm1
   object Ribbon: TRibbon
     Left = 0
     Top = 0
-    Width = 899
+    Width = 732
     Height = 143
     ActionManager = actMngRibbon
     ApplicationMenu.Menu = RibbonApplicationMenuBar1
@@ -38,9 +38,10 @@ object Form1: TForm1
         Caption = 'Teacher'
         Page = RibbonPage2
       end>
-    TabIndex = 1
+    TabIndex = 2
+    ExplicitWidth = 899
     DesignSize = (
-      899
+      732
       143)
     StyleName = 'Ribbon - Luna'
     object RibbonApplicationMenuBar1: TRibbonApplicationMenuBar
@@ -51,10 +52,11 @@ object Form1: TForm1
     object RibbonPageScaner: TRibbonPage
       Left = 0
       Top = 50
-      Width = 898
+      Width = 731
       Height = 93
       Caption = 'Scanner'
       Index = 0
+      ExplicitWidth = 898
       object tbScannerBookers: TRibbonGroup
         Left = 4
         Top = 3
@@ -65,30 +67,14 @@ object Form1: TForm1
         GroupIndex = 0
       end
     end
-    object RibbonPage2: TRibbonPage
-      Left = 0
-      Top = 50
-      Width = 898
-      Height = 93
-      Caption = 'Teacher'
-      Index = 2
-      object RibbonGroup1: TRibbonGroup
-        Left = 4
-        Top = 3
-        Width = 100
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = 'Categories'
-        GroupIndex = 0
-      end
-    end
     object RibbonPage1: TRibbonPage
       Left = 0
       Top = 50
-      Width = 898
+      Width = 731
       Height = 93
       Caption = 'Viewer'
       Index = 1
+      ExplicitWidth = 898
       object tbViewerBookers: TRibbonGroup
         Left = 4
         Top = 3
@@ -99,50 +85,77 @@ object Form1: TForm1
         GroupIndex = 0
       end
     end
+    object RibbonPage2: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 731
+      Height = 93
+      Caption = 'Teacher'
+      Index = 2
+      ExplicitWidth = 898
+      object RibbonGroup1: TRibbonGroup
+        Left = 4
+        Top = 3
+        Width = 100
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = 'Categories'
+        GroupIndex = 0
+      end
+    end
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 489
-    Width = 899
+    Top = 410
+    Width = 732
     Height = 19
     Panels = <>
     SimplePanel = True
+    ExplicitTop = 489
+    ExplicitWidth = 899
   end
   object ProgressBar1: TProgressBar
     Left = 0
-    Top = 472
-    Width = 899
+    Top = 393
+    Width = 732
     Height = 17
     Align = alBottom
     TabOrder = 2
+    ExplicitTop = 472
+    ExplicitWidth = 899
   end
   object dckLeft: TSpTBXMultiDock
     Left = 0
     Top = 143
     Width = 9
-    Height = 329
+    Height = 250
+    ExplicitHeight = 329
   end
   object dckRight: TSpTBXMultiDock
-    Left = 890
+    Left = 723
     Top = 143
     Width = 9
-    Height = 329
+    Height = 250
     Position = dpxRight
+    ExplicitLeft = 890
+    ExplicitHeight = 329
   end
   object pnlSwims: TSpTBXDockablePanel
     Left = 9
     Top = 143
-    Width = 881
-    Height = 329
+    Width = 714
+    Height = 250
     Caption = #1042#1080#1083#1082#1080
     Align = alClient
     TabOrder = 5
     Options.Close = False
+    ExplicitWidth = 881
+    ExplicitHeight = 329
     object DBGridEh1: TDBGridEh
       Left = 0
       Top = 19
-      Width = 881
-      Height = 310
+      Width = 714
+      Height = 231
       Align = alClient
       AutoFitColWidths = True
       DataGrouping.GroupLevels = <>
@@ -374,7 +387,7 @@ object Form1: TForm1
     Left = 560
     Top = 8
     Bitmap = {
-      494C010103000900540010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
+      494C010103000900580010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000101010F010101170101011A0101
       011A0101011A0101011A0101011A0101011A0101011A0101011A0101011A0101
@@ -520,7 +533,7 @@ object Form1: TForm1
     Left = 472
     Top = 8
     Bitmap = {
-      494C0101030009004C0020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010103000900500020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000101010F0101010F010101170101
       01170101011A0101011A0101011A0101011A0101011A0101011A0101011A0101
