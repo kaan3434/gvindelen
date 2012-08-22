@@ -137,13 +137,19 @@ begin
     GetXmlAttr(ndClient, 'FIRST_NAME', ' ')+
     GetXmlAttr(ndClient, 'MID_NAME', ' ');
 
-  XmlAttr2Combo(cbPlaceType, ndPlace, 'PLACETYPE_CODE', 'PLACETYPE_SIGN', 'г');
+  if AttrExists(ndPlace, 'PLACETYPE_CODE') then
+    cbPlaceType.ItemIndex:= cbPlaceType.KeyItems.IndexOf(GetXmlAttr(ndPlace, 'PLACETYPE_CODE'))
+  else
+    XmlAttr2Combo(cbPlaceType, ndPlace, 'PLACETYPE_CODE', 'PLACETYPE_SIGN', 'г');
   dedPlaceName.Text:= GetXmlAttr(ndPlace, 'PLACE_NAME');
   XmlAttr2Combo(cbAreaName, ndPlace, 'AREA_ID', 'AREA_NAME');
   dedRegionName.Text:= GetXmlAttr(ndPlace, 'REGION_NAME');
 
   medPostIndex.Text:= GetXmlAttr(ndAdress, 'POSTINDEX');
-  XmlAttr2Combo(cbStreetType, ndAdress, 'STREETTYPE_CODE', 'STREETTYPE_SIGN', 'ул');
+  if AttrExists(ndAdress, 'STREETTYPE_CODE') then
+    cbStreetType.ItemIndex:= cbStreetType.KeyItems.IndexOf(GetXmlAttr(ndAdress, 'STREETTYPE_CODE'))
+  else
+    XmlAttr2Combo(cbStreetType, ndAdress, 'STREETTYPE_CODE', 'STREETTYPE_SIGN', 'ул');
   dedStreetName.Text:= GetXmlAttr(ndAdress, 'STREET_NAME');
   dedHouse.Text:= GetXmlAttr(ndAdress, 'HOUSE');
   dedBuilding.Text:= GetXmlAttr(ndAdress, 'BUILDING');
@@ -207,6 +213,7 @@ begin
 
   dmOtto.ObjectGet(ndAdress, AdressId, trnWrite);
   dmOtto.ObjectGet(ndPlace, PlaceId, trnWrite);
+  UpdateCaptions;
 end;
 
 procedure TFrameAdress.cbPlaceTypeChange(Sender: TObject);

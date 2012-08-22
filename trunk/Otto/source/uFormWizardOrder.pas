@@ -23,9 +23,15 @@ type
     procedure trnWriteBeforeEnd(EndingTR: TFIBTransaction;
       Action: TTransactionAction; Force: Boolean);
     procedure actClientPageFirstExecute(Sender: TObject);
-    procedure wzFormActivePageChanging(Sender: TObject;
-      var ToPage: TJvWizardCustomPage);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure wzIPageAdressNextButtonClick(Sender: TObject;
+      var Stop: Boolean);
+    procedure wzIPageClientNextButtonClick(Sender: TObject;
+      var Stop: Boolean);
+    procedure wzIPageOrderNextButtonClick(Sender: TObject;
+      var Stop: Boolean);
+    procedure wzIPageOrderItemsNextButtonClick(Sender: TObject;
+      var Stop: Boolean);
   private
     { Private declarations }
     ndOrder: TXmlNode;
@@ -104,6 +110,7 @@ begin
   SetXmlAttr(ndOrder, 'ID', ObjectId);
   SetXmlAttr(ndOrder, 'BYR2EUR', dmOtto.SettingGet(trnRead, 'BYR2EUR'));
   SetXmlAttr(ndOrder, 'CREATE_DTM', Now);
+  BuildXml;
   dmOtto.ActionExecute(trnWrite, 'ORDER_CREATE', ndOrder);
   dmOtto.ObjectGet(ndOrder, OrderId, trnWrite);
 end;
@@ -211,28 +218,6 @@ begin
   ParseFileOrder(Path['Messages.In']+aFileName, ndOrder, trnWrite);
 end;
 
-procedure TFormWizardOrder.wzFormActivePageChanging(Sender: TObject;
-  var ToPage: TJvWizardCustomPage);
-begin
-  inherited;
-  if Tag = 1 then Exit;
-  if wzForm.ActivePage = wzIPageOrderItems then
-  begin
-    frmOrderItems.Write;
-    if not frmOrderItems.Saved then
-      ToPage:= wzIPageOrderItems;
-  end
-  else
-  if wzForm.ActivePage = wzIPageOrder then
-    frmOrder.Write
-  else
-  if wzForm.ActivePage = wzIPageClient then
-    frmClient.Write
-  else
-  if wzForm.ActivePage = wzIPageAdress then
-    frmAdress.Write;
-end;
-
 procedure TFormWizardOrder.FormCloseQuery(Sender: TObject;
   var CanClose: Boolean);
 var
@@ -271,6 +256,32 @@ begin
         end
     end;
   end;
+end;
+
+procedure TFormWizardOrder.wzIPageAdressNextButtonClick(Sender: TObject;
+  var Stop: Boolean);
+begin
+  frmAdress.Write;
+  Stop:= not AttrExists(ndAdress, 'ID');
+end;
+
+procedure TFormWizardOrder.wzIPageClientNextButtonClick(Sender: TObject;
+  var Stop: Boolean);
+begin
+  frmClient.Write;
+  Stop:= not AttrExists(ndClient, 'ID');
+end;
+
+procedure TFormWizardOrder.wzIPageOrderNextButtonClick(Sender: TObject;
+  var Stop: Boolean);
+begin
+  frmOrder.Write;
+end;
+
+procedure TFormWizardOrder.wzIPageOrderItemsNextButtonClick(
+  Sender: TObject; var Stop: Boolean);
+begin
+  frmOrderItems.Write;
 end;
 
 end.

@@ -21,8 +21,8 @@ object FormWizardBase: TFormWizardBase
   object wzForm: TJvWizard
     Left = 0
     Top = 0
-    Width = 1008
-    Height = 517
+    Width = 1016
+    Height = 521
     ButtonBarHeight = 42
     ButtonStart.Caption = 'To &Start Page'
     ButtonStart.NumGlyphs = 1
@@ -49,8 +49,8 @@ object FormWizardBase: TFormWizardBase
     ShowRouteMap = False
     OnCancelButtonClick = wzFormCancelButtonClick
     DesignSize = (
-      1008
-      517)
+      1016
+      521)
   end
   object actListWzrdBtn: TActionList
     Left = 24
@@ -64,7 +64,6 @@ object FormWizardBase: TFormWizardBase
       'nowait'
       'rec_version'
       'read_committed')
-    MDTTransactionRole = mtrAutoDefine
     TPBMode = tpbDefault
     Left = 352
     Top = 16
@@ -76,7 +75,6 @@ object FormWizardBase: TFormWizardBase
       'read'
       'nowait'
       'concurrency')
-    MDTTransactionRole = mtrAutoDefine
     TPBMode = tpbDefault
     Left = 400
     Top = 16

@@ -1,16 +1,15 @@
 inherited FormWizardOrder: TFormWizardOrder
   Left = 487
   Top = 277
-  ActiveControl = btnClientPageFirst
+  ActiveControl = wzIPageOrderItems
   Caption = 'FormWizardOrder'
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   inherited wzForm: TJvWizard
-    ActivePage = wzWPage
+    ActivePage = wzIPageOrderItems
     DefaultButtons = False
-    OnActivePageChanging = wzFormActivePageChanging
     object wzWPage: TJvWizardWelcomePage
       Header.ParentFont = False
       Header.Title.Color = clNone
@@ -66,6 +65,7 @@ inherited FormWizardOrder: TFormWizardOrder
       Header.Subtitle.Font.Style = []
       Panel.Visible = True
       Color = clWindow
+      OnNextButtonClick = wzIPageOrderItemsNextButtonClick
     end
     object wzIPageOrder: TJvWizardInteriorPage
       Header.Height = 30
@@ -89,6 +89,7 @@ inherited FormWizardOrder: TFormWizardOrder
       Header.Subtitle.Font.Style = []
       Panel.Visible = True
       Color = clWindow
+      OnNextButtonClick = wzIPageOrderNextButtonClick
     end
     object wzIPageClient: TJvWizardInteriorPage
       Header.Height = 30
@@ -112,6 +113,7 @@ inherited FormWizardOrder: TFormWizardOrder
       Header.Subtitle.Font.Style = []
       Panel.Visible = True
       Color = clWindow
+      OnNextButtonClick = wzIPageClientNextButtonClick
     end
     object wzIPageAdress: TJvWizardInteriorPage
       Header.Height = 30
@@ -136,6 +138,7 @@ inherited FormWizardOrder: TFormWizardOrder
       Panel.Visible = True
       Color = clWindow
       Caption = 'wzIPageAdress'
+      OnNextButtonClick = wzIPageAdressNextButtonClick
     end
     object wzIPageOrderSummary: TJvWizardInteriorPage
       Header.Height = 30

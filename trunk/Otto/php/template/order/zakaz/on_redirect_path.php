@@ -1,7 +1,7 @@
 <?php
 
 function utf8_ucfirst($str) {
-  return win1251_to_utf8(ucfirst(strtolower(utf8_to_ansi_ru($str)))); 
+  return win1251_to_utf8(ucwords(strtolower(utf8_to_ansi_ru($str)))); 
 }
 
 function valid_mandatory($param_name, $param_caption) {

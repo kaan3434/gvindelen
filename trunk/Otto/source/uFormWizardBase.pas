@@ -47,7 +47,7 @@ type
 implementation
 
 uses
-  udmOtto;
+  udmOtto, GvNativeXml;
 
 {$R *.dfm}
 
@@ -164,17 +164,16 @@ end;
 constructor TFormWizardBase.CreateMessage(AOwner: TComponent;
   aMessageId: integer);
 var
-  SourceFileName: string;
+  ndMessage: TXmlNode;
 begin
   Create(AOwner);
   SourceFlag:= sfMessage;
-  SourceFileName:= trnRead.DefaultDatabase.QueryValue(
-    'select m.file_name from messages m where m.message_id = :message_id', 0,
-    [aMessageId]);
+  ndMessage:= XmlData.Root.NodeNew('MESSAGE');
   MessageId:= aMessageId;
-  Caption:= SourceFileName;
   trnWrite.StartTransaction;
-  ParseMessage(SourceFileName);
+  dmOtto.ObjectGet(ndMessage, aMessageId, trnWrite);
+  Caption:= GetXmlAttr(ndMessage, 'FILE_NAME');
+  ParseMessage(Caption);
 end;
 
 procedure TFormWizardBase.ReadFromDB(aObjectId: Integer);

@@ -6,15 +6,16 @@
   </div>
 
 <?php  
+  // Исправляем то, чего навоял юзер
   require_once "libs/GvXmlUtils.php";
   $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><ORDER/>');
   $client_node = $xml->addChild('CLIENT');
-  $adress_node = $client_node->addChild('ADRESS');
+  $adress_node = $xml->addChild('ADRESS');
   $place_node = $adress_node->addChild('PLACE');
   $product_node = $xml->addChild('PRODUCT');
-  Hash2Attrs($client_node, $_POST, 'LAST_NAME=LastName;FIRST_NAME=FirstName;MID_NAME=MidName;EMAIL=Email;PHONE_NUMBER=Phone;MOBILE_PHONE=MobPhone');
-  Hash2Attrs($adress_node, $_POST, 'POSTINDEX=PostIndex;STREETTYPE_ID=StreetTypeId;STREET_NAME=Street;HOUSE=House;BUILDING=Corpus;FLAT=Flat');
-  Hash2Attrs($place_node, $_POST, 'PLACETYPE_ID=CityTypeId;PLACE_NAME=City;AREA_NAME=Area;REGION_NAME=Region');
+  Hash2Attrs($client_node, $_POST, 'LAST_NAME=LastName;FIRST_NAME=FirstName;MID_NAME=MidName;EMAIL=Email;STATIC_PHONE=Phone;MOBILE_PHONE=MobPhone');
+  Hash2Attrs($adress_node, $_POST, 'POSTINDEX=PostIndex;STREETTYPE_CODE=StreetTypeId;STREET_NAME=Street;HOUSE=House;BUILDING=Corpus;FLAT=Flat');
+  Hash2Attrs($place_node, $_POST, 'PLACETYPE_CODE=CityTypeId;PLACE_NAME=City;AREA_NAME=Area;REGION_NAME=Region');
   Hash2Attrs($product_node, $_POST, 'PARTNER_NUMBER=PayForm');
   $streettypes = file('references/streettypes.txt');
   $placetypes = file('references/placetypes.txt');
@@ -132,7 +133,7 @@ for($i=1;$i<=12; $i++) {
     
     $idx = array_search(session_id(), $sessions);
     
-    $order_name = date('Ymd').'_'.str_pad($idx, 3, '0', STR_PAD_LEFT);
+    $order_name = 'order-'.date('Ymd').'-'.str_pad($idx, 3, '0', STR_PAD_LEFT);
     $order_filename = "orders/$order_name.xml"; 
     $xml->asXML($order_filename);
 ?>

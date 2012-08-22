@@ -62,6 +62,9 @@ function XmlAttrs2Vars(aNode: TXmlNode; aAttrNames: string; aVars: string = ''):
 function Strings2Vars(aStrings: TStrings; aAttrNames: string; aVars: string = ''): string;
 function Value2Vars(aValue: Variant; aAttrName: string; aVars: string =''): string;
 
+procedure MergeNode(aDestNode, aSrcNode: TXmlNode);
+procedure TranscodeXmlUtf2Ansi(aXml: TNativeXml);
+
 implementation
 
 uses
@@ -536,6 +539,33 @@ begin
   finally
     Vars.Free;
   end;
+end;
+
+procedure MergeNode(aDestNode, aSrcNode: TXmlNode);
+var
+  i: Integer;
+  DestChild, SrcChild: TXmlNode;
+  AttrName: String;
+begin
+  // мержим атрибуты
+  for i:= 0 to aSrcNode.AttributeCount-1 do
+    aDestNode.WriteAttributeString(aSrcNode.AttributeName[i], aSrcNode.AttributeValue[i]);
+  for i:= 0 to aSrcNode.NodeCount-1 do
+  begin
+    SrcChild:= aSrcNode[i];
+    DestChild:= aDestNode.NodeFindOrCreate(SrcChild.Name);
+    DestChild.Assign(SrcChild);
+  end;
+end;
+
+procedure TranscodeXmlUtf2Ansi(aXml: TNativeXml);
+var
+  wStr: WideString;
+  aStr: AnsiString;
+begin
+  wStr:= UTF8Decode(aXml.WriteToString);
+  aStr:= wStr;
+  aXml.ReadFromString(aStr);
 end;
 
 end.

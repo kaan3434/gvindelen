@@ -26,7 +26,6 @@ type
     lblMobilePhone: TLabel;
     lbl1: TLabel;
     lblStacionarPhone: TLabel;
-    medMobilePhone: TJvMaskEdit;
     dedLastName: TDBEditEh;
     dedFirstName: TDBEditEh;
     dedMidName: TDBEditEh;
@@ -54,6 +53,7 @@ type
     qryClientOrderItems: TpFIBDataSet;
     dsClientOrderItems: TDataSource;
     actClientSearch: TAction;
+    dedMobilPhone: TDBEditEh;
     procedure actClientSearchExecute(Sender: TObject);
     procedure EditEnter(Sender: TObject);
     procedure dedLastNameExit(Sender: TObject);
@@ -132,7 +132,7 @@ begin
   dedLastName.Text:= GetXmlAttr(ndClient, 'LAST_NAME');
   dedFirstName.Text:= GetXmlAttr(ndClient, 'FIRST_NAME');
   dedMidName.Text:= GetXmlAttr(ndClient, 'MID_NAME');
-  medMobilePhone.Text:= GetXmlAttr(ndClient, 'MOBILE_PHONE');
+  dedMobilPhone.Text:= GetXmlAttr(ndClient, 'MOBILE_PHONE');
   dedStaticPhone.Text:= GetXmlAttr(ndClient, 'STATIC_PHONE');
   dedEmail.Text:= GetXmlAttr(ndClient, 'EMAIL');
   actClientSearch.Execute;
@@ -144,7 +144,7 @@ begin
   SetXmlAttr(ndClient, 'LAST_NAME', dedLastName.Text);
   SetXmlAttr(ndClient, 'FIRST_NAME', dedFirstName.Text);
   SetXmlAttr(ndClient, 'MID_NAME', dedMidName.Text);
-  SetXmlAttr(ndClient, 'MOBILE_PHONE', medMobilePhone.Text);
+  SetXmlAttr(ndClient, 'MOBILE_PHONE', dedMobilPhone.Text);
   SetXmlAttr(ndClient, 'STATIC_PHONE', dedStaticPhone.Text);
   SetXmlAttr(ndClient, 'EMAIL', dedEmail.Text);
   if ClientId = 0 then
@@ -169,6 +169,7 @@ begin
   dmOtto.ActionExecute(trnWrite, ndOrder);
   dmOtto.ObjectGet(ndAccount, AccountId, trnWrite);
   dmOtto.ObjectGet(ndClient, ClientId, trnWrite);
+  UpdateCaptions;
 end;
 
 procedure TFrameClient.actClientSearchExecute(Sender: TObject);

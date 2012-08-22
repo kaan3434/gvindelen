@@ -6,8 +6,8 @@ inherited FrameOrderSummary: TFrameOrderSummary
   PixelsPerInch = 96
   TextHeight = 13
   inherited dckTop: TTBXDock
-    Width = 880
-    Height = 25
+    Width = 888
+    Height = 23
     inherited tlBarTop: TTBXToolbar
       object btn2: TTBXItem
         Action = actSetStateDraft
@@ -21,13 +21,13 @@ inherited FrameOrderSummary: TFrameOrderSummary
     end
   end
   inherited sb: TTBXStatusBar
-    Top = 435
-    Width = 880
+    Top = 439
+    Width = 888
   end
   object pnlTopOnFinal: TJvPanel [2]
     Left = 0
-    Top = 25
-    Width = 880
+    Top = 23
+    Width = 888
     Height = 131
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
@@ -40,7 +40,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
     object pnlClientOnFinal: TJvPanel
       Left = 0
       Top = 0
-      Width = 368
+      Width = 376
       Height = 131
       HotTrackFont.Charset = DEFAULT_CHARSET
       HotTrackFont.Color = clWindowText
@@ -53,13 +53,13 @@ inherited FrameOrderSummary: TFrameOrderSummary
       object grBoxClientOfFinal: TJvGroupBox
         Left = 5
         Top = 5
-        Width = 358
+        Width = 366
         Height = 121
         Align = alClient
         Caption = #1050#1083#1080#1077#1085#1090
         TabOrder = 0
         DesignSize = (
-          358
+          366
           121)
         object lblClientFIO: TLabel
           Left = 8
@@ -220,7 +220,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
       end
     end
     object pnlOrderOnFinal: TJvPanel
-      Left = 368
+      Left = 376
       Top = 0
       Width = 512
       Height = 131
@@ -258,7 +258,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
           Width = 183
           Height = 17
           Caption = #1048#1089#1087#1086#1083#1100#1079#1086#1074#1072#1090#1100' '#1086#1089#1090#1072#1090#1086#1082' '#1085#1072' '#1089#1095#1077#1090#1077
-          TabOrder = 1
+          TabOrder = 2
           LinkedControls = <>
           HotTrackFont.Charset = DEFAULT_CHARSET
           HotTrackFont.Color = clWindowText
@@ -279,7 +279,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
           Font.Name = 'MS Sans Serif'
           Font.Style = [fsBold]
           ParentFont = False
-          TabOrder = 0
+          TabOrder = 1
         end
         object mmoNote: TMemo
           Left = 224
@@ -287,27 +287,25 @@ inherited FrameOrderSummary: TFrameOrderSummary
           Width = 276
           Height = 104
           Align = alRight
-          Lines.Strings = (
-            'mmoNote')
           ScrollBars = ssBoth
-          TabOrder = 2
+          TabOrder = 0
         end
       end
     end
   end
   object grBoxSummaryOrderItems: TJvGroupBox [3]
     Left = 0
-    Top = 156
-    Width = 880
-    Height = 279
+    Top = 154
+    Width = 888
+    Height = 285
     Align = alClient
     Caption = 'grBoxSummaryOrderItems'
     TabOrder = 2
     object grdOrderFullSpecification: TDBGridEh
       Left = 2
       Top = 15
-      Width = 876
-      Height = 262
+      Width = 884
+      Height = 268
       Align = alClient
       AutoFitColWidths = True
       DataGrouping.GroupLevels = <>

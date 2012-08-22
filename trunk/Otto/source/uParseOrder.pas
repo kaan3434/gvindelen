@@ -99,6 +99,23 @@ begin
   end;
 end;
 
+function CatalogDetect(aCatalogName: string; aTransaction: TpFIBTransaction): Variant;
+begin
+  Result:= aTransaction.DefaultDatabase.QueryValue(
+      'select catalog_id from catalogs where upper(catalog_name)=upper(:catalog_name)',
+      0, [aCatalogName]);
+end;
+
+function MagazineDetect(aCatalogId: Integer; aTransaction: TpFIBTransaction): variant;
+begin
+  Result:= aTransaction.DefaultDatabase.QueryValue(
+      'select first 1 magazine_id from magazines '+
+      'where catalog_id = :catalog_id '+
+      ' and valid_date > current_date '+
+      'order by valid_date', 0,
+      [aCatalogId]);
+end;
+
 procedure ParseOrderItemXml(aLine: string; ndOrderItems: TXmlNode; aTransaction: TpFIBTransaction);
 var
   sl: TStringList;
@@ -111,23 +128,6 @@ var
   ndMagazine: TXmlNode;
   StatusId: Integer;
 
-function CatalogDetect(aCatalogName: string): Variant;
-begin
-  Result:= aTransaction.DefaultDatabase.QueryValue(
-      'select catalog_id from catalogs where upper(catalog_name)=upper(:catalog_name)',
-      0, [aCatalogName]);
-end;
-
-function MagazineDetect(aCatalogId: Integer): variant;
-begin
-  Result:= aTransaction.DefaultDatabase.QueryValue(
-      'select first 1 magazine_id from magazines '+
-      'where catalog_id = :catalog_id '+
-      ' and valid_date > current_date '+
-      'order by valid_date', 0,
-      [aCatalogId]);
-end;
-
 begin
   sl:= TStringList.Create;
   ndOrderItem:= ndOrderItems.NodeNew('ORDERITEM');
@@ -138,7 +138,7 @@ begin
     st:= FilterString(sl[1], '0123456789');
     CatalogId:= null;
     if st='' then
-      CatalogId:= CatalogDetect('Internet');
+      CatalogId:= CatalogDetect('Internet', aTransaction);
     SetXmlAttr(ndOrderItem, 'PAGE_NO', st);
     st:= FilterString(sl[2], '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ');
     SetXmlAttr(ndOrderItem, 'POSITION_SIGN', st);
@@ -160,7 +160,7 @@ begin
     begin
       CatalogName:= sl[0];
       // пытаемс€ определить группу каталогов по имени
-      CatalogId:= CatalogDetect(CatalogName);
+      CatalogId:= CatalogDetect(CatalogName, aTransaction);
       if VarIsNull(CatalogId) then
       begin
         // пытаемс€ пропустить им€ группы каталогов через перекодировщик
@@ -169,16 +169,16 @@ begin
           'where object_sign=:ObjectSign and attr_sign=:AttrSign and original_value=:OriginalValue',
           0, ['CATALOG', 'NAME', CatalogName]);
         if VarIsNull(CatalogName) then
-          CatalogId:= CatalogDetect('Internet')
+          CatalogId:= CatalogDetect('Internet', aTransaction)
         else
-          CatalogId:= CatalogDetect(CatalogName);
+          CatalogId:= CatalogDetect(CatalogName, aTransaction);
       end;
     end;
     // »щем действующий каталог
-    MagazineId:= MagazineDetect(CatalogId);
+    MagazineId:= MagazineDetect(CatalogId, aTransaction);
     if VarIsNull(MagazineId) then
     begin
-      MagazineId:= MagazineDetect(CatalogDetect('Internet'));
+      MagazineId:= MagazineDetect(CatalogDetect('Internet',aTransaction), aTransaction);
     end;
     SetXmlAttr(ndOrderItem, 'MAGAZINE_ID', MagazineId);
     ndMagazine:= ndOrderItem.NodeFindOrCreate('MAGAZINE');
@@ -195,7 +195,7 @@ begin
         0, [ArticleCode], aTransaction);
       if ArticleCodeId = null then
       begin
-        MagazineId:= MagazineDetect(CatalogDetect('Internet'));
+        MagazineId:= MagazineDetect(CatalogDetect('Internet', aTransaction), aTransaction);
         SetXmlAttr(ndOrderItem, 'MAGAZINE_ID', MagazineId);
         ndMagazine.AttributesClear;
         dmOtto.MagazineRead(ndMagazine, MagazineId, aTransaction);
@@ -231,22 +231,74 @@ begin
   end;
 end;
 
+procedure DetectClient(ndClient: TXmlNode; aTransaction: TpFIBTransaction);
+begin
+end;
+
+procedure DetectProduct(ndProduct: TXmlNode; aTransaction: TpFIBTransaction);
+var
+  ProductId: Variant;
+begin
+  ProductId:= aTransaction.DefaultDatabase.QueryValue(
+    'select pa.object_id from v_product_attrs pa where pa.attr_sign = ''PARTNER_NUMBER'' and pa.attr_value = :partner_number',
+    0, [GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER')], aTransaction);
+  SetXmlAttr(ndProduct, 'ID', ProductId);
+end;
+
+procedure DetectOrderItem(ndOrderItem: TXmlNode; aTransaction: TpFIBTransaction);
+var
+  OrderItemId: Variant;
+begin
+  SetXmlAttr(ndOrderItem, 'ID', dmOtto.GetNewObjectId('ORDERITEM'));
+  SetXmlAttr(ndOrderItem, 'CATALOG_ID', CatalogDetect('Internet', aTransaction));
+  SetXmlAttr(ndOrderItem, 'MAGAZINE_ID', MagazineDetect(GetXmlAttrValue(ndOrderItem, 'CATALOG_ID'), aTransaction));
+  SetXmlAttr(ndOrderItem, 'AMOUNT', 1);
+  SetXmlAttr(ndOrderItem, 'STATUS_ID', dmOtto.GetDefaultStatusId('ORDERITEM'));
+  BatchMoveFields2(ndOrderItem, ndOrderItem, 'COST_EUR=PRICE_EUR');
+end;
+
+procedure ParseXmlOrder(aFileName: string; ndOrder: TXmlNode; aTransaction: TpFIBTransaction);
+var
+  xml: TNativeXml;
+  i: Integer;
+  nd, ndOrderItems: TXmlNode;
+begin
+  xml:= TNativeXml.Create;
+  try
+    xml.LoadFromFile(aFileName);
+    TranscodeXmlUtf2Ansi(xml);
+    MergeNode(ndOrder, xml.Root);
+    DetectClient(ndOrder.NodeByName('CLIENT'), aTransaction);
+    DetectProduct(ndOrder.NodeByName('PRODUCT'), aTransaction);
+    ndOrderItems:= ndOrder.NodeByName('ORDERITEMS');
+    for i:= 0 to ndOrderItems.NodeCount-1 do
+      DetectOrderItem(ndOrderItems[i], aTransaction);
+  finally
+    xml.Free;
+  end;
+end;
+
 procedure ParseFileOrder(aFileName: string; ndOrder: TXmlNode; aTransaction: TpFIBTransaction);
 var
   Lines: TStringList;
   i: Integer;
   ndOrderItems: TXmlNode;
+
 begin
-  // загружаем файл
-  Lines:= TStringList.Create;
-  try
-    Lines.LoadFromFile(aFileName);
-    ParseOrderHeaderXml(Lines[0], ndOrder, aTransaction);
-    ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
-    for i:= 1 to lines.count-1 do
-      ParseOrderItemXml(Lines[i], ndOrderItems, aTransaction);
-  finally
-    Lines.Free;
+  if LowerCase(ExtractFileExt(aFileName)) = '.xml' then
+    ParseXmlOrder(aFileName, ndOrder, aTransaction)
+  else
+  begin
+    Lines:= TStringList.Create;
+    try
+      Lines.LoadFromFile(aFileName);
+      ParseOrderHeaderXml(Lines[0], ndOrder, aTransaction);
+      ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
+      for i:= 1 to lines.count-1 do
+        ParseOrderItemXml(Lines[i], ndOrderItems, aTransaction);
+    finally
+      Lines.Free;
+    end;
   end;
 end;
 

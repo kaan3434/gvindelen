@@ -228,10 +228,23 @@ var
   MessageId: integer;
 begin
   MessageId := dmOtto.MessageBusy(1);
-  if MessageId = 0 then
-    exit;
+  if MessageId > 0 then
   try
     TFormWizardOrder.CreateMessage(self, MessageId).Show;
+    Exit;
+  except
+    on E:Exception do
+    begin
+      if MessageDlg(E.Message +#13#10'Забраковать заявку?' , mtConfirmation, [mbYes,mbNo], 0) = mrYes then
+        dmOtto.MessageError(trnWrite, MessageId);
+    end;
+  end;
+
+  MessageId := dmOtto.MessageBusy(12);
+  if MessageId > 0 then
+  try
+    TFormWizardOrder.CreateMessage(self, MessageId).Show;
+    exit;
   except
     on E:Exception do
     begin
