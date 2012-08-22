@@ -19,7 +19,7 @@
   } else {
     $Html = download("$Host", "GET");
   }
-  echo "Main page 1 downloaded\r\n";
+  echo "<!--Main page 1 downloaded-->\r\n";
   $FormSearch = copy_be($Html, '<form ', '</form>', 'topSearch');
   $PostHash = extract_form_hash($FormSearch);
   $PostHash['fh_search'] = $_GET['article_code'];
@@ -27,9 +27,9 @@
   $Html = copy_be($FormSearch, '<form ', '>');
   $url_1 = extract_property_values($Html, 'action', "\r\n");
   $Html = download($url_1, 'GET', "$Host", $PostHash);
-  echo "Search page 2 downloaded\r\n";
+  echo "<!--Search page 2 downloaded-->\r\n";
       
-//  if ($debug) file_put_contents("$cache/page.1.html", $Html);
+  if ($debug) file_put_contents("$cache/page.2.html", $Html);
       
   $FormSearch = copy_be($Html, '<form ', '</form>', 'searchform');
   $PostHash = extract_form_hash($FormSearch);
@@ -37,24 +37,32 @@
   $Html = copy_be($FormSearch, '<form ', '>');
   $url_2 = extract_property_values($Html, 'action', "\r\n");
   $Html = download($url_2, 'GET', $url_1, $PostHash);
-  echo "Search page 3 downloaded\r\n";
+  $Html = kill_space($Html);
+  echo "<!--Search page 3 downloaded-->\r\n";
      
-//  if ($debug) file_put_contents("$cache/page.2.html", $Html);
-  $Html = copy_be($Html, '<script>', '</script>', 'goon');
-  $Html = str_ireplace(" '", " <'", $Html);
-  $Html = str_ireplace("+'", "+<'", $Html);
-  $Html = str_ireplace("'+", "'>+", $Html);
-  $Html = str_ireplace("';", "'>;", $Html);
-  $url_3 = extract_tags($Html, "<'", "'>", '');
-  $url_3 = str_replace("<'", '', $url_3);
-  $url_3 = str_replace("'>", '', $url_3);
-  $Html = download($url_3, 'GET', $url_2);
-//  if ($debug) file_put_contents("$cache/page.3.html", $Html);
+  if ($debug) file_put_contents("$cache/page.3.html", $Html);
+
+  if ($url_3 = copy_be($Html, '<script>', '</script>', 'goon')) {
+    $url_3 = str_ireplace(" '", " <'", $url_3);
+    $url_3 = str_ireplace("+'", "+<'", $url_3);
+    $url_3 = str_ireplace("'+", "'>+", $url_3);
+    $url_3 = str_ireplace("';", "'>;", $url_3);
+    $url_3 = extract_tags($url_3, "<'", "'>", '');
+    $url_3 = str_replace("<'", '', $url_3);
+    $url_3 = str_replace("'>", '', $url_3);
+    $Html = download($url_3, 'GET', $url_2);
+  } elseif ($url_3 = copy_be($Html, '<a', '</a>', 'Zum')){
+    $url_3 = extract_property_values($url_3, 'href', "");
+    $Html = download($url_3, 'GET', $url_2);
+  }  
+
+  if ($debug) file_put_contents("$cache/page.4.html", $Html);
+  
       // вырезаем информацию об артикуле
   $Html = copy_be($Html, '<script>', '</script>', 'sku');
   $Html = copy_be($Html, " {", "\n");
   if ($debug) file_put_contents("$cache/article_$article.html", $Html);
-  echo "All loaded\r\n";
+  echo "<!--All loaded-->\r\n";
 
 function extract_property_text($Html, $PropertyName) {
   $prop_name = '"'.$PropertyName.'":"';
@@ -78,32 +86,6 @@ function extract_property_num($Html, $PropertyName) {
     return null;
 }
 
-function check_availability(&$Props) {
-  global $url_3, $debug;
-  $PostHash['ArticleNo'] = $Props['article_code'];
-  $PostHash['ArticleSize'] = $Props['dimension'];
-
-  if ($debug) {
-    $FileName = "cache/avail_".$Props['article_code']."_".$Props['dimension'].".html";
-    if (!file_exists($FileName)) {
-      $Html = download("$Host/is-bin/INTERSHOP.enfinity/WFS/Otto-OttoDe-Site/de_DE/-/EUR/OV_ViewDeliveryInfo-IncludeDelivery", "POST", $url_3, $PostHash);
-      file_put_contents($FileName, $Html);
-    } else {
-      $Html = file_get_contents($FileName);
-    } 
-  } else {
-    $Html = download("$Host/is-bin/INTERSHOP.enfinity/WFS/Otto-OttoDe-Site/de_DE/-/EUR/OV_ViewDeliveryInfo-IncludeDelivery", "POST", $url_3, $PostHash);
-  }
-  $Html = copy_be($Html, '<span ', '</span>', 'availability');
-  $availablility_class = extract_property_values($Html, 'class');
-  if ($availablility_class = 'availability_red') {
-    $Props['available'] = 'false';
-  } else {
-    $Props['available'] = 'true';
-  }
-  $Props['availability_code'] = delete_all($Html, '<', '>');
-}
-
 function set_attr_value_num($Html, $SrcPropertyName, $NewPropertyName, &$Hash) {
   if ($prop_value = extract_property_num($Html, $SrcPropertyName))
     $Hash[$NewPropertyName] = $prop_value;
@@ -115,14 +97,8 @@ function recognize_Article($Html, $level) {
   set_attr_value_num($Html, 'price', 'price_eur', $Props);
   set_attr_value_num($Html, 'oldPrice', 'oldprice_eur', $Props);
   set_attr_value_num($Html, 'available', 'available', $Props);
-  set_attr_value_text($Html, 'artNr', 'articul_code', $Props);
+  set_attr_value_text($Html, 'artNr', 'article_code', $Props);
   $availability = extract_property_text($Html, 'availabilityCode');
-  if ($availability) {
-    set_attr_value_text($Html, 'availabilityCode', 'availability_code', $Props);
-    set_attr_value_text($Html, 'availabilityText', 'availability_text', $Props);
-  } else {
-    check_availability($Props);
-  }
   return str_pad('', $level*2, ' ', STR_PAD_LEFT) . '<Article ' . implode_hash(' ', $Props, '"') . '/>'; 
 }
   

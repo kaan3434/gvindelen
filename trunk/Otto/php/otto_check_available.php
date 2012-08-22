@@ -37,7 +37,16 @@
   } elseif ($availablility_class == 'availability_green') {
     echo 'available="1" ';
     echo 'availability_code="'.delete_all($Html, '<', '>').'"';
+  } elseif ($availablility_class == 'availability_orange') {
+    $availablily_code = delete_all($Html, '<', '>');
+    if ($availablily_code == 'lieferbar in 3 Wochen') {
+      echo 'available="21" ';
+    } else {
+      echo 'available="2" ';
+    }  
+    echo 'availability_code="'.$availablily_code.'"';
   };
+;
 ?>
 />
 </body>

@@ -133,7 +133,7 @@ for($i=1;$i<=12; $i++) {
     
     $idx = array_search(session_id(), $sessions);
     
-    $order_name = 'order-'.date('Ymd').'-'.str_pad($idx, 3, '0', STR_PAD_LEFT);
+    $order_name = 'order-'.date('Ymd').'-'.str_pad($idx, 3, '0', STR_PAD_LEFT).'-'.$server_name;
     $order_filename = "orders/$order_name.xml"; 
     $xml->asXML($order_filename);
 ?>

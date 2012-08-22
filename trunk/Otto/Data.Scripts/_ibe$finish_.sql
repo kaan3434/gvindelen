@@ -3201,7 +3201,8 @@ declare variable V_OBJECT_SIGN type of SIGN_OBJECT = 'MESSAGE';
 begin
   if (not exists(select m.message_id
                    from messages m
-                   where m.file_name = :i_file_name)) then
+                   where m.file_name = :i_file_name
+                     and extract(year from m.message_dtm) = extract(year from current_date))) then
   begin
     select o_param_id from param_create(:v_object_sign) into :v_param_id;
     execute procedure param_set(:v_param_id, 'FILE_NAME', :i_file_name);

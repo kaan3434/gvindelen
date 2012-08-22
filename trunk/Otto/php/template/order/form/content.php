@@ -5,23 +5,25 @@
   if (file_exists($file_counter)) $sessions = explode("\r\n", file_get_contents($file_counter));
   $idx = array_search(session_id(), $sessions);
   if ($idx) {
-    $order_name = 'order-'.date('Ymd').'-'.str_pad($idx, 3, '0', STR_PAD_LEFT);
+    $order_name = 'order-'.date('Ymd').'-'.str_pad($idx, 3, '0', STR_PAD_LEFT).'-'.$server_name;
     $order_filename = "orders/$order_name.xml"; 
-    $xml=  simplexml_load_file($order_filename);
-    $client_node = $xml->CLIENT;
-    $adress_node = $xml->ADRESS;
-    $place_node = $adress_node->PLACE;
-    $product_node = $xml->PRODUCT;
-    $orderitems_node = $xml->ORDERITEMS;
+    if (file_exists($order_filename)) {
+      $xml=  simplexml_load_file($order_filename);
+      $client_node = $xml->CLIENT;
+      $adress_node = $xml->ADRESS;
+      $place_node = $adress_node->PLACE;
+      $product_node = $xml->PRODUCT;
+      $orderitems_node = $xml->ORDERITEMS;
 
-    Attrs2Hash($_POST, $client_node, 'LastName=LAST_NAME;FirstName=FIRST_NAME;MidName=MID_NAME;Email=EMAIL;Phone=STATIC_PHONE;MobPhone=MOBILE_PHONE');
-    Attrs2Hash($_POST, $adress_node, 'PostIndex=POSTINDEX;StreetTypeId=STREETTYPE_CODE;Street=STREET_NAME;House=HOUSE;Corpus=BUILDING;Flat=FLAT');
-    Attrs2Hash($_POST, $place_node, 'CityTypeId=PLACETYPE_CODE;City=PLACE_NAME;Area=AREA_NAME;Region=REGION_NAME');
-    Attrs2Hash($_POST, $product_node, 'PayForm=PARTNER_NUMBER');
-    $i = 1;
-    foreach ($orderitems_node->children() as $orderitem_node) {
-      Attrs2Hash($_POST, $orderitem_node, "Articul$i=ARTICLE_CODE;Size$i=DIMENSION;Price$i=PRICE_EUR;RusName$i=NAME_RUS;RusInfo$i=KIND_RUS");
-      $i++;
+      Attrs2Hash($_POST, $client_node, 'LastName=LAST_NAME;FirstName=FIRST_NAME;MidName=MID_NAME;Email=EMAIL;Phone=STATIC_PHONE;MobPhone=MOBILE_PHONE');
+      Attrs2Hash($_POST, $adress_node, 'PostIndex=POSTINDEX;StreetTypeId=STREETTYPE_CODE;Street=STREET_NAME;House=HOUSE;Corpus=BUILDING;Flat=FLAT');
+      Attrs2Hash($_POST, $place_node, 'CityTypeId=PLACETYPE_CODE;City=PLACE_NAME;Area=AREA_NAME;Region=REGION_NAME');
+      Attrs2Hash($_POST, $product_node, 'PayForm=PARTNER_NUMBER');
+      $i = 1;
+      foreach ($orderitems_node->children() as $orderitem_node) {
+        Attrs2Hash($_POST, $orderitem_node, "Articul$i=ARTICLE_CODE;Size$i=DIMENSION;Price$i=PRICE_EUR;RusName$i=NAME_RUS;RusInfo$i=KIND_RUS");
+        $i++;
+      }
     }
   } else {
     $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><ORDER/>');
