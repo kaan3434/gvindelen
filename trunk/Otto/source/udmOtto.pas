@@ -8,7 +8,9 @@ uses
   FIBDataSet, pFIBDataSet, Variants, MemTableDataEh, IB_Services, 
   JvComponentBase, JvDesktopAlert, Dialogs, JvBaseDlg, Controls,
   gsFileVersionInfo, dbf, pFIBErrorHandler, FIB, frxExportXLS, frxClass,
-  frxExportPDF, frxFIBComponents, frxExportMail;
+  frxExportPDF, frxFIBComponents, frxExportMail, IdBaseComponent,
+  IdComponent, IdTCPConnection, IdTCPClient, IdExplicitTLSClientServerBase,
+  IdMessageClient, IdSMTPBase, IdSMTP, IdMessage;
 
 type
   TdmOtto = class(TDataModule)
@@ -41,6 +43,7 @@ type
     frxFIBComponents1: TfrxFIBComponents;
     frxPDFExport: TfrxPDFExport;
     frxExportXLS: TfrxXLSExport;
+    smtpMain: TIdSMTP;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
     procedure dbOttoAfterConnect(Sender: TObject);
@@ -130,6 +133,7 @@ type
     function DetectOrderId(ndProduct: TXmlNode; aPostFix: string;
       aTransaction: TpFIBTransaction): Variant;
     procedure ExportCommitRequest(aNode: TXmlNode; aTransaction: TpFIBTransaction);
+    procedure SendEmail(aReceiver, aSubject, aMessage: String);
   end;
 
 var
@@ -1066,6 +1070,46 @@ begin
   begin
     aTransaction.Rollback;
     ShowMessage('Данных для отправки не обнаружено');
+  end;
+end;
+
+procedure TdmOtto.SendEmail(aReceiver, aSubject, aMessage: String);
+var
+  SmtpSettings: TVarList;
+  Msg: TIdMessage;
+begin
+  SmtpSettings:= TVarList.Create;
+  try
+    SmtpSettings.LoadSectionFromIniFile(ProjectIniFileName, 'SMTP_'+GetUserFromWindows);
+    if SmtpSettings.Count = 0 then
+      SmtpSettings.LoadSectionFromIniFile(ProjectIniFileName, 'SMTP');
+    smtpMain.AuthType:= satDefault;
+    smtpMain.Host:= SmtpSettings['Host'];
+    smtpMain.Port:= SmtpSettings.AsInteger['Port'];
+    smtpMain.Username:= SmtpSettings['Login'];
+    smtpMain.Password:= SmtpSettings['Password'];
+    try
+      smtpMain.Connect;
+      try
+        Msg:=TIdMessage.Create(nil);
+        try
+          Msg.Body.Add(aMessage);
+          Msg.Subject:= aSubject;
+          Msg.From.Address:= smtpSettings['Sender'];
+          Msg.Recipients.EMailAddresses:= aReceiver;
+          Msg.IsEncoded:=True;
+          smtpMain.Send(Msg);
+        finally
+          msg.Free;
+        end;
+      finally
+        smtpMain.Disconnect;
+      end;
+    except
+      ShowMessage('Ошибка подключения к почтовому серверу');
+    end;
+  finally
+    SmtpSettings.Free;
   end;
 end;
 

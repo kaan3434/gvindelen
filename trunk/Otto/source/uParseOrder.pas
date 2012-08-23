@@ -270,6 +270,7 @@ begin
     MergeNode(ndOrder, xml.Root);
     DetectClient(ndOrder.NodeByName('CLIENT'), aTransaction);
     DetectProduct(ndOrder.NodeByName('PRODUCT'), aTransaction);
+    BatchMoveFields2(ndOrder, ndOrder.NodeByName('PRODUCT'), 'PRODUCT_ID=ID');
     ndOrderItems:= ndOrder.NodeByName('ORDERITEMS');
     for i:= 0 to ndOrderItems.NodeCount-1 do
       DetectOrderItem(ndOrderItems[i], aTransaction);

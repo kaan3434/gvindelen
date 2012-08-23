@@ -8,7 +8,9 @@ uses
   pFIBDatabase, ExtCtrls, JvExExtCtrls, JvExtComponent, JvPanel,
   TBXStatusBars, TB2Dock, TB2Toolbar, TBX, GridsEh,
   DBGridEh, StdCtrls, JvExStdCtrls, JvCheckBox, JvGroupBox, DB, FIBDataSet,
-  pFIBDataSet, NativeXml, TB2Item, DBGridEhGrouping;
+  pFIBDataSet, NativeXml, TB2Item, DBGridEhGrouping, IdBaseComponent,
+  IdComponent, IdTCPConnection, IdTCPClient, IdExplicitTLSClientServerBase,
+  IdMessageClient, IdSMTPBase, IdSMTP;
 
 type
   TFrameOrderSummary = class(TFrameBase1)
@@ -43,6 +45,7 @@ type
     actStore: TAction;
     btn3: TTBXItem;
     mmoNote: TMemo;
+    smtpOrderCode: TIdSMTP;
     procedure actSetStateDraftExecute(Sender: TObject);
     procedure actSetStateApprovedExecute(Sender: TObject);
     procedure actStoreExecute(Sender: TObject);
@@ -188,6 +191,11 @@ begin
     trnRead.Commit;
     TForm(Owner).Close;
     ShowMessage(GetXmlAttr(ndOrder, 'ORDER_CODE', 'Заявка ', ' сохранена и переведена в статус "Оформлена"'));
+//    if GetXmlAttrValue(ndOrder, 'SOURCE') = 'Internet' then
+//    begin
+//      dmOtto.SendEmail(GetXmlAttr(ndClient, 'EMAIL'), 'Номер присвоенной заявки',
+//        aMessage);
+//    end;
   except
     ShowMessageFmt('Невозможно установить статус %s', [StatusSignNew]);
     SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', null);

@@ -509,4 +509,9 @@ inherited FrameOrderSummary: TFrameOrderSummary
     Left = 200
     Top = 72
   end
+  object smtpOrderCode: TIdSMTP
+    SASLMechanisms = <>
+    Left = 149
+    Top = 180
+  end
 end
