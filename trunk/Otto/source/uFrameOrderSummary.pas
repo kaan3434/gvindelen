@@ -155,6 +155,7 @@ const
 var
   OrderCode: string;
   ndOrderMoney: TXmlNode;
+  PatternMessage: String;
 begin
   SetXmlAttr(ndOrder, 'NOTE', mmoNote.Text);
   if GetXmlAttrValue(ndOrder, 'ADRESS_ID') = null then
@@ -187,20 +188,21 @@ begin
   try
     SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', StatusSignNew);
     dmOtto.ActionExecute(trnWrite, ndOrder);
+//    if GetXmlAttrValue(ndOrder, 'SOURCE') = 'Internet' then
+//    begin
+//      PatternMessage:= dmOtto.SettingGet(trnRead, 'ORDER_CODE_EMAIL_TEMPLATE');
+//      PatternMessage:= FillPattern(PatternMessage, ndOrder);
+//    end;
     trnWrite.Commit;
     trnRead.Commit;
     TForm(Owner).Close;
     ShowMessage(GetXmlAttr(ndOrder, 'ORDER_CODE', 'Заявка ', ' сохранена и переведена в статус "Оформлена"'));
-//    if GetXmlAttrValue(ndOrder, 'SOURCE') = 'Internet' then
-//    begin
-//      dmOtto.SendEmail(GetXmlAttr(ndClient, 'EMAIL'), 'Номер присвоенной заявки',
-//        aMessage);
-//    end;
   except
     ShowMessageFmt('Невозможно установить статус %s', [StatusSignNew]);
     SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', null);
     trnWrite.RollBackToSavePoint('OnSetStatus'+StatusSignNew);
   end;
+//  dmOtto.SendEmail(GetXmlAttr(ndClient, 'EMAIL'), 'Номер присвоенной заявки', PatternMessage);
 end;
 
 procedure TFrameOrderSummary.OpenTables;

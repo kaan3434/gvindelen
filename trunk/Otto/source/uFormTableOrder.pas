@@ -438,7 +438,7 @@ begin
   inherited;
   if State = [] then
   begin
-    StatusSign:= grdMain.DataSource.DataSet['STATUS_SIGN'];
+    StatusSign:= grdMain.DataSource.DataSet.FieldByName('STATUS_SIGN').AsString;
     if IsWordPresent(StatusSign, 'ANULLED,CANCELLED', ',') then
       AFont.Color:= clGray;
   end;

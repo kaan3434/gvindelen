@@ -172,14 +172,16 @@ begin
 end;
 
 procedure MakeXls(aPacklistNo: Integer; aFileName: string);
-var
-  frxReport: TfrxReport;
-  frxExportXLS: TfrxXLSExport;
 begin
   with dmOtto do
   begin
     frxExportXLS.DefaultPath:= Path['DbfPackLists'];
     frxExportXLS.FileName:= aFileName;
+    frxExportXLS.Background:= True;
+    frxExportXLS.OverwritePrompt:= False;
+    frxExportXLS.ShowDialog:= False;
+    frxExportXLS.ShowProgress:= True;
+    
     frxReport.LoadFromFile(Path['FastReport'] + 'packlistpi3.fr3');
     frxReport.Variables.Variables['PackList_No']:= Format('''%u''', [aPacklistNo]);
     frxReport.PrepareReport(true);
@@ -226,12 +228,15 @@ begin
         'inner join v_order_attrs oa on (oa.object_id = o.order_id and oa.attr_sign = ''PACKLIST_NO'') '+
         'where oa.attr_value = :pack_no',
         0, [aPacklistNo], aTransaction);
+      dmOtto.InitProgress(WordCount(OrderList, ','), Format('Формирование паклиста %u', [aPacklistNo]));
       while OrderList <> '' do
       begin
         OrderId:= TakeFront5(OrderList, ',');
         ExportOrder(aTransaction, ndProduct, ndOrders, dbfCons, dbfConsPi3, OrderId);
+        dmOtto.StepProgress;
       end;
     finally
+      dmOtto.InitProgress;
       dbfCons.Close;
       dbfConsPi3.Close;
     end;

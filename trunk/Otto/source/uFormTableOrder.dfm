@@ -941,7 +941,6 @@ inherited FormTableOrders: TFormTableOrders
     Bitmap = {}
   end
   inherited trnRead: TpFIBTransaction
-    Active = True
     TRParams.Strings = (
       'write'
       'isc_tpb_nowait'

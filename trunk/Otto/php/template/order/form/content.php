@@ -116,13 +116,13 @@
                </tr> 
                <tr> 
                  <td width="30%">Район<font size="2">(обязательно укажите, если местожительство гп, поселок или деревня)</font></td> 
-                 <td width="30%"><input type="text" size="35" name="Region" value="" class="cat_tables_form" value="<? echo $_POST['Region'];?>"></td> 
-                 <td width="40%"><font color="red"><? echo $_POST['Region_Error'];?></font></td>
+                 <td width="30%"><input type="text" size="35" name="Area" value="" class="cat_tables_form" value="<? echo $_POST['Area'];?>"></td> 
+                 <td width="40%"><font color="red"><? echo $_POST['Area_Error'];?></font></td>
                </tr> 
                <tr> 
                  <td width="30%">Область<font size="2">(обязательно укажите, если местожительство гп, поселок или деревня)</font></td> 
-                 <td width="30%"><input type="text" size="35" name="Area" value="" class="cat_tables_form" value="<? echo $_POST['Area'];?>"></td> 
-                 <td width="40%"><font color="red"><? echo $_POST['Area_Error'];?></font></td>
+                 <td width="30%"><input type="text" size="35" name="Region" value="" class="cat_tables_form" value="<? echo $_POST['Region'];?>"></td> 
+                 <td width="40%"><font color="red"><? echo $_POST['Region_Error'];?></font></td>
                </tr> 
                <tr> 
                  <td width="30%"><font color="red">Контактный&nbsp;тел.</font><font size="2">(Домашн/Рабочий)</font></td> 

@@ -71,11 +71,11 @@
                </tr> 
                <tr> 
                  <td width="40%">Район</td> 
-                 <td width="60%"><? echo $_POST['Region'];?></td> 
+                 <td width="60%"><? echo $_POST['Area'];?></td> 
                </tr> 
                <tr> 
                  <td width="40%">Область</td> 
-                 <td width="60%"><? echo $_POST['Area'];?></td> 
+                 <td width="60%"><? echo $_POST['Region'];?></td> 
                </tr> 
                <tr> 
                  <td width="40%">Контактный&nbsp;тел.<font size="2">(Домашн/Рабочий)</font></td> 

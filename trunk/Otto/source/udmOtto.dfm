@@ -7,8 +7,7 @@ object dmOtto: TdmOtto
   Height = 405
   Width = 624
   object dbOtto: TpFIBDatabase
-    Connected = True
-    DBName = 'localhost:D:\otto\Data.Etalon\otto_ppz.fdb'
+    DBName = 'localhost:D:\otto\Data\otto_ppz.fdb'
     DBParams.Strings = (
       'lc_ctype=CYRL'
       'user_name=sysdba'
@@ -112,7 +111,6 @@ object dmOtto: TdmOtto
     Top = 176
   end
   object trnAutonomouse: TpFIBTransaction
-    Active = True
     DefaultDatabase = dbOtto
     TimeoutAction = TARollback
     TRParams.Strings = (
@@ -344,5 +342,24 @@ object dmOtto: TdmOtto
     SASLMechanisms = <>
     Left = 24
     Top = 304
+  end
+  object frxReport: TfrxReport
+    Version = '4.9.64'
+    DotMatrixReport = False
+    IniFile = '\Software\Fast Reports'
+    PreviewOptions.AllowEdit = False
+    PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
+    PreviewOptions.MDIChild = True
+    PreviewOptions.ShowCaptions = True
+    PreviewOptions.Zoom = 1.000000000000000000
+    PreviewOptions.ZoomMode = zmManyPages
+    PrintOptions.Printer = 'Default'
+    PrintOptions.PrintOnSheet = 0
+    ReportOptions.CreateDate = 40773.818275636600000000
+    ReportOptions.LastChange = 40907.121787245400000000
+    ScriptLanguage = 'PascalScript'
+    StoreInDFM = False
+    Left = 280
+    Top = 312
   end
 end

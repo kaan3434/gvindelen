@@ -44,6 +44,7 @@ type
     frxPDFExport: TfrxPDFExport;
     frxExportXLS: TfrxXLSExport;
     smtpMain: TIdSMTP;
+    frxReport: TfrxReport;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
     procedure dbOttoAfterConnect(Sender: TObject);

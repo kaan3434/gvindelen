@@ -64,6 +64,7 @@ function Value2Vars(aValue: Variant; aAttrName: string; aVars: string =''): stri
 
 procedure MergeNode(aDestNode, aSrcNode: TXmlNode);
 procedure TranscodeXmlUtf2Ansi(aXml: TNativeXml);
+function FillPattern(aPattern: string; ndRoot: TXmlNode): string;
 
 implementation
 
@@ -566,6 +567,30 @@ begin
   wStr:= UTF8Decode(aXml.WriteToString);
   aStr:= wStr;
   aXml.ReadFromString(aStr);
+end;
+
+function GetXPathValue(aNode: TXmlNode; aPath: String): string;
+var
+  Name: string;
+begin
+  Name:= TakeFront4(aPath, '/@');
+  if aPath[1] = '@' then
+    Result:= aNode.ReadAttributeString(Copy(aPath, 2, Length(aPath)))
+  else
+    Result:= GetXPathValue(aNode.NodeByName(Name), Copy(aPath, 2, Length(aPath)));
+end;
+
+function FillPattern(aPattern: string; ndRoot: TXmlNode): string;
+var
+  xPth, Value: string;
+begin
+  Result:= aPattern;
+  repeat
+    xPth:= CopyBetween(Result, '[', ']');
+    if xPth = '' then Break;
+    Value:= GetXPathValue(ndRoot, xPth);
+    Result:= ReplaceAll(Result, '['+xPth+']', Value);
+  until false;
 end;
 
 end.

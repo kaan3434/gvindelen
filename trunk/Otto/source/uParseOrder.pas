@@ -248,12 +248,15 @@ end;
 procedure DetectOrderItem(ndOrderItem: TXmlNode; aTransaction: TpFIBTransaction);
 var
   OrderItemId: Variant;
+  StatusId: Integer;
 begin
   SetXmlAttr(ndOrderItem, 'ID', dmOtto.GetNewObjectId('ORDERITEM'));
   SetXmlAttr(ndOrderItem, 'CATALOG_ID', CatalogDetect('Internet', aTransaction));
   SetXmlAttr(ndOrderItem, 'MAGAZINE_ID', MagazineDetect(GetXmlAttrValue(ndOrderItem, 'CATALOG_ID'), aTransaction));
   SetXmlAttr(ndOrderItem, 'AMOUNT', 1);
-  SetXmlAttr(ndOrderItem, 'STATUS_ID', dmOtto.GetDefaultStatusId('ORDERITEM'));
+  StatusId:= dmOtto.GetDefaultStatusId('ORDERITEM');
+  SetXmlAttr(ndOrderItem, 'STATUS_ID', StatusId);
+  SetXmlAttr(ndOrderItem, 'STATUS_FLAG_LIST', dmOtto.GetFlagListById(StatusId));
   BatchMoveFields2(ndOrderItem, ndOrderItem, 'COST_EUR=PRICE_EUR');
 end;
 
