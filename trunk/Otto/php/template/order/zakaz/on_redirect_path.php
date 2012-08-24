@@ -45,6 +45,21 @@ function valid_length($param_name, $param_caption, $min, $max) {
   return 0;
 }
 
+function valid_phone($param_name, $param_caption) {
+  $filter = "/[^0-9]/";
+  $filtered = preg_replace($filter, "", trim($_POST[$param_name]));
+  if ((substr($filtered, 0, 2) == '80') and (strlen($filtered) == 11)) {
+    return 0;  
+  } elseif ((substr($filtered, 0, 3) == '375') and (strlen($filtered) == 12)) {
+    return 0;  
+  } elseif ($filtered == '') {
+    return 0;  
+  } else {
+    $_POST[$param_name.'_Error'] = $param_caption.' должен быть в формате +375-XX-XXX-XX-XX или 8-0XX-XXX-XX-XX';
+    return 1;
+  }
+}
+
 
 function on_redirect_path ($path) {
   $filter_cyr = "\xC0-\xFF";
@@ -82,6 +97,11 @@ function on_redirect_path ($path) {
   $_POST['City'] = utf8_ucfirst($_POST['City']); 
   $valid += valid_mandatory('City', 'Город') + valid_filter('City', 'Город', $filter_cyr);
 
+  $valid +=valid_phone('MobPhone', 'Мобильный телефон');
+  
+  $valid +=valid_phone('Phone', 'Контактный (Домашн/Рабочий) телефон');
+  
+  
   if (($_POST['CityType'] == 'гп') or ($_POST['CityType'] == 'пос') or ($_POST['CityType'] == 'дер')) {
     $_POST['Region'] = utf8_ucfirst($_POST['Region']); 
     $valid += valid_mandatory('Region', 'Район') + valid_filter('Region', 'Район', $filter_cyr);
