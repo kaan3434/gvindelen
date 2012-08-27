@@ -232,7 +232,24 @@ begin
 end;
 
 procedure DetectClient(ndClient: TXmlNode; aTransaction: TpFIBTransaction);
+var
+  Phone: String;
 begin
+  Phone:= FilterString(GetXmlAttr(ndClient, 'MOBILE_PHONE'), '0123456789');
+  if Copy(Phone, 1, 3) = '375' then
+    Phone:= FormatString(Phone, '+[1][2][3]([4][5])[6][7][8]-[9][10][11][12]')
+  else
+  if Copy(Phone, 1, 2) = '80' then
+    Phone:= FormatString(Phone, '+375([3][4])[5][6][7]-[8][9][10][11]');
+  SetXmlAttr(ndClient, 'MOBILE_PHONE', Phone);
+
+  Phone:= FilterString(GetXmlAttr(ndClient, 'STATIC_PHONE'), '0123456789');
+  if Copy(Phone, 1, 3) = '375' then
+    Phone:= FormatString(Phone, '8-0[4][5][6][7][8][9][10][11][12]')
+  else
+  if Copy(Phone, 1, 2) = '80' then
+    Phone:= FormatString(Phone, '8-0[3][4][5][6][7][8][9][10][11]');
+  SetXmlAttr(ndClient, 'STATIC_PHONE', Phone);
 end;
 
 procedure DetectProduct(ndProduct: TXmlNode; aTransaction: TpFIBTransaction);

@@ -178,6 +178,7 @@ var
   LineNo, DealId, n: Integer;
   Lines: TStringList;
   MessageFileName: string;
+  OrderId: Integer;
   ndProduct, ndOrders, ndOrder, ndOrderItems: TXmlNode;
 begin
   dmOtto.ClearNotify(aMessageId);
@@ -197,7 +198,6 @@ begin
       if FileExists(Path['Messages.In']+MessageFileName) then
       begin
         Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
-        ndOrder:= ndOrders.NodeNew('ORDER');
         dmOtto.InitProgress(Lines.Count*2, Format('Обработка файла %s ...', [MessageFileName]));
         For LineNo:= 0 to Lines.Count - 1 do
         begin
@@ -205,9 +205,13 @@ begin
           dmOtto.StepProgress;
         end;
 
+        ndOrders.Document.XmlFormat:= xfReadable;
+        ndOrders.Document.SaveToFile('Orders.xml');
         For n:= 0 to ndOrders.NodeCount - 1 do
         begin
           ndOrder:= ndOrders[n];
+          OrderId:= GetXmlAttrValue(ndOrder, 'ID');
+          dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
           if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'ACCEPTREQUEST') then
           begin
             SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'ACCEPTED');
