@@ -242,6 +242,7 @@ function UpCaseFirst(St: string): string;
 function UpCaseWord(St: string; KeyChars: string=' ,.!-:?'): string;
 
 function IsWordPresent(aWord, aWordList, aDelimiter: String): Boolean;
+function FormatString(aStr, aFormat: string): String;
 
 implementation
 uses
@@ -2358,6 +2359,24 @@ end;
 function IsWordPresent(aWord, aWordList, aDelimiter: String): Boolean;
 begin
   result:= Pos(aDelimiter+aWord+aDelimiter, aDelimiter+aWordList+aDelimiter) > 0;
+end;
+
+function FormatString(aStr, aFormat: string): String;
+var
+  l: Integer;
+  s: string;
+  Ch: Char;
+begin
+  result:= aFormat;
+  l:= Length(aStr);
+  repeat
+    s:= CopyBetween(Result, '[', ']');
+    if s <> '' then
+    begin
+      if StrToInt(s)>l then Ch:= ' ' else Ch:= aStr[StrToInt(s)];
+      Result:= ReplaceAll(Result, '['+s+']', Ch);
+    end;
+  until s = '';
 end;
 
 end.
