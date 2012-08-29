@@ -41,6 +41,7 @@ begin
         SetXmlAttr(ndorder, 'INVOICE_DT_0', aOnDate);
         SetXmlAttr(ndOrder, 'BYR2EUR', dmOtto.SettingGet(aTransaction, 'BYR2EUR', aOnDate+1));
         SetXmlAttr(ndOrder, 'PACKLIST_NO', sl[1]);
+        SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'NULL');
         dmOtto.ActionExecute(aTransaction, ndOrder, 'PREPACKED');
         dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
         dmOtto.OrderItemsGet(ndOrderItems, OrderId, aTransaction);
