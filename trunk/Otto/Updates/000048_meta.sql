@@ -8,11 +8,18 @@ SET SQL DIALECT 3;
 
 SET AUTODDL ON;
 
-/* Alter Procedure... */
-/* empty dependent procedure body */
-/* Clear: ACTION_RUN for: ACT_ORDER_STORE */
+/* Create Procedure... */
 SET TERM ^ ;
 
+CREATE PROCEDURE CLIENTS_KILL RETURNS(O_CLIENT_ID TYPE OF ID_CLIENT)
+ AS
+ BEGIN SUSPEND; END
+^
+
+
+/* Alter Procedure... */
+/* empty dependent procedure body */
+/* Clear: ACTION_RUN for: ACT_ACCOUNT_DEBITORDER */
 ALTER PROCEDURE ACTION_RUN(I_OBJECT_SIGN /* TYPE OF SIGN_OBJECT */ VARCHAR(30),
 I_ACTION_SIGN /* TYPE OF SIGN_ACTION */ VARCHAR(30),
 I_PARAM_ID /* TYPE OF ID_PARAM */ BIGINT,
@@ -22,145 +29,60 @@ I_OBJECT_ID /* TYPE OF ID_OBJECT */ INTEGER)
  BEGIN SUSPEND; END
 ^
 
-/* Alter (ACT_ORDER_STORE) */
-ALTER PROCEDURE ACT_ORDER_STORE(I_PARAM_ID TYPE OF ID_PARAM,
-I_OBJECT_ID TYPE OF ID_OBJECT,
-I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ORDER')
+/* Alter (ACT_ACCOUNT_DEBITORDER) */
+ALTER PROCEDURE ACT_ACCOUNT_DEBITORDER(I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
+I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL,
+I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ACCOUNT')
  AS
-declare variable V_NOW_STATUS_ID type of ID_STATUS;
-declare variable V_NEW_STATUS_ID type of ID_STATUS;
-declare variable V_UPDATEABLE type of VALUE_BOOLEAN;
-declare variable V_CALCPOINT_ID type of ID_CALCPOINT;
-declare variable V_NEW_STATE_SIGN type of SIGN_OBJECT;
-declare variable V_NEW_STATE_ID type of ID_STATUS;
-begin
-  if (coalesce(i_object_id, 0) = 0) then i_object_id = gen_id(seq_order_id, 1);
-
-  update paramheads set object_id = :i_object_id where param_id = :i_param_id;
-
-  execute procedure param_set(:i_param_id, 'ID', :i_object_id);
-
-  select oi.status_id from orders oi where oi.order_id = :i_object_id into :v_now_status_id;
-
-  if (:v_now_status_id is null) then
-  begin
-    insert into orders(order_id, status_id)
-      values(:i_object_id, :v_new_status_id)
-      returning status_id
-      into :v_new_status_id;
-    v_updateable = 1;
-  end
-  else
-  begin
-    select o_updateable, o_new_status_id
-      from object_updateable(:i_param_id, :v_now_status_id, :i_object_sign)
-      into :v_updateable, :v_new_status_id;
-  end
-
-  select o_value from param_get(:i_param_id,  'NEW.STATE_SIGN') into :v_new_state_sign;
-  if (:v_new_state_sign is not null) then
-  begin
-    v_updateable = 1;
-    if (upper(:v_new_state_sign) = 'NULL') then
-      v_new_state_id = null;
-    else
-      select s.status_id
-        from statuses s
-        where s.object_sign = :i_object_sign
-          and s.status_sign = :v_new_state_sign
-        into :v_new_state_id;
-    execute procedure param_set(:i_param_id, 'STATE_ID', :v_new_state_id);
-  end
-
-  if (v_updateable = 1) then
-  begin
-    select cp.calcpoint_id
-      from calcpoints cp
-      where cp.object_status_id = :v_new_status_id
-      into :v_calcpoint_id;
-    execute procedure param_set(:i_param_id, 'CALCPOINT_ID', :v_calcpoint_id);
-
-    execute procedure param_set(:i_param_id, 'STATUS_ID', :v_new_status_id);
-    execute procedure object_put(:i_param_id);
-
-    execute procedure orderhistory_update(:i_object_id, :v_new_status_id, :v_new_state_id);
-  end
-  else
-    exception ex_status_conversion_unavail 'From '||:v_now_status_id||' to '||:v_new_status_id;
-end
-^
-
-/* Alter (ACT_ORDERITEM_STORE) */
-ALTER PROCEDURE ACT_ORDERITEM_STORE(I_PARAM_ID TYPE OF ID_PARAM,
-I_OBJECT_ID TYPE OF ID_OBJECT,
-I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ORDERITEM')
- AS
-declare variable V_NOW_STATUS_ID type of ID_STATUS;
-declare variable V_NEW_STATUS_ID type of ID_STATUS;
+declare variable V_AMOUNT_EUR type of MONEY_EUR;
 declare variable V_ORDER_ID type of ID_ORDER;
-declare variable V_ARTICLE_ID type of ID_ARTICLE;
-declare variable V_UPDATEABLE type of VALUE_BOOLEAN;
-declare variable V_NEW_STATE_ID type of ID_STATUS;
-declare variable V_NEW_STATE_SIGN type of SIGN_OBJECT;
+declare variable V_NOTES type of VALUE_ATTR;
+declare variable V_ACC_AMOUNT_EUR type of MONEY_EUR;
+declare variable V_ACC_BYR2EUR type of MONEY_BYR;
+declare variable V_DELTA_EUR type of MONEY_EUR;
+declare variable V_AMOUNT_BYR type of MONEY_BYR;
+declare variable V_DELTA_BYR type of MONEY_BYR;
 begin
-  if (coalesce(i_object_id, 0) = 0) then i_object_id = gen_id(seq_orderitem_id, 1);
-
   update paramheads set object_id = :i_object_id where param_id = :i_param_id;
 
   execute procedure param_set(:i_param_id, 'ID', :i_object_id);
 
-  select status_id from orderitems where orderitem_id = :i_object_id into :v_now_status_id;
+  select o_value from param_get(:i_param_id, 'ORDER_ID') into :v_order_id;
 
-  if (:v_now_status_id is null) then
+  select -os.cost_eur
+    from v_order_summary os
+    where os.order_id = :v_order_id
+    into :v_amount_eur;
+
+  v_amount_byr = 0;
+
+  for select om.byr2eur, sum(om.amount_eur)
+        from ordermoneys om
+        where om.order_id = :v_order_id
+        group by om.byr2eur
+        having sum(om.amount_eur) > 0
+        order by max(om.ordermoney_id)
+        into :v_acc_byr2eur, :v_acc_amount_eur do
   begin
-    select o_value from param_get(:i_param_id, 'STATUS_ID') into :v_new_status_id;
-    if (:v_new_status_id is null) then
-       select s.status_id
-         from param_get(:i_param_id, 'NEW.STATUS_SIGN') p
-           inner join statuses s on (s.object_sign = :i_object_sign and s.status_sign = p.o_value)
-       into :v_new_status_id;
-
-    select o_value from param_get(:i_param_id, 'ORDER_ID') into :v_order_id;
-    select o_value from param_get(:i_param_id, 'ARTICLE_ID') into :v_article_id;
-
-    insert into orderitems(orderitem_id, order_id, article_id, status_id)
-      values(:i_object_id, :v_order_id, :v_article_id, :v_new_status_id)
-      returning status_id
-      into :v_new_status_id;
-    v_updateable = 1;
-  end
-  else
-  begin
-    select o_updateable, o_new_status_id
-      from object_updateable(:i_param_id, :v_now_status_id, :i_object_sign)
-      into :v_updateable, :v_new_status_id;
-
-    select oi.order_id
-      from orderitems oi
-      where oi.orderitem_id = :i_object_id
-      into :v_order_id;
-  end
-
-  select o_value from param_get(:i_param_id,  'NEW.STATE_SIGN') into :v_new_state_sign;
-  if (:v_new_state_sign is not null) then
-  begin
-    v_updateable = 1;
-    if (upper(:v_new_state_sign) = 'NULL') then
-      v_new_state_id = null;
+    if (v_amount_eur < v_acc_amount_eur) then
+      v_delta_eur = v_amount_eur;
     else
-      select s.status_id
-        from statuses s
-        where s.object_sign = :i_object_sign
-          and s.status_sign = :v_new_state_sign
-        into :v_new_state_id;
-    execute procedure param_set(:i_param_id, 'STATE_ID', :v_new_state_id);
+      v_delta_eur = v_acc_amount_eur;
+    v_delta_byr = round(v_amount_eur * :v_acc_byr2eur, -1);
+
+    v_amount_eur = v_amount_eur - v_delta_eur;
+    v_amount_byr = v_amount_byr + v_delta_byr;
+
+    select o_value from param_get(:i_param_id, 'NOTES') into :v_notes;
+    select o_pattern from param_fillpattern(:i_param_id, :v_notes) into :v_notes;
+
+    insert into accopers (account_id, amount_eur, byr2eur, order_id, notes, amount_byr)
+      values(:i_object_id, :v_delta_eur, :v_acc_byr2eur, :v_order_id, :v_notes, :v_delta_byr);
+    insert into ordermoneys (account_id, amount_eur, byr2eur, order_id, amount_byr)
+      values(:i_object_id, -:v_delta_eur, :v_acc_byr2eur, :v_order_id, -:v_delta_byr);
   end
 
-  if (v_updateable = 1) then
-  begin
-    execute procedure param_set(:i_param_id, 'STATUS_ID', :v_new_status_id);
-    execute procedure object_put(:i_param_id);
-  end
+  execute procedure param_set(:i_param_id, 'AMOUNT_BYR', :v_amount_byr);
 end
 ^
 
@@ -493,6 +415,39 @@ begin
 end
 ^
 
+/* Alter (MONEYBACK_READ) */
+ALTER PROCEDURE MONEYBACK_READ(I_OBJECT_ID TYPE OF ID_OBJECT)
+ RETURNS(O_PARAM_NAME TYPE OF SIGN_OBJECT,
+O_PARAM_VALUE TYPE OF VALUE_ATTR)
+ AS
+declare variable V_STATUS_SIGN type of SIGN_OBJECT;
+declare variable V_STATUS_NAME type of NAME_OBJECT;
+begin
+  select s.status_sign, s.status_name
+    from moneybacks mb
+      inner join statuses s on (s.status_id = mb.status_id)
+    where mb.moneyback_id = :i_object_id
+    into :v_status_sign, :v_status_name;
+
+  o_param_name = 'STATUS_SIGN';
+  o_param_value = v_status_sign;
+  suspend;
+  o_param_name = 'STATUS_NAME';
+  o_param_value = v_status_name;
+  suspend;
+
+  o_param_name = 'KIND_NAME';
+  select r.recoded_value
+    from moneybacks mb
+      inner join recodes r on (r.object_sign = 'MONEYBACK'
+                           and r.attr_sign = 'KIND'
+                           and r.original_value = mb.kind)
+    where mb.moneyback_id = :i_object_id
+    into :o_param_value;
+  suspend;
+end
+^
+
 /* Alter (ORDER_ANUL) */
 ALTER PROCEDURE ORDER_ANUL(I_ORDER_ID TYPE OF ID_ORDER)
  RETURNS(O_NEW_STATUS_SIGN TYPE OF SIGN_OBJECT)
@@ -764,6 +719,39 @@ begin
     where ph.param_id = :v_param_id;
 
   suspend;
+end
+^
+
+/* Restore proc. body: CLIENTS_KILL */
+ALTER PROCEDURE CLIENTS_KILL RETURNS(O_CLIENT_ID TYPE OF ID_CLIENT)
+ AS
+begin
+  for select first 1000 cl.client_id
+        from clients cl
+          left join orders o on (o.client_id = cl.client_id)
+        where o.order_id is null
+        into :o_client_id do
+  begin
+    begin
+      delete from clients where client_id = :o_client_id;
+    when any do
+      begin
+        suspend;
+      end
+    end
+  end
+end
+^
+
+/* Altering existing trigger... */
+ALTER TRIGGER ACCOPERS_AI0
+AS
+begin
+  update accounts a
+  set a.rest_eur = (select sum(ar.rest_eur)
+    from accrests ar
+    where ar.account_id = new.account_id)
+  where a.account_id = new.account_id;
 end
 ^
 

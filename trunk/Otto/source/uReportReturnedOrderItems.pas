@@ -4,7 +4,7 @@ interface
 uses
   NativeXml, FIBDatabase, pFIBDatabase, frxClass;
 
-procedure ReportReturnedOrderItems(aTransaction: TpFIBTransaction; frxReport: TFrxReport);
+procedure ReportReturnedOrderItems(aTransaction: TpFIBTransaction);
 
 implementation
 
@@ -53,20 +53,33 @@ begin
 end;
 
 
-procedure ReportReturnedOrderItems(aTransaction: TpFIBTransaction; frxReport: TFrxReport);
+procedure ReportReturnedOrderItems(aTransaction: TpFIBTransaction);
 var
-  Orders: string;
+  ProductList: string;
   OrderId: Variant;
   xml: TNativeXml;
-  ndOrder: TXmlNode;
+  ndProducts, ndOrder: TXmlNode;
+  FileName: string;
 begin
-  xml:= TNativeXml.CreateName('Order');
-  try
-    ndOrder:= xml.Root;
-    frxReport.LoadFromFile(Path['FastReport']+'OrderItemReturns.fr3');
+  ForceDirectories(Path['Returns']);
+  FileName:= GetNextFileName(Format('%sArticles_%%.2u.%.3d', [
+    Path['Returns'], DayOfTheYear(Date)]));
+  with dmOtto do
+  begin
+    frxExportXLS.DefaultPath:= Path['Returns'];
+    frxExportXLS.FileName:= FileName+'.xls';
+    frxExportXLS.Background:= True;
+    frxExportXLS.OverwritePrompt:= False;
+    frxExportXLS.ShowDialog:= False;
+    frxExportXLS.ShowProgress:= True;
+
+    frxPDFExport.DefaultPath:= Path['Returns'];
+    frxPDFExport.FileName:= FileName+'.xls';
+
+    frxReport.LoadFromFile(Path['FastReport'] + 'OrderItemReturns.fr3');
     frxReport.PrepareReport(true);
-    frxReport.ShowPreparedReport;
-  finally
+    frxReport.Export(frxExportXLS);
+    frxReport.Export(frxPDFExport);
   end;
 end;
 

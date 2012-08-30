@@ -818,7 +818,7 @@ end;
 
 procedure TMainForm.actReestrReturnsExecute(Sender: TObject);
 begin
-  ReportReturnedOrderItems(trnWrite, frxReport);
+  ReportReturnedOrderItems(trnWrite);
 end;
 
 procedure TMainForm.FormActivate(Sender: TObject);
