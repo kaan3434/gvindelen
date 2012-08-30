@@ -8,8 +8,8 @@ inherited FrameMoneyBack: TFrameMoneyBack
   PixelsPerInch = 96
   TextHeight = 13
   inherited dckTop: TTBXDock
-    Width = 952
-    Height = 23
+    Width = 944
+    Height = 25
     inherited tlBarTop: TTBXToolbar
       object btnMakeReturn: TTBXItem
         Action = actCreateReturn
@@ -17,13 +17,13 @@ inherited FrameMoneyBack: TFrameMoneyBack
     end
   end
   inherited sb: TTBXStatusBar
-    Top = 456
-    Width = 952
+    Top = 452
+    Width = 944
   end
   object grpBankMovement: TJvGroupBox [2]
     Left = 0
-    Top = 217
-    Width = 952
+    Top = 219
+    Width = 944
     Height = 152
     Align = alTop
     Caption = #1040#1090#1088#1080#1073#1091#1090#1099' '#1073#1072#1085#1082#1086#1074#1089#1082#1086#1075#1086' '#1087#1077#1088#1077#1074#1086#1076#1072
@@ -97,8 +97,8 @@ inherited FrameMoneyBack: TFrameMoneyBack
   end
   object grpCommon: TJvGroupBox [3]
     Left = 0
-    Top = 23
-    Width = 952
+    Top = 25
+    Width = 944
     Height = 146
     Align = alTop
     Caption = #1054#1073#1097#1080#1077' '#1072#1090#1088#1080#1073#1091#1090#1099
@@ -199,8 +199,8 @@ inherited FrameMoneyBack: TFrameMoneyBack
   end
   object rgMoneyBackKind: TRadioGroup [4]
     Left = 0
-    Top = 169
-    Width = 952
+    Top = 171
+    Width = 944
     Height = 48
     Align = alTop
     Caption = #1044#1077#1081#1089#1090#1074#1080#1103' '#1089' '#1086#1089#1090#1072#1090#1082#1086#1084

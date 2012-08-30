@@ -803,12 +803,12 @@ end;
 
 procedure TMainForm.actMoneyBackBankExecute(Sender: TObject);
 begin
-  ReportMoneyBackBank(trnWrite, frxReport);
+  ReportMoneyBackBank(trnWrite);
 end;
 
 procedure TMainForm.actMoneyBackBelpostExecute(Sender: TObject);
 begin
-  ReportMoneyBackBelpost(trnWrite, frxReport);
+  ReportMoneyBackBelpost(trnWrite);
 end;
 
 procedure TMainForm.actMoneyBackAccountExecute(Sender: TObject);

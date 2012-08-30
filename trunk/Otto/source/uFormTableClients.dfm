@@ -296,6 +296,12 @@ inherited FormTableClients: TFormTableClients
                     Width = 80
                   end
                   item
+                    EditButtons = <>
+                    FieldName = 'AMOUNT_BYR'
+                    Footers = <>
+                    Title.Caption = #1057#1091#1084#1084#1072', BYR'
+                  end
+                  item
                     AutoFitColWidth = False
                     EditButtons = <>
                     FieldName = 'BYR2EUR'
@@ -424,7 +430,6 @@ inherited FormTableClients: TFormTableClients
     Bitmap = {}
   end
   inherited trnRead: TpFIBTransaction
-    Active = True
     TRParams.Strings = (
       'read'
       'nowait'
@@ -434,18 +439,20 @@ inherited FormTableClients: TFormTableClients
   object qryAccountMovements: TpFIBDataSet [8]
     SelectSQL.Strings = (
       'SELECT'
+      '    ao.ACCOPER_ID,'
       '    ao.ACCOPER_DTM,'
       '    ao.AMOUNT_EUR,'
+      '    ao.AMOUNT_BYR,'
       '    ao.BYR2EUR,'
       '    o.ORDER_CODE,'
       '    ao.NOTES'
       'from accopers ao'
       '  left join orders o on (o.order_id = ao.order_id)'
       'where ao.account_id = :account_id'
-      '  '
-      'order by accoper_dtm desc')
+      'order by ao.accoper_id desc')
     CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
     CacheModelOptions.BufferChunks = 100
+    Transaction = dmOtto.trnAutonomouse
     Database = dmOtto.dbOtto
     DataSource = dsMain
     Left = 760

@@ -4,45 +4,68 @@ interface
 uses
   Classes, SysUtils, FIBDatabase, frxClass, pFIBDatabase;
 
-procedure ReportMoneyBackBelpost(aTransaction: TpFIBTransaction; frxReport: TFrxReport);
+procedure ReportMoneyBackBelpost(aTransaction: TpFIBTransaction);
 
-procedure ReportMoneyBackBank(aTransaction: TpFIBTransaction; frxReport: TFrxReport);
+procedure ReportMoneyBackBank(aTransaction: TpFIBTransaction);
 
 procedure ReportMoneyBackAccount(aTransaction: TpFIBTransaction; frxReport: TFrxReport);
 
 implementation
 
 uses
-  NativeXml, udmOtto, GvStr, GvNativeXml;
+  NativeXml, udmOtto, GvStr, GvNativeXml, GvFile, DateUtils;
 
-procedure ReportMoneyBackBelpost(aTransaction: TpFIBTransaction; frxReport: TFrxReport);
+procedure ReportMoneyBackBelpost(aTransaction: TpFIBTransaction);
 var
   MoneyBacks: string;
   MoneyBackId: Variant;
   xml: TNativeXml;
   ndMoneyBack: TXmlNode;
+  FileName: String;
 begin
+  ForceDirectories(Path['Returns']);
+  FileName:= GetNextFileName(Format('%sBelPost_%%.2u.%.3d', [
+    Path['Returns'], DayOfTheYear(Date)]));
   xml:= TNativeXml.CreateName('MoneyBack');
   try
     aTransaction.StartTransaction;
     try
       ndMoneyBack:= xml.Root;
-      frxReport.LoadFromFile(Path['FastReport']+'MoneyBackBelPost.fr3');
-      frxReport.PrepareReport(true);
-      frxReport.ShowPreparedReport;
       MoneyBacks:= aTransaction.DefaultDatabase.QueryValue(
-        'select list(mb.moneyback_id) from moneybacks mb '+
-        'inner join statuses s on (s.status_id = mb.status_id) '+
-        'where mb.kind = ''BELPOST'' and s.status_sign = ''NEW''',
+        'select list(mb.moneyback_id) '+
+        'from moneybacks mb '+
+        ' inner join statuses s on (s.status_id = mb.status_id) '+
+        'where mb.kind = ''BELPOST'' and s.status_sign = ''NEW'' ',
         0, [], aTransaction);
-      while MoneyBacks <> '' do
+      if MoneyBacks <> '' then
       begin
-        MoneyBackId:= TakeFront5(MoneyBacks,',');
-        dmOtto.ObjectGet(ndMoneyBack, MoneyBackId, aTransaction);
-        SetXmlAttr(ndMoneyBack, 'NEW.STATUS_SIGN', 'APPROVED');
-        dmOtto.ActionExecute(aTransaction, ndMoneyBack);
+        with dmOtto do
+        begin
+          frxExportXLS.DefaultPath:= Path['Returns'];
+          frxExportXLS.FileName:= FileName+'.xls';
+          frxExportXLS.Background:= True;
+          frxExportXLS.OverwritePrompt:= False;
+          frxExportXLS.ShowDialog:= False;
+          frxExportXLS.ShowProgress:= True;
+
+          frxPDFExport.DefaultPath:= Path['Returns'];
+          frxPDFExport.FileName:= FileName+'.xls';
+
+          frxReport.LoadFromFile(Path['FastReport'] + 'MoneyBackBelPost.fr3');
+          frxReport.PrepareReport(true);
+          frxReport.Export(frxExportXLS);
+          frxReport.Export(frxPDFExport);
+        end;
+
+        while MoneyBacks <> '' do
+        begin
+          MoneyBackId:= TakeFront5(MoneyBacks,',');
+          dmOtto.ObjectGet(ndMoneyBack, MoneyBackId, aTransaction);
+          SetXmlAttr(ndMoneyBack, 'NEW.STATUS_SIGN', 'APPROVED');
+          dmOtto.ActionExecute(aTransaction, ndMoneyBack);
+        end;
       end;
-      aTransaction.Commit;
+      dmOtto.ExportCommitRequest(ndMoneyBack, aTransaction);
     except
       aTransaction.Rollback;
     end;
@@ -51,34 +74,54 @@ begin
   end;
 end;
 
-procedure ReportMoneyBackBank(aTransaction: TpFIBTransaction; frxReport: TFrxReport);
+procedure ReportMoneyBackBank(aTransaction: TpFIBTransaction);
 var
-  MoneyBacks: string;
+  MoneyBacks, FileName: string;
   MoneyBackId: Variant;
   xml: TNativeXml;
   ndMoneyBack: TXmlNode;
 begin
+  ForceDirectories(Path['Returns']);
+  FileName:= GetNextFileName(Format('%sBank_%%.2u.%.3d', [
+    Path['Returns'], DayOfTheYear(Date)]));
   xml:= TNativeXml.CreateName('MoneyBack');
   try
     aTransaction.StartTransaction;
     try
       ndMoneyBack:= xml.Root;
-      frxReport.LoadFromFile(Path['FastReport']+'MoneyBackBank.fr3');
-      frxReport.PrepareReport(true);
-      frxReport.ShowPreparedReport;
       MoneyBacks:= aTransaction.DefaultDatabase.QueryValue(
         'select list(mb.moneyback_id) from moneybacks mb '+
         'inner join statuses s on (s.status_id = mb.status_id) '+
         'where mb.kind = ''BANK'' and s.status_sign = ''NEW''',
         0, [], aTransaction);
-      while MoneyBacks <> '' do
+      if MoneyBacks <> '' then
       begin
-        MoneyBackId:= TakeFront5(MoneyBacks,',');
-        dmOtto.ObjectGet(ndMoneyBack, MoneyBackId, aTransaction);
-        SetXmlAttr(ndMoneyBack, 'NEW.STATUS_SIGN', 'APPROVED');
-        dmOtto.ActionExecute(aTransaction, ndMoneyBack);
+        with dmOtto do
+        begin
+          frxExportXLS.DefaultPath:= Path['Returns'];
+          frxExportXLS.FileName:= FileName+'.xls';
+          frxExportXLS.Background:= True;
+          frxExportXLS.OverwritePrompt:= False;
+          frxExportXLS.ShowDialog:= False;
+          frxExportXLS.ShowProgress:= True;
+
+          frxPDFExport.DefaultPath:= Path['Returns'];
+          frxPDFExport.FileName:= FileName+'.xls';
+
+          frxReport.LoadFromFile(Path['FastReport'] + 'MoneyBackBank.fr3');
+          frxReport.PrepareReport(true);
+          frxReport.Export(frxExportXLS);
+          frxReport.Export(frxPDFExport);
+        end;
+        while MoneyBacks <> '' do
+        begin
+          MoneyBackId:= TakeFront5(MoneyBacks,',');
+          dmOtto.ObjectGet(ndMoneyBack, MoneyBackId, aTransaction);
+          SetXmlAttr(ndMoneyBack, 'NEW.STATUS_SIGN', 'APPROVED');
+          dmOtto.ActionExecute(aTransaction, ndMoneyBack);
+        end;
       end;
-      aTransaction.Commit;
+      dmOtto.ExportCommitRequest(ndMoneyBack, aTransaction);
     except
       aTransaction.Rollback;
     end;

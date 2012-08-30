@@ -207,15 +207,15 @@ begin
     SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'HAVERETURN');
     dmOtto.ActionExecute(trnWrite, ndOrder);
     dmOtto.ObjectGet(ndOrder, OrderId, trnWrite);
-    if GetXmlAttrValue(ndOrder, 'MONEYBACK_KIND') = 'LEAVE' then
-    begin
-      MoneyEur:= trnWrite.DefaultDatabase.QueryValue(
-        'select cost_eur from v_order_summary os where os.order_id = :order_id',
-        0, [GetXmlAttrValue(ndOrder, 'ID')]);
-      dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_DEBITORDER',
-        XmlAttrs2Vars(ndOrder, 'ID=ACCOUNT_ID;ORDER_ID=ID',
-        Value2Vars(MoneyEur, 'AMOUNT_EUR')));
-    end;
+//    if GetXmlAttrValue(ndOrder, 'MONEYBACK_KIND') = 'LEAVE' then
+//    begin
+//      MoneyEur:= trnWrite.DefaultDatabase.QueryValue(
+//        'select cost_eur from v_order_summary os where os.order_id = :order_id',
+//        0, [GetXmlAttrValue(ndOrder, 'ID')]);
+//      dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_DEBITORDER',
+//        XmlAttrs2Vars(ndOrder, 'ID=ACCOUNT_ID;ORDER_ID=ID;ORDER_CODE',
+//        Value2Vars(MoneyEur, 'AMOUNT_EUR')));
+//    end;
     trnWrite.Commit;
     trnRead.Commit;
     ShowMessage('Возврат оформлен');
