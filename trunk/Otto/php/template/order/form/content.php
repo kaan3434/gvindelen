@@ -173,7 +173,10 @@
              <center>
                <input type="checkbox" onclick="if (this.checked){this.form.tr.disabled=0}else{this.form.tr.disabled=1}">
                <font color="red"><strong>С условиями оформления заявки<br>по интернету и с условиями получения международной посылки<br>с товаром по каталогам "Отто" ознакомилась / ознакомился.</strong></font><br/>
-               <input type="submit" class="button" value="       Заказать       " name="tr" disabled="1">&nbsp;
+               <input type="submit" class="button" value=" Создать новую заявку " name="tr" disabled="1">&nbsp;
+               <? if ($_POST['LastName'] <> '') {?>
+               <input type="submit" class="button" value=" Сохранить изменения " name="save">&nbsp;
+               <?}?>
                <input type="reset" class="button" value="       Очистить       ">
             </center>
           </form>
