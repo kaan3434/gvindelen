@@ -23,8 +23,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 837
-    Height = 65
+    Width = 829
+    Height = 69
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -219,7 +219,7 @@ object MainForm: TMainForm
     end
     object barInfo: TTBXToolbar
       Left = 0
-      Top = 47
+      Top = 49
       Caption = 'barInfo'
       TabOrder = 1
       object lblBYR2EUR: TTBXLabelItem
@@ -228,16 +228,16 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 436
-    Width = 837
+    Top = 432
+    Width = 829
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object pbMain: TProgressBar
     Left = 0
-    Top = 419
-    Width = 837
+    Top = 415
+    Width = 829
     Height = 17
     Align = alBottom
     TabOrder = 1
@@ -1519,7 +1519,6 @@ object MainForm: TMainForm
       'nowait'
       'rec_version'
       'read_committed')
-    BeforeStart = trnWriteBeforeStart
     TPBMode = tpbDefault
     Left = 192
     Top = 96
@@ -1885,5 +1884,17 @@ object MainForm: TMainForm
     StoreInDFM = False
     Left = 352
     Top = 96
+  end
+  object trnTimer: TpFIBTransaction
+    DefaultDatabase = dmOtto.dbOtto
+    TimeoutAction = TARollback
+    TRParams.Strings = (
+      'write'
+      'nowait'
+      'rec_version'
+      'read_committed')
+    TPBMode = tpbDefault
+    Left = 232
+    Top = 144
   end
 end

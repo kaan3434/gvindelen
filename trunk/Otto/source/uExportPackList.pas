@@ -144,30 +144,26 @@ var
   OrderItemId: Variant;
   i: integer;
 begin
-  ndOrder:= ndProduct.NodeFindOrCreate('ORDERS').NodeFindOrCreate('ORDER');
-  try
-    dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
-    ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
-    dmOtto.OrderItemsGet(ndOrderItems, aOrderId, aTransaction);
-    ndOrderTaxs:= ndOrder.NodeFindOrCreate('ORDERTAXS');
-    dmOtto.OrderTaxsGet(ndOrderTaxs, aOrderId, aTransaction);
-    SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'DELIVERING');
-    dmOtto.ActionExecute(aTransaction, ndOrder);
+  ndOrder:= ndOrders.NodeNew('ORDER');
+  dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
+  ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
+  dmOtto.OrderItemsGet(ndOrderItems, aOrderId, aTransaction);
+  ndOrderTaxs:= ndOrder.NodeFindOrCreate('ORDERTAXS');
+  dmOtto.OrderTaxsGet(ndOrderTaxs, aOrderId, aTransaction);
+  SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'DELIVERING');
+  dmOtto.ActionExecute(aTransaction, ndOrder);
 
-    OrderItemList:= aTransaction.DefaultDatabase.QueryValue(
-      'select list(oi.orderitem_id) '+
-      'from orderitems oi '+
-      'inner join statuses s on (s.status_id = oi.status_id and s.status_sign in (''PACKED'', ''DELIVERING'')) '+
-      'where oi.order_id = :order_id',
-      0, [aOrderId], aTransaction);
-    while OrderItemList <> '' do
-    begin
-      OrderItemId:= TakeFront5(OrderItemList, ',');
-      ExportOrderItem(aTransaction, ndProduct, ndOrder, ndOrderItems, ndOrderTaxs,
-        tblCons, tblConsPi3, OrderItemId);
-    end;
-  finally
-    ndOrder.Clear;
+  OrderItemList:= aTransaction.DefaultDatabase.QueryValue(
+    'select list(oi.orderitem_id) '+
+    'from orderitems oi '+
+    'inner join statuses s on (s.status_id = oi.status_id and s.status_sign in (''PACKED'', ''DELIVERING'')) '+
+    'where oi.order_id = :order_id',
+    0, [aOrderId], aTransaction);
+  while OrderItemList <> '' do
+  begin
+    OrderItemId:= TakeFront5(OrderItemList, ',');
+    ExportOrderItem(aTransaction, ndProduct, ndOrder, ndOrderItems, ndOrderTaxs,
+      tblCons, tblConsPi3, OrderItemId);
   end;
 end;
 

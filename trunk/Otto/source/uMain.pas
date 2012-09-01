@@ -155,6 +155,7 @@ type
     lblBYR2EUR: TTBXLabelItem;
     actExportReturn: TAction;
     btnExportReturns: TTBXItem;
+    trnTimer: TpFIBTransaction;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -197,7 +198,6 @@ type
     procedure actReestrReturnsExecute(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure actExportReturnExecute(Sender: TObject);
-    procedure trnWriteBeforeStart(Sender: TObject);
   private
     { Private declarations }
   public
@@ -457,36 +457,36 @@ var
   StatusSign, FileName: string;
 begin
   sl := TStringList.Create;
-  trnWrite.StartTransaction;
+  trnTimer.StartTransaction;
   try
     ListFileName(sl, Path['Messages.In'] + '*.*', true);
     with dmOtto.spTemp do
     begin
-      Transaction := trnWrite;
+      Transaction := trnTimer;
       StoredProcName := 'MESSAGE_CREATE';
       Params.ClearValues;
       MessageCount := 0;
       for i := 0 to sl.Count - 1 do
       begin
         // проверяем зарегистрирован ли файл
-        MessageId:= trnWrite.DefaultDatabase.QueryValue(
+        MessageId:= trnTimer.DefaultDatabase.QueryValue(
           'select m.message_id from messages m where m.file_name = :file_name',
-          0, [ExtractFileName(sl[i])], trnWrite);
+          0, [ExtractFileName(sl[i])], trnTimer);
         // Если зарегистрирован, проверяем статус обработки
         if MessageId <> null then
         begin
-          StatusSign:= trnWrite.DefaultDatabase.QueryValue(
+          StatusSign:= trnTimer.DefaultDatabase.QueryValue(
             'select s.status_sign from messages m'+
             ' inner join statuses s on (s.status_id = m.status_id)'+
             ' where m.message_id = :message_id',
-            0, [MessageId], trnWrite);
+            0, [MessageId], trnTimer);
           if StatusSign = 'SUCCESS' then
             GvFile.MoveFile(sl[i], Path['Messages.Processed'] + FormatDateTime('YYYY.MM.DD\', Date));
         end
         else
         begin
           try
-            trnWrite.SetSavePoint('CreateMessage');
+            trnTimer.SetSavePoint('CreateMessage');
             FileName := AnsiToUtf8(Copy(sl[i], Length(Path['Messages.In']) + 1,
               Length(sl[i])));
             ParamByName('I_FILE_NAME').Value:= AnsiLowerCaseFileName(FileName);
@@ -495,19 +495,19 @@ begin
             ExecProc;
             if VarIsNull(ParamValue('O_MESSAGE_ID')) then
             begin
-              trnWrite.RollBackToSavePoint('CreateMessage');
+              trnTimer.RollBackToSavePoint('CreateMessage');
             end
             else
               Inc(MessageCount);
           except
-            trnWrite.RollBackToSavePoint('CreateMessage');
+            trnTimer.RollBackToSavePoint('CreateMessage');
             ForceDirectories(Path['Messages.Unknown']);
             GvFile.MoveFile(sl[i], Path['Messages.Unknown']);
           end;
         end;
       end;
     end;
-    trnWrite.Commit;
+    trnTimer.Commit;
     sbMain.SimpleText := Format('%u сообщений зарегистрировано',
       [MessageCount]);
   finally
@@ -830,12 +830,6 @@ end;
 procedure TMainForm.actExportReturnExecute(Sender: TObject);
 begin
   ExportReturns(trnWrite);
-end;
-
-procedure TMainForm.trnWriteBeforeStart(Sender: TObject);
-begin
-  if TpFIBTransaction(Sender).Active then
-    ShowMessage('Повторное открытие транзакции'); 
 end;
 
 end.
