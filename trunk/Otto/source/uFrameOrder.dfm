@@ -181,13 +181,18 @@ inherited FrameOrder: TFrameOrder
       '       s.status_id,'
       '       s.status_sign'
       'from taxplans p'
-      'inner join statuses s on (s.status_id = p.status_id)'
+      '  inner join statuses s on (s.status_id = p.status_id)'
       
-        'inner join flags2statuses f2s on (f2s.status_id = p.status_id an' +
-        'd f2s.flag_sign = '#39'ACTIVE'#39')'
+        '  inner join flags2statuses f2s on (f2s.status_id = p.status_id ' +
+        'and f2s.flag_sign = '#39'ACTIVE'#39')'
+      
+        '  inner join product2taxplan p2tp on (p2tp.taxplan_id = p.taxpla' +
+        'n_id)'
+      'where p2tp.product_id = :product_id'
       'order by s.status_id')
     Transaction = trnWrite
     Database = dmOtto.dbOtto
+    DataSource = dsProducts
     Left = 40
     Top = 344
   end
