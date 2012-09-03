@@ -68,6 +68,7 @@ ALTER TABLE PLACETYPES ADD CONSTRAINT PK_PLACETYPES PRIMARY KEY (PLACETYPE_CODE)
 ALTER TABLE PLUGINS ADD CONSTRAINT PK_PLUGINS PRIMARY KEY (PLUGIN_ID);
 ALTER TABLE PLUGIN_PARAMS ADD CONSTRAINT PK_PLUGIN_PARAMS PRIMARY KEY (PLUGIN_ID, PARAM_SIGN);
 ALTER TABLE PORTS ADD CONSTRAINT PK_PORTS PRIMARY KEY (PORT_ID);
+ALTER TABLE PRODUCT2TAXPLAN ADD CONSTRAINT PK_PRODUCT2TAXPLAN PRIMARY KEY (PRODUCT_ID, TAXPLAN_ID);
 ALTER TABLE PRODUCTS ADD CONSTRAINT PK_PRODUCTS PRIMARY KEY (PRODUCT_ID);
 ALTER TABLE PRODUCT_ATTRS ADD CONSTRAINT PK_PRODUCT_ATTRS PRIMARY KEY (OBJECT_ID, ATTR_ID);
 ALTER TABLE RECODES ADD CONSTRAINT PK_RECODES PRIMARY KEY (OBJECT_SIGN, ATTR_SIGN, ORIGINAL_VALUE);
@@ -189,6 +190,8 @@ ALTER TABLE PLACES ADD CONSTRAINT FK_PLACES_STATUS FOREIGN KEY (STATUS_ID) REFER
 ALTER TABLE PLUGIN_PARAMS ADD CONSTRAINT FK_PLUGIN_PARAMS_PLUGIN FOREIGN KEY (PLUGIN_ID) REFERENCES PLUGINS (PLUGIN_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE PORT2TEMPLATE ADD CONSTRAINT FK_PORT2TEMPLATE_PORT FOREIGN KEY (PORT_ID) REFERENCES PORTS (PORT_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE PORT2TEMPLATE ADD CONSTRAINT FK_PORT2TEMPLATE_TEMPLATE FOREIGN KEY (TEMPLATE_ID) REFERENCES TEMPLATES (TEMPLATE_ID) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE PRODUCT2TAXPLAN ADD CONSTRAINT FK_PRODUCT2TAXPLAN_PRODUCT_ID FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCTS (PRODUCT_ID) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE PRODUCT2TAXPLAN ADD CONSTRAINT FK_PRODUCT2TAXPLAN_TAXPLAN_ID FOREIGN KEY (TAXPLAN_ID) REFERENCES TAXPLANS (TAXPLAN_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE PRODUCTS ADD CONSTRAINT FK_PRODUCTS_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE PRODUCTS ADD CONSTRAINT FK_PRODUCTS_VENDOR FOREIGN KEY (VENDOR_ID) REFERENCES VENDORS (VENDOR_ID) ON UPDATE CASCADE;
 ALTER TABLE PRODUCT_ATTRS ADD CONSTRAINT FK_PRODUCT_ATTRS_ATTR FOREIGN KEY (ATTR_ID) REFERENCES ATTRS (ATTR_ID) ON UPDATE CASCADE;
@@ -270,8 +273,10 @@ ACTIVE AFTER INSERT POSITION 0
 AS
 begin
   update accounts a
-    set a.rest_eur = a.rest_eur + new.amount_eur, a.rest_date = current_timestamp
-    where a.account_id = new.account_id;
+  set a.rest_eur = (select sum(ar.rest_eur)
+    from accrests ar
+    where ar.account_id = new.account_id)
+  where a.account_id = new.account_id;
 end
 ^
 
@@ -1267,7 +1272,6 @@ declare variable V_ORDER_ID type of ID_ORDER;
 declare variable V_NOTES type of VALUE_ATTR;
 declare variable V_ACC_AMOUNT_EUR type of MONEY_EUR;
 declare variable V_ACC_BYR2EUR type of MONEY_BYR;
-declare variable V_ACC_AMOUNT_BYR type of MONEY_BYR;
 declare variable V_DELTA_EUR type of MONEY_EUR;
 declare variable V_AMOUNT_BYR type of MONEY_BYR;
 declare variable V_DELTA_BYR type of MONEY_BYR;
@@ -1282,74 +1286,35 @@ begin
     from v_order_summary os
     where os.order_id = :v_order_id
     into :v_amount_eur;
+
   v_amount_byr = 0;
 
-  -- esli pereplata po zayavke
-  if (v_amount_eur > 0) then
+  for select om.byr2eur, sum(om.amount_eur)
+        from ordermoneys om
+        where om.order_id = :v_order_id
+        group by om.byr2eur
+        having sum(om.amount_eur) > 0
+        order by max(om.ordermoney_id)
+        into :v_acc_byr2eur, :v_acc_amount_eur do
   begin
-    for select om.byr2eur, sum(om.amount_eur), sum(om.amount_byr)
-          from ordermoneys om
-          where om.order_id = :v_order_id
-          group by om.byr2eur
-          having sum(om.amount_eur) > 0
-          order by om.byr2eur
-          into :v_acc_byr2eur, :v_acc_amount_eur, :v_acc_amount_byr do
-    begin
-      if (v_amount_eur < v_acc_amount_eur) then
-      begin
-        v_delta_eur = v_amount_eur;
-        v_delta_byr = round(v_amount_eur * :v_acc_byr2eur, -1);
-      end
-      else
-      begin
-        v_delta_eur = v_acc_amount_eur;
-        v_delta_byr = v_acc_amount_byr;
-      end
-      v_amount_eur = v_amount_eur - v_delta_eur;
-      v_amount_byr = v_amount_byr + v_delta_byr;
-      select o_value from param_get(:i_param_id, 'NOTES') into :v_notes;
-      select o_pattern from param_fillpattern(:i_param_id, :v_notes) into :v_notes;
+    if (v_amount_eur < v_acc_amount_eur) then
+      v_delta_eur = v_amount_eur;
+    else
+      v_delta_eur = v_acc_amount_eur;
+    v_delta_byr = round(v_amount_eur * :v_acc_byr2eur, -1);
 
-      insert into accopers (account_id, amount_eur, byr2eur, order_id, notes)
-        values(:i_object_id, :v_delta_eur, :v_acc_byr2eur, :v_order_id, :v_notes);
-      insert into ordermoneys (account_id, amount_eur, byr2eur, order_id)
-        values(:i_object_id, -:v_delta_eur, :v_acc_byr2eur, :v_order_id);
-    end
+    v_amount_eur = v_amount_eur - v_delta_eur;
+    v_amount_byr = v_amount_byr + v_delta_byr;
+
+    select o_value from param_get(:i_param_id, 'NOTES') into :v_notes;
+    select o_pattern from param_fillpattern(:i_param_id, :v_notes) into :v_notes;
+
+    insert into accopers (account_id, amount_eur, byr2eur, order_id, notes, amount_byr)
+      values(:i_object_id, :v_delta_eur, :v_acc_byr2eur, :v_order_id, :v_notes, :v_delta_byr);
+    insert into ordermoneys (account_id, amount_eur, byr2eur, order_id, amount_byr)
+      values(:i_object_id, -:v_delta_eur, :v_acc_byr2eur, :v_order_id, -:v_delta_byr);
   end
-  else
-  -- esli po zayavke dolg
-  if (v_amount_eur < 0) then
-  begin
-    for select om.byr2eur, sum(om.amount_eur), sum(om.amount_byr)
-          from ordermoneys om
-          where om.order_id = :v_order_id
-          group by om.byr2eur
-          having sum(om.amount_eur) > 0
-          order by om.byr2eur desc
-          into :v_acc_byr2eur, :v_acc_amount_eur, :v_acc_amount_byr do
-    begin
-      if (v_amount_eur < v_acc_amount_eur) then
-      begin
-        v_delta_eur = v_amount_eur;
-        v_delta_byr = round(v_amount_eur * :v_acc_byr2eur, -1);
-      end
-      else
-      begin
-        v_delta_eur = v_acc_amount_eur;
-        v_delta_byr = v_acc_amount_byr;
-      end
-      v_amount_eur = v_amount_eur - v_delta_eur;
-      v_amount_byr = v_amount_byr + v_delta_byr;
 
-      select o_value from param_get(:i_param_id, 'NOTES') into :v_notes;
-      select o_pattern from param_fillpattern(:i_param_id, :v_notes) into :v_notes;
-
-      insert into accopers (account_id, amount_eur, byr2eur, order_id, notes)
-        values(:i_object_id, :v_delta_eur, :v_acc_byr2eur, :v_order_id, :v_notes);
-      insert into ordermoneys (account_id, amount_eur, byr2eur, order_id)
-        values(:i_object_id, -:v_delta_eur, :v_acc_byr2eur, :v_order_id);
-    end
-  end
   execute procedure param_set(:i_param_id, 'AMOUNT_BYR', :v_amount_byr);
 end^
 
@@ -1977,11 +1942,15 @@ begin
   select o_value from param_get(:i_param_id,  'NEW.STATE_SIGN') into :v_new_state_sign;
   if (:v_new_state_sign is not null) then
   begin
-    select s.status_id 
-      from statuses s
-      where s.object_sign = :i_object_sign
-        and s.status_sign = :v_new_state_sign
-      into :v_new_state_id;
+    v_updateable = 1;
+    if (upper(:v_new_state_sign) = 'NULL') then
+      v_new_state_id = null;
+    else
+      select s.status_id
+        from statuses s
+        where s.object_sign = :i_object_sign
+          and s.status_sign = :v_new_state_sign
+        into :v_new_state_id;
     execute procedure param_set(:i_param_id, 'STATE_ID', :v_new_state_id);
   end
 
@@ -2057,11 +2026,15 @@ begin
   select o_value from param_get(:i_param_id,  'NEW.STATE_SIGN') into :v_new_state_sign;
   if (:v_new_state_sign is not null) then
   begin
-    select s.status_id 
-      from statuses s
-      where s.object_sign = :i_object_sign
-        and s.status_sign = :v_new_state_sign
-      into :v_new_state_id;
+    v_updateable = 1;
+    if (upper(:v_new_state_sign) = 'NULL') then
+      v_new_state_id = null;
+    else
+      select s.status_id
+        from statuses s
+        where s.object_sign = :i_object_sign
+          and s.status_sign = :v_new_state_sign
+        into :v_new_state_id;
     execute procedure param_set(:i_param_id, 'STATE_ID', :v_new_state_id);
   end
 
@@ -3010,6 +2983,28 @@ begin
 end^
 
 
+CREATE OR ALTER PROCEDURE CLIENTS_KILL
+RETURNS (
+    O_CLIENT_ID TYPE OF ID_CLIENT)
+AS
+begin
+  for select first 1000 cl.client_id
+        from clients cl
+          left join orders o on (o.client_id = cl.client_id)
+        where o.order_id is null
+        into :o_client_id do
+  begin
+    begin
+      delete from clients where client_id = :o_client_id;
+    when any do
+      begin
+        suspend;
+      end
+    end
+  end
+end^
+
+
 CREATE OR ALTER PROCEDURE COUNTER_NEXTVAL (
     I_OBJECT_SIGN TYPE OF SIGN_OBJECT NOT NULL,
     I_COUNTER_SIGN TYPE OF SIGN_ATTR NOT NULL,
@@ -3279,6 +3274,15 @@ begin
   o_param_value = v_status_name;
   suspend;
 
+  o_param_name = 'KIND_NAME';
+  select r.recoded_value
+    from moneybacks mb
+      inner join recodes r on (r.object_sign = 'MONEYBACK'
+                           and r.attr_sign = 'KIND'
+                           and r.original_value = mb.kind)
+    where mb.moneyback_id = :i_object_id
+    into :o_param_value;
+  suspend;
 end^
 
 
