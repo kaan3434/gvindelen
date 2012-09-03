@@ -10,7 +10,7 @@ uses
   gsFileVersionInfo, dbf, pFIBErrorHandler, FIB, frxExportXLS, frxClass,
   frxExportPDF, frxFIBComponents, frxExportMail, IdBaseComponent,
   IdComponent, IdTCPConnection, IdTCPClient, IdExplicitTLSClientServerBase,
-  IdMessageClient, IdSMTPBase, IdSMTP, IdMessage;
+  IdMessageClient, IdSMTPBase, IdSMTP, IdMessage, frxExportXML;
 
 type
   TdmOtto = class(TDataModule)
@@ -42,9 +42,9 @@ type
     frxProtocol: TfrxReport;
     frxFIBComponents1: TfrxFIBComponents;
     frxPDFExport: TfrxPDFExport;
-    frxExportXLS: TfrxXLSExport;
     smtpMain: TIdSMTP;
     frxReport: TfrxReport;
+    frxExportXLS: TfrxXMLExport;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
     procedure dbOttoAfterConnect(Sender: TObject);

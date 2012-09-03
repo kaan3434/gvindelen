@@ -2,7 +2,13 @@
         <table class="imageWrapper"><tbody>
           <tr>
             <td>
-              <div class="content" style="background-color:#fff;margin:1px 0 0 1px;"><a href="http://otto-moda.by/catalogs/swf/venca/fs2012/index.html" title="Venca" target="_blank"><img src="assets/otto-by/images/catalogs2012_02/venca_fs2012.jpg" alt="Venca" width="102" height="125" border="0"/></a>
+              <div class="content" style="background-color:#fff;margin:1px 0 0 1px;">
+                <a href="http://otto-moda.by/catalogs/swf/venca_ru/ss2012/index.html" title="Venca" target="_blank"><img src="http://otto-moda.by/catalogs/swf/venca_ru/ss2012/images/page1_thumbnail.jpg" alt="Venca" width="110" height="134" border="0"/></a>
+              </div>
+              <div class="catalogIconBar">
+                <a href="http://otto-moda.by/catalogs/swf/venca_ru/ss2012/index.html" title="Смотреть" target="_blank"><img src="assets/otto-by/images/icons/small/icon_browse.gif" width=30 height="23" alt="Смотреть"/></a>
+                <a href="http://otto-moda.by/catalogs/swf/venca_ru/ss2012/files/venca_ru_ss2012.pdf" title="Скачать"><img src="assets/otto-by/images/icons/small/icon_download.gif" width=30 height="23" alt="Скачать"/></a>
+                <!--img src="assets/otto-by/images/icons/small/scheme1/order.gif" width=30 height="23" alt="Заказать"/-->
               </div>
             </td>
           </tr>
@@ -12,9 +18,6 @@
             <b>Venca</b>
             <p>Каталог испанской моды. Яркие, стильные и сексуальные модели женской и мужской одежды, аксессуаров, 
                средств по уходу за телом, нижнего белья. Цены в этом каталоге вас приятно удивят.</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p><a href="http://otto-moda.by/catalogs/swf/venca/fs2012/index.html" target="_blank">Посмотреть</a>, <a href="http://otto-moda.by/catalogs/pdf/venca_fs2012.pdf" target="_blank">Скачать</a>, <a href="">Заказать</a>
           </div>
         </div>
       </div>

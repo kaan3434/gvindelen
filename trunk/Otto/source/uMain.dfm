@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 358
-  Top = 163
+  Left = 270
+  Top = 119
   Width = 845
   Height = 512
   Caption = 'PPZ'
@@ -246,7 +246,7 @@ object MainForm: TMainForm
     Images = imgListMainMenu
     OnUpdate = alMainUpdate
     Left = 128
-    Top = 104
+    Top = 96
     object actExportOrders: TAction
       Category = 'Export'
       Caption = #1054#1090#1087#1088#1072#1074#1080#1090#1100' '#1079#1072#1103#1074#1082#1080
@@ -1249,7 +1249,7 @@ object MainForm: TMainForm
       end>
     PngOptions = [pngBlendOnDisabled, pngGrayscaleOnDisabled]
     Left = 192
-    Top = 184
+    Top = 200
     Bitmap = {}
   end
   object imgListTables: TPngImageList
@@ -1290,7 +1290,7 @@ object MainForm: TMainForm
       end>
     PngOptions = [pngBlendOnDisabled, pngGrayscaleOnDisabled]
     Left = 280
-    Top = 184
+    Top = 200
     Bitmap = {}
   end
   object imgListNSI: TPngImageList
@@ -1344,11 +1344,11 @@ object MainForm: TMainForm
       end>
     PngOptions = [pngBlendOnDisabled, pngGrayscaleOnDisabled]
     Left = 192
-    Top = 248
+    Top = 256
     Bitmap = {}
   end
   object mm1: TMainMenu
-    Left = 40
+    Left = 56
     Top = 200
     object File1: TMenuItem
       Caption = '&File'
@@ -1416,7 +1416,7 @@ object MainForm: TMainForm
     end
   end
   object actList1: TActionList
-    Left = 72
+    Left = 128
     Top = 200
     object actFileNew1: TAction
       Category = 'File'
@@ -1532,7 +1532,7 @@ object MainForm: TMainForm
       'rec_version'
       'read_committed')
     TPBMode = tpbDefault
-    Left = 272
+    Left = 248
     Top = 96
   end
   object frxPDFExport: TfrxPDFExport
@@ -1560,8 +1560,8 @@ object MainForm: TMainForm
   object tmrImportMessages: TTimer
     Interval = 60000
     OnTimer = tmrImportMessagesTimer
-    Left = 512
-    Top = 72
+    Left = 520
+    Top = 96
   end
   object scrptUpdate: TpFIBScripter
     Database = dmOtto.dbOtto
@@ -1571,14 +1571,14 @@ object MainForm: TMainForm
     Top = 344
   end
   object verInfo: TgsFileVersionInfo
-    Left = 16
-    Top = 64
+    Left = 56
+    Top = 96
   end
   object log1: TJvLogFile
     FileName = 'Error.Log'
     AutoSave = True
-    Left = 560
-    Top = 64
+    Left = 600
+    Top = 96
   end
   object imgListAlerts: TPngImageList
     DrawingStyle = dsTransparent
@@ -1835,7 +1835,7 @@ object MainForm: TMainForm
         Name = 'PngImage0'
         Background = clWindow
       end>
-    Left = 288
+    Left = 280
     Top = 256
     Bitmap = {}
   end
@@ -1894,7 +1894,7 @@ object MainForm: TMainForm
       'rec_version'
       'read_committed')
     TPBMode = tpbDefault
-    Left = 232
+    Left = 192
     Top = 144
   end
 end

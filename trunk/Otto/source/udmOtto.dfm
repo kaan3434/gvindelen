@@ -324,20 +324,6 @@ object dmOtto: TdmOtto
     Left = 352
     Top = 312
   end
-  object frxExportXLS: TfrxXLSExport
-    UseFileCache = True
-    ShowProgress = True
-    OverwritePrompt = False
-    ExportEMF = True
-    AsText = False
-    Background = True
-    FastExport = True
-    PageBreaks = True
-    EmptyLines = True
-    SuppressPageHeadersFooters = False
-    Left = 432
-    Top = 312
-  end
   object smtpMain: TIdSMTP
     SASLMechanisms = <>
     Left = 24
@@ -360,6 +346,20 @@ object dmOtto: TdmOtto
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
     Left = 280
+    Top = 312
+  end
+  object frxExportXLS: TfrxXMLExport
+    ShowDialog = False
+    UseFileCache = True
+    ShowProgress = True
+    OverwritePrompt = False
+    Background = True
+    Creator = 'FastReport'
+    EmptyLines = True
+    SuppressPageHeadersFooters = False
+    RowsCount = 0
+    Split = ssRPages
+    Left = 440
     Top = 312
   end
 end

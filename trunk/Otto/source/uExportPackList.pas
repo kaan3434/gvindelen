@@ -177,6 +177,7 @@ begin
     frxExportXLS.OverwritePrompt:= False;
     frxExportXLS.ShowDialog:= False;
     frxExportXLS.ShowProgress:= True;
+    frxExportXLS.ExportPageBreaks:= True;
     
     frxReport.LoadFromFile(Path['FastReport'] + 'packlistpi3.fr3');
     frxReport.Variables.Variables['PackList_No']:= Format('''%u''', [aPacklistNo]);

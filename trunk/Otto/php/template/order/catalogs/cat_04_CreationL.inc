@@ -2,7 +2,13 @@
         <table class="imageWrapper"><tbody>
           <tr>
             <td>
-              <div class="content" style="background-color:#fff;margin:1px 0 0 1px;"><a href="http://otto-moda.by/catalogs/swf/creation_l/fs2012/index.html" title="Alba Moda" target="_blank"><img src="assets/otto-by/images/catalogs2012_02/creation_l_fs2012.jpg" alt="Creation L" width="102" height="125" border="0"/></a>
+              <div class="content" style="background-color:#fff;margin:1px 0 0 1px;">
+                <a href="http://otto-moda.by/catalogs/swf/creation_l_ru/ss2012/index.html" title="Creation L" target="_blank"><img src="http://otto-moda.by/catalogs/swf/creation_l_ru/ss2012/images/page1_thumbnail.jpg" alt="Creation L" width="110" height="134" border="0"/></a>
+              </div>
+              <div class="catalogIconBar">
+                <a href="http://otto-moda.by/catalogs/swf/creation_l_ru/ss2012/index.html" title="Смотреть" target="_blank"><img src="assets/otto-by/images/icons/small/icon_browse.gif" width=30 height="23" alt="Смотреть"/></a>
+                <a href="http://otto-moda.by/catalogs/swf/creation_l_ru/ss2012/files/creation_l_ru_ss2012.pdf" title="Скачать"><img src="assets/otto-by/images/icons/small/icon_download.gif" width=30 height="23" alt="Скачать"/></a>
+                <!--img src="assets/otto-by/images/icons/small/scheme1/order.gif" width=30 height="23" alt="Заказать"/-->
               </div>
             </td>
           </tr>
@@ -13,8 +19,6 @@
             <p>В каталоге представлены различные коллекции модной актуальной верхней женской одежды, обуви, 
                аксессуаров. Непринужденная классика, бизнес-стиль, одежда для праздничных моментов, одежда для 
                отдыха и др.</p>
-            <p>&nbsp;</p>
-            <p><a href="http://otto-moda.by/catalogs/swf/creation_l/fs2012/index.html" target="_blank">Посмотреть</a>, <a href="http://otto-moda.by/catalogs/pdf/creation_l_fs2012.pdf" target="_blank">Скачать</a>, <a href="">Заказать</a>
           </div>
         </div>
       </div>
