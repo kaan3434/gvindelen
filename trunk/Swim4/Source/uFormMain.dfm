@@ -39,7 +39,6 @@ object Form1: TForm1
         Page = RibbonPage2
       end>
     TabIndex = 2
-    ExplicitWidth = 899
     DesignSize = (
       732
       143)
@@ -56,7 +55,6 @@ object Form1: TForm1
       Height = 93
       Caption = 'Scanner'
       Index = 0
-      ExplicitWidth = 898
       object tbScannerBookers: TRibbonGroup
         Left = 4
         Top = 3
@@ -74,7 +72,6 @@ object Form1: TForm1
       Height = 93
       Caption = 'Viewer'
       Index = 1
-      ExplicitWidth = 898
       object tbViewerBookers: TRibbonGroup
         Left = 4
         Top = 3
@@ -92,7 +89,6 @@ object Form1: TForm1
       Height = 93
       Caption = 'Teacher'
       Index = 2
-      ExplicitWidth = 898
       object RibbonGroup1: TRibbonGroup
         Left = 4
         Top = 3
@@ -111,8 +107,6 @@ object Form1: TForm1
     Height = 19
     Panels = <>
     SimplePanel = True
-    ExplicitTop = 489
-    ExplicitWidth = 899
   end
   object ProgressBar1: TProgressBar
     Left = 0
@@ -121,15 +115,12 @@ object Form1: TForm1
     Height = 17
     Align = alBottom
     TabOrder = 2
-    ExplicitTop = 472
-    ExplicitWidth = 899
   end
   object dckLeft: TSpTBXMultiDock
     Left = 0
     Top = 143
     Width = 9
     Height = 250
-    ExplicitHeight = 329
   end
   object dckRight: TSpTBXMultiDock
     Left = 723
@@ -137,8 +128,6 @@ object Form1: TForm1
     Width = 9
     Height = 250
     Position = dpxRight
-    ExplicitLeft = 890
-    ExplicitHeight = 329
   end
   object pnlSwims: TSpTBXDockablePanel
     Left = 9
@@ -149,8 +138,6 @@ object Form1: TForm1
     Align = alClient
     TabOrder = 5
     Options.Close = False
-    ExplicitWidth = 881
-    ExplicitHeight = 329
     object DBGridEh1: TDBGridEh
       Left = 0
       Top = 19
@@ -188,12 +175,6 @@ object Form1: TForm1
         end
         item
           EditButtons = <>
-          FieldName = 'AGAMER1_NAME'
-          Footers = <>
-          Width = 150
-        end
-        item
-          EditButtons = <>
           FieldName = 'BETKIND1_NAME'
           Footers = <>
           Width = 100
@@ -215,12 +196,6 @@ object Form1: TForm1
           FieldName = 'VALUTE1_SIGN'
           Footers = <>
           Width = 24
-        end
-        item
-          EditButtons = <>
-          FieldName = 'AGAMER2_NAME'
-          Footers = <>
-          Width = 150
         end
         item
           EditButtons = <>
