@@ -107,7 +107,6 @@ object Form1: TForm1
     Height = 19
     Panels = <>
     SimplePanel = True
-    ExplicitTop = 410
   end
   object ProgressBar1: TProgressBar
     Left = 0
@@ -116,7 +115,6 @@ object Form1: TForm1
     Height = 17
     Align = alBottom
     TabOrder = 2
-    ExplicitTop = 393
   end
   object pnlSwimItems: TSpTBXDockablePanel
     Left = 0
@@ -124,12 +122,10 @@ object Form1: TForm1
     Width = 732
     Height = 166
     Caption = #1042#1080#1083#1082#1080
-    Align = alClient
+    Align = alBottom
     TabOrder = 3
     Options.ButtonBorders = False
     Options.Close = False
-    ExplicitTop = 320
-    ExplicitHeight = 131
     object grdSwimItems: TDBGridEh
       Left = 0
       Top = 19
@@ -137,6 +133,8 @@ object Form1: TForm1
       Height = 147
       Align = alClient
       AutoFitColWidths = True
+      Color = clBtnFace
+      Constraints.MinHeight = 100
       DataGrouping.GroupLevels = <>
       DataSource = dmFormMain.dsSwimItems
       Flat = True
@@ -146,7 +144,10 @@ object Form1: TForm1
       FooterFont.Height = -11
       FooterFont.Name = 'Tahoma'
       FooterFont.Style = []
-      IndicatorOptions = [gioShowRowIndicatorEh]
+      ImeMode = imDisable
+      IndicatorOptions = [gioShowRecNoEh]
+      Options = [dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
+      OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghRowHighlight, dghDialogFind, dghShowRecNo, dghColumnResize, dghColumnMove, dghExtendVertLines]
       SumList.Active = True
       SumList.VirtualRecords = True
       TabOrder = 1
@@ -155,8 +156,12 @@ object Form1: TForm1
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = []
+      UseMultiTitle = True
+      VertScrollBar.SmoothStep = True
+      VertScrollBar.VisibleMode = sbAlwaysShowEh
       Columns = <
         item
+          Alignment = taCenter
           AutoFitColWidth = False
           EditButtons = <>
           FieldName = 'SWIM_ID'
@@ -164,6 +169,7 @@ object Form1: TForm1
           Visible = False
         end
         item
+          Alignment = taCenter
           AutoFitColWidth = False
           EditButtons = <>
           FieldName = 'AEVENT_ID'
@@ -171,131 +177,156 @@ object Form1: TForm1
           Visible = False
         end
         item
-          AutoFitColWidth = False
-          EditButtons = <>
-          FieldName = 'BOOKER1_ID'
-          Footers = <>
-          Visible = False
-        end
-        item
-          AutoFitColWidth = False
+          Alignment = taCenter
+          Color = clWindow
           EditButtons = <>
           FieldName = 'BOOKER1_NAME'
           Footers = <>
-          Width = 64
+          Title.Caption = '1-'#1077' '#1055#1083#1077#1095#1086'|'#1050#1086#1085#1090#1086#1088#1072
         end
         item
-          EditButtons = <>
-          FieldName = 'BETKIND1_SIGN'
-          Footers = <>
-          Visible = False
-        end
-        item
+          Alignment = taCenter
+          Color = clWindow
           EditButtons = <>
           FieldName = 'BETKIND1_NAME'
           Footers = <>
+          Title.Caption = '1-'#1077' '#1055#1083#1077#1095#1086'|'#1042#1080#1076
           Width = 100
         end
         item
-          EditButtons = <>
-          FieldName = 'BET1_ID'
-          Footers = <>
-          Visible = False
-        end
-        item
+          Alignment = taCenter
+          Color = clYellow
+          DisplayFormat = '##0.##'
           EditButtons = <>
           FieldName = 'KOEF1'
           Footers = <>
+          Title.Caption = '1-'#1077' '#1055#1083#1077#1095#1086'|'#1050#1086#1101#1092
+          Width = 44
         end
         item
+          Alignment = taCenter
+          Color = clMoneyGreen
+          DisplayFormat = '###,##0'
           EditButtons = <>
           FieldName = 'S1'
           Footers = <>
-          Visible = False
+          Title.Caption = '1-'#1077' '#1055#1083#1077#1095#1086'|Money|'#1057#1090#1072#1074#1082#1072
         end
         item
-          EditButtons = <>
-          FieldName = 'SV1'
-          Footers = <>
-        end
-        item
+          Alignment = taCenter
+          Color = clLime
+          DisplayFormat = '###,##0'
           EditButtons = <>
           FieldName = 'SP1'
           Footers = <>
+          Title.Caption = '1-'#1077' '#1055#1083#1077#1095#1086'|Money|'#1044#1086#1093#1086#1076
+        end
+        item
+          Alignment = taCenter
+          Color = clMoneyGreen
+          DisplayFormat = '###,##0.##'
+          EditButtons = <>
+          FieldName = 'SV1'
+          Footers = <>
+          Title.Caption = '1-'#1077' '#1055#1083#1077#1095#1086'|'#1042' '#1042#1072#1083#1102#1090#1077'|'#1057#1090#1072#1074#1082#1072
         end
         item
           Alignment = taCenter
           AutoFitColWidth = False
+          Color = clMoneyGreen
           EditButtons = <>
           FieldName = 'VALUTE1_SIGN'
           Footers = <>
-          Width = 25
+          Title.Caption = '1-'#1077' '#1055#1083#1077#1095#1086'|'#1042' '#1042#1072#1083#1102#1090#1077'|ISO'
+          Width = 30
         end
         item
+          Alignment = taCenter
           EditButtons = <>
-          FieldName = 'BOOKER2_ID'
+          FieldName = 'SVP1'
           Footers = <>
-          Visible = False
+          Title.Caption = '1-'#1077' '#1055#1083#1077#1095#1086'|'#1042' '#1042#1072#1083#1102#1090#1077'|'#1044#1086#1093#1086#1076
         end
         item
+          Alignment = taCenter
+          Color = clWindow
           EditButtons = <>
           FieldName = 'BOOKER2_NAME'
           Footers = <>
-          Width = 100
+          Title.Caption = '2-'#1077' '#1055#1083#1077#1095#1086'|'#1050#1086#1085#1090#1086#1088#1072
         end
         item
-          EditButtons = <>
-          FieldName = 'BETKIND2_SIGN'
-          Footers = <>
-          Visible = False
-        end
-        item
+          Alignment = taCenter
+          Color = clWindow
           EditButtons = <>
           FieldName = 'BETKIND2_NAME'
           Footers = <>
+          Title.Caption = '2-'#1077' '#1055#1083#1077#1095#1086'|'#1042#1080#1076
           Width = 100
         end
         item
-          EditButtons = <>
-          FieldName = 'BET2_ID'
-          Footers = <>
-          Visible = False
-        end
-        item
+          Alignment = taCenter
+          Color = clYellow
+          DisplayFormat = '##0.##'
           EditButtons = <>
           FieldName = 'KOEF2'
           Footers = <>
+          Title.Caption = '2-'#1077' '#1055#1083#1077#1095#1086'|'#1050#1086#1101#1092
+          Width = 44
         end
         item
+          Alignment = taCenter
+          Color = clMoneyGreen
+          DisplayFormat = '###,##0'
           EditButtons = <>
           FieldName = 'S2'
           Footers = <>
-          Visible = False
+          Title.Caption = '2-'#1077' '#1055#1083#1077#1095#1086'|Money|'#1057#1090#1072#1074#1082#1072
         end
         item
-          EditButtons = <>
-          FieldName = 'SV2'
-          Footers = <>
-        end
-        item
-          AutoFitColWidth = False
-          EditButtons = <>
-          FieldName = 'VALUTE2_SIGN'
-          Footers = <>
-          Width = 25
-        end
-        item
+          Alignment = taCenter
+          Color = clLime
+          DisplayFormat = '###,##0'
           EditButtons = <>
           FieldName = 'SP2'
           Footers = <>
+          Title.Caption = '2-'#1077' '#1055#1083#1077#1095#1086'|Money|'#1044#1086#1093#1086#1076
         end
         item
-          DisplayFormat = '#0.00%'
+          Alignment = taCenter
+          Color = clMoneyGreen
+          DisplayFormat = '###,##0.##'
+          EditButtons = <>
+          FieldName = 'SV2'
+          Footers = <>
+          Title.Caption = '2-'#1077' '#1055#1083#1077#1095#1086'|'#1042' '#1074#1072#1083#1102#1090#1077'|'#1057#1090#1072#1074#1082#1072
+        end
+        item
+          Alignment = taCenter
+          AutoFitColWidth = False
+          Color = clMoneyGreen
+          EditButtons = <>
+          FieldName = 'VALUTE2_SIGN'
+          Footers = <>
+          Title.Caption = '2-'#1077' '#1055#1083#1077#1095#1086'|'#1042' '#1074#1072#1083#1102#1090#1077'|ISO'
+          Width = 33
+        end
+        item
+          Alignment = taCenter
+          DisplayFormat = '###,##0.##'
+          EditButtons = <>
+          FieldName = 'SVP2'
+          Footers = <>
+          Title.Caption = '2-'#1077' '#1055#1083#1077#1095#1086'|'#1042' '#1074#1072#1083#1102#1090#1077'|'#1044#1086#1093#1086#1076
+        end
+        item
+          Alignment = taCenter
+          Color = clCream
+          DisplayFormat = '##0.0#%'
           EditButtons = <>
           FieldName = 'PROFICIT'
           Footers = <>
-          Title.Alignment = taCenter
-          Title.Caption = '%'
+          Title.Caption = #1055#1088#1086#1092#1080#1094#1080#1090
           Width = 44
         end>
       object RowDetailData: TRowDetailPanelControlEh
@@ -308,13 +339,10 @@ object Form1: TForm1
     Width = 732
     Height = 128
     Caption = #1057#1086#1073#1099#1090#1080#1103' '#1089' '#1074#1080#1083#1082#1072#1084#1080
-    Align = alTop
+    Align = alClient
     TabOrder = 4
     Options.ButtonBorders = False
     Options.Close = False
-    ExplicitLeft = 232
-    ExplicitTop = 216
-    ExplicitWidth = 160
     object grdSwimEvents: TDBGridEh
       Left = 0
       Top = 19
@@ -322,6 +350,8 @@ object Form1: TForm1
       Height = 109
       Align = alClient
       AutoFitColWidths = True
+      Color = clBtnFace
+      Constraints.MinHeight = 100
       DataGrouping.GroupLevels = <>
       DataSource = dmFormMain.dsSwimEvents
       Flat = True
@@ -331,37 +361,45 @@ object Form1: TForm1
       FooterFont.Height = -11
       FooterFont.Name = 'Tahoma'
       FooterFont.Style = []
-      IndicatorOptions = [gioShowRowIndicatorEh]
+      IndicatorOptions = [gioShowRecNoEh]
+      OddRowColor = clBtnFace
+      Options = [dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+      OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghRowHighlight, dghDialogFind, dghShowRecNo, dghColumnResize, dghColumnMove, dghExtendVertLines]
+      ReadOnly = True
       TabOrder = 1
       TitleFont.Charset = DEFAULT_CHARSET
       TitleFont.Color = clWindowText
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = []
+      VertScrollBar.SmoothStep = True
       Columns = <
         item
           AutoFitColWidth = False
+          Color = clWindow
           DisplayFormat = 'dd.mm hh:nn'
           EditButtons = <>
           FieldName = 'EVENT_DTM'
           Footers = <>
           Title.Alignment = taCenter
           Title.Caption = #1044#1072#1090#1072
-          Width = 64
         end
         item
+          Color = clWindow
           EditButtons = <>
           FieldName = 'AEVENT_ID'
           Footers = <>
           Visible = False
         end
         item
+          Color = clWindow
           EditButtons = <>
           FieldName = 'ASPORT_ID'
           Footers = <>
           Visible = False
         end
         item
+          Color = clWindow
           EditButtons = <>
           FieldName = 'ASPORT_NAME'
           Footers = <>
@@ -370,12 +408,14 @@ object Form1: TForm1
           Width = 100
         end
         item
+          Color = clWindow
           EditButtons = <>
           FieldName = 'ATOURNIR_ID'
           Footers = <>
           Visible = False
         end
         item
+          Color = clWindow
           EditButtons = <>
           FieldName = 'ATOURNIR_NAME'
           Footers = <>
@@ -384,12 +424,14 @@ object Form1: TForm1
           Width = 150
         end
         item
+          Color = clWindow
           EditButtons = <>
           FieldName = 'AGAMER1_ID'
           Footers = <>
           Visible = False
         end
         item
+          Color = clWindow
           EditButtons = <>
           FieldName = 'AGAMER1_NAME'
           Footers = <>
@@ -398,12 +440,14 @@ object Form1: TForm1
           Width = 100
         end
         item
+          Color = clWindow
           EditButtons = <>
           FieldName = 'AGAMER2_ID'
           Footers = <>
           Visible = False
         end
         item
+          Color = clWindow
           EditButtons = <>
           FieldName = 'AGAMER2_NAME'
           Footers = <>
@@ -413,6 +457,7 @@ object Form1: TForm1
         end
         item
           AutoFitColWidth = False
+          Color = clCream
           DisplayFormat = '##0.0%'
           EditButtons = <>
           FieldName = 'PROFICIT'
@@ -423,6 +468,7 @@ object Form1: TForm1
         end
         item
           AutoFitColWidth = False
+          Color = clCream
           EditButtons = <>
           FieldName = 'SWIM_CNT'
           Footers = <>
@@ -440,9 +486,7 @@ object Form1: TForm1
     Width = 732
     Height = 5
     Cursor = crSizeNS
-    Align = alTop
-    ExplicitLeft = 9
-    ExplicitWidth = 40
+    Align = alBottom
   end
   object actMngRibbon: TActionManager
     ActionBars = <
