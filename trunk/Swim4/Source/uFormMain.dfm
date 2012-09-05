@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 488
   Top = 110
   Caption = 'Form1'
-  ClientHeight = 429
+  ClientHeight = 478
   ClientWidth = 732
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -102,51 +102,43 @@ object Form1: TForm1
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 410
+    Top = 459
     Width = 732
     Height = 19
     Panels = <>
     SimplePanel = True
+    ExplicitTop = 410
   end
   object ProgressBar1: TProgressBar
     Left = 0
-    Top = 393
+    Top = 442
     Width = 732
     Height = 17
     Align = alBottom
     TabOrder = 2
+    ExplicitTop = 393
   end
-  object dckLeft: TSpTBXMultiDock
+  object pnlSwimItems: TSpTBXDockablePanel
     Left = 0
-    Top = 143
-    Width = 9
-    Height = 250
-  end
-  object dckRight: TSpTBXMultiDock
-    Left = 723
-    Top = 143
-    Width = 9
-    Height = 250
-    Position = dpxRight
-  end
-  object pnlSwims: TSpTBXDockablePanel
-    Left = 9
-    Top = 143
-    Width = 714
-    Height = 250
+    Top = 276
+    Width = 732
+    Height = 166
     Caption = #1042#1080#1083#1082#1080
     Align = alClient
-    TabOrder = 5
+    TabOrder = 3
+    Options.ButtonBorders = False
     Options.Close = False
-    object DBGridEh1: TDBGridEh
+    ExplicitTop = 320
+    ExplicitHeight = 131
+    object grdSwimItems: TDBGridEh
       Left = 0
       Top = 19
-      Width = 714
-      Height = 231
+      Width = 732
+      Height = 147
       Align = alClient
       AutoFitColWidths = True
       DataGrouping.GroupLevels = <>
-      DataSource = dsSwim
+      DataSource = dmFormMain.dsSwimItems
       Flat = True
       FooterColor = clWindow
       FooterFont.Charset = DEFAULT_CHARSET
@@ -166,12 +158,37 @@ object Form1: TForm1
       Columns = <
         item
           AutoFitColWidth = False
-          DisplayFormat = 'DD.MM HH:NN'
           EditButtons = <>
-          FieldName = 'EVENT_DTM'
+          FieldName = 'SWIM_ID'
           Footers = <>
-          Title.Alignment = taCenter
-          Title.Caption = #1044#1072#1090#1072
+          Visible = False
+        end
+        item
+          AutoFitColWidth = False
+          EditButtons = <>
+          FieldName = 'AEVENT_ID'
+          Footers = <>
+          Visible = False
+        end
+        item
+          AutoFitColWidth = False
+          EditButtons = <>
+          FieldName = 'BOOKER1_ID'
+          Footers = <>
+          Visible = False
+        end
+        item
+          AutoFitColWidth = False
+          EditButtons = <>
+          FieldName = 'BOOKER1_NAME'
+          Footers = <>
+          Width = 64
+        end
+        item
+          EditButtons = <>
+          FieldName = 'BETKIND1_SIGN'
+          Footers = <>
+          Visible = False
         end
         item
           EditButtons = <>
@@ -181,21 +198,56 @@ object Form1: TForm1
         end
         item
           EditButtons = <>
-          FieldName = 'KOEF1'
+          FieldName = 'BET1_ID'
           Footers = <>
-          Width = 50
+          Visible = False
         end
         item
           EditButtons = <>
-          FieldName = 'BOOKER1_NAME'
+          FieldName = 'KOEF1'
           Footers = <>
         end
         item
+          EditButtons = <>
+          FieldName = 'S1'
+          Footers = <>
+          Visible = False
+        end
+        item
+          EditButtons = <>
+          FieldName = 'SV1'
+          Footers = <>
+        end
+        item
+          EditButtons = <>
+          FieldName = 'SP1'
+          Footers = <>
+        end
+        item
+          Alignment = taCenter
           AutoFitColWidth = False
           EditButtons = <>
           FieldName = 'VALUTE1_SIGN'
           Footers = <>
-          Width = 24
+          Width = 25
+        end
+        item
+          EditButtons = <>
+          FieldName = 'BOOKER2_ID'
+          Footers = <>
+          Visible = False
+        end
+        item
+          EditButtons = <>
+          FieldName = 'BOOKER2_NAME'
+          Footers = <>
+          Width = 100
+        end
+        item
+          EditButtons = <>
+          FieldName = 'BETKIND2_SIGN'
+          Footers = <>
+          Visible = False
         end
         item
           EditButtons = <>
@@ -205,13 +257,24 @@ object Form1: TForm1
         end
         item
           EditButtons = <>
-          FieldName = 'KOEF2'
+          FieldName = 'BET2_ID'
           Footers = <>
-          Width = 50
+          Visible = False
         end
         item
           EditButtons = <>
-          FieldName = 'BOOKER2_NAME'
+          FieldName = 'KOEF2'
+          Footers = <>
+        end
+        item
+          EditButtons = <>
+          FieldName = 'S2'
+          Footers = <>
+          Visible = False
+        end
+        item
+          EditButtons = <>
+          FieldName = 'SV2'
           Footers = <>
         end
         item
@@ -219,17 +282,167 @@ object Form1: TForm1
           EditButtons = <>
           FieldName = 'VALUTE2_SIGN'
           Footers = <>
-          Width = 24
+          Width = 25
         end
         item
           EditButtons = <>
+          FieldName = 'SP2'
+          Footers = <>
+        end
+        item
+          DisplayFormat = '#0.00%'
+          EditButtons = <>
           FieldName = 'PROFICIT'
           Footers = <>
-          Width = 50
+          Title.Alignment = taCenter
+          Title.Caption = '%'
+          Width = 44
         end>
       object RowDetailData: TRowDetailPanelControlEh
       end
     end
+  end
+  object pnlSwimEvents: TSpTBXDockablePanel
+    Left = 0
+    Top = 143
+    Width = 732
+    Height = 128
+    Caption = #1057#1086#1073#1099#1090#1080#1103' '#1089' '#1074#1080#1083#1082#1072#1084#1080
+    Align = alTop
+    TabOrder = 4
+    Options.ButtonBorders = False
+    Options.Close = False
+    ExplicitLeft = 232
+    ExplicitTop = 216
+    ExplicitWidth = 160
+    object grdSwimEvents: TDBGridEh
+      Left = 0
+      Top = 19
+      Width = 732
+      Height = 109
+      Align = alClient
+      AutoFitColWidths = True
+      DataGrouping.GroupLevels = <>
+      DataSource = dmFormMain.dsSwimEvents
+      Flat = True
+      FooterColor = clWindow
+      FooterFont.Charset = DEFAULT_CHARSET
+      FooterFont.Color = clWindowText
+      FooterFont.Height = -11
+      FooterFont.Name = 'Tahoma'
+      FooterFont.Style = []
+      IndicatorOptions = [gioShowRowIndicatorEh]
+      TabOrder = 1
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'Tahoma'
+      TitleFont.Style = []
+      Columns = <
+        item
+          AutoFitColWidth = False
+          DisplayFormat = 'dd.mm hh:nn'
+          EditButtons = <>
+          FieldName = 'EVENT_DTM'
+          Footers = <>
+          Title.Alignment = taCenter
+          Title.Caption = #1044#1072#1090#1072
+          Width = 64
+        end
+        item
+          EditButtons = <>
+          FieldName = 'AEVENT_ID'
+          Footers = <>
+          Visible = False
+        end
+        item
+          EditButtons = <>
+          FieldName = 'ASPORT_ID'
+          Footers = <>
+          Visible = False
+        end
+        item
+          EditButtons = <>
+          FieldName = 'ASPORT_NAME'
+          Footers = <>
+          Title.Alignment = taCenter
+          Title.Caption = #1057#1087#1086#1088#1090
+          Width = 100
+        end
+        item
+          EditButtons = <>
+          FieldName = 'ATOURNIR_ID'
+          Footers = <>
+          Visible = False
+        end
+        item
+          EditButtons = <>
+          FieldName = 'ATOURNIR_NAME'
+          Footers = <>
+          Title.Alignment = taCenter
+          Title.Caption = #1058#1091#1088#1085#1080#1088
+          Width = 150
+        end
+        item
+          EditButtons = <>
+          FieldName = 'AGAMER1_ID'
+          Footers = <>
+          Visible = False
+        end
+        item
+          EditButtons = <>
+          FieldName = 'AGAMER1_NAME'
+          Footers = <>
+          Title.Alignment = taCenter
+          Title.Caption = #1048#1075#1088#1086#1082' 1'
+          Width = 100
+        end
+        item
+          EditButtons = <>
+          FieldName = 'AGAMER2_ID'
+          Footers = <>
+          Visible = False
+        end
+        item
+          EditButtons = <>
+          FieldName = 'AGAMER2_NAME'
+          Footers = <>
+          Title.Alignment = taCenter
+          Title.Caption = #1048#1075#1088#1086#1082' 2'
+          Width = 100
+        end
+        item
+          AutoFitColWidth = False
+          DisplayFormat = '##0.0%'
+          EditButtons = <>
+          FieldName = 'PROFICIT'
+          Footers = <>
+          Title.Alignment = taCenter
+          Title.Caption = '%'
+          Width = 44
+        end
+        item
+          AutoFitColWidth = False
+          EditButtons = <>
+          FieldName = 'SWIM_CNT'
+          Footers = <>
+          Title.Alignment = taCenter
+          Title.Caption = #1050#1086#1083'-'#1074#1086
+          Width = 40
+        end>
+      object RowDetailData: TRowDetailPanelControlEh
+      end
+    end
+  end
+  object SpTBXSplitter1: TSpTBXSplitter
+    Left = 0
+    Top = 271
+    Width = 732
+    Height = 5
+    Cursor = crSizeNS
+    Align = alTop
+    ExplicitLeft = 9
+    ExplicitWidth = 40
   end
   object actMngRibbon: TActionManager
     ActionBars = <
@@ -362,7 +575,7 @@ object Form1: TForm1
     Left = 560
     Top = 8
     Bitmap = {
-      494C010103000900580010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
+      494C0101030009005C0010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000101010F010101170101011A0101
       011A0101011A0101011A0101011A0101011A0101011A0101011A0101011A0101
@@ -508,7 +721,7 @@ object Form1: TForm1
     Left = 472
     Top = 8
     Bitmap = {
-      494C010103000900500020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010103000900540020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000101010F0101010F010101170101
       01170101011A0101011A0101011A0101011A0101011A0101011A0101011A0101
@@ -1042,11 +1255,5 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000}
-  end
-  object dsSwim: TDataSource
-    AutoEdit = False
-    DataSet = dmFormMain.qrySwim
-    Left = 616
-    Top = 8
   end
 end

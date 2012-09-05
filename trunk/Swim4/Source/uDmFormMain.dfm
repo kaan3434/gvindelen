@@ -7,60 +7,30 @@ inherited dmFormMain: TdmFormMain
     Active = True
     AfterStart = trnReadAfterStart
   end
-  object qrySwim: TpFIBDataSet
+  object qrySwimEvents: TpFIBDataSet
     SelectSQL.Strings = (
       'SELECT'
-      '    s.swim_id,'
-      '    s.aevent_id,'
-      '    e.event_dtm,'
-      '    e.agamer1_id,'
-      '    e.agamer2_id,'
-      '    s.booker1_id,'
-      '    b1.booker_name booker1_name,'
-      '    b1.valute_sign valute1_sign,'
-      '    b1.show_flg,'
-      '    s.betkind1_sign,'
-      '    bk1.betkind_name betkind1_name,'
-      '    s.bet1_id,'
-      '    bt1.koef koef1,'
-      '    s.s1,'
-      '    s.sv1,'
-      '    s.sp1,'
-      '    s.booker2_id,'
-      '    b2.booker_name booker2_name,'
-      '    b2.valute_sign valute2_sign,'
-      '    s.betkind2_sign,'
-      '    bk2.betkind_name betkind2_name,'
-      '    s.bet2_id,'
-      '    bt2.koef koef2,'
-      '    s.s2,'
-      '    s.sv2,'
-      '    s.sp2,'
-      '    s.proficit,'
-      '    s.ignore_flg'
-      'FROM swims s'
-      
-        '  inner join bookers b1 on (b1.booker_id = s.booker1_id and b1.s' +
-        'how_flg = 1)'
-      
-        '  inner join bookers b2 on (b2.booker_id = s.booker2_id and b2.s' +
-        'how_flg = 1)'
-      '  inner join aevents e on (e.aevent_id = s.aevent_id)'
-      '  inner join bets bt1 on (bt1.bet_id = s.bet1_id)'
-      
-        '  inner join betkinds bk1 on (bk1.betkind_sign = s.betkind1_sign' +
-        ')'
-      '  inner join bets bt2 on (bt2.bet_id = s.bet2_id)'
-      
-        '  inner join betkinds bk2 on (bk2.betkind_sign = s.betkind2_sign' +
-        ')'
-      'ORDER BY proficit desc, event_dtm'
-      '')
+      '    AEVENT_ID,'
+      '    ATOURNIR_ID,'
+      '    ATOURNIR_NAME,'
+      '    ASPORT_ID,'
+      '    ASPORT_NAME,'
+      '    EVENT_DTM,'
+      '    AGAMER1_ID,'
+      '    AGAMER1_NAME,'
+      '    AGAMER2_ID,'
+      '    AGAMER2_NAME,'
+      '    PROFICIT,'
+      '    SWIM_CNT'
+      'FROM'
+      '    V_SWIMEVENTS '
+      'ORDER BY PROFICIT desc')
+    Active = True
     Transaction = trnRead
     Database = dbSwim
     UpdateTransaction = trnWrite
-    Left = 128
-    Top = 168
+    Left = 152
+    Top = 224
   end
   object qryTemp: TpFIBDataSet
     Transaction = trnRead
@@ -79,5 +49,56 @@ inherited dmFormMain: TdmFormMain
     UpdateTransaction = trnWrite
     Left = 208
     Top = 104
+  end
+  object qrySwimItems: TpFIBDataSet
+    SelectSQL.Strings = (
+      'SELECT'
+      '    SWIM_ID,'
+      '    AEVENT_ID,'
+      '    BOOKER1_ID,'
+      '    BOOKER1_NAME,'
+      '    VALUTE1_SIGN,'
+      '    BETKIND1_SIGN,'
+      '    BETKIND1_NAME,'
+      '    BET1_ID,'
+      '    KOEF1,'
+      '    S1,'
+      '    SV1,'
+      '    SP1,'
+      '    BOOKER2_ID,'
+      '    BOOKER2_NAME,'
+      '    VALUTE2_SIGN,'
+      '    BETKIND2_SIGN,'
+      '    BETKIND2_NAME,'
+      '    BET2_ID,'
+      '    KOEF2,'
+      '    S2,'
+      '    SV2,'
+      '    SP2,'
+      '    PROFICIT'
+      'FROM'
+      '    V_SWIMITEMS '
+      'WHERE'
+      '  AEVENT_ID = :AEVENT_ID'
+      'ORDER BY PROFICIT desc')
+    Active = True
+    Transaction = trnRead
+    Database = dbSwim
+    UpdateTransaction = trnWrite
+    DataSource = dsSwimEvents
+    Left = 152
+    Top = 280
+  end
+  object dsSwimItems: TDataSource
+    AutoEdit = False
+    DataSet = qrySwimItems
+    Left = 232
+    Top = 280
+  end
+  object dsSwimEvents: TDataSource
+    AutoEdit = False
+    DataSet = qrySwimEvents
+    Left = 232
+    Top = 224
   end
 end

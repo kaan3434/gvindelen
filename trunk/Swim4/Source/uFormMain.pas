@@ -35,11 +35,11 @@ type
     actTeachTournirs: TAction;
     actTeachEvents: TAction;
     actRunThread: TAction;
-    dckLeft: TSpTBXMultiDock;
-    dckRight: TSpTBXMultiDock;
-    pnlSwims: TSpTBXDockablePanel;
-    DBGridEh1: TDBGridEh;
-    dsSwim: TDataSource;
+    pnlSwimItems: TSpTBXDockablePanel;
+    grdSwimItems: TDBGridEh;
+    pnlSwimEvents: TSpTBXDockablePanel;
+    grdSwimEvents: TDBGridEh;
+    SpTBXSplitter1: TSpTBXSplitter;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure actScanAllBookerExecute(Sender: TObject);

@@ -10,9 +10,12 @@ uses
 
 type
   TdmFormMain = class(TdmSwim)
-    qrySwim: TpFIBDataSet;
+    qrySwimEvents: TpFIBDataSet;
     qryTemp: TpFIBDataSet;
     qryBookers: TpFIBDataSet;
+    qrySwimItems: TpFIBDataSet;
+    dsSwimItems: TDataSource;
+    dsSwimEvents: TDataSource;
     procedure DataModuleCreate(Sender: TObject);
     procedure trnReadAfterStart(Sender: TObject);
   private
@@ -113,7 +116,8 @@ end;
 procedure TdmFormMain.trnReadAfterStart(Sender: TObject);
 begin
   inherited;
-  qrySwim.Open;
+  qrySwimEvents.Open;
+  qrySwimItems.Open;
 end;
 
 end.
