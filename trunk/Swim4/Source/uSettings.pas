@@ -37,13 +37,16 @@ type
     FBookers: TGvXmlNode;
     FScaners: TGvXmlNode;
     FServices: TGvXmlNode;
+    FCurrencies: TGvXmlNode;
   public
     constructor Create; override;
     function DefaultService: TGvXmlNode;
     function RandomService: TGvXmlNode;
+    function CurrencyStep(aValuteSign: string): Extended;
     property Services: TGvXmlNode read FServices;
     property Scaners: TGvXmlNode read FScaners;
     property Bookers: TGvXmlNode read FBookers;
+    property Currencies: TGvXmlNode read FCurrencies;
   end;
 
 var
@@ -128,9 +131,15 @@ begin
     FBookers.LoadFromString(xml.Root.Find('Bookers').WriteToString);
     FScaners:= Root.FindOrCreate('Scaners');
     FServices:= Root.FindOrCreate('Services');
+    FCurrencies:= Root.FindOrCreate('Currencies');
   finally
     xml.Free;
   end;
+end;
+
+function TScanSettings.CurrencyStep(aValuteSign: string): Extended;
+begin
+  result:= FCurrencies.Find('Currency', 'ValuteSign', aValuteSign).Attr['Step'].AsFloatDef(1);
 end;
 
 function TScanSettings.DefaultService: TGvXmlNode;

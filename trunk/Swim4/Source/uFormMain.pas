@@ -57,7 +57,7 @@ type
     actCalcMin: TAction;
     actCalcMax: TAction;
     cbValuteSign: TRibbonComboBox;
-    DBNumberEditEh1: TDBNumberEditEh;
+    edAmount: TDBNumberEditEh;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure actScanAllBookerExecute(Sender: TObject);
@@ -69,6 +69,7 @@ type
     procedure actTeachEventsExecute(Sender: TObject);
     procedure actRunThreadExecute(Sender: TObject);
     procedure actCalcMinExecute(Sender: TObject);
+    procedure cbValuteSignChange(Sender: TObject);
   private
     { Private declarations }
     FThreadList: TList;
@@ -103,6 +104,11 @@ begin
   actScanAllBooker.ImageIndex:= actScanAllBooker.ImageIndex + 1;
 end;
 
+procedure TForm1.cbValuteSignChange(Sender: TObject);
+begin
+  edAmount.Increment:= Settings.CurrencyStep(cbValuteSign.Text);
+end;
+
 function TForm1.AppendPngToImageList(aImageList: TImageList; aPngField: TBlobField): integer;
 var
   png: TPngImage;
@@ -132,9 +138,7 @@ end;
 
 procedure TForm1.actCalcMinExecute(Sender: TObject);
 begin
-  //
-  dm.calcSwimMax(cbValuteSign, Float
-  currency());
+  dm.calcSwimMax(cbValuteSign.Text, edAmount.Value);
 end;
 
 procedure TForm1.actDummyExecute(Sender: TObject);

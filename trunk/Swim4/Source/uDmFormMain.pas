@@ -26,8 +26,8 @@ type
     procedure ScanerOnOff(aBookerId: Integer; aChecked: Boolean);
     procedure Query2Xml(aXmlNode: TGvXmlNode; aSelectSQL, aRowNodeName, aMapping: string);
     procedure Bookers2Xml(aXmlNode: TGvXmlNode);
-    procedure calcSwimMin(aValuteSign: String; aAmount: Currency);
-    procedure calcSwimMax(aValuteSign: String; aAmount: Currency);
+    procedure calcSwimMin(aValuteSign: String; aAmount: Extended);
+    procedure calcSwimMax(aValuteSign: String; aAmount: Extended);
   end;
 
 implementation
@@ -45,7 +45,7 @@ begin
     'Booker', 'Booker_Id;Booker_Sign;Booker_Title=Booker_Name');
 end;
 
-procedure TdmFormMain.calcSwimMax(aValuteSign: String; aAmount: Currency);
+procedure TdmFormMain.calcSwimMax(aValuteSign: String; aAmount: Extended);
 begin
   trnWrite.StartTransaction;
   try
@@ -63,7 +63,7 @@ begin
   end;
 end;
 
-procedure TdmFormMain.calcSwimMin(aValuteSign: String; aAmount: Currency);
+procedure TdmFormMain.calcSwimMin(aValuteSign: String; aAmount: Extended);
 begin
 
 end;

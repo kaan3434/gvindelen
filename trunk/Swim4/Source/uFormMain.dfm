@@ -38,7 +38,6 @@ object Form1: TForm1
         Page = RibbonPage2
       end>
     TabIndex = 1
-    ExplicitTop = -6
     DesignSize = (
       732
       143)
@@ -47,6 +46,24 @@ object Form1: TForm1
       ActionManager = actMngRibbon
       OptionItems = <>
       RecentItems = <>
+    end
+    object RibbonPageScaner: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 731
+      Height = 93
+      Caption = 'Scanner'
+      Index = 0
+      object tbScannerBookers: TRibbonGroup
+        AlignWithMargins = True
+        Left = 4
+        Top = 3
+        Width = 123
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = 'Bookers'
+        GroupIndex = 0
+      end
     end
     object RibbonPage2: TRibbonPage
       Left = 0
@@ -74,7 +91,7 @@ object Form1: TForm1
         GroupIndex = 1
         object RibbonSpinEdit2: TRibbonSpinEdit
           Left = 50
-          Top = 2
+          Top = 3
           Width = 54
           Height = 22
           MaxValue = 0
@@ -84,7 +101,7 @@ object Form1: TForm1
         end
         object RibbonSpinEdit3: TRibbonSpinEdit
           Left = 50
-          Top = 24
+          Top = 25
           Width = 54
           Height = 22
           MaxValue = 0
@@ -94,7 +111,7 @@ object Form1: TForm1
         end
         object RibbonSpinEdit4: TRibbonSpinEdit
           Left = 50
-          Top = 46
+          Top = 47
           Width = 54
           Height = 22
           MaxValue = 0
@@ -104,7 +121,7 @@ object Form1: TForm1
         end
         object RibbonSpinEdit5: TRibbonSpinEdit
           Left = 150
-          Top = 2
+          Top = 3
           Width = 54
           Height = 22
           MaxValue = 0
@@ -112,24 +129,6 @@ object Form1: TForm1
           TabOrder = 3
           Value = 0
         end
-      end
-    end
-    object RibbonPageScaner: TRibbonPage
-      Left = 0
-      Top = 50
-      Width = 731
-      Height = 93
-      Caption = 'Scanner'
-      Index = 0
-      object tbScannerBookers: TRibbonGroup
-        AlignWithMargins = True
-        Left = 4
-        Top = 3
-        Width = 123
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = 'Bookers'
-        GroupIndex = 0
       end
     end
     object RibbonPage1: TRibbonPage
@@ -170,7 +169,7 @@ object Form1: TForm1
         AlignWithMargins = True
         Left = 270
         Top = 3
-        Width = 212
+        Width = 242
         Height = 86
         ActionManager = actMngRibbon
         Caption = #1056#1072#1079#1084#1077#1088' '#1089#1090#1072#1074#1086#1082
@@ -199,18 +198,22 @@ object Form1: TForm1
             'EUR'
             'USD')
           TabOrder = 1
+          Text = 'MNY'
+          OnChange = cbValuteSignChange
         end
-        object DBNumberEditEh1: TDBNumberEditEh
+        object edAmount: TDBNumberEditEh
           Left = 98
           Top = 24
-          Width = 68
+          Width = 98
           Height = 21
+          currency = False
           DecimalPlaces = 1
-          DisplayFormat = '### ##0,##'
+          DisplayFormat = '### ### ##0.##'
           EditButton.Style = ebsUpDownEh
           EditButton.Visible = True
           EditButtons = <>
           TabOrder = 2
+          Value = 12345678.900000000000000000
           Visible = True
         end
       end
@@ -610,7 +613,7 @@ object Form1: TForm1
     Left = 560
     Top = 8
     Bitmap = {
-      494C01010D006E00640010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
+      494C01010D006E00680010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1152,7 +1155,7 @@ object Form1: TForm1
     Left = 472
     Top = 8
     Bitmap = {
-      494C01010D0066005C0020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01010D006600600020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000008000000001002000000000000000
       0100000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -3399,8 +3402,8 @@ object Form1: TForm1
           item
             Caption = #1057#1091#1084#1084#1072
             CommandStyle = csControl
-            CommandProperties.Width = 120
-            CommandProperties.ContainedControl = DBNumberEditEh1
+            CommandProperties.Width = 150
+            CommandProperties.ContainedControl = edAmount
             CommandProperties.LabelWidth = 50
           end
           item
