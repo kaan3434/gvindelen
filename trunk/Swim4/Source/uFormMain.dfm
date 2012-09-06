@@ -38,7 +38,7 @@ object Form1: TForm1
         Caption = 'Teacher'
         Page = RibbonPage2
       end>
-    TabIndex = 2
+    TabIndex = 1
     DesignSize = (
       732
       143)
@@ -48,6 +48,23 @@ object Form1: TForm1
       OptionItems = <>
       RecentItems = <>
     end
+    object RibbonPage2: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 731
+      Height = 93
+      Caption = 'Teacher'
+      Index = 2
+      object RibbonGroup1: TRibbonGroup
+        Left = 4
+        Top = 3
+        Width = 100
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = 'Categories'
+        GroupIndex = 0
+      end
+    end
     object RibbonPageScaner: TRibbonPage
       Left = 0
       Top = 50
@@ -56,6 +73,7 @@ object Form1: TForm1
       Caption = 'Scanner'
       Index = 0
       object tbScannerBookers: TRibbonGroup
+        AlignWithMargins = True
         Left = 4
         Top = 3
         Width = 123
@@ -81,22 +99,58 @@ object Form1: TForm1
         Caption = 'Bookers'
         GroupIndex = 0
       end
-    end
-    object RibbonPage2: TRibbonPage
-      Left = 0
-      Top = 50
-      Width = 731
-      Height = 93
-      Caption = 'Teacher'
-      Index = 2
-      object RibbonGroup1: TRibbonGroup
-        Left = 4
+      object RibbonGroup2: TRibbonGroup
+        Left = 56
         Top = 3
-        Width = 100
+        Width = 143
         Height = 86
         ActionManager = actMngRibbon
-        Caption = 'Categories'
-        GroupIndex = 0
+        Caption = #1048#1075#1085#1086#1088#1099' 1-'#1075#1086' '#1055#1083#1077#1095#1072
+        GroupIndex = 1
+      end
+      object RibbonGroup3: TRibbonGroup
+        Left = 201
+        Top = 3
+        Width = 143
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = #1048#1075#1085#1086#1088#1099' 2-'#1075#1086' '#1087#1083#1077#1095#1072
+        GroupIndex = 2
+      end
+      object RibbonGroup4: TRibbonGroup
+        AlignWithMargins = True
+        Left = 346
+        Top = 3
+        Width = 158
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = #1056#1072#1089#1089#1095#1077#1090' '#1089#1090#1072#1074#1086#1082
+        GroupIndex = 3
+        object rcbValuteSign: TRibbonComboBox
+          Left = 51
+          Top = 6
+          Width = 89
+          Height = 15
+          Items.Strings = (
+            'MNY'
+            'BYR'
+            'RUR'
+            'USD'
+            'EUR')
+          TabOrder = 0
+          Text = 'MNY'
+        end
+        object RibbonSpinEdit1: TRibbonSpinEdit
+          AlignWithMargins = True
+          Left = 49
+          Top = 24
+          Width = 105
+          Height = 22
+          MaxValue = 0
+          MinValue = 0
+          TabOrder = 1
+          Value = 0
+        end
       end
     end
   end
@@ -568,6 +622,46 @@ object Form1: TForm1
             CommandProperties.ButtonSize = bsLarge
           end>
         ActionBar = RibbonGroup1
+      end
+      item
+        Items = <
+          item
+            Action = actIgnoreBet1
+            CommandProperties.ButtonSize = bsLarge
+          end
+          item
+            Action = actIgnoreEvent1
+            CommandProperties.ButtonSize = bsLarge
+          end>
+        ActionBar = RibbonGroup2
+      end
+      item
+        Items = <
+          item
+            ChangesAllowed = []
+            Action = actIgnoreBet2
+            CommandProperties.ButtonSize = bsLarge
+          end
+          item
+            Action = actIgnoreEvent2
+            CommandProperties.ButtonSize = bsLarge
+          end>
+        ActionBar = RibbonGroup3
+      end
+      item
+        Items = <
+          item
+            Caption = #1042#1072#1083#1102#1090#1072
+            CommandStyle = csComboBox
+            CommandProperties.Width = 150
+          end
+          item
+            Caption = #1057#1091#1084#1084#1072'  '
+            CommandStyle = csControl
+            CommandProperties.Width = 150
+            CommandProperties.ContainedControl = RibbonSpinEdit1
+          end>
+        ActionBar = RibbonGroup4
       end>
     LargeImages = imgListRibbonLarge
     Images = imgListRibbon
@@ -612,6 +706,22 @@ object Form1: TForm1
       ImageIndex = 0
       OnExecute = actRunThreadExecute
     end
+    object actIgnoreBet1: TAction
+      Category = 'Viewer'
+      Caption = #1050#1086#1101#1092#1092#1080#1094#1080#1077#1085#1090
+    end
+    object actIgnoreBet2: TAction
+      Category = 'Viewer'
+      Caption = #1050#1086#1101#1092#1092#1080#1094#1080#1077#1085#1090
+    end
+    object actIgnoreEvent1: TAction
+      Category = 'Viewer'
+      Caption = #1057#1086#1073#1099#1090#1080#1077
+    end
+    object actIgnoreEvent2: TAction
+      Category = 'Viewer'
+      Caption = #1057#1086#1073#1099#1090#1080#1077
+    end
   end
   object imgListRibbon: TImageList
     ColorDepth = cd32Bit
@@ -619,7 +729,7 @@ object Form1: TForm1
     Left = 560
     Top = 8
     Bitmap = {
-      494C0101030009005C0010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
+      494C010103000900640010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000101010F010101170101011A0101
       011A0101011A0101011A0101011A0101011A0101011A0101011A0101011A0101
@@ -765,7 +875,7 @@ object Form1: TForm1
     Left = 472
     Top = 8
     Bitmap = {
-      494C010103000900540020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C0101030009005C0020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000101010F0101010F010101170101
       01170101011A0101011A0101011A0101011A0101011A0101011A0101011A0101

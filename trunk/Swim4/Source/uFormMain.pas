@@ -11,7 +11,7 @@ uses
   Vcl.StdCtrls, Vcl.ExtCtrls, DBGridEhGrouping, Vcl.ComCtrls, GridsEh, DBGridEh,
   Data.DB, Soap.InvokeRegistry, Soap.Rio, Soap.SOAPHTTPClient, ToolCtrlsEh,
   GvVars, GvXml, JvComponentBase, JvMTComponents, uDmFormMain, uDmSwim, TB2Dock,
-  SpTBXDkPanels, SpTBXItem, FIBDataSet, pFIBDataSet;
+  SpTBXDkPanels, SpTBXItem, FIBDataSet, pFIBDataSet, Vcl.RibbonActnCtrls;
 
 type
   TForm1 = class(TForm)
@@ -40,6 +40,15 @@ type
     pnlSwimEvents: TSpTBXDockablePanel;
     grdSwimEvents: TDBGridEh;
     SpTBXSplitter1: TSpTBXSplitter;
+    actIgnoreBet1: TAction;
+    actIgnoreBet2: TAction;
+    actIgnoreEvent1: TAction;
+    actIgnoreEvent2: TAction;
+    RibbonGroup2: TRibbonGroup;
+    RibbonGroup3: TRibbonGroup;
+    RibbonGroup4: TRibbonGroup;
+    rcbValuteSign: TRibbonComboBox;
+    RibbonSpinEdit1: TRibbonSpinEdit;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure actScanAllBookerExecute(Sender: TObject);
