@@ -11,44 +11,53 @@ uses
   Vcl.StdCtrls, Vcl.ExtCtrls, DBGridEhGrouping, Vcl.ComCtrls, GridsEh, DBGridEh,
   Data.DB, Soap.InvokeRegistry, Soap.Rio, Soap.SOAPHTTPClient, ToolCtrlsEh,
   GvVars, GvXml, JvComponentBase, JvMTComponents, uDmFormMain, uDmSwim, TB2Dock,
-  SpTBXDkPanels, SpTBXItem, FIBDataSet, pFIBDataSet, Vcl.RibbonActnCtrls;
+  SpTBXDkPanels, SpTBXItem, FIBDataSet, pFIBDataSet, Vcl.RibbonActnCtrls,
+  Vcl.Mask, DBCtrlsEh;
 
 type
   TForm1 = class(TForm)
     Ribbon: TRibbon;
-    actMngRibbon: TActionManager;
     RibbonPageScaner: TRibbonPage;
     RibbonApplicationMenuBar1: TRibbonApplicationMenuBar;
-    actScanAllBooker: TAction;
     RibbonPage1: TRibbonPage;
     imgListRibbon: TImageList;
     imgListRibbonLarge: TImageList;
     tbViewerBookers: TRibbonGroup;
     tbScannerBookers: TRibbonGroup;
-    actNeedShow: TAction;
     StatusBar1: TStatusBar;
     ProgressBar1: TProgressBar;
-    actDummy: TAction;
-    actNeedScan: TAction;
     RibbonPage2: TRibbonPage;
     RibbonGroup1: TRibbonGroup;
-    actTeachTournirs: TAction;
-    actTeachEvents: TAction;
-    actRunThread: TAction;
     pnlSwimItems: TSpTBXDockablePanel;
     grdSwimItems: TDBGridEh;
     pnlSwimEvents: TSpTBXDockablePanel;
     grdSwimEvents: TDBGridEh;
     SpTBXSplitter1: TSpTBXSplitter;
+    RibbonGroup2: TRibbonGroup;
+    RibbonGroup3: TRibbonGroup;
+    RibbonGroup4: TRibbonGroup;
+    eAmount: TRibbonSpinEdit;
+    RibbonGroup5: TRibbonGroup;
+    RibbonSpinEdit2: TRibbonSpinEdit;
+    RibbonSpinEdit3: TRibbonSpinEdit;
+    RibbonSpinEdit4: TRibbonSpinEdit;
+    RibbonSpinEdit5: TRibbonSpinEdit;
+    actMngRibbon: TActionManager;
+    actScanAllBooker: TAction;
+    actNeedShow: TAction;
+    actDummy: TAction;
+    actNeedScan: TAction;
+    actTeachTournirs: TAction;
+    actTeachEvents: TAction;
+    actRunThread: TAction;
     actIgnoreBet1: TAction;
     actIgnoreBet2: TAction;
     actIgnoreEvent1: TAction;
     actIgnoreEvent2: TAction;
-    RibbonGroup2: TRibbonGroup;
-    RibbonGroup3: TRibbonGroup;
-    RibbonGroup4: TRibbonGroup;
-    rcbValuteSign: TRibbonComboBox;
-    RibbonSpinEdit1: TRibbonSpinEdit;
+    actCalcMin: TAction;
+    actCalcMax: TAction;
+    cbValuteSign: TRibbonComboBox;
+    DBNumberEditEh1: TDBNumberEditEh;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure actScanAllBookerExecute(Sender: TObject);
@@ -59,6 +68,7 @@ type
     procedure actTeachTournirsExecute(Sender: TObject);
     procedure actTeachEventsExecute(Sender: TObject);
     procedure actRunThreadExecute(Sender: TObject);
+    procedure actCalcMinExecute(Sender: TObject);
   private
     { Private declarations }
     FThreadList: TList;
@@ -120,6 +130,13 @@ begin
   end;
 end;
 
+procedure TForm1.actCalcMinExecute(Sender: TObject);
+begin
+  //
+  dm.calcSwimMax(cbValuteSign, Float
+  currency());
+end;
+
 procedure TForm1.actDummyExecute(Sender: TObject);
 begin
   //Dummy
@@ -169,7 +186,7 @@ var
   actClientItem: TActionClientItem;
   act: TAction;
 begin
-  actClientItem:= aGroup.Items.Add;
+  actClientItem:= TActionClientItem(aGroup.Items.Insert(0));
   with actClientItem do
   begin
     act:= TAction.Create(Self);
@@ -189,7 +206,7 @@ procedure TForm1.CreateBookerButtons;
 begin
   with dm.qryTemp do
   begin
-    SelectSQL.Text:= 'select * from bookers order by booker_id';
+    SelectSQL.Text:= 'select * from bookers order by booker_id desc';
     Open;
     while not Eof do
     begin

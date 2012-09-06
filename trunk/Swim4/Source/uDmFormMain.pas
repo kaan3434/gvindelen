@@ -26,6 +26,8 @@ type
     procedure ScanerOnOff(aBookerId: Integer; aChecked: Boolean);
     procedure Query2Xml(aXmlNode: TGvXmlNode; aSelectSQL, aRowNodeName, aMapping: string);
     procedure Bookers2Xml(aXmlNode: TGvXmlNode);
+    procedure calcSwimMin(aValuteSign: String; aAmount: Currency);
+    procedure calcSwimMax(aValuteSign: String; aAmount: Currency);
   end;
 
 implementation
@@ -41,6 +43,29 @@ procedure TdmFormMain.Bookers2Xml(aXmlNode: TGvXmlNode);
 begin
   Query2Xml(aXmlNode, 'select booker_id, booker_sign, booker_name from bookers order by booker_id',
     'Booker', 'Booker_Id;Booker_Sign;Booker_Title=Booker_Name');
+end;
+
+procedure TdmFormMain.calcSwimMax(aValuteSign: String; aAmount: Currency);
+begin
+  trnWrite.StartTransaction;
+  try
+    with spTemp do
+    begin
+      StoredProcName:= 'SWIM_MONEY';
+      Params.ClearValues;
+      Params.ParamByName('I_VALUTE_SIGN').AsString := aValuteSign;
+      Params.ParamByName('I_AMOUNT').AsCurrency := aAmount;
+      ExecProc;
+    end;
+    trnWrite.Commit;
+  except
+    trnWrite.Rollback;
+  end;
+end;
+
+procedure TdmFormMain.calcSwimMin(aValuteSign: String; aAmount: Currency);
+begin
+
 end;
 
 procedure TdmFormMain.DataModuleCreate(Sender: TObject);
