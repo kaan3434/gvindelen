@@ -17,26 +17,24 @@ uses
 type
   TForm1 = class(TForm)
     Ribbon: TRibbon;
-    RibbonPageScaner: TRibbonPage;
+    rpScanner: TRibbonPage;
     RibbonApplicationMenuBar1: TRibbonApplicationMenuBar;
-    RibbonPage1: TRibbonPage;
+    rpViewer: TRibbonPage;
     imgListRibbon: TImageList;
     imgListRibbonLarge: TImageList;
     tbViewerBookers: TRibbonGroup;
     tbScannerBookers: TRibbonGroup;
     StatusBar1: TStatusBar;
     ProgressBar1: TProgressBar;
-    RibbonPage2: TRibbonPage;
+    rpTeacher: TRibbonPage;
     RibbonGroup1: TRibbonGroup;
     pnlSwimItems: TSpTBXDockablePanel;
     grdSwimItems: TDBGridEh;
     pnlSwimEvents: TSpTBXDockablePanel;
     grdSwimEvents: TDBGridEh;
     SpTBXSplitter1: TSpTBXSplitter;
-    RibbonGroup2: TRibbonGroup;
-    RibbonGroup3: TRibbonGroup;
-    RibbonGroup4: TRibbonGroup;
-    eAmount: TRibbonSpinEdit;
+    rgIgnore1: TRibbonGroup;
+    rgIgnore2: TRibbonGroup;
     RibbonGroup5: TRibbonGroup;
     RibbonSpinEdit2: TRibbonSpinEdit;
     RibbonSpinEdit3: TRibbonSpinEdit;
@@ -54,10 +52,15 @@ type
     actIgnoreBet2: TAction;
     actIgnoreEvent1: TAction;
     actIgnoreEvent2: TAction;
-    actCalcMin: TAction;
-    actCalcMax: TAction;
-    cbValuteSign: TRibbonComboBox;
-    edAmount: TDBNumberEditEh;
+    actCalcMinMNY: TAction;
+    actCalcMaxMNY: TAction;
+    rgBetAmount: TRibbonGroup;
+    actSetCalcValuteBYR: TAction;
+    actSetCalcValuteEUR: TAction;
+    actSetCalcValuteRUR: TAction;
+    actSetCalcValuteUSD: TAction;
+    edAmount: TRibbonSpinEdit;
+    actSetCalcValuteMNY: TAction;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure actScanAllBookerExecute(Sender: TObject);
@@ -68,8 +71,9 @@ type
     procedure actTeachTournirsExecute(Sender: TObject);
     procedure actTeachEventsExecute(Sender: TObject);
     procedure actRunThreadExecute(Sender: TObject);
-    procedure actCalcMinExecute(Sender: TObject);
+    procedure actCalcMinMNYExecute(Sender: TObject);
     procedure cbValuteSignChange(Sender: TObject);
+    procedure actSetCalcValuteExecute(Sender: TObject);
   private
     { Private declarations }
     FThreadList: TList;
@@ -106,7 +110,7 @@ end;
 
 procedure TForm1.cbValuteSignChange(Sender: TObject);
 begin
-  edAmount.Increment:= Settings.CurrencyStep(cbValuteSign.Text);
+//  edAmount.Increment:= Settings.CurrencyStep(cbValuteSign.Text);
 end;
 
 function TForm1.AppendPngToImageList(aImageList: TImageList; aPngField: TBlobField): integer;
@@ -136,9 +140,9 @@ begin
   end;
 end;
 
-procedure TForm1.actCalcMinExecute(Sender: TObject);
+procedure TForm1.actCalcMinMNYExecute(Sender: TObject);
 begin
-  dm.calcSwimMax(cbValuteSign.Text, edAmount.Value);
+//  dm.calcSwimMax(cbValuteSign.Text, edAmount.Value);
 end;
 
 procedure TForm1.actDummyExecute(Sender: TObject);
@@ -161,6 +165,17 @@ procedure TForm1.actScanAllBookerExecute(Sender: TObject);
 begin
   dm.MakeSportsRequests;
   StartThreads;
+end;
+
+procedure TForm1.actSetCalcValuteExecute(Sender: TObject);
+var
+  SMenu: TActionClientItem;
+  Action: TAction;
+begin
+//  rgBetAmount.Items.
+//  SMenu:= actMngRibbon.FindItemByAction(Action).ParentItem;
+//  ShowMessage(actMngRibbon.FindItemByAction(Action).p.Caption);
+//  SMenu.ParentItem.a.Action:= Action;
 end;
 
 procedure TForm1.actTeachEventsExecute(Sender: TObject);

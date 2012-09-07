@@ -27,15 +27,15 @@ object Form1: TForm1
     Tabs = <
       item
         Caption = 'Scanner'
-        Page = RibbonPageScaner
+        Page = rpScanner
       end
       item
         Caption = 'Viewer'
-        Page = RibbonPage1
+        Page = rpViewer
       end
       item
         Caption = 'Teacher'
-        Page = RibbonPage2
+        Page = rpTeacher
       end>
     TabIndex = 1
     DesignSize = (
@@ -47,25 +47,7 @@ object Form1: TForm1
       OptionItems = <>
       RecentItems = <>
     end
-    object RibbonPageScaner: TRibbonPage
-      Left = 0
-      Top = 50
-      Width = 731
-      Height = 93
-      Caption = 'Scanner'
-      Index = 0
-      object tbScannerBookers: TRibbonGroup
-        AlignWithMargins = True
-        Left = 4
-        Top = 3
-        Width = 123
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = 'Bookers'
-        GroupIndex = 0
-      end
-    end
-    object RibbonPage2: TRibbonPage
+    object rpTeacher: TRibbonPage
       Left = 0
       Top = 50
       Width = 731
@@ -91,7 +73,7 @@ object Form1: TForm1
         GroupIndex = 1
         object RibbonSpinEdit2: TRibbonSpinEdit
           Left = 50
-          Top = 3
+          Top = 2
           Width = 54
           Height = 22
           MaxValue = 0
@@ -101,7 +83,7 @@ object Form1: TForm1
         end
         object RibbonSpinEdit3: TRibbonSpinEdit
           Left = 50
-          Top = 25
+          Top = 24
           Width = 54
           Height = 22
           MaxValue = 0
@@ -111,7 +93,7 @@ object Form1: TForm1
         end
         object RibbonSpinEdit4: TRibbonSpinEdit
           Left = 50
-          Top = 47
+          Top = 46
           Width = 54
           Height = 22
           MaxValue = 0
@@ -121,7 +103,7 @@ object Form1: TForm1
         end
         object RibbonSpinEdit5: TRibbonSpinEdit
           Left = 150
-          Top = 3
+          Top = 2
           Width = 54
           Height = 22
           MaxValue = 0
@@ -131,7 +113,25 @@ object Form1: TForm1
         end
       end
     end
-    object RibbonPage1: TRibbonPage
+    object rpScanner: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 731
+      Height = 93
+      Caption = 'Scanner'
+      Index = 0
+      object tbScannerBookers: TRibbonGroup
+        AlignWithMargins = True
+        Left = 4
+        Top = 3
+        Width = 123
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = 'Bookers'
+        GroupIndex = 0
+      end
+    end
+    object rpViewer: TRibbonPage
       Left = 0
       Top = 50
       Width = 731
@@ -147,7 +147,7 @@ object Form1: TForm1
         Caption = 'Bookers'
         GroupIndex = 0
       end
-      object RibbonGroup2: TRibbonGroup
+      object rgIgnore1: TRibbonGroup
         Left = 56
         Top = 3
         Width = 105
@@ -156,7 +156,7 @@ object Form1: TForm1
         Caption = #1048#1075#1085#1086#1088#1099' 1-'#1075#1086' '#1055#1083#1077#1095#1072
         GroupIndex = 1
       end
-      object RibbonGroup3: TRibbonGroup
+      object rgIgnore2: TRibbonGroup
         Left = 163
         Top = 3
         Width = 105
@@ -165,56 +165,25 @@ object Form1: TForm1
         Caption = #1048#1075#1085#1086#1088#1099' 2-'#1075#1086' '#1087#1083#1077#1095#1072
         GroupIndex = 2
       end
-      object RibbonGroup4: TRibbonGroup
+      object rgBetAmount: TRibbonGroup
         AlignWithMargins = True
         Left = 270
         Top = 3
-        Width = 242
+        Width = 653
         Height = 86
         ActionManager = actMngRibbon
         Caption = #1056#1072#1079#1084#1077#1088' '#1089#1090#1072#1074#1086#1082
+        GroupAlign = gaHorizontal
         GroupIndex = 3
-        object eAmount: TRibbonSpinEdit
-          AlignWithMargins = True
-          Left = 96
-          Top = 24
-          Width = 70
+        object edAmount: TRibbonSpinEdit
+          Left = 545
+          Top = 2
+          Width = 104
           Height = 22
           MaxValue = 0
-          MinValue = 0
+          MinValue = 1
           TabOrder = 0
-          Value = 0
-        end
-        object cbValuteSign: TRibbonComboBox
-          Left = 98
-          Top = 6
-          Width = 54
-          Height = 15
-          Alignment = taCenter
-          Items.Strings = (
-            'MNY'
-            'BLR'
-            'RUR'
-            'EUR'
-            'USD')
-          TabOrder = 1
-          Text = 'MNY'
-          OnChange = cbValuteSignChange
-        end
-        object edAmount: TDBNumberEditEh
-          Left = 98
-          Top = 24
-          Width = 98
-          Height = 21
-          currency = False
-          DecimalPlaces = 1
-          DisplayFormat = '### ### ##0.##'
-          EditButton.Style = ebsUpDownEh
-          EditButton.Visible = True
-          EditButtons = <>
-          TabOrder = 2
-          Value = 12345678.900000000000000000
-          Visible = True
+          Value = 1
         end
       end
     end
@@ -3367,7 +3336,7 @@ object Form1: TForm1
             ImageIndex = 4
             CommandProperties.ButtonSize = bsLarge
           end>
-        ActionBar = RibbonGroup2
+        ActionBar = rgIgnore1
       end
       item
         Items = <
@@ -3382,37 +3351,22 @@ object Form1: TForm1
             ImageIndex = 4
             CommandProperties.ButtonSize = bsLarge
           end>
-        ActionBar = RibbonGroup3
+        ActionBar = rgIgnore2
       end
       item
         Items = <
           item
-            Action = actCalcMin
-            Caption = '&Min'
+            Action = actCalcMinMNY
+            Caption = '&Minimum'
             ImageIndex = 6
             CommandProperties.ButtonSize = bsLarge
           end
           item
-            Caption = #1042#1072#1083#1102#1090#1072
-            CommandStyle = csComboBox
-            CommandProperties.Width = 120
-            CommandProperties.ContainedControl = cbValuteSign
-            CommandProperties.LabelWidth = 50
-          end
-          item
-            Caption = #1057#1091#1084#1084#1072
-            CommandStyle = csControl
-            CommandProperties.Width = 150
-            CommandProperties.ContainedControl = edAmount
-            CommandProperties.LabelWidth = 50
-          end
-          item
-            Action = actCalcMax
-            Caption = 'M&ax'
+            Action = actCalcMaxMNY
+            Caption = 'M&aximum'
             ImageIndex = 7
             CommandProperties.ButtonSize = bsLarge
           end>
-        ActionBar = RibbonGroup4
       end
       item
         Items = <
@@ -3449,6 +3403,56 @@ object Form1: TForm1
             CommandProperties.LabelWidth = 44
           end>
         ActionBar = RibbonGroup5
+      end
+      item
+        Items.CaptionOptions = coAll
+        Items = <
+          item
+            Action = actSetCalcValuteMNY
+            Caption = 'M&NY - '#1044#1077#1085#1100#1075#1080
+            CommandStyle = csRadioButton
+            ImageIndex = 8
+            CommandProperties.Width = -1
+          end
+          item
+            Action = actSetCalcValuteBYR
+            Caption = '&BYR - '#1047#1072#1081#1095#1080#1082#1080
+            ImageIndex = 9
+          end
+          item
+            Action = actSetCalcValuteUSD
+            ImageIndex = 12
+          end
+          item
+            Action = actSetCalcValuteEUR
+            Caption = '&EUR - '#1045#1074#1088#1086
+            ImageIndex = 11
+          end
+          item
+            Action = actSetCalcValuteRUR
+            Caption = '&RUR - '#1056#1091#1073#1083#1080
+            ImageIndex = 10
+          end
+          item
+            Caption = #1057#1091#1084#1084#1072
+            CommandStyle = csControl
+            CommandProperties.Width = 150
+            CommandProperties.ContainedControl = edAmount
+            CommandProperties.LabelWidth = 44
+          end
+          item
+            Action = actCalcMinMNY
+            Caption = '&Minimum'
+            ImageIndex = 6
+            NewRow = True
+          end
+          item
+            Action = actCalcMaxMNY
+            Caption = 'M&aximum'
+            ImageIndex = 7
+            NewRow = True
+          end>
+        ActionBar = rgBetAmount
       end>
     LargeImages = imgListRibbonLarge
     Images = imgListRibbon
@@ -3513,15 +3517,45 @@ object Form1: TForm1
       Caption = #1057#1086#1073#1099#1090#1080#1077
       ImageIndex = 4
     end
-    object actCalcMin: TAction
+    object actCalcMinMNY: TAction
       Category = 'Viewer'
-      Caption = 'Min'
+      Caption = 'Minimum'
       ImageIndex = 6
-      OnExecute = actCalcMinExecute
+      OnExecute = actCalcMinMNYExecute
     end
-    object actCalcMax: TAction
+    object actSetCalcValuteMNY: TAction
       Category = 'Viewer'
-      Caption = 'Max'
+      Caption = 'MNY - '#1044#1077#1085#1100#1075#1080
+      ImageIndex = 8
+      OnExecute = actSetCalcValuteExecute
+    end
+    object actSetCalcValuteBYR: TAction
+      Category = 'Viewer'
+      Caption = 'BYR - '#1047#1072#1081#1095#1080#1082#1080
+      ImageIndex = 9
+      OnExecute = actSetCalcValuteExecute
+    end
+    object actSetCalcValuteRUR: TAction
+      Category = 'Viewer'
+      Caption = 'RUR - '#1056#1091#1073#1083#1080
+      ImageIndex = 10
+      OnExecute = actSetCalcValuteExecute
+    end
+    object actSetCalcValuteEUR: TAction
+      Category = 'Viewer'
+      Caption = 'EUR - '#1045#1074#1088#1086
+      ImageIndex = 11
+      OnExecute = actSetCalcValuteExecute
+    end
+    object actSetCalcValuteUSD: TAction
+      Category = 'Viewer'
+      Caption = 'USD - '#1044#1086#1083#1083#1072#1088#1099
+      ImageIndex = 12
+      OnExecute = actSetCalcValuteExecute
+    end
+    object actCalcMaxMNY: TAction
+      Category = 'Viewer'
+      Caption = 'Maximum'
       ImageIndex = 7
     end
   end
