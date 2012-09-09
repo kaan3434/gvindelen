@@ -46,6 +46,8 @@ type
     btn3: TTBXItem;
     mmoNote: TMemo;
     smtpOrderCode: TIdSMTP;
+    lblBonus: TLabel;
+    txtBonusName: TStaticText;
     procedure actSetStateDraftExecute(Sender: TObject);
     procedure actSetStateApprovedExecute(Sender: TObject);
     procedure actStoreExecute(Sender: TObject);
@@ -61,6 +63,7 @@ type
     ndAdress: TXmlNode;
     ndPlace: TXmlNode;
     ndAccount: TXmlNode;
+    ndBonus: TXmlNode;
     procedure InitData; override;
     procedure FreeData; override;
     procedure OpenTables; override;

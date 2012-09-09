@@ -6,8 +6,8 @@ inherited FrameOrderSummary: TFrameOrderSummary
   PixelsPerInch = 96
   TextHeight = 13
   inherited dckTop: TTBXDock
-    Width = 888
-    Height = 23
+    Width = 880
+    Height = 25
     inherited tlBarTop: TTBXToolbar
       object btn2: TTBXItem
         Action = actSetStateDraft
@@ -21,13 +21,13 @@ inherited FrameOrderSummary: TFrameOrderSummary
     end
   end
   inherited sb: TTBXStatusBar
-    Top = 439
-    Width = 888
+    Top = 435
+    Width = 880
   end
   object pnlTopOnFinal: TJvPanel [2]
     Left = 0
-    Top = 23
-    Width = 888
+    Top = 25
+    Width = 880
     Height = 131
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
@@ -40,7 +40,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
     object pnlClientOnFinal: TJvPanel
       Left = 0
       Top = 0
-      Width = 376
+      Width = 368
       Height = 131
       HotTrackFont.Charset = DEFAULT_CHARSET
       HotTrackFont.Color = clWindowText
@@ -53,13 +53,13 @@ inherited FrameOrderSummary: TFrameOrderSummary
       object grBoxClientOfFinal: TJvGroupBox
         Left = 5
         Top = 5
-        Width = 366
+        Width = 358
         Height = 121
         Align = alClient
         Caption = #1050#1083#1080#1077#1085#1090
         TabOrder = 0
         DesignSize = (
-          366
+          358
           121)
         object lblClientFIO: TLabel
           Left = 8
@@ -220,7 +220,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
       end
     end
     object pnlOrderOnFinal: TJvPanel
-      Left = 376
+      Left = 368
       Top = 0
       Width = 512
       Height = 131
@@ -251,6 +251,13 @@ inherited FrameOrderSummary: TFrameOrderSummary
           Height = 13
           AutoSize = False
           Caption = #1053#1086#1084#1077#1088' '#1079#1072#1103#1074#1082#1080':'
+        end
+        object lblBonus: TLabel
+          Left = 8
+          Top = 32
+          Width = 33
+          Height = 13
+          Caption = #1041#1086#1085#1091#1089':'
         end
         object chkUseRest: TJvCheckBox
           Left = 8
@@ -290,22 +297,30 @@ inherited FrameOrderSummary: TFrameOrderSummary
           ScrollBars = ssBoth
           TabOrder = 0
         end
+        object txtBonusName: TStaticText
+          Left = 40
+          Top = 32
+          Width = 177
+          Height = 17
+          Caption = 'txtBonusName'
+          TabOrder = 3
+        end
       end
     end
   end
   object grBoxSummaryOrderItems: TJvGroupBox [3]
     Left = 0
-    Top = 154
-    Width = 888
-    Height = 285
+    Top = 156
+    Width = 880
+    Height = 279
     Align = alClient
     Caption = 'grBoxSummaryOrderItems'
     TabOrder = 2
     object grdOrderFullSpecification: TDBGridEh
       Left = 2
       Top = 15
-      Width = 884
-      Height = 268
+      Width = 876
+      Height = 262
       Align = alClient
       AutoFitColWidths = True
       DataGrouping.GroupLevels = <>
