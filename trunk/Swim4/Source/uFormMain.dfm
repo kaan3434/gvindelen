@@ -47,6 +47,24 @@ object Form1: TForm1
       OptionItems = <>
       RecentItems = <>
     end
+    object rpScanner: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 731
+      Height = 93
+      Caption = 'Scanner'
+      Index = 0
+      object tbScannerBookers: TRibbonGroup
+        AlignWithMargins = True
+        Left = 4
+        Top = 3
+        Width = 123
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = 'Bookers'
+        GroupIndex = 0
+      end
+    end
     object rpTeacher: TRibbonPage
       Left = 0
       Top = 50
@@ -113,24 +131,6 @@ object Form1: TForm1
         end
       end
     end
-    object rpScanner: TRibbonPage
-      Left = 0
-      Top = 50
-      Width = 731
-      Height = 93
-      Caption = 'Scanner'
-      Index = 0
-      object tbScannerBookers: TRibbonGroup
-        AlignWithMargins = True
-        Left = 4
-        Top = 3
-        Width = 123
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = 'Bookers'
-        GroupIndex = 0
-      end
-    end
     object rpViewer: TRibbonPage
       Left = 0
       Top = 50
@@ -169,21 +169,22 @@ object Form1: TForm1
         AlignWithMargins = True
         Left = 270
         Top = 3
-        Width = 653
+        Width = 174
         Height = 86
         ActionManager = actMngRibbon
         Caption = #1056#1072#1079#1084#1077#1088' '#1089#1090#1072#1074#1086#1082
         GroupAlign = gaHorizontal
         GroupIndex = 3
+        Rows = 2
         object edAmount: TRibbonSpinEdit
-          Left = 545
-          Top = 2
-          Width = 104
+          Left = 61
+          Top = 10
+          Width = 108
           Height = 22
           MaxValue = 0
           MinValue = 1
           TabOrder = 0
-          Value = 1
+          Value = 0
         end
       end
     end
@@ -582,7 +583,7 @@ object Form1: TForm1
     Left = 560
     Top = 8
     Bitmap = {
-      494C01010D006E00680010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
+      494C01010D006E006C0010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1124,7 +1125,7 @@ object Form1: TForm1
     Left = 472
     Top = 8
     Bitmap = {
-      494C01010D006600600020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01010D006600640020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000008000000001002000000000000000
       0100000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -3408,49 +3409,62 @@ object Form1: TForm1
         Items.CaptionOptions = coAll
         Items = <
           item
-            Action = actSetCalcValuteMNY
-            Caption = 'M&NY - '#1044#1077#1085#1100#1075#1080
-            CommandStyle = csRadioButton
+            Caption = #1057#1091#1084#1084#1072
+            CommandStyle = csControl
             ImageIndex = 8
-            CommandProperties.Width = -1
+            CommandProperties.Width = 165
+            CommandProperties.ContainedControl = edAmount
+            CommandProperties.LabelWidth = 55
+          end
+          item
+            Action = actSetCalcValuteMNY
+            Caption = 'M&NY'
+            ImageIndex = 8
+            NewRow = True
+            ShowCaption = False
+            CommandProperties.GroupPosition = gpStart
           end
           item
             Action = actSetCalcValuteBYR
-            Caption = '&BYR - '#1047#1072#1081#1095#1080#1082#1080
+            Caption = '&BYR'
             ImageIndex = 9
-          end
-          item
-            Action = actSetCalcValuteUSD
-            ImageIndex = 12
-          end
-          item
-            Action = actSetCalcValuteEUR
-            Caption = '&EUR - '#1045#1074#1088#1086
-            ImageIndex = 11
+            ShowCaption = False
+            CommandProperties.GroupPosition = gpMiddle
           end
           item
             Action = actSetCalcValuteRUR
-            Caption = '&RUR - '#1056#1091#1073#1083#1080
+            Caption = '&RUR'
             ImageIndex = 10
+            ShowCaption = False
+            CommandProperties.GroupPosition = gpMiddle
           end
           item
-            Caption = #1057#1091#1084#1084#1072
-            CommandStyle = csControl
-            CommandProperties.Width = 150
-            CommandProperties.ContainedControl = edAmount
-            CommandProperties.LabelWidth = 44
+            Action = actSetCalcValuteEUR
+            Caption = '&EUR'
+            ImageIndex = 11
+            ShowCaption = False
+            CommandProperties.GroupPosition = gpMiddle
+          end
+          item
+            Action = actSetCalcValuteUSD
+            Caption = '&USD'
+            ImageIndex = 12
+            ShowCaption = False
+            CommandProperties.GroupPosition = gpEnd
           end
           item
             Action = actCalcMinMNY
             Caption = '&Minimum'
             ImageIndex = 6
-            NewRow = True
+            ShowCaption = False
+            CommandProperties.GroupPosition = gpStart
           end
           item
             Action = actCalcMaxMNY
             Caption = 'M&aximum'
             ImageIndex = 7
-            NewRow = True
+            ShowCaption = False
+            CommandProperties.GroupPosition = gpEnd
           end>
         ActionBar = rgBetAmount
       end>
@@ -3525,31 +3539,46 @@ object Form1: TForm1
     end
     object actSetCalcValuteMNY: TAction
       Category = 'Viewer'
-      Caption = 'MNY - '#1044#1077#1085#1100#1075#1080
+      AutoCheck = True
+      Caption = 'MNY'
+      GroupIndex = 2
+      Hint = #1044#1077#1085#1100#1075#1080
       ImageIndex = 8
       OnExecute = actSetCalcValuteExecute
     end
     object actSetCalcValuteBYR: TAction
       Category = 'Viewer'
-      Caption = 'BYR - '#1047#1072#1081#1095#1080#1082#1080
+      AutoCheck = True
+      Caption = 'BYR'
+      GroupIndex = 2
+      Hint = #1047#1072#1081#1095#1080#1082#1080
       ImageIndex = 9
       OnExecute = actSetCalcValuteExecute
     end
     object actSetCalcValuteRUR: TAction
       Category = 'Viewer'
-      Caption = 'RUR - '#1056#1091#1073#1083#1080
+      AutoCheck = True
+      Caption = 'RUR'
+      GroupIndex = 2
+      Hint = #1056#1091#1073#1083#1080
       ImageIndex = 10
       OnExecute = actSetCalcValuteExecute
     end
     object actSetCalcValuteEUR: TAction
       Category = 'Viewer'
-      Caption = 'EUR - '#1045#1074#1088#1086
+      AutoCheck = True
+      Caption = 'EUR'
+      GroupIndex = 2
+      Hint = #1045#1074#1088#1086
       ImageIndex = 11
       OnExecute = actSetCalcValuteExecute
     end
     object actSetCalcValuteUSD: TAction
       Category = 'Viewer'
-      Caption = 'USD - '#1044#1086#1083#1083#1072#1088#1099
+      AutoCheck = True
+      Caption = 'USD'
+      GroupIndex = 2
+      Hint = #1044#1086#1083#1083#1072#1088#1099
       ImageIndex = 12
       OnExecute = actSetCalcValuteExecute
     end

@@ -78,6 +78,7 @@ type
     { Private declarations }
     FThreadList: TList;
     dm: TDmFormMain;
+    FCalcValuteSign: string;
     procedure CreateBookerButtons;
     procedure CreateButtons(aBookerDataSet: TFIBDataSet);
     function AppendPngToImageList(aImageList: TImageList;
@@ -168,14 +169,28 @@ begin
 end;
 
 procedure TForm1.actSetCalcValuteExecute(Sender: TObject);
+
+function findItemByControl(aClientItems: TActionClients; aControl: TControl): TActionClientItem;
 var
-  SMenu: TActionClientItem;
+  i: Integer;
+begin
+  for i := 0 to aClientItems.Count-1 do
+  begin
+    Result:= aClientItems[i];
+    if (Result.CommandStyle = csControl) and
+       (TControlProperties(Result.CommandProperties).ContainedControl = aControl) then Exit;
+  end;
+  Result:= nil;
+end;
+
+var
+  aci: TActionClientItem;
   Action: TAction;
 begin
-//  rgBetAmount.Items.
-//  SMenu:= actMngRibbon.FindItemByAction(Action).ParentItem;
-//  ShowMessage(actMngRibbon.FindItemByAction(Action).p.Caption);
-//  SMenu.ParentItem.a.Action:= Action;
+  aci:= findItemByControl(rgBetAmount.Items, edAmount);
+  if assigned(aci) then
+    aci.ImageIndex:= TAction(Sender).ImageIndex;
+  FCalcValuteSign:= TAction(Sender).Caption;
 end;
 
 procedure TForm1.actTeachEventsExecute(Sender: TObject);
