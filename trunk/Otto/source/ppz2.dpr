@@ -49,8 +49,6 @@ uses
 
 {$R *.res}
 
-var
-  BackupFileName: String;
 begin
   DecimalSeparator:= '.';
   Application.Initialize;
