@@ -26,8 +26,8 @@ type
     procedure ScanerOnOff(aBookerId: Integer; aChecked: Boolean);
     procedure Query2Xml(aXmlNode: TGvXmlNode; aSelectSQL, aRowNodeName, aMapping: string);
     procedure Bookers2Xml(aXmlNode: TGvXmlNode);
-    procedure calcSwimMin(aValuteSign: String; aAmount: Extended);
-    procedure calcSwimMax(aValuteSign: String; aAmount: Extended);
+    procedure calcSwimMin(aValuteSign: String; aAmount: Integer);
+    procedure calcSwimMax(aValuteSign: String; aAmount: Integer);
   end;
 
 implementation
@@ -45,16 +45,19 @@ begin
     'Booker', 'Booker_Id;Booker_Sign;Booker_Title=Booker_Name');
 end;
 
-procedure TdmFormMain.calcSwimMax(aValuteSign: String; aAmount: Extended);
+procedure TdmFormMain.calcSwimMax(aValuteSign: String; aAmount: Integer);
 begin
   trnWrite.StartTransaction;
   try
     with spTemp do
     begin
-      StoredProcName:= 'SWIM_MONEY';
+      StoredProcName:= 'SWIM_MONEY_MAX';
       Params.ClearValues;
-      Params.ParamByName('I_VALUTE_SIGN').AsString := aValuteSign;
-      Params.ParamByName('I_AMOUNT').AsCurrency := aAmount;
+      if aValuteSign <> '' then
+        Params.ParamByName('I_VALUTE_SIGN').AsString := aValuteSign
+      else
+        Params.ParamByName('I_VALUTE_SIGN').Value:= null;
+      Params.ParamByName('I_AMOUNT').AsInteger := aAmount;
       ExecProc;
     end;
     trnWrite.Commit;
@@ -63,9 +66,25 @@ begin
   end;
 end;
 
-procedure TdmFormMain.calcSwimMin(aValuteSign: String; aAmount: Extended);
+procedure TdmFormMain.calcSwimMin(aValuteSign: String; aAmount: Integer);
 begin
-
+  trnWrite.StartTransaction;
+  try
+    with spTemp do
+    begin
+      StoredProcName:= 'SWIM_MONEY_MIN';
+      Params.ClearValues;
+      if aValuteSign <> '' then
+        Params.ParamByName('I_VALUTE_SIGN').AsString := aValuteSign
+      else
+        Params.ParamByName('I_VALUTE_SIGN').Value:= null;
+      Params.ParamByName('I_AMOUNT').AsInteger := aAmount;
+      ExecProc;
+    end;
+    trnWrite.Commit;
+  except
+    trnWrite.Rollback;
+  end;
 end;
 
 procedure TdmFormMain.DataModuleCreate(Sender: TObject);

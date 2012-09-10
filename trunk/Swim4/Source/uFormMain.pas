@@ -52,8 +52,8 @@ type
     actIgnoreBet2: TAction;
     actIgnoreEvent1: TAction;
     actIgnoreEvent2: TAction;
-    actCalcMinMNY: TAction;
-    actCalcMaxMNY: TAction;
+    actCalcMin: TAction;
+    actCalcMax: TAction;
     rgBetAmount: TRibbonGroup;
     actSetCalcValuteBYR: TAction;
     actSetCalcValuteEUR: TAction;
@@ -71,9 +71,10 @@ type
     procedure actTeachTournirsExecute(Sender: TObject);
     procedure actTeachEventsExecute(Sender: TObject);
     procedure actRunThreadExecute(Sender: TObject);
-    procedure actCalcMinMNYExecute(Sender: TObject);
+    procedure actCalcMinExecute(Sender: TObject);
     procedure cbValuteSignChange(Sender: TObject);
     procedure actSetCalcValuteExecute(Sender: TObject);
+    procedure actCalcMaxExecute(Sender: TObject);
   private
     { Private declarations }
     FThreadList: TList;
@@ -102,7 +103,8 @@ implementation
 
 {$R *.dfm}
 uses
-  GvFile, PngImage, uWebServiceThread, uSettings, uTeachTournirs, uTeachGamers;
+  GvFile, PngImage, uWebServiceThread, uSettings, uTeachTournirs, uTeachGamers,
+  GvRibbon;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
@@ -141,9 +143,28 @@ begin
   end;
 end;
 
-procedure TForm1.actCalcMinMNYExecute(Sender: TObject);
+procedure TForm1.actCalcMaxExecute(Sender: TObject);
 begin
-//  dm.calcSwimMax(cbValuteSign.Text, edAmount.Value);
+  grdSwimItems.DataSource.DataSet.DisableControls;
+  try
+    grdSwimItems.DataSource.DataSet.Close;
+    dm.calcSwimMax(FCalcValuteSign, edAmount.Value);
+    grdSwimItems.DataSource.DataSet.Open;
+  finally
+    grdSwimItems.DataSource.DataSet.EnableControls;
+  end;
+end;
+
+procedure TForm1.actCalcMinExecute(Sender: TObject);
+begin
+  grdSwimItems.DataSource.DataSet.DisableControls;
+  try
+    grdSwimItems.DataSource.DataSet.Close;
+    dm.calcSwimMin(FCalcValuteSign, edAmount.Value);
+    grdSwimItems.DataSource.DataSet.Open;
+  finally
+    grdSwimItems.DataSource.DataSet.EnableControls;
+  end;
 end;
 
 procedure TForm1.actDummyExecute(Sender: TObject);
@@ -169,25 +190,11 @@ begin
 end;
 
 procedure TForm1.actSetCalcValuteExecute(Sender: TObject);
-
-function findItemByControl(aClientItems: TActionClients; aControl: TControl): TActionClientItem;
-var
-  i: Integer;
-begin
-  for i := 0 to aClientItems.Count-1 do
-  begin
-    Result:= aClientItems[i];
-    if (Result.CommandStyle = csControl) and
-       (TControlProperties(Result.CommandProperties).ContainedControl = aControl) then Exit;
-  end;
-  Result:= nil;
-end;
-
 var
   aci: TActionClientItem;
   Action: TAction;
 begin
-  aci:= findItemByControl(rgBetAmount.Items, edAmount);
+  aci:= findItemByControl(rgBetAmount, edAmount);
   if assigned(aci) then
     aci.ImageIndex:= TAction(Sender).ImageIndex;
   FCalcValuteSign:= TAction(Sender).Caption;
