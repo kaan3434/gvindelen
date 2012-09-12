@@ -442,6 +442,41 @@ ul#servicenav li.open li.open li {
   font-size:24px;
 }
 
+
+#servicecontent ul.ulist3h a {
+  text-decoration:none;
+}
+#servicecontent ul.ulist3h a:hover {
+  text-decoration:underline;
+}
+#servicecontent ul.ulist3h {
+  margin:0px;
+  padding:0px;
+  list-style-type:none;
+}
+#servicecontent ul.ulist3h li {
+  border:1px solid #D88400;
+  width:375px;
+  height:571px;
+  overflow:hidden;
+  float:left;
+  margin: 0px 0px 15px 15px;
+}
+
+#servicecontent ul.ulist3h li .widetxt3h {
+  float:left;
+  width:328px;
+  padding:15px 15px 0px 15px;
+  color: #FF0000;  
+}
+#servicecontent ul.ulist3h li .widetxt3h .hl {
+  margin-bottom:15px;
+}
+#servicecontent ul.ulist3h li .widetxt3h .hl a {
+  color:#D88400;
+  font-size:24px;
+}
+
 /* ################# Service / Order Catalog #################### */
 #ordercatalog {}
 
