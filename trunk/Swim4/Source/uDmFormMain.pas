@@ -62,7 +62,11 @@ begin
     end;
     trnWrite.Commit;
   except
-    trnWrite.Rollback;
+    on E:Exception do
+    begin
+      trnWrite.Rollback;
+      ShowMessage(e.Message);
+    end;
   end;
 end;
 
@@ -83,7 +87,11 @@ begin
     end;
     trnWrite.Commit;
   except
-    trnWrite.Rollback;
+    on E:Exception do
+    begin
+      trnWrite.Rollback;
+      ShowMessage(e.Message);
+    end;
   end;
 end;
 

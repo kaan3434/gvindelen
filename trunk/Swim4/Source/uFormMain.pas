@@ -160,7 +160,9 @@ begin
   grdSwimItems.DataSource.DataSet.DisableControls;
   try
     grdSwimItems.DataSource.DataSet.Close;
+    dm.trnRead.Commit;
     dm.calcSwimMin(FCalcValuteSign, edAmount.Value);
+    dm.trnRead.StartTransaction;
     grdSwimItems.DataSource.DataSet.Open;
   finally
     grdSwimItems.DataSource.DataSet.EnableControls;
