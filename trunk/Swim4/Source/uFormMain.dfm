@@ -38,6 +38,7 @@ object Form1: TForm1
         Caption = 'Teacher'
         Page = rpTeacher
       end>
+    TabIndex = 2
     DesignSize = (
       732
       143)
@@ -46,6 +47,24 @@ object Form1: TForm1
       ActionManager = actMngRibbon
       OptionItems = <>
       RecentItems = <>
+    end
+    object rpScanner: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 731
+      Height = 93
+      Caption = 'Scanner'
+      Index = 0
+      object tbScannerBookers: TRibbonGroup
+        AlignWithMargins = True
+        Left = 4
+        Top = 3
+        Width = 123
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = 'Bookers'
+        GroupIndex = 0
+      end
     end
     object rpViewer: TRibbonPage
       Left = 0
@@ -100,7 +119,7 @@ object Form1: TForm1
           MaxValue = 0
           MinValue = 1
           TabOrder = 0
-          Value = 0
+          Value = 1
         end
       end
     end
@@ -168,24 +187,6 @@ object Form1: TForm1
           TabOrder = 3
           Value = 0
         end
-      end
-    end
-    object rpScanner: TRibbonPage
-      Left = 0
-      Top = 50
-      Width = 731
-      Height = 93
-      Caption = 'Scanner'
-      Index = 0
-      object tbScannerBookers: TRibbonGroup
-        AlignWithMargins = True
-        Left = 4
-        Top = 3
-        Width = 123
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = 'Bookers'
-        GroupIndex = 0
       end
     end
   end

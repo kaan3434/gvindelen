@@ -146,20 +146,25 @@ object frmTeachGamers: TfrmTeachGamers
           EditButtons = <
             item
               Action = actAppendCountry
+              Hint = #1044#1086#1073#1072#1074#1080#1090#1100' '#1089#1090#1088#1072#1085#1091
               Style = ebsPlusEh
             end
             item
               Action = actTranslit
+              Hint = 'Translit'
               Style = ebsEllipsisEh
             end
             item
               Action = aUpCaseFirst
+              Hint = 'UpCase First'
               Style = ebsUpDownEh
             end
             item
               Action = actSearchPair
+              Hint = 'Search Pair'
               Style = ebsMinusEh
             end>
+          ParentShowHint = False
           TabOrder = 0
           Visible = True
           OnChange = edAGamerNameChange
@@ -188,9 +193,6 @@ object frmTeachGamers: TfrmTeachGamers
         Height = 275
         Cursor = crSizeWE
         Align = alRight
-        ExplicitLeft = 528
-        ExplicitTop = 184
-        ExplicitHeight = 100
       end
       object DBGridEh1: TDBGridEh
         Left = 472
