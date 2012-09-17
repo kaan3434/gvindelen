@@ -7,6 +7,9 @@ inherited dmFormMain: TdmFormMain
     Active = True
     AfterStart = trnReadAfterStart
   end
+  inherited spTemp: TpFIBStoredProc
+    qoNoForceIsNull = True
+  end
   object qrySwimEvents: TpFIBDataSet
     SelectSQL.Strings = (
       'SELECT'
@@ -102,5 +105,14 @@ inherited dmFormMain: TdmFormMain
     DataSet = qrySwimEvents
     Left = 232
     Top = 224
+  end
+  object spCalcMoneyMax: TpFIBStoredProc
+    Transaction = trnWrite
+    Database = dbSwim
+    SQL.Strings = (
+      'EXECUTE PROCEDURE SWIM_MONEY_MAX (?I_AMOUNT, ?I_VALUTE_SIGN)')
+    StoredProcName = 'SWIM_MONEY_MAX'
+    Left = 344
+    Top = 104
   end
 end

@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 488
-  Top = 110
+  Left = 98
+  Top = 0
   Caption = 'Form1'
   ClientHeight = 478
   ClientWidth = 732
@@ -11,7 +11,8 @@ object Form1: TForm1
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesigned
+  Position = poDesktopCenter
+  ScreenSnap = True
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -37,7 +38,6 @@ object Form1: TForm1
         Caption = 'Teacher'
         Page = rpTeacher
       end>
-    TabIndex = 1
     DesignSize = (
       732
       143)
@@ -46,6 +46,63 @@ object Form1: TForm1
       ActionManager = actMngRibbon
       OptionItems = <>
       RecentItems = <>
+    end
+    object rpViewer: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 731
+      Height = 93
+      Caption = 'Viewer'
+      Index = 1
+      object tbViewerBookers: TRibbonGroup
+        Left = 4
+        Top = 3
+        Width = 50
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = 'Bookers'
+        GroupIndex = 0
+      end
+      object rgIgnore1: TRibbonGroup
+        Left = 56
+        Top = 3
+        Width = 105
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = #1048#1075#1085#1086#1088#1099' 1-'#1075#1086' '#1055#1083#1077#1095#1072
+        GroupIndex = 1
+      end
+      object rgIgnore2: TRibbonGroup
+        Left = 163
+        Top = 3
+        Width = 105
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = #1048#1075#1085#1086#1088#1099' 2-'#1075#1086' '#1087#1083#1077#1095#1072
+        GroupIndex = 2
+      end
+      object rgBetAmount: TRibbonGroup
+        AlignWithMargins = True
+        Left = 270
+        Top = 3
+        Width = 174
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = #1056#1072#1079#1084#1077#1088' '#1089#1090#1072#1074#1086#1082
+        GroupAlign = gaHorizontal
+        GroupIndex = 3
+        Rows = 2
+        object edAmount: TRibbonSpinEdit
+          Left = 61
+          Top = 11
+          Width = 108
+          Height = 22
+          MaxValue = 0
+          MinValue = 1
+          TabOrder = 0
+          Value = 0
+        end
+      end
     end
     object rpTeacher: TRibbonPage
       Left = 0
@@ -129,63 +186,6 @@ object Form1: TForm1
         ActionManager = actMngRibbon
         Caption = 'Bookers'
         GroupIndex = 0
-      end
-    end
-    object rpViewer: TRibbonPage
-      Left = 0
-      Top = 50
-      Width = 731
-      Height = 93
-      Caption = 'Viewer'
-      Index = 1
-      object tbViewerBookers: TRibbonGroup
-        Left = 4
-        Top = 3
-        Width = 50
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = 'Bookers'
-        GroupIndex = 0
-      end
-      object rgIgnore1: TRibbonGroup
-        Left = 56
-        Top = 3
-        Width = 105
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = #1048#1075#1085#1086#1088#1099' 1-'#1075#1086' '#1055#1083#1077#1095#1072
-        GroupIndex = 1
-      end
-      object rgIgnore2: TRibbonGroup
-        Left = 163
-        Top = 3
-        Width = 105
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = #1048#1075#1085#1086#1088#1099' 2-'#1075#1086' '#1087#1083#1077#1095#1072
-        GroupIndex = 2
-      end
-      object rgBetAmount: TRibbonGroup
-        AlignWithMargins = True
-        Left = 270
-        Top = 3
-        Width = 174
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = #1056#1072#1079#1084#1077#1088' '#1089#1090#1072#1074#1086#1082
-        GroupAlign = gaHorizontal
-        GroupIndex = 3
-        Rows = 2
-        object edAmount: TRibbonSpinEdit
-          Left = 61
-          Top = 11
-          Width = 108
-          Height = 22
-          MaxValue = 0
-          MinValue = 1
-          TabOrder = 0
-          Value = 0
-        end
       end
     end
   end
@@ -272,6 +272,7 @@ object Form1: TForm1
           FieldName = 'BOOKER1_NAME'
           Footers = <>
           Title.Caption = '1-'#1077' '#1055#1083#1077#1095#1086'|'#1050#1086#1085#1090#1086#1088#1072
+          Width = 60
         end
         item
           Alignment = taCenter
@@ -331,6 +332,7 @@ object Form1: TForm1
         end
         item
           Alignment = taCenter
+          Color = clLime
           EditButtons = <>
           FieldName = 'SVP1'
           Footers = <>
@@ -343,6 +345,7 @@ object Form1: TForm1
           FieldName = 'BOOKER2_NAME'
           Footers = <>
           Title.Caption = '2-'#1077' '#1055#1083#1077#1095#1086'|'#1050#1086#1085#1090#1086#1088#1072
+          Width = 60
         end
         item
           Alignment = taCenter
@@ -402,6 +405,7 @@ object Form1: TForm1
         end
         item
           Alignment = taCenter
+          Color = clLime
           DisplayFormat = '###,##0.##'
           EditButtons = <>
           FieldName = 'SVP2'
@@ -583,7 +587,7 @@ object Form1: TForm1
     Left = 560
     Top = 8
     Bitmap = {
-      494C01010D006E00740010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
+      494C01010D006E007C0010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1125,7 +1129,7 @@ object Form1: TForm1
     Left = 472
     Top = 8
     Bitmap = {
-      494C01010D0066006C0020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01010D006600740020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000008000000001002000000000000000
       0100000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

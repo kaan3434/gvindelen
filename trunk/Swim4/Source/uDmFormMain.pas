@@ -6,7 +6,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uDmSwim, FIBDatabase, pFIBDatabase,
-  FIBQuery, pFIBQuery, pFIBStoredProc, GvXml, Data.DB, FIBDataSet, pFIBDataSet;
+  FIBQuery, pFIBQuery, pFIBStoredProc, GvXml, Data.DB, FIBDataSet, pFIBDataSet,
+  pFIBErrorHandler;
 
 type
   TdmFormMain = class(TdmSwim)
@@ -16,6 +17,7 @@ type
     qrySwimItems: TpFIBDataSet;
     dsSwimItems: TDataSource;
     dsSwimEvents: TDataSource;
+    spCalcMoneyMax: TpFIBStoredProc;
     procedure DataModuleCreate(Sender: TObject);
     procedure trnReadAfterStart(Sender: TObject);
   private
@@ -35,7 +37,7 @@ implementation
 {$R *.dfm}
 
 uses
-  GvVars, GvXmlUtils;
+  GvVars, GvXmlUtils, GvStr;
 
 { TdmFormMain }
 
@@ -53,10 +55,7 @@ begin
     begin
       StoredProcName:= 'SWIM_MONEY_MAX';
       Params.ClearValues;
-      if aValuteSign <> '' then
-        Params.ParamByName('I_VALUTE_SIGN').AsString := aValuteSign
-      else
-        Params.ParamByName('I_VALUTE_SIGN').Value:= null;
+      Params.ParamByName('I_VALUTE_SIGN').AsString := CoalesceStr(aValuteSign, 'MNY');
       Params.ParamByName('I_AMOUNT').AsInteger := aAmount;
       ExecProc;
     end;
@@ -78,10 +77,7 @@ begin
     begin
       StoredProcName:= 'SWIM_MONEY_MIN';
       Params.ClearValues;
-      if aValuteSign <> '' then
-        Params.ParamByName('I_VALUTE_SIGN').AsString := aValuteSign
-      else
-        Params.ParamByName('I_VALUTE_SIGN').Value:= null;
+      Params.ParamByName('I_VALUTE_SIGN').AsString := CoalesceStr(aValuteSign, 'MNY');
       Params.ParamByName('I_AMOUNT').AsInteger := aAmount;
       ExecProc;
     end;

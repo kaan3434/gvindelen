@@ -290,7 +290,7 @@ begin
   dm:= TDmFormMain.Create(self);
   CreateBookerButtons;
   FThreadList:= TList.Create;
-//  ThreadCount:= Settings.Scaners.Attr['ThreadCount'].AsIntegerDef(1);
+  ThreadCount:= Settings.Scaners.Attr['ThreadCount'].AsIntegerDef(1);
   dm.trnWrite.StartTransaction;
   try
     dm.RequestsClean;

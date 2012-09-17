@@ -95,8 +95,8 @@ begin
   dm:= TdmSwimThread.Create(nil);
   FThreadId:= dm.dbSwim.QueryValue(
     'SELECT gen_id(gen_thread_id, 1) FROM RDB$DATABASE', 0);
-
-  FWSScan:= GetTScanPort(false, settings.RandomService.Attr['Url'].AsString);
+  Addr:= settings.RandomService.Attr['Url'].AsString;
+  FWSScan:= GetTScanPort(false, Addr);
   FNode:= TGvXmlNode.Create;
   CoInitialize(nil);
 end;

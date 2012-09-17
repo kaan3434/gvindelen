@@ -12,7 +12,8 @@
   </Bookers>
   <Scaners ThreadCount="10" AutoStart="0"/>
   <Services Default="0">
-    <Service Default="0" Url="http://localhost:8080/soap/ScanBooker.php"/>
+    <Service Id="0" Url="http://otto.by/soap/ScanBooker.php"/>
   </Services>
+  <!--Service Id="0" Url="http://localhost:8080/soap/ScanBooker.php"/-->
 </Settings>
 
