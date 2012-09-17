@@ -32,7 +32,7 @@ begin
           UnEscapeString(sl[0]+sl[1]),
           UnEscapeString(sl[2]),
           ToFloat(sl[3]),
-          UnEscapeString(sl[9]),
+          Trim('0'+UnEscapeString(sl[9])),
           UnEscapeString(trim(sl[8]))], aTransaction);
   finally
     sl.Free;
