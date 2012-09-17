@@ -244,6 +244,8 @@ function UpCaseWord(St: string; KeyChars: string=' ,.!-:?'): string;
 function IsWordPresent(aWord, aWordList, aDelimiter: String): Boolean;
 function FormatString(aStr, aFormat: string): String;
 
+function CoalesceStr(Str1, Str2: string): string;
+
 implementation
 uses
   windows, sysutils, Zlib, Math, StrUtils;
@@ -2378,5 +2380,14 @@ begin
     end;
   until s = '';
 end;
+
+function CoalesceStr(Str1, Str2: string): string;
+begin
+  if Str1 <> '' then
+    Result:= Str1
+  else
+    Result:= Str2;
+end;
+
 
 end.
