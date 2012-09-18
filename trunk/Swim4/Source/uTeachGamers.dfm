@@ -138,7 +138,7 @@ object frmTeachGamers: TfrmTeachGamers
           Action = actAGamerAdd
         end
         object edAGamerName: TDBEditEh
-          Left = 41
+          Left = 45
           Top = 0
           Width = 400
           Height = 21
@@ -161,7 +161,6 @@ object frmTeachGamers: TfrmTeachGamers
             end
             item
               Action = actSearchPair
-              Hint = 'Search Pair'
               Style = ebsMinusEh
             end>
           ParentShowHint = False
@@ -170,7 +169,7 @@ object frmTeachGamers: TfrmTeachGamers
           OnChange = edAGamerNameChange
         end
         object lcbCountry: TDBLookupComboboxEh
-          Left = 490
+          Left = 498
           Top = 0
           Width = 89
           Height = 21
