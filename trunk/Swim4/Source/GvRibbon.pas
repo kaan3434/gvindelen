@@ -3,10 +3,9 @@ unit GvRibbon;
 interface
 
 uses
-  Ribbon, Vcl.ActnMan, Vcl.Controls;
+  Vcl.Controls, Vcl.Ribbon, Vcl.ActnMan, Vcl.ActnList;
 
 function findItemByControl(aRibbonGroup: TRibbonGroup; aControl: TControl): TActionClientItem;
-
 
 implementation
 

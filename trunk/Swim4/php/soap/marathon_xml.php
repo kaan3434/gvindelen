@@ -144,13 +144,14 @@ class marathon_booker extends booker_xml {
   private function extract_main_bets(&$tournir_node, $html, $sport_sign, $tournir_id) {
     $html = kill_property($html, 'TagNo');
     $html = numbering_tag($html, 'tr');
-    $events = extract_all_numbered_tags($html, 'tr', '"event-header"');
+    $events = extract_all_numbered_tags($html, 'tr', 'event-header');
     foreach ($events as $event) {
       // получаем 
       $event_info= take_be($event, '<table', '</table>');
-      preg_match_all('/<div class="(today-member-name|member-name)">(.*)?<\/div>/imsU', $event_info, $matches);
-      $gamer1_name= $matches[2][0];
-      $gamer2_name= $matches[2][1];
+      file_put_contents("Event.html", $event_info);
+      preg_match_all('/<div class="(.*)?member-name(.*)?">(.*)?<\/div>/imsU', $event_info, $matches);
+      $gamer1_name= $matches[3][0];
+      $gamer2_name= $matches[3][1];
       $datetime_str= delete_all(copy_be($event_info, '<td', '</td>', '"date"'), '<', '>');
       list($day_no, $month_no, $year_no, $hour, $minute) = $this->decode_datetime($datetime_str);
       $extrabet = copy_be($event_info, '<a', '</a>', 'treeid');
