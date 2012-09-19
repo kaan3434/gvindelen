@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Created with Liquid XML Studio Developer Edition 9.0.11.3078 (http://www.liquid-technologies.com)-->
+<definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://example.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" name="Scan" targetNamespace="http://example.com/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+    <types>
+        <xs:schema xmlns:tns="http://schemas.xmlsoap.org/wsdl/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://example.com/">
+            <complexType name="TBooker">
+                <simpleContent>
+                    <extension base="string">
+                        <attribute name="Id" type="integer" use="required" />
+                        <attribute name="Sign" use="required">
+                            <simpleType>
+                                <restriction base="string">
+                                    <whiteSpace value="collapse" />
+                                </restriction>
+                            </simpleType>
+                        </attribute>
+                        <attribute name="Title" type="string" use="required" />
+                        <attribute name="Url" type="anyURI" />
+                    </extension>
+                </simpleContent>
+            </complexType>
+            <complexType name="TBookers">
+                <sequence minOccurs="0" maxOccurs="unbounded">
+                    <element xmlns:q1="http://example.com/" minOccurs="0" maxOccurs="unbounded" name="Booker" type="q1:TBooker" />
+                </sequence>
+            </complexType>
+            <complexType name="TBookersResponse">
+                <sequence>
+                    <element xmlns:q1="http://example.com/" name="Bookers" type="q1:TBookers" />
+                </sequence>
+            </complexType>
+            <complexType name="TSport">
+                <simpleContent>
+                    <extension base="string">
+                        <attribute name="Id" type="integer" use="required" />
+                        <attribute name="Sign" type="string" use="required" />
+                        <attribute name="Title" type="string" use="required" />
+                        <attribute name="Url" type="anyURI" use="required" />
+                    </extension>
+                </simpleContent>
+            </complexType>
+            <complexType name="TSports">
+                <sequence minOccurs="0" maxOccurs="unbounded">
+                    <element xmlns:q2="http://example.com/" minOccurs="0" maxOccurs="unbounded" name="Sport" type="q2:TSport" />
+                </sequence>
+            </complexType>
+            <complexType name="TSportsResponse">
+                <sequence>
+                    <element xmlns:q3="http://example.com/" name="Sports" type="q3:TSports" />
+                </sequence>
+            </complexType>
+            <complexType name="TTournir">
+                <simpleContent>
+                    <extension base="string">
+                        <attribute name="Id" type="string" />
+                        <attribute name="Region" type="string" />
+                        <attribute name="Title" type="string" use="required" />
+                        <attribute name="Url" type="anyURI" />
+                    </extension>
+                </simpleContent>
+            </complexType>
+            <complexType name="TTournirs">
+                <sequence minOccurs="0" maxOccurs="unbounded">
+                    <element xmlns:q1="http://example.com/" minOccurs="0" maxOccurs="unbounded" name="Tournir" type="q1:TTournir" />
+                </sequence>
+            </complexType>
+            <complexType name="TTournirsResponse">
+                <sequence>
+                    <element xmlns:q2="http://example.com/" name="Tournirs" type="q2:TTournirs" />
+                </sequence>
+            </complexType>
+            <complexType name="TBet">
+                <simpleContent>
+                    <extension base="string">
+                        <attribute name="Ways" type="byte" use="required" />
+                        <attribute name="Period" type="string" use="required" />
+                        <attribute name="Kind" type="string" use="required" />
+                        <attribute name="Subject" type="string" />
+                        <attribute name="Gamer" type="string" />
+                        <attribute name="Modifier" type="string" />
+                        <attribute name="Value" type="string" />
+                        <attribute name="Koef" type="float" />
+                    </extension>
+                </simpleContent>
+            </complexType>
+            <complexType name="TEvent">
+                <sequence minOccurs="0" maxOccurs="unbounded">
+                    <element xmlns:q3="http://example.com/" minOccurs="0" maxOccurs="unbounded" name="Bet" type="q3:TBet" />
+                </sequence>
+                <attribute name="Id" type="string" />
+                <attribute name="DateTime" type="dateTime" />
+                <attribute name="Gamer1_Name" type="string" />
+                <attribute name="Gamer2_Name" type="string" />
+            </complexType>
+            <complexType name="TEvents">
+                <sequence minOccurs="0" maxOccurs="unbounded">
+                    <element xmlns:q4="http://example.com/" minOccurs="0" maxOccurs="unbounded" name="Event" type="q4:TEvent" />
+                </sequence>
+            </complexType>
+            <complexType name="TEventsResponse">
+                <sequence>
+                    <element xmlns:q5="http://example.com/" name="Events" type="q5:TEvents" />
+                </sequence>
+            </complexType>
+        </xs:schema>
+    </types>
+    <message name="TournirsRequestMessage">
+        <part name="BookerSignPart" type="xs:string" />
+        <part name="SportIdPart" type="xs:integer" />
+    </message>
+    <message name="EventsResponseMessage">
+        <part name="EventsResponsePart" type="tns:TEventsResponse" />
+    </message>
+    <message name="SportsRequestMessage">
+        <part name="BookerSignPart" type="xs:string" />
+    </message>
+    <message name="EventRequestMessage">
+        <part name="BookerSignPart" type="xs:string" />
+        <part name="SportIdPart" type="xs:integer" />
+        <part name="TournirIdPart" type="xs:string" />
+        <part name="TournirUrlPart" type="xs:anyURI" />
+    </message>
+    <message name="BookersRequestMessage">
+        <part name="UserSign" type="xs:string" />
+    </message>
+    <message name="BookersResponseMessage">
+        <part name="BookersResponse" type="tns:TBookersResponse" />
+    </message>
+    <message name="SportsResponseMessage">
+        <part name="SportsResponsePart" type="tns:TSportsResponse" />
+    </message>
+    <message name="TournirsResponseMessage">
+        <part name="TournirResponse" type="tns:TTournirsResponse" />
+    </message>
+    <portType name="TScanPort">
+        <operation name="getBookers">
+            <input message="tns:BookersRequestMessage" />
+            <output message="tns:BookersResponseMessage" />
+        </operation>
+        <operation name="getSports">
+            <input message="tns:SportsRequestMessage" />
+            <output message="tns:SportsResponseMessage" />
+        </operation>
+        <operation name="getTournirs">
+            <input message="tns:TournirsRequestMessage" />
+            <output message="tns:TournirsResponseMessage" />
+        </operation>
+        <operation name="getEvents">
+            <input message="tns:EventRequestMessage" />
+            <output message="tns:EventsResponseMessage" />
+        </operation>
+    </portType>
+    <binding name="ScanBinding" type="tns:TScanPort">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="getBookers">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="getSports">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="getTournirs">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="getEvents">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+    </binding>
+    <service name="ScanService">
+        <port name="ScanPort" binding="tns:ScanBinding">
+            <soap:address location="http://gvindelen.square7.ch/soap/ScanBooker.php" />
+        </port>
+    </service>
+</definitions>
