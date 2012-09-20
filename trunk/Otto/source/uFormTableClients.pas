@@ -8,7 +8,7 @@ uses
   ImgList, PngImageList, ActnList, DB, FIBDataSet, pFIBDataSet, GridsEh,
   DBGridEh, StdCtrls, JvExStdCtrls, JvGroupBox, ExtCtrls, JvExExtCtrls,
   JvExtComponent, JvPanel, TB2Item, TBX, TB2Dock, TB2Toolbar, ComCtrls,
-  DBGridEhGrouping;
+  DBGridEhGrouping, Menus, FIBQuery, pFIBQuery, pFIBStoredProc;
 
 type
   TFormTableClients = class(TBaseNSIForm)
@@ -29,6 +29,7 @@ type
     grdAdresses: TDBGridEh;
     qryAdresses: TpFIBDataSet;
     dsAdresses: TDataSource;
+    spAccountRecalcRest: TpFIBStoredProc;
     procedure FormCreate(Sender: TObject);
     procedure actAccountManualDebitExecute(Sender: TObject);
     procedure actAccountManualCreditExecute(Sender: TObject);
@@ -37,6 +38,8 @@ type
       var CanShow: Boolean);
     procedure grdMainRowDetailPanelHide(Sender: TCustomDBGridEh;
       var CanHide: Boolean);
+    procedure actAccOpersEditExecute(Sender: TObject);
+    procedure qryMainBeforeScroll(DataSet: TDataSet);
   private
     { Private declarations }
   public
@@ -208,6 +211,37 @@ begin
   qryAdresses.Close;
   qryClientOrders.Close;
   qryAccountMovements.Close;
+end;
+
+procedure TFormTableClients.actAccOpersEditExecute(Sender: TObject);
+begin
+  trnWrite.StartTransaction;
+  dsAccountMovements.AutoEdit:= true;
+end;
+
+procedure TFormTableClients.qryMainBeforeScroll(DataSet: TDataSet);
+var
+  mr: Word;
+begin
+  if trnWrite.Active then
+  begin
+    mr:= MessageDlg('Сохранить изменения?', mtConfirmation, mbYesNoCancel, 0);
+    if mr = mrYes then
+    begin
+      with spAccountRecalcRest do
+      begin
+        ParamByName('I_ACCOUNT_ID').AsInteger:= DataSet['Account_Id'];
+        ExecProc;
+      end;
+      trnWrite.Commit;
+    end
+    else
+    if mr = mrNo then
+      trnWrite.Rollback
+    else
+      DataSet.Cancel;
+  end;
+
 end;
 
 end.

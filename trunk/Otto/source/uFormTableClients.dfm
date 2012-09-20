@@ -279,6 +279,11 @@ inherited FormTableClients: TFormTableClients
                 TitleFont.Style = []
                 Columns = <
                   item
+                    EditButtons = <>
+                    FieldName = 'ACCOPER_ID'
+                    Footers = <>
+                  end
+                  item
                     AutoFitColWidth = False
                     EditButtons = <>
                     FieldName = 'ACCOPER_DTM'
@@ -362,6 +367,7 @@ inherited FormTableClients: TFormTableClients
       '')
     CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
     CacheModelOptions.BufferChunks = 100
+    BeforeScroll = qryMainBeforeScroll
     Transaction = trnRead
     UpdateTransaction = trnWrite
     AutoCommit = True
@@ -437,6 +443,54 @@ inherited FormTableClients: TFormTableClients
       'read_committed')
   end
   object qryAccountMovements: TpFIBDataSet [8]
+    UpdateSQL.Strings = (
+      'UPDATE ACCOPERS'
+      'SET '
+      '    ACCOPER_DTM = :ACCOPER_DTM,'
+      '    AMOUNT_EUR = :AMOUNT_EUR,'
+      '    AMOUNT_BYR = :AMOUNT_BYR,'
+      '    BYR2EUR = :BYR2EUR,'
+      '    NOTES = :NOTES'
+      'WHERE'
+      '    ACCOPER_ID = :OLD_ACCOPER_ID'
+      '    ')
+    DeleteSQL.Strings = (
+      'DELETE FROM'
+      '    ACCOPERS'
+      'WHERE'
+      '        ACCOPER_ID = :OLD_ACCOPER_ID'
+      '    ')
+    InsertSQL.Strings = (
+      'INSERT INTO ACCOPERS('
+      '    ACCOPER_ID,'
+      '    ACCOPER_DTM,'
+      '    AMOUNT_EUR,'
+      '    AMOUNT_BYR,'
+      '    BYR2EUR,'
+      '    NOTES'
+      ')'
+      'VALUES('
+      '    :ACCOPER_ID,'
+      '    :ACCOPER_DTM,'
+      '    :AMOUNT_EUR,'
+      '    :AMOUNT_BYR,'
+      '    :BYR2EUR,'
+      '    :NOTES'
+      ')')
+    RefreshSQL.Strings = (
+      'SELECT'
+      '    ao.ACCOPER_ID,'
+      '    ao.ACCOPER_DTM,'
+      '    ao.AMOUNT_EUR,'
+      '    ao.AMOUNT_BYR,'
+      '    ao.BYR2EUR,'
+      '    o.ORDER_CODE,'
+      '    ao.NOTES'
+      'from accopers ao'
+      '  left join orders o on (o.order_id = ao.order_id)'
+      'where (ao.account_id = :account_id) '
+      '  and (AO.ACCOPER_ID = :OLD_ACCOPER_ID)'
+      '    ')
     SelectSQL.Strings = (
       'SELECT'
       '    ao.ACCOPER_ID,'
@@ -452,14 +506,17 @@ inherited FormTableClients: TFormTableClients
       'order by ao.accoper_id desc')
     CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
     CacheModelOptions.BufferChunks = 100
-    Transaction = dmOtto.trnAutonomouse
+    AllowedUpdateKinds = [ukModify, ukDelete]
+    Transaction = trnRead
     Database = dmOtto.dbOtto
+    UpdateTransaction = trnWrite
     DataSource = dsMain
     Left = 760
     Top = 16
+    oRefreshAfterDelete = True
+    oRefreshDeletedRecord = True
   end
   object dsAccountMovements: TDataSource [9]
-    AutoEdit = False
     DataSet = qryAccountMovements
     Left = 808
     Top = 16
@@ -534,5 +591,14 @@ inherited FormTableClients: TFormTableClients
     DataSet = qryAdresses
     Left = 821
     Top = 135
+  end
+  object spAccountRecalcRest: TpFIBStoredProc
+    Transaction = trnWrite
+    Database = dmOtto.dbOtto
+    SQL.Strings = (
+      'EXECUTE PROCEDURE ACCOUNT_RECALCREST (?I_ACCOUNT_ID)')
+    StoredProcName = 'ACCOUNT_RECALCREST'
+    Left = 633
+    Top = 125
   end
 end

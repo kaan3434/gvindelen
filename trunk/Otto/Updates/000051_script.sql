@@ -1,6 +1,6 @@
 delete from bonuses;
 -- Levakova
-update orders set client_id = -183601, adress_id = -183601, account_id=12684 where order_id = 3169;
+update orders set client_id = -183601, adress_id = -183601, account_id=12684 where order_id in (3169, 4249);
 update accopers set account_id = 12684 where account_id = 16344;
 update accrests set account_id = 12684 where account_id = 16344;
 update ordermoneys om set om.account_id = 12684 where om.account_id = 16344;
