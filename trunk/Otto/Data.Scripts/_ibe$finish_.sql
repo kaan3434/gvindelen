@@ -32,6 +32,7 @@ ALTER TABLE ARTICLES ADD CONSTRAINT PK_ARTICLES PRIMARY KEY (ARTICLE_ID);
 ALTER TABLE ARTICLESIGNS ADD CONSTRAINT PK_ARTICLESIGNS PRIMARY KEY (ARTICLESIGN_ID);
 ALTER TABLE ARTICLE_ATTRS ADD CONSTRAINT PK_ARTICLE_ATTRS PRIMARY KEY (OBJECT_ID, ATTR_ID);
 ALTER TABLE ATTRS ADD CONSTRAINT PK_ATTRS PRIMARY KEY (ATTR_ID);
+ALTER TABLE BONUSES ADD CONSTRAINT PK_BONUSES PRIMARY KEY (BONUS_ID);
 ALTER TABLE BUILDS ADD CONSTRAINT PK_BUILDS PRIMARY KEY (BUILD);
 ALTER TABLE CALCPOINTS ADD CONSTRAINT PK_CALCPOINTS PRIMARY KEY (CALCPOINT_ID);
 ALTER TABLE CATALOG2PLUGIN ADD CONSTRAINT PK_CATALOG2PLUGIN PRIMARY KEY (CATALOG_ID, PLUGIN_ID);
@@ -128,6 +129,10 @@ ALTER TABLE ARTICLESIGNS ADD CONSTRAINT FK_ARTICLESIGNS_STATUS FOREIGN KEY (STAT
 ALTER TABLE ARTICLE_ATTRS ADD CONSTRAINT FK_ARTICLE_ATTRS_ARTICLE FOREIGN KEY (OBJECT_ID) REFERENCES ARTICLES (ARTICLE_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE ARTICLE_ATTRS ADD CONSTRAINT FK_ARTICLE_ATTRS_ATTR FOREIGN KEY (ATTR_ID) REFERENCES ATTRS (ATTR_ID) ON UPDATE CASCADE;
 ALTER TABLE ATTRS ADD CONSTRAINT FK_ATTRS_OBJECT FOREIGN KEY (OBJECT_SIGN) REFERENCES OBJECTS (OBJECT_SIGN) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE BONUSES ADD CONSTRAINT FK_BONUSES_CLIENT_ID FOREIGN KEY (CLIENT_ID) REFERENCES CLIENTS (CLIENT_ID) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE BONUSES ADD CONSTRAINT FK_BONUSES_ORDERTAX_ID FOREIGN KEY (ORDERTAX_ID) REFERENCES ORDERTAXS (ORDERTAX_ID) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE BONUSES ADD CONSTRAINT FK_BONUSES_STATUS_ID FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
+ALTER TABLE BONUSES ADD CONSTRAINT FK_BONUSES_TAXSERV_ID FOREIGN KEY (TAXSERV_ID) REFERENCES TAXSERVS (TAXSERV_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE CALCPOINTS ADD CONSTRAINT FK_CALCPOINTS_OBJECT FOREIGN KEY (OBJECT_SIGN) REFERENCES OBJECTS (OBJECT_SIGN) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE CALCPOINTS ADD CONSTRAINT FK_CALCPOINTS_OBJECTSTATUS FOREIGN KEY (OBJECT_STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE CATALOG2PLUGIN ADD CONSTRAINT FK_CATALOG2PLUGIN_CATALOG FOREIGN KEY (CATALOG_ID) REFERENCES CATALOGS (CATALOG_ID) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -269,7 +274,7 @@ end
 
 /* Trigger: ACCOPERS_AI0 */
 CREATE OR ALTER TRIGGER ACCOPERS_AI0 FOR ACCOPERS
-ACTIVE AFTER INSERT POSITION 0
+ACTIVE AFTER INSERT OR UPDATE OR DELETE POSITION 0
 AS
 begin
   update accounts a
@@ -567,6 +572,31 @@ begin
                  where r.rdb$field_name = new.field_name)) then
       exception ex_unknown_fieldname;
   end
+end
+^
+
+/* Trigger: BONUSES_BI0 */
+CREATE OR ALTER TRIGGER BONUSES_BI0 FOR BONUSES
+ACTIVE BEFORE INSERT POSITION 0
+AS
+begin
+  if (new.bonus_id is null) then
+    new.bonus_id = gen_id(seq_bonus_id, 1);
+  if (new.status_id is null) then
+    select o_status_id from status_get_default('BONUS') into new.status_id;
+  if (new.create_dtm is null) then
+    new.create_dtm = current_timestamp;
+  new.status_dtm = current_timestamp;
+end
+^
+
+/* Trigger: BONUSES_BU0 */
+CREATE OR ALTER TRIGGER BONUSES_BU0 FOR BONUSES
+ACTIVE BEFORE UPDATE POSITION 0
+AS
+begin
+  if (old.status_id <> new.status_id) then
+    new.status_dtm = current_timestamp;
 end
 ^
 
@@ -1094,6 +1124,27 @@ begin
 end^
 
 
+CREATE OR ALTER PROCEDURE ACCOUNT_RECALCREST (
+    I_ACCOUNT_ID TYPE OF ID_ACCOUNT NOT NULL)
+AS
+begin
+  delete from accrests ar where ar.account_id = :i_account_id;
+
+  insert into accrests (account_id, byr2eur, rest_eur, rest_byr)
+  select ao.account_id, ao.byr2eur, sum(ao.amount_eur), sum(ao.amount_byr)
+    from accopers ao
+    where ao.account_id = :i_account_id
+    group by ao.account_id, ao.byr2eur;
+
+  update accounts a
+  set a.rest_eur = (select sum(ar.rest_eur)
+    from accrests ar
+    where ar.account_id = a.account_id)
+  where a.account_id = :i_account_id;
+
+end^
+
+
 CREATE OR ALTER PROCEDURE ACCOUNT_X_SEARCH (
     I_DEST_PARAM_ID TYPE OF ID_PARAM NOT NULL,
     I_PARAM_NAME TYPE OF SIGN_ATTR NOT NULL,
@@ -1483,6 +1534,105 @@ begin
     execute procedure param_set(:i_param_id, 'STATUS_ID', :v_new_status_id);
     execute procedure object_put(:i_param_id);
   end
+end^
+
+
+CREATE OR ALTER PROCEDURE ACT_BONUS_STORE (
+    I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
+    I_OBJECT_ID TYPE OF ID_OBJECT,
+    I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'BONUS')
+AS
+declare variable V_NOW_STATUS_ID type of ID_STATUS;
+declare variable V_UPDATEABLE type of VALUE_BOOLEAN;
+declare variable V_NEW_STATUS_ID type of ID_STATUS;
+declare variable V_TAXSERV_ID type of ID_TAX;
+declare variable V_CLIENT_ID type of ID_CLIENT;
+begin
+  if (coalesce(i_object_id, 0) = 0) then i_object_id = gen_id(seq_bonus_id, 1);
+    
+  update paramheads set object_id = :i_object_id where param_id = :i_param_id;
+    
+  execute procedure param_set(:i_param_id, 'ID', :i_object_id);
+    
+  select status_id from bonuses b where b.bonus_id = :i_object_id into :v_now_status_id;
+
+  if (:v_now_status_id is null) then
+  begin
+    select o_value from param_get(:i_param_id, 'TAXSERV_ID') into :v_taxserv_id;
+    select o_value from param_get(:i_param_id, 'CLIENT_ID') into :v_client_id;
+
+    insert into bonuses(bonus_id, client_id, taxserv_id, status_id)
+      values(:i_object_id, :v_client_id, :v_taxserv_id, :v_new_status_id)
+      returning status_id
+      into :v_new_status_id;
+    v_updateable = 1;
+  end
+  else
+  begin
+    select o_updateable, o_new_status_id
+      from object_updateable(:i_param_id, :v_now_status_id, :i_object_sign)
+      into :v_updateable, :v_new_status_id;
+  end
+
+  if (v_updateable = 1) then
+  begin
+    execute procedure param_set(:i_param_id, 'STATUS_ID', :v_new_status_id);
+    execute procedure object_put(:i_param_id);
+  end
+  else
+    exception ex_status_conversion_unavail 'From '||:v_now_status_id||' to '||:v_new_status_id;
+
+end^
+
+
+CREATE OR ALTER PROCEDURE ACT_BONUS_USE (
+    I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
+    I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL,
+    I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'BONUS')
+AS
+declare variable V_NOW_STATUS_ID type of ID_STATUS;
+declare variable V_ORDER_ID type of ID_ORDER;
+declare variable V_UPDATEABLE type of VALUE_BOOLEAN;
+declare variable V_NEW_STATUS_ID type of ID_STATUS;
+declare variable V_TAXRATE_ID type of ID_TAX;
+declare variable V_TAX_PROCEDURE type of NAME_PROCEDURE;
+declare variable V_PRICE_EUR type of MONEY_EUR;
+declare variable V_ORDERTAX_ID type of ID_TAX;
+begin
+
+  update paramheads set object_id = :i_object_id where param_id = :i_param_id;
+    
+  execute procedure param_set(:i_param_id, 'ID', :i_object_id);
+
+  select o_value from param_get(:i_param_id, 'ORDER_ID') into :v_order_id;
+
+  select status_id from bonuses b where b.bonus_id = :i_object_id into :v_now_status_id;
+    
+  select r.taxrate_id, r.tax_procedure
+    from orders o
+      inner join bonuses b on (b.client_id = o.client_id)
+      inner join product2taxplan p2t on (p2t.product_id = o.product_id)
+      inner join taxrates r on (r.taxplan_id = p2t.taxplan_id and r.taxserv_id = b.taxserv_id)
+    where o.order_id = :v_order_id and b.bonus_id = :i_object_id
+    into :v_taxrate_id, :v_tax_procedure;
+
+  execute statement ('select o_cost_eur from '||v_tax_procedure||'(:taxrate_id, :param_id)')
+    (taxrate_id := :v_taxrate_id, param_id := :i_param_id)
+    into :v_price_eur;
+
+  insert into ordertaxs(order_id, taxrate_id, status_id, price_eur)
+    values(:v_order_id, :v_taxrate_id, :v_new_status_id, -:v_price_eur)
+    returning ordertax_id
+    into :v_ordertax_id;
+
+  execute procedure param_set(:i_param_id, 'NEW.STATUS_SIGN', 'USED');
+  select o_updateable, o_new_status_id
+    from object_updateable(:i_param_id, :v_now_status_id, :i_object_sign)
+    into :v_updateable, :v_new_status_id;
+
+  update bonuses b
+    set b.ordertax_id = :v_ordertax_id, b.status_id = :v_new_status_id
+    where b.bonus_id = :i_object_id;
 end^
 
 
@@ -2639,6 +2789,12 @@ begin
 
   if (v_valid_criterias = 1) then
   begin
+    if (v_procedure_name = 'BONUS_USE') then
+      execute procedure act_bonus_use(:i_param_id, :i_object_id);
+    else
+    if (v_procedure_name = 'BONUS_STORE') then
+      execute procedure act_bonus_store(:i_param_id, :i_object_id);
+    else
     if (v_procedure_name = 'ACCOUNT_CREDIT') then
       execute procedure act_account_credit(:i_param_id, :i_object_id);
     else
@@ -2712,18 +2868,6 @@ begin
       order by a.order_no
       into :v_actiontreeitem_id, :v_child_action_sign, :v_child_object_sign do
     begin
-      select o_param_id from param_create(:v_child_object_sign) into :v_param_id;
-      execute procedure param_set(:v_param_id, 'ACTIONTREEITEM_ID', :v_actiontreeitem_id);
-      -- calc child action input param
-      for select atp.param_name, atp.param_kind, atp.param_value
-        from actiontree_params atp
-          inner join paramkinds pk on (pk.param_kind = atp.param_kind)
-        where atp.actiontreeitem_id = :v_actiontreeitem_id
-          and pk.is_output = 0
-        order by pk.order_no
-        into :v_param_name, :v_param_kind, :v_param_value
-      do execute procedure param_calc_in(:v_child_object_sign, :v_param_id, :v_param_name, :v_param_kind, :v_param_value, :i_param_id);
-  
       v_valid_criterias = 1;
       -- check criterias
       for select atc.param_name, atc.param_action, atc.param_kind, atc.param_value_1, atc.param_value_2
@@ -2733,13 +2877,25 @@ begin
       do
       begin
         select o_valid
-          from param_criteria (:v_param_id, :v_param_name, :v_param_action, :v_param_kind, :v_param_value, :v_param_value_2)
+          from param_criteria (:i_param_id, :v_param_name, :v_param_action, :v_param_kind, :v_param_value, :v_param_value_2)
           into :v_valid_criterias;
         if (:v_valid_criterias = 0) then
           leave;
       end
       if (:v_valid_criterias = 1) then
       begin
+        select o_param_id from param_create(:v_child_object_sign) into :v_param_id;
+        execute procedure param_set(:v_param_id, 'ACTIONTREEITEM_ID', :v_actiontreeitem_id);
+        -- calc child action input param
+        for select atp.param_name, atp.param_kind, atp.param_value
+          from actiontree_params atp
+            inner join paramkinds pk on (pk.param_kind = atp.param_kind)
+          where atp.actiontreeitem_id = :v_actiontreeitem_id
+            and pk.is_output = 0
+          order by pk.order_no
+          into :v_param_name, :v_param_kind, :v_param_value
+        do execute procedure param_calc_in(:v_child_object_sign, :v_param_id, :v_param_name, :v_param_kind, :v_param_value, :i_param_id);
+  
         -- execute child action
         if (v_child_action_sign like '%FOREACH%') then
           execute procedure action_run(:v_child_object_sign, :v_child_action_sign, :v_param_id, :i_object_id)
@@ -2979,6 +3135,60 @@ begin
       ' values(:object_id, :attr_id, :attr_value)'||
       ' matching(object_id, attr_id)';
     execute statement (:v_sql) (object_id := :i_object_id, attr_id := :v_attr_id, attr_value := :i_attr_value);
+  end
+end^
+
+
+CREATE OR ALTER PROCEDURE BONUS_MAKE (
+    I_FIO TYPE OF NAME_REF NOT NULL,
+    I_TAXSERV_ID TYPE OF ID_TAX NOT NULL)
+RETURNS (
+    O_ACTION_ID TYPE OF ID_BONUS)
+AS
+declare variable V_CLIENT_ID type of ID_CLIENT;
+declare variable V_PARAM_ID type of ID_PARAM;
+declare variable V_ACTION_ID type of ID_ACTION;
+begin
+  select client_id
+    from v_clients_fio c
+    where c.client_fio = :i_fio
+    into :v_client_id;
+
+  if (v_client_id is not null) then
+  begin
+    select o_param_id from param_create('BONUS') into :v_param_id;
+    execute procedure param_set(:v_param_id, 'CLIENT_ID', :v_client_id);
+    execute procedure param_set(:v_param_id, 'TAXSERV_ID', :i_taxserv_id);
+
+    select o_action_id from action_run('BONUS', 'BONUS_CREATE', :v_param_id, 0) into :o_action_id;
+    suspend;
+  end
+end^
+
+
+CREATE OR ALTER PROCEDURE BONUS_USE (
+    I_ORDER_CODE TYPE OF CODE_ORDER)
+RETURNS (
+    O_ACTION_ID TYPE OF ID_ACTION)
+AS
+declare variable V_BONUS_ID type of ID_BONUS;
+declare variable V_ORDER_ID type of ID_ORDER;
+declare variable V_PARAM_ID type of ID_PARAM;
+begin
+  select first 1 o.order_id, b.bonus_id
+    from orders o
+      inner join bonuses b on (b.client_id = o.client_id and b.ordertax_id is null)
+    where o.order_code = :i_order_code
+    into :v_order_id, v_bonus_id;
+
+  if (v_bonus_id is not null) then
+  begin
+    select o_param_id from param_create('BONUS') into :v_param_id;
+    execute procedure param_set(:v_param_id, 'ID', :v_bonus_id);
+    execute procedure param_set(:v_param_id, 'ORDER_ID', :v_order_id);
+
+    select o_action_id from action_run('BONUS', 'BONUS_USE', :v_param_id, 0) into :o_action_id;
+    suspend;
   end
 end^
 
@@ -3249,6 +3459,46 @@ begin
     set m.busy_id = null
     where m.busy_id = current_connection
       and m.template_id = :i_template_id;
+end^
+
+
+CREATE OR ALTER PROCEDURE MONEY_TO_ORDER (
+    I_ORDER_CODE TYPE OF CODE_ORDER)
+AS
+declare variable V_PARAM_ID type of ID_PARAM;
+declare variable V_ACCOUNT_ID type of ID_ACCOUNT;
+declare variable V_ORDER_ID type of ID_ORDER;
+declare variable V_ACTION_ID type of ID_ACTION;
+declare variable V_COST_EUR type of MONEY_EUR;
+declare variable V_AMOUNT_EUR type of MONEY_EUR;
+declare variable V_REST_EUR type of MONEY_EUR;
+begin
+  select o.account_id, o.order_id, os.cost_eur
+    from orders o
+      inner join v_order_summary os on (os.order_id = o.order_id)
+    where o.order_code = :i_order_code
+    into :v_account_id, :v_order_id, :v_cost_eur;
+
+  select sum(ar.rest_eur)
+    from accrests ar
+    where ar.account_id = :v_account_id
+    into :v_rest_eur;
+
+  if (v_rest_eur > v_cost_eur) then
+    v_amount_eur= replace(v_cost_eur, ',', '.');
+  else
+    v_amount_eur= replace(v_rest_eur, ',', '.');
+
+  select o_param_id from param_create('ACCOUNT', :v_account_id) into :v_param_id;
+  execute procedure param_set(:v_param_id, 'ORDER_ID', :v_order_id);
+
+  execute procedure param_set(:v_param_id, 'AMOUNT_EUR', replace(:v_amount_eur, ',','.'));
+
+  select o_action_id
+    from action_run('ACCOUNT', 'ACCOUNT_CREDITORDER', :v_param_id, :v_account_id)
+    into :v_action_id;
+
+  suspend;
 end^
 
 
@@ -4068,6 +4318,12 @@ begin
         o_valid = 1;
       else
       if ((:i_param_action = 'IS NOT') and (:v_value is not null)) then
+        o_valid = 1;
+      else
+      if ((:i_param_action = 'IN') and (','||cast(:i_param_value_1 as value_attr)||',' like '%,'||cast(:v_value as value_attr)||',%')) then
+        o_valid = 1;
+      else
+      if ((:i_param_action = 'NOT IN') and (','||cast(:i_param_value_1 as value_attr)||',' not like '%,'||cast(:v_value as value_attr)||',%')) then
         o_valid = 1;
     end
   end
