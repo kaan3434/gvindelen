@@ -1,0 +1,48 @@
+package GvindlnIndy7;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$IMPLICITBUILD ON}
+
+requires
+  vcl,
+  vclx,
+  vcldb,
+  vclsmp,
+  bdertl,
+  rtl,
+  vclie,
+  IndyCore70,
+  IndySystem70,
+  IndyProtocols70,
+  dbrtl,
+  Gvindln7;
+
+contains
+  GvWebScript in '..\Source\GvWebScript.pas',
+  GvHtmlScript in '..\Source\GvHtmlScript.pas',
+  NativeXml in '..\..\NativeXml310\NativeXml.pas',
+  GvHtml2Xml in '..\Source\GvHtml2Xml.pas',
+  GvHtml in '..\Source\GvHtml.pas';
+
+end.
