@@ -185,7 +185,8 @@ begin
     if GetXmlAttrValue(ndAccount, 'REST_EUR', 0) <> 0 then
       dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_CREDITORDER',
         XmlAttrs2Vars(ndAccount, 'ID;AMOUNT_EUR=REST_EUR',
-        XmlAttrs2Vars(ndOrder, 'ORDER_ID=ID;ORDER_CODE')))
+        XmlAttrs2Vars(ndOrder, 'ORDER_ID=ID;ORDER_CODE',
+        Value2Vars('Перенос остатка на заявку при оформлении', 'NOTES'))))
   end;
   trnWrite.SetSavePoint('OnSetStatus'+StatusSignNew);
   try

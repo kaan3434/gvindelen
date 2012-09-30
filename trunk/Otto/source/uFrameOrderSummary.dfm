@@ -300,7 +300,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
         object txtBonusName: TStaticText
           Left = 40
           Top = 32
-          Width = 177
+          Width = 73
           Height = 17
           Caption = 'txtBonusName'
           TabOrder = 3

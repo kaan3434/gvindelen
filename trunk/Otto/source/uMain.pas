@@ -770,6 +770,7 @@ procedure TMainForm.actReturnExecute(Sender: TObject);
 var
   OrderId: variant;
   OrderCode: string;
+
 begin
 //  OrderCode:= '7002';
   if InputQuery('Возврат позиций заявки', 'Укажите номер заявки', OrderCode) then

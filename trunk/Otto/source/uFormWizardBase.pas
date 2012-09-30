@@ -94,7 +94,8 @@ begin
   SourceFlag:= sfDatabase;
   ObjectId:= aObjectId;
   ReadFromDB(ObjectId);
-  trnWrite.StartTransaction;
+  if not trnWrite.Active then
+    trnWrite.StartTransaction;
 end;
 
 constructor TFormWizardBase.CreateXml(AOwner: TComponent;

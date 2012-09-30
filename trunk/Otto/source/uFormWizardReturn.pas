@@ -85,13 +85,20 @@ procedure TFormWizardReturn.ReadFromDB(aObjectId: Integer);
 begin
   inherited;
   dmOtto.ObjectGet(ndOrder, aObjectId, trnRead);
-  dmOtto.OrderItemsGet(ndOrderItems, aObjectId, trnRead);
-  dmOtto.OrderTaxsGet(ndOrderTaxs, aObjectId, trnRead);
-  dmOtto.OrderMoneysGet(ndOrderMoneys, aObjectId, trnRead);
-  dmOtto.ObjectGet(ndClient, GetXmlAttrValue(ndOrder, 'CLIENT_ID'), trnRead);
-  dmOtto.ObjectGet(ndAccount, GetXmlAttrValue(ndClient, 'ACCOUNT_ID'), trnRead);
-  dmOtto.ObjectGet(ndAdress, GetXmlAttrValue(ndOrder, 'ADRESS_ID'), trnRead);
-  dmOtto.ObjectGet(ndPlace, GetXmlAttrValue(ndAdress, 'PLACE_ID'), trnRead);
+  if not FlagPresent('DELIVERED', ndOrder, 'STATUS_FLAG_LIST') then
+  begin
+    SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'DELIVERED');
+    dmOtto.ActionExecute(trnWrite, ndOrder);
+    dmOtto.ObjectGet(ndOrder, OrderId, trnWrite);
+  end;
+
+  dmOtto.OrderItemsGet(ndOrderItems, aObjectId, trnWrite);
+  dmOtto.OrderTaxsGet(ndOrderTaxs, aObjectId, trnWrite);
+  dmOtto.OrderMoneysGet(ndOrderMoneys, aObjectId, trnWrite);
+  dmOtto.ObjectGet(ndClient, GetXmlAttrValue(ndOrder, 'CLIENT_ID'), trnWrite);
+  dmOtto.ObjectGet(ndAccount, GetXmlAttrValue(ndClient, 'ACCOUNT_ID'), trnWrite);
+  dmOtto.ObjectGet(ndAdress, GetXmlAttrValue(ndOrder, 'ADRESS_ID'), trnWrite);
+  dmOtto.ObjectGet(ndPlace, GetXmlAttrValue(ndAdress, 'PLACE_ID'), trnWrite);
 end;
 
 

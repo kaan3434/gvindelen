@@ -1,13 +1,13 @@
 inherited FormWizardReturn: TFormWizardReturn
   Left = 174
   Top = 61
-  ActiveControl = wzIPageMoneyBackKind
+  ActiveControl = wzWPage
   Caption = 'FormWizardReturn'
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   inherited wzForm: TJvWizard
-    ActivePage = wzIPageMoneyBackKind
+    ActivePage = wzWPage
     OnActivePageChanging = wzFormActivePageChanging
     object wzWPage: TJvWizardWelcomePage
       Header.ParentFont = False

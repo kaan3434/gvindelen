@@ -207,6 +207,7 @@ begin
     SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'HAVERETURN');
     dmOtto.ActionExecute(trnWrite, ndOrder);
     dmOtto.ObjectGet(ndOrder, OrderId, trnWrite);
+
 //    if GetXmlAttrValue(ndOrder, 'MONEYBACK_KIND') = 'LEAVE' then
 //    begin
 //      MoneyEur:= trnWrite.DefaultDatabase.QueryValue(
