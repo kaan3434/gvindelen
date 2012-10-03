@@ -61,7 +61,6 @@ begin
   FIdHttp.Request.ContentType:= 'text/xml;charset=UTF-8';
   FIdHttp.Request.AcceptEncoding:= 'gzip,deflate';
   FIdHttp.Request.Accept:= 'text/xml;charset=UTF-8';
-
 end;
 
 procedure TGvSoapClient.Execute(const aURL: String);
