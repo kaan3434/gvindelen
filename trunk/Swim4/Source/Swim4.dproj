@@ -128,6 +128,7 @@
 			<DCCReference Include="ScanWSDL.pas"/>
 			<DCCReference Include="D:\4Delphi\Gvindln\Source\GvXmlUtils.pas"/>
 			<DCCReference Include="GvRibbon.pas"/>
+			<DCCReference Include="GvSoapClient.pas"/>
 			<None Include="ModelSupport_Swim4\default.txaPackage"/>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>

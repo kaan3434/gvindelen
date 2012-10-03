@@ -17,7 +17,8 @@ uses
   EhLibFIB in 'D:\4Delphi\EhLib\DataService\Others\EhLibFIB.pas',
   ScanWSDL in 'ScanWSDL.pas',
   GvXmlUtils in 'D:\4Delphi\Gvindln\Source\GvXmlUtils.pas',
-  GvRibbon in 'GvRibbon.pas';
+  GvRibbon in 'GvRibbon.pas',
+  GvSoapClient in 'GvSoapClient.pas';
 
 {$R *.res}
 

@@ -13,6 +13,7 @@ object Form1: TForm1
   OldCreateOrder = False
   Position = poDesktopCenter
   ScreenSnap = True
+  OnActivate = FormActivate
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -38,7 +39,6 @@ object Form1: TForm1
         Caption = 'Teacher'
         Page = rpTeacher
       end>
-    TabIndex = 2
     DesignSize = (
       732
       143)
@@ -47,81 +47,6 @@ object Form1: TForm1
       ActionManager = actMngRibbon
       OptionItems = <>
       RecentItems = <>
-    end
-    object rpScanner: TRibbonPage
-      Left = 0
-      Top = 50
-      Width = 731
-      Height = 93
-      Caption = 'Scanner'
-      Index = 0
-      object tbScannerBookers: TRibbonGroup
-        AlignWithMargins = True
-        Left = 4
-        Top = 3
-        Width = 123
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = 'Bookers'
-        GroupIndex = 0
-      end
-    end
-    object rpViewer: TRibbonPage
-      Left = 0
-      Top = 50
-      Width = 731
-      Height = 93
-      Caption = 'Viewer'
-      Index = 1
-      object tbViewerBookers: TRibbonGroup
-        Left = 4
-        Top = 3
-        Width = 50
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = 'Bookers'
-        GroupIndex = 0
-      end
-      object rgIgnore1: TRibbonGroup
-        Left = 56
-        Top = 3
-        Width = 105
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = #1048#1075#1085#1086#1088#1099' 1-'#1075#1086' '#1055#1083#1077#1095#1072
-        GroupIndex = 1
-      end
-      object rgIgnore2: TRibbonGroup
-        Left = 163
-        Top = 3
-        Width = 105
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = #1048#1075#1085#1086#1088#1099' 2-'#1075#1086' '#1087#1083#1077#1095#1072
-        GroupIndex = 2
-      end
-      object rgBetAmount: TRibbonGroup
-        AlignWithMargins = True
-        Left = 270
-        Top = 3
-        Width = 174
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = #1056#1072#1079#1084#1077#1088' '#1089#1090#1072#1074#1086#1082
-        GroupAlign = gaHorizontal
-        GroupIndex = 3
-        Rows = 2
-        object edAmount: TRibbonSpinEdit
-          Left = 61
-          Top = 11
-          Width = 108
-          Height = 22
-          MaxValue = 0
-          MinValue = 1
-          TabOrder = 0
-          Value = 1
-        end
-      end
     end
     object rpTeacher: TRibbonPage
       Left = 0
@@ -187,6 +112,81 @@ object Form1: TForm1
           TabOrder = 3
           Value = 0
         end
+      end
+    end
+    object rpViewer: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 731
+      Height = 93
+      Caption = 'Viewer'
+      Index = 1
+      object tbViewerBookers: TRibbonGroup
+        Left = 4
+        Top = 3
+        Width = 50
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = 'Bookers'
+        GroupIndex = 0
+      end
+      object rgIgnore1: TRibbonGroup
+        Left = 56
+        Top = 3
+        Width = 105
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = #1048#1075#1085#1086#1088#1099' 1-'#1075#1086' '#1055#1083#1077#1095#1072
+        GroupIndex = 1
+      end
+      object rgIgnore2: TRibbonGroup
+        Left = 163
+        Top = 3
+        Width = 105
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = #1048#1075#1085#1086#1088#1099' 2-'#1075#1086' '#1087#1083#1077#1095#1072
+        GroupIndex = 2
+      end
+      object rgBetAmount: TRibbonGroup
+        AlignWithMargins = True
+        Left = 270
+        Top = 3
+        Width = 174
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = #1056#1072#1079#1084#1077#1088' '#1089#1090#1072#1074#1086#1082
+        GroupAlign = gaHorizontal
+        GroupIndex = 3
+        Rows = 2
+        object edAmount: TRibbonSpinEdit
+          Left = 61
+          Top = 11
+          Width = 108
+          Height = 22
+          MaxValue = 0
+          MinValue = 1
+          TabOrder = 0
+          Value = 0
+        end
+      end
+    end
+    object rpScanner: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 731
+      Height = 93
+      Caption = 'Scanner'
+      Index = 0
+      object tbScannerBookers: TRibbonGroup
+        AlignWithMargins = True
+        Left = 4
+        Top = 3
+        Width = 123
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = 'Bookers'
+        GroupIndex = 0
       end
     end
   end
@@ -588,7 +588,7 @@ object Form1: TForm1
     Left = 560
     Top = 8
     Bitmap = {
-      494C01010D006E007C0010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
+      494C01010D006E00800010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1130,7 +1130,7 @@ object Form1: TForm1
     Left = 472
     Top = 8
     Bitmap = {
-      494C01010D006600740020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01010D006600780020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000008000000001002000000000000000
       0100000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -3588,5 +3588,29 @@ object Form1: TForm1
       ImageIndex = 7
       OnExecute = actCalcMaxExecute
     end
+  end
+  object IdHTTP1: TIdHTTP
+    Intercept = IdLogFile1
+    AllowCookies = True
+    ProxyParams.BasicAuthentication = False
+    ProxyParams.ProxyPort = 0
+    Request.ContentLength = -1
+    Request.ContentRangeEnd = -1
+    Request.ContentRangeStart = -1
+    Request.ContentRangeInstanceLength = -1
+    Request.Accept = 'text/html, */*'
+    Request.BasicAuthentication = False
+    Request.UserAgent = 'Mozilla/3.0 (compatible; Indy Library)'
+    Request.Ranges.Units = 'bytes'
+    Request.Ranges = <>
+    HTTPOptions = [hoForceEncodeParams]
+    Left = 248
+    Top = 64
+  end
+  object IdLogFile1: TIdLogFile
+    Active = True
+    Filename = 'd:\log'
+    Left = 328
+    Top = 72
   end
 end

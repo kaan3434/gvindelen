@@ -8,12 +8,15 @@
   <Bookers>
     <Booker Id="1" Sign="bwin" Url="https://bwin.com" Title="BWin" ImgIndex="3"/>
     <Booker Id="2" Sign="olymp" Url="https://olympbet.com" Title="Olymp" ImgIndex="4"/>
-    <Booker Id="3" Sign="marathon" Url="http://marathonbet.com" Title="Марафон" ImgIndex="5"/>
+    <Booker Id="3" Sign="marathon" Url="http://marathonbet.com" Title="Марафон" ImgIndex="5">
+      <Services>
+        <Service Id="0" Url="http://localhost:8080/soap/ScanBooker.php"/>
+      </Services>
+    </Booker>
   </Bookers>
   <Scaners ThreadCount="10" AutoStart="0"/>
   <Services Default="0">
     <Service Id="0" Url="http://otto.by/soap/ScanBooker.php"/>
   </Services>
-  <!--Service Id="0" Url="http://localhost:8080/soap/ScanBooker.php"/-->
 </Settings>
 
