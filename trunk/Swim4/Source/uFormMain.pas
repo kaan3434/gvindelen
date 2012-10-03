@@ -63,8 +63,6 @@ type
     actSetCalcValuteUSD: TAction;
     edAmount: TRibbonSpinEdit;
     actSetCalcValuteMNY: TAction;
-    IdHTTP1: TIdHTTP;
-    IdLogFile1: TIdLogFile;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure actScanAllBookerExecute(Sender: TObject);
@@ -79,7 +77,6 @@ type
     procedure cbValuteSignChange(Sender: TObject);
     procedure actSetCalcValuteExecute(Sender: TObject);
     procedure actCalcMaxExecute(Sender: TObject);
-    procedure FormActivate(Sender: TObject);
   private
     { Private declarations }
     FThreadList: TList;
@@ -273,25 +270,6 @@ begin
   AppendPngToImageList(imgListRibbonLarge, TBlobField(aBookerDataSet.FieldByName('small_icon')));
   AppendActionToGroup(tbScannerBookers, aBookerDataSet, ImgIndex, actNeedScan.OnExecute);
   AppendActionTogroup(tbViewerBookers, aBookerDataSet, ImgIndex, actNeedShow.OnExecute);
-end;
-
-procedure TForm1.FormActivate(Sender: TObject);
-var
-  St: String;
-  Xml: TGvXml;
-begin
-  Xml:= TGvXml.Create;
-  try
-    Xml.Root.NodeName:= 'getTournirs';
-    Xml.Root.AddChild('BookerSignPart', 'marathon');
-    Xml.Root.AddChild('SportIdPart', '10');
-
-    St:= getData('http://gvindelen.site11.com/soap/ScanBooker.php', Xml.Root, IdHTTP1);
-
-    ShowMessage(St);
-  finally
-    Xml.Free;
-  end;
 end;
 
 procedure TForm1.FormCloseQuery(Sender: TObject; var CanClose: Boolean);

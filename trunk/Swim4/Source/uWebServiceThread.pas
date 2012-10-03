@@ -3,7 +3,7 @@ unit uWebServiceThread;
 interface
 
 uses
-  System.Classes, Variants, uDmWebServiceThread, ScanWSDL, GvXml;
+  System.Classes, Variants, uDmWebServiceThread, GvXml, GvSoapClient;
 
 type
   TWebServiceRequester = class(TThread)
@@ -14,13 +14,14 @@ type
     FRequestId: integer;
     FScanId: integer;
     FActionSign: string;
-    FWSScan: TScanPort;
     FNode: TGvXmlNode;
-    procedure PutBookers;
-    procedure PutSports;
-    procedure PutTournirs;
-    procedure PutEvents;
+    FSoapClient: TGvSoapClient;
+//    procedure getBookers;
+    procedure getSports;
+    procedure getTournirs;
+    procedure getEvents;
     function BusyNextRequest: boolean;
+    function GetURL: String;
   protected
     procedure MyInit;
     procedure MyDestroy;
@@ -95,15 +96,15 @@ begin
   dm:= TdmSwimThread.Create(nil);
   FThreadId:= dm.dbSwim.QueryValue(
     'SELECT gen_id(gen_thread_id, 1) FROM RDB$DATABASE', 0);
-  Addr:= settings.RandomService.Attr['Url'].AsString;
-  FWSScan:= GetTScanPort(false, Addr);
   FNode:= TGvXmlNode.Create;
+  FSoapClient:= TGvSoapClient.Create;
   CoInitialize(nil);
 end;
 
 procedure TWebServiceRequester.MyDestroy;
 begin
   CoUninitialize;
+  FSoapClient.Free;
   FNode.Free;
   dm.Free;
 end;
@@ -116,16 +117,13 @@ begin
       while BusyNextRequest do
       begin
         if FActionSign = 'getEvents' then
-          PutEvents
+          getEvents
         else
         if FActionSign = 'getTournirs' then
-          PutTournirs
+          getTournirs
         else
         if FActionSign = 'getSports' then
-          PutSports
-        else
-        if FActionSign = 'getBookers' then
-          PutBookers;
+          getSports;
         Synchronize(UpdateMainForm);
       end;
       Suspend;
@@ -135,114 +133,90 @@ begin
   end;
 end;
 
-procedure TWebServiceRequester.PutBookers;
+
+//procedure TWebServiceRequester.PutBookers;
+//var
+//  aURL: String;
+//  i: Integer;
+//  Parts: TStringList;
+//  Bookers: TGvXmlNode;
+//begin
+//  aURL:= settings.DefaultService['Url'];
+//  with FSoapClient do
+//  begin
+//    Clear;
+//    Method:= 'getBookers';
+//    Request.AddChild('UserSign', 'Gvindelen');
+//    Execute(aURL);
+//    Bookers
+//    for I := 0 to  do
+//
+//  end;
+//
+//  Bookers:= FWSScan.getBookers('Gvindelen').Bookers;
+//  Parts:= TStringList.Create;
+//  try
+//    for i:= 0 to High(Bookers) do
+//    begin
+//      Parts.Values['BookerSign']:= Bookers[i].Sign;
+//      with dm.spRequestAdd do
+//      begin
+//        Params.ParamByName('ActionSign').AsString:= 'getSports';
+//        Params.ParamByName('Parts').AsString := Parts.Text;
+//        ExecProc;
+//      end;
+//    end;
+//  finally
+//    Parts.Free;
+//  end;
+//end;
+
+function TWebServiceRequester.GetURL: String;
 var
-  Bookers: TBookers;
-  i: Integer;
-  Parts: TStringList;
+  Services: TStringList;
 begin
-  Bookers:= FWSScan.getBookers('Gvindelen').Bookers;
-  Parts:= TStringList.Create;
+  Services:= TStringList.Create;
   try
-    for i:= 0 to High(Bookers) do
-    begin
-      Parts.Values['BookerSign']:= Bookers[i].Sign;
-      with dm.spRequestAdd do
-      begin
-        Params.ParamByName('ActionSign').AsString:= 'getSports';
-        Params.ParamByName('Parts').AsString := Parts.Text;
-        ExecProc;
-      end;
-    end;
+    Services.CommaText:= settings.Bookers.Find('Booker', 'Id', FNode['Booker_Id'])['Services'];
+    Case Services.Count of
+      0: result:= settings.RandomService['Url'];
+      1: result:= settings.Services.Find('Service', 'Id', Services[0])['Url'];
+    else
+      result:= settings.Services.Find('Service', 'Id', Services[Random(Services.Count)])['Url'];
+    End;
   finally
-    Parts.Free;
+    Services.Free;
   end;
 end;
 
-procedure TWebServiceRequester.PutEvents;
+procedure TWebServiceRequester.getSports;
 var
-  Events: TEvents;
-  Event: TEvent;
-  Bet: TBet;
+  Sports: TGvXmlNode;
+  Sport: TGvXmlNode;
   Node: TGvXmlNode;
   IsEmpty: Boolean;
 begin
-  DecimalSeparator:= '.';
-  Node:= TGvXmlNode.Create;
   try
-    try
-      Events:= FWSScan.getEvents(FNode.Attr['Booker_Sign'].AsString,
-                                 FNode.Attr['Sport_Id'].AsInteger,
-                                 FNode.Attr['Tournir_Id'].AsString,
-                                 FNode.Attr['Tournir_Url'].AsString).Events;
-    except
-      exit;
-    end;
-    try
-      dm.trnWrite.StartTransaction;
-      for Event in Events do
-      begin
-        Node.Clear;
-        Node.NodeName:= 'putEvent';
-        Node.ReadAttributes(FNode.WriteToString, IsEmpty);
-        Node.Attr['Event_Dtm'].AsDateTime:= Event.DateTime.AsDateTime;
-        Node.Attr['BGamer1_Name'].AsString:= Event.Gamer1_Name;
-        Node.Attr['BGamer2_Name'].AsString:= Event.Gamer2_Name;
-        dm.trnWrite.SetSavePoint('PutEvent');
-        try
-          dm.EventDetect(Node);
-          if Node.Attr['Ignore_Flg'].AsBooleanDef(false) then
-            // Это игнорируемое событие?
-          else
-          begin
-            // Добавляем запрос на получение турниров
-            for Bet in Event.Bet do
-            begin
-              dm.BetAdd(Node.Attr['BEvent_Id'].AsInteger, Bet.Ways, Bet.Period, Bet.Kind,
-                Bet.Subject, Bet.Gamer, Bet.Value, Bet.Modifier, Bet.Koef);
-            end;
-          end;
-        except
-          on E:Exception do
-          begin
-            ShowMessage(E.Message+' '+Node.WriteToString);
-            dm.trnWrite.RollBackToSavePoint('PutEvent');
-          end;
-        end;
-      end;
-    finally
-      dm.RequestCommit(FRequestId);
-      dm.trnWrite.Commit;
-    end;
-  finally
-    Node.Free;
+    FSoapClient.Clear;
+    FSoapClient.Method:= 'getSports';
+    FSoapClient.Request.AddChild('BookerSignPart', FNode['Booker_Sign']);
+    FSoapClient.Execute(GetUrl);
+  except
+    exit;
   end;
-end;
-
-procedure TWebServiceRequester.PutSports;
-var
-  Sports: TSports;
-  Sport: TSport;
-  Node: TGvXmlNode;
-  IsEmpty: Boolean;
-begin
   Node:= TGvXmlNode.Create;
   try
-    try
-      Sports:= FWSScan.getSports(FNode.Attr['Booker_Sign'].AsString).Sports;
-    except
-      exit;
-    end;
     dm.trnWrite.StartTransaction;
     try
-      for Sport in Sports do
+      for Sport in FSoapClient.Response.Find('Sports').ChildNodes do
       begin
         Node.Clear;
-        Node.NodeName:= 'putTournir';
+        Node.NodeName:= 'Sport';
         Node.ReadAttributes(FNode.WriteToString, IsEmpty);
-        Node.Attr['Sport_Id'].AsInteger:= Sport.Id;
-        Node.Attr['Sport_Sign'].AsString:= Sport.Sign;
-        Node.Attr['BSport_Name'].AsString:= Sport.Title;
+        Node.Attr['Sport_Id'].AsInteger:= Sport['Id'];
+        Node.Attr['Sport_Sign'].AsString:= Sport['Sign'];
+        Node.Attr['BSport_Name'].AsString:= Sport['Title'];
+        Node.Attr['Url'].AsString:= Sport['Url'];
         dm.SportDetect(Node);
         dm.trnWrite.SetSavePoint('PutTournir');
         try
@@ -265,31 +239,34 @@ begin
   end;
 end;
 
-procedure TWebServiceRequester.PutTournirs;
+procedure TWebServiceRequester.getTournirs;
 var
-  Tournirs: TTournirs;
-  Tournir: TTournir;
+  Tournirs: TGvXmlNode;
+  Tournir: TGvXmlNode;
   Node: TGvXmlNode;
   IsEmpty: Boolean;
 begin
+  try
+    FSoapClient.Clear;
+    FSoapClient.Method:= 'getTournirs';
+    FSoapClient.Request.AddChild('BookerSignPart', FNode['Booker_Sign']);
+    FSoapClient.Request.AddChild('SportIdPart', FNode['Sport_Id']);
+    FSoapClient.Execute(GetUrl);
+  except
+    exit;
+  end;
   Node:= TGvXmlNode.Create;
   try
-    try
-      Tournirs:= FWSScan.getTournirs(FNode.Attr['Booker_Sign'].AsString,
-                                     FNode.Attr['Sport_Id'].AsInteger).Tournirs;
-    except
-      Exit;
-    end;
     dm.trnWrite.StartTransaction;
     try
-      for Tournir in Tournirs do
+      for Tournir in FSoapClient.Response.Find('Tournirs').ChildNodes  do
       begin
         Node.Clear;
-        Node.NodeName:= 'getEvents';
+        Node.NodeName:= 'putTournir';
         Node.ReadAttributes(FNode.WriteToString, IsEmpty);
-        Node.Attr['Tournir_Id'].AsString:= Tournir.Id;
-        Node.Attr['Tournir_Region'].AsString:= Tournir.Region;
-        Node.Attr['BTournir_Name'].AsString:= UnEscapeString(Tournir.Title);
+        Node.Attr['Tournir_Id'].AsString:= Tournir['Id'];
+        Node.Attr['Tournir_Region'].AsString:= Tournir['Region'];
+        Node.Attr['BTournir_Name'].AsString:= UnEscapeString(Tournir['Title']);
         dm.TournirDetect(Node);
         dm.trnWrite.SetSavePoint('Tournir');
         try
@@ -306,6 +283,71 @@ begin
     finally
       dm.RequestCommit(FRequestId);
       dm.trnWrite.Commit
+    end;
+  finally
+    Node.Free;
+  end;
+end;
+
+
+procedure TWebServiceRequester.getEvents;
+var
+  Events: TGvXmlNode;
+  Event: TGvXmlNode;
+  Bet: TGvXmlNode;
+  Node: TGvXmlNode;
+  IsEmpty: Boolean;
+begin
+  try
+    FSoapClient.Clear;
+    FSoapClient.Method:= 'getEvents';
+    FSoapClient.Request.AddChild('BookerSignPart', FNode['Booker_Sign']);
+    FSoapClient.Request.AddChild('SportIdPart', FNode['Sport_Id']);
+    FSoapClient.Request.AddChild('TournirIdPart', FNode['Tournir_Id']);
+    FSoapClient.Request.AddChild('TournirUrlPart', FNode['Tournir_Url']);
+    FSoapClient.Execute(GetUrl);
+  except
+    exit;
+  end;
+  DecimalSeparator:= '.';
+  Node:= TGvXmlNode.Create;
+  try
+    try
+      dm.trnWrite.StartTransaction;
+      for Event in FSoapClient.Response.Find('Tournirs').ChildNodes  do
+      begin
+        Node.Clear;
+        Node.NodeName:= 'putEvent';
+        Node.ReadAttributes(FNode.WriteToString, IsEmpty);
+        Node.Attr['Event_Dtm'].AsDateTime:= Event.Attr['DateTime'].AsDateTime;
+        Node.Attr['BGamer1_Name'].AsString:= Event['Gamer1_Name'];
+        Node.Attr['BGamer2_Name'].AsString:= Event['Gamer2_Name'];
+        dm.trnWrite.SetSavePoint('PutEvent');
+        try
+          dm.EventDetect(Node);
+          if Node.Attr['Ignore_Flg'].AsBooleanDef(false) then
+            // Это игнорируемое событие?
+          else
+          begin
+            // Добавляем запрос на получение турниров
+            for Bet in Event.Find('Bets').ChildNodes do
+            begin
+              dm.BetAdd(Node.Attr['BEvent_Id'].AsInteger, Bet.Attr['Ways'].AsInteger,
+                Bet['Period'], Bet['Kind'], Bet['Subject'], Bet['Gamer'],
+                Bet['Value'], Bet['Modifier'], Bet.Attr['Koef'].AsFloat);
+            end;
+          end;
+        except
+          on E:Exception do
+          begin
+            ShowMessage(E.Message+' '+Node.WriteToString);
+            dm.trnWrite.RollBackToSavePoint('PutEvent');
+          end;
+        end;
+      end;
+    finally
+      dm.RequestCommit(FRequestId);
+      dm.trnWrite.Commit;
     end;
   finally
     Node.Free;
