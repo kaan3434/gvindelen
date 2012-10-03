@@ -278,7 +278,7 @@ ACTIVE AFTER INSERT OR UPDATE OR DELETE POSITION 0
 AS
 begin
   update accounts a
-  set a.rest_eur = (select sum(ar.rest_eur)
+  set a.rest_eur = (select coalesce(sum(ar.rest_eur), 0)
     from accrests ar
     where ar.account_id = new.account_id)
   where a.account_id = new.account_id;
@@ -359,6 +359,20 @@ begin
       where ar.accrest_id = :v_accrest_id
       returning accrest_id
       into new.accrest_id;
+end
+^
+
+/* Trigger: ACCOPERS_BU0 */
+CREATE OR ALTER TRIGGER ACCOPERS_BU0 FOR ACCOPERS
+ACTIVE BEFORE UPDATE POSITION 0
+AS
+begin
+  if ((old.amount_eur <> new.amount_eur) and (old.amount_byr = new.amount_byr)) then
+    new.amount_byr = round(new.amount_eur*new.byr2eur, -1);
+  if (old.byr2eur<>new.byr2eur) then
+    new.amount_byr = round(new.amount_eur*new.byr2eur, -1);
+  if (new.amount_byr is null) then
+    new.amount_byr = round(new.amount_eur*new.byr2eur, -1);
 end
 ^
 
@@ -833,8 +847,25 @@ begin
     new.ordermoney_id = gen_id(seq_ordermoney_id, 1);
   if (new.status_id is null) then
     select o_status_id from status_get_default('ORDERMONEY') into new.status_id;
+  if (new.byr2eur is null) then
+    select o.byr2eur
+      from orders o
+      where o.order_id = new.order_id
+      into new.byr2eur;
+  if (new.amount_byr is null) then
+    new.amount_byr = round(new.amount_eur * new.byr2eur, -1);
   new.status_dtm = current_timestamp;
   new.created_dtm = current_timestamp;
+end
+^
+
+/* Trigger: ORDERMONEYS_BU0 */
+CREATE OR ALTER TRIGGER ORDERMONEYS_BU0 FOR ORDERMONEYS
+ACTIVE BEFORE UPDATE POSITION 0
+AS
+begin
+  if (new.amount_byr is null) then
+    new.amount_byr = round(new.amount_eur * new.byr2eur, -1);
 end
 ^
 
@@ -1120,6 +1151,54 @@ begin
     v_object_id = gen_id(seq_articlecode_id, -(gen_id(seq_articlecode_id, 0)));
     v_object_id = gen_id(seq_articlesign_id, -(gen_id(seq_articlesign_id, 0)));
   end
+
+end^
+
+
+CREATE OR ALTER PROCEDURE ACCOUNT_MERGE (
+    I_FROM_ACCOUNT_ID TYPE OF ID_ACCOUNT NOT NULL,
+    I_TO_ACCOUNT_ID TYPE OF ID_ACCOUNT NOT NULL)
+AS
+begin
+  update accopers ao
+    set ao.account_id = :i_to_account_id
+    where ao.account_id = :i_from_account_id;
+
+  update clients c
+    set c.account_id = :i_to_account_id
+    where c.account_id = :i_from_account_id;
+
+  update moneybacks mb
+    set mb.account_id = :i_to_account_id
+    where mb.account_id = :i_from_account_id;
+
+  update ordermoneys om
+    set om.account_id = :i_to_account_id
+    where om.account_id = :i_from_account_id;
+
+  update orders o
+    set o.account_id = :i_to_account_id
+    where o.account_id = :i_from_account_id;
+
+  update accrests ar
+    set ar.account_id = :i_to_account_id
+    where ar.account_id = :i_from_account_id
+      and ar.byr2eur not in (select a.byr2eur from accrests a where a.account_id = :i_to_account_id);
+
+  merge into accrests ar
+  using (select a.account_id, a.byr2eur, coalesce(sum(a.amount_eur), 0) rest_eur
+           from accopers a
+           where a.account_id = :i_to_account_id
+           group by  a.account_id, a.byr2eur) ao
+  on (ar.account_id = ao.account_id and ar.byr2eur = ao.byr2eur)
+  when matched then
+    update set ar.rest_eur = ao.rest_eur
+  when not matched then
+    insert (account_id, byr2eur, rest_eur)
+    values (ao.account_id, ao.byr2eur, ao.rest_eur);
+
+  delete from accounts a
+    where a.account_id = :i_from_account_id;
 
 end^
 
@@ -1899,7 +1978,7 @@ begin
         where p.param_id = :i_param_id
           and atp.actiontreeitem_id = :v_actiontreeitem_id;
 
-    select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign, :v_new_flag_sign)
+    select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign, :v_new_flag_sign, 0)
       into :v_action_sign;
 
     if (:v_action_sign is null) then
@@ -1942,7 +2021,7 @@ begin
         where p.param_id = :i_param_id
           and atp.actiontreeitem_id = :v_actiontreeitem_id;
 
-    select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign, :v_new_flag_sign)
+    select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign, :v_new_flag_sign, 0)
       into :v_action_sign;
 
     if (:v_action_sign is null) then
@@ -1985,7 +2064,7 @@ begin
         where p.param_id = :i_param_id
           and atp.actiontreeitem_id = :v_actiontreeitem_id;
 
-    select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign, :v_new_flag_sign)
+    select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign, :v_new_flag_sign, 0)
       into :v_action_sign;
 
     if (:v_action_sign is null) then
@@ -2041,7 +2120,7 @@ begin
     execute statement ('select o_cost_eur from '||v_tax_procedure||'(:taxrate_id, :param_id)')
       (taxrate_id := :v_taxrate_id, param_id := :v_param_id)
       into :v_cost_eur;
-    select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign, :v_new_flag_sign)
+    select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign, :v_new_flag_sign, 0)
       into :v_action_sign;
 
     if (v_action_sign is not null) then
@@ -2487,7 +2566,8 @@ CREATE OR ALTER PROCEDURE ACTION_DETECT (
     I_OBJECT_SIGN TYPE OF SIGN_OBJECT NOT NULL,
     I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL,
     I_NEW_STATUS_SIGN TYPE OF SIGN_OBJECT,
-    I_NEW_FLAG_SIGN TYPE OF SIGN_OBJECT)
+    I_NEW_FLAG_SIGN TYPE OF SIGN_OBJECT,
+    I_STRONG_FLAG TYPE OF VALUE_BOOLEAN)
 RETURNS (
     O_ACTION_SIGN TYPE OF SIGN_ACTION)
 AS
@@ -2569,7 +2649,7 @@ begin
         and sr.new_status_id = :v_new_status_id
       into :o_action_sign;
 
-    if (:o_action_sign is null) then
+    if (:o_action_sign is null and :i_strong_flag = 1) then
     begin
       select RDB$MESSAGE
         from RDB$EXCEPTIONS
@@ -2621,7 +2701,7 @@ begin
 
   if (i_action_sign is null) then
     select o_action_sign
-      from action_detect(:i_object_sign, :i_object_id, :v_new_status_sign, :v_new_flag_sign)
+      from action_detect(:i_object_sign, :i_object_id, :v_new_status_sign, :v_new_flag_sign, 1)
       into :i_action_sign;
 
   if (i_action_sign is null) then
@@ -2653,7 +2733,6 @@ begin
 
   select o_action_id from action_execute(:v_object_sign, :v_params, null, null)
     into :v_action_id;
-
 end^
 
 
@@ -2679,7 +2758,6 @@ begin
 
   select o_action_id from action_execute(:v_object_sign, :v_params, null, null)
     into :v_action_id;
-
 end^
 
 
@@ -2705,7 +2783,6 @@ begin
 
   select o_action_id from action_execute(:v_object_sign, :v_params, :v_action_sign, null)
     into :v_action_id;
-
 end^
 
 
@@ -3190,6 +3267,43 @@ begin
     select o_action_id from action_run('BONUS', 'BONUS_USE', :v_param_id, 0) into :o_action_id;
     suspend;
   end
+end^
+
+
+CREATE OR ALTER PROCEDURE CLIENT_MERGE (
+    I_FROM_CLIENT_ID TYPE OF ID_CLIENT NOT NULL,
+    I_TO_CLIENT_ID TYPE OF ID_CLIENT NOT NULL)
+AS
+declare variable V_FROM_ACCOUNT_ID type of ID_ACCOUNT;
+declare variable V_TO_ACCOUNT_ID type of ID_ACCOUNT;
+begin
+  update orders o
+    set o.client_id = :i_to_client_id
+    where o.client_id = :i_from_client_id;
+
+  update adresses a
+    set a.client_id = :i_to_client_id
+    where a.client_id = :i_from_client_id;
+
+  update bonuses b
+    set b.client_id = :i_to_client_id
+    where b.client_id = :i_from_client_id;
+
+  select c.account_id
+    from clients c
+    where c.client_id = :i_from_client_id
+    into :v_from_account_id;
+
+  select c.account_id
+    from clients c
+    where c.client_id = :i_to_client_id
+    into :v_to_account_id;
+
+  execute procedure account_merge(:v_from_account_id, :v_to_account_id);
+
+  delete from clients c
+    where c.client_id = :i_from_client_id;
+
 end^
 
 
@@ -4259,13 +4373,16 @@ RETURNS (
     O_VALID TYPE OF BOOLEAN)
 AS
 declare variable V_VALUE type of VALUE_ATTR;
+declare variable V_PARAM_NUMERIC_1 numeric(15,2);
+declare variable V_NUMERIC numeric(15,2);
+declare variable V_PARAM_NUMERIC_2 numeric(15,2);
 begin
+  o_valid = 0;
   if (not exists (select param_value
                     from params
                     where param_name = :i_param_name
                       and param_id = :i_param_id)) then
   begin
-    o_valid = 0;
     if (:i_param_action = 'NOT EXISTS') then
       o_valid = 1;
   end
@@ -4278,31 +4395,38 @@ begin
       into :v_value;
     if (:i_param_datatype = 'N') then
     begin
-      if ((:i_param_action = '=') and (cast(:v_value as numeric) = cast(:i_param_value_1 as numeric))) then
+      v_numeric = to_float(:v_value);
+      v_param_numeric_1 = to_float(:i_param_value_1);
+      if (:i_param_value_2 is not null) then
+        v_param_numeric_2 = to_float(:i_param_value_2);
+      else
+        v_param_numeric_2 = null;
+
+      if ((i_param_action = '=') and (v_numeric  = v_param_numeric_1)) then
         o_valid = 1;
       else
-      if ((:i_param_action = '<>') and (cast(:v_value as numeric) <> cast(:i_param_value_1 as numeric))) then
+      if ((:i_param_action = '<>') and (v_numeric <> v_param_numeric_1)) then
         o_valid = 1;
       else
-      if ((:i_param_action = '>') and (cast(:v_value as numeric) > cast(:i_param_value_1 as numeric))) then
+      if ((:i_param_action = '>') and (v_numeric > v_param_numeric_1)) then
         o_valid = 1;
       else
-      if ((:i_param_action = '<') and (cast(:v_value as numeric) < cast(:i_param_value_1 as numeric))) then
+      if ((:i_param_action = '<') and (v_numeric < v_param_numeric_1)) then
         o_valid = 1;
       else
-      if ((:i_param_action = '>=') and (cast(:v_value as numeric) >= cast(:i_param_value_1 as numeric))) then
+      if ((:i_param_action = '>=') and (v_numeric >= v_param_numeric_1)) then
         o_valid = 1;
       else
-      if ((:i_param_action = '<=') and (cast(:v_value as numeric) <= cast(:i_param_value_1 as numeric))) then
+      if ((:i_param_action = '<=') and (v_numeric <= v_param_numeric_1)) then
         o_valid = 1;
       else
-      if ((:i_param_action = 'IS') and (:v_value is null)) then
+      if ((:i_param_action = 'IS') and (:v_numeric is null)) then
         o_valid = 1;
       else
-      if ((:i_param_action = 'IS NOT') and (:v_value is not null)) then
+      if ((:i_param_action = 'IS NOT') and (:v_numeric is not null)) then
         o_valid = 1;
       else
-      if ((:i_param_action = 'BETWEEN_[]') and (cast(:v_value as numeric) between cast(:i_param_value_1 as numeric) and cast(:i_param_value_2 as numeric))) then
+      if ((:i_param_action = 'BETWEEN_[]') and (v_numeric between v_param_numeric_1 and v_param_numeric_2)) then
         o_valid = 1;
     end
     else

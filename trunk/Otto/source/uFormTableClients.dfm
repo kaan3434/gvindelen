@@ -32,13 +32,6 @@ inherited FormTableClients: TFormTableClients
         Columns = <
           item
             EditButtons = <>
-            FieldName = 'CLIENT_ID'
-            Footers = <>
-            Title.Alignment = taCenter
-            Visible = False
-          end
-          item
-            EditButtons = <>
             FieldName = 'LAST_NAME'
             Footers = <>
             Title.Alignment = taCenter
@@ -106,12 +99,18 @@ inherited FormTableClients: TFormTableClients
             Footers = <>
             Title.Alignment = taCenter
             Width = 150
+          end
+          item
+            EditButtons = <>
+            FieldName = 'CLIENT_ID'
+            Footers = <>
+            Title.Alignment = taCenter
           end>
         inherited RowDetailData: TRowDetailPanelControlEh
           object pcClientDetail: TPageControl
             Left = 0
             Top = 0
-            Width = 765
+            Width = 830
             Height = 198
             ActivePage = tsClientAccountMovements
             Align = alClient
@@ -122,7 +121,7 @@ inherited FormTableClients: TFormTableClients
               object grdAdresses: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 757
+                Width = 822
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -257,7 +256,7 @@ inherited FormTableClients: TFormTableClients
               object grdAccountMovements: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 757
+                Width = 822
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
