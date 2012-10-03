@@ -11,6 +11,7 @@ type
 
   TGvXmlAttribute = class(TObject)
   private
+    FNameSpace: String;
     FName: String; // Attribute name
     FValue: String;
     function GetAsBoolean: Boolean;
@@ -23,13 +24,17 @@ type
     procedure SetAsFloat(const Value: Double);
     procedure SetAsVariant(const Value: Variant);
     function GetAsVariant: variant;
+    function GetFullName: String;
+    procedure SetName(const Value: String);
+    procedure SetFullName(const Value: String);
   public
     function AsIntegerDef(DefaultValue: Integer): Integer;
     function AsStringDef(DefaultValue: String): String;
     function AsBooleanDef(DefaultValue: Boolean): Boolean;
     function AsDateTimeDef(DefaultValue: TDateTime): TDateTime;
     function AsFloatDef(DefaultValue: Double): Double;
-    property Name: String read FName write FName;
+    property Name: String read FName write SetName;
+    property FullName: String read GetFullName write SetFullName;
     property AsString: String read FValue write FValue;
     property AsInteger: Integer read GetAsInteger write SetAsInteger;
     property AsBoolean: Boolean read GetAsBoolean write SetAsBoolean;
@@ -47,16 +52,20 @@ type
   TGvXmlNode = class(TObject)
   private
     FAttributes: TGvXmlAttributeList;
+    FNodeName: String;
     function GetAttrValue(const AttrName: String): variant;
     procedure SetAttrValue(const AttrName: String; Value: variant);
     function GetAttribute(const aAttrName: String): TGvXmlAttribute;
     function AttributeAdd(const aAttrName: String): TGvXmlAttribute;
+    function GetFullNodeName: String;
+    procedure SetNodeName(const Value: String);
+    procedure SetFullNodeName(const Value: String);
   protected
     procedure ReadFromString(aLine: string; aLen: Integer; var aIdx: integer);
   public
     Document: TGvXml;
     Parent: TGvXmlNode; // NIL only for Root-Node
-    NodeName: String; // Node name
+    NameSpace: String;
     Text: WideString; // Node text
     ChildNodes: TGvXmlNodeList; // Child nodes, never NIL
     EndTerminator: Char;
@@ -75,7 +84,7 @@ type
     // Returns True if the Attribute exits
     function HasAttribute(const aNodeName: String): Boolean; virtual;
     // Add a child node and return it
-    function AddChild(const aNodeName: String): TGvXmlNode; virtual;
+    function AddChild(const aNodeName: String; aValue: String = ''): TGvXmlNode; virtual;
     function SetText(aValue: String): TGvXmlNode; virtual;
     function Attribute(const aAttrName: String;
       const aAttrValue: variant): TGvXmlNode; virtual;
@@ -86,6 +95,8 @@ type
     procedure ExportAttrs(aStringList: TStringList);
     property AttributeValue[const aAttrName: String]: Variant read GetAttrValue
       write SetAttrValue; default;
+    property NodeName: String read FNodeName write SetNodeName;
+    property FullNodeName: String read GetFullNodeName write SetFullNodeName;
     property Attr[const aAttrName: string]: TGvXmlAttribute read GetAttribute;
   end;
 
@@ -264,12 +275,13 @@ end;
 
 { TGvXmlNode }
 
-function TGvXmlNode.AddChild(const aNodeName: String): TGvXmlNode;
+function TGvXmlNode.AddChild(const aNodeName: String; aValue: String = ''): TGvXmlNode;
 begin
   Result := TGvXmlNode.Create;
   Result.NodeName := aNodeName;
   Result.Parent := Self;
   Result.Document:= Document;
+  Result.Text:= aValue;
   ChildNodes.Add(Result);
 end;
 
@@ -312,7 +324,8 @@ begin
     begin
       Result := Node;
       Break;
-    end;
+    end
+
 end;
 
 function TGvXmlNode.Find(aNodeName, aAttrName, aAttrValue: String): TGvXmlNode;
@@ -391,6 +404,14 @@ begin
     Result := Attribute.AsString
   else
     Result := '';
+end;
+
+function TGvXmlNode.GetFullNodeName: String;
+begin
+  if NameSpace = '' then
+    Result:= NodeName
+  else
+    Result:= NameSpace+':'+NodeName;
 end;
 
 function TGvXmlNode.HasAttribute(const aNodeName: String): Boolean;
@@ -508,6 +529,20 @@ begin
   Attribute(AttrName, Value);
 end;
 
+procedure TGvXmlNode.SetFullNodeName(const Value: String);
+begin
+  NameSpace:= Value;
+  FNodeName:= TakeBack5(NameSpace, ':');
+end;
+
+procedure TGvXmlNode.SetNodeName(const Value: String);
+begin
+  if Pos(':', Value) > 0 then
+    SetFullNodeName(Value)
+  else
+    FNodeName:= Value;
+end;
+
 function TGvXmlNode.SetText(aValue: String): TGvXmlNode;
 begin
   Text := aValue;
@@ -540,20 +575,20 @@ begin
     Result:= Ident+'<!--'+Text+'-->'
   else
   begin
-    Result:= Ident + '<'+NodeName;
+    Result:= Ident + '<' + FullNodeName;
     for Attribute in FAttributes do
       Result:= Result + ' '+Attribute.Name+'="'+Attribute.AsString+'"';
     if (Text = '') and (ChildNodes.Count = 0) then
       Result:= Result + EndTerminator+'>'+EOL
     else
     if (Text <> '') and (ChildNodes.Count = 0) then
-      Result:= Result +'>'+Text+'</'+NodeName+'>'+EOL
+      Result:= Result +'>'+Text+'</'+FullNodeName+'>'+EOL
     else
     begin
       Result:= Result +'>'+Text+EOL;
       for Child in ChildNodes do
          Result:= Result+Child.WriteToString(aReadable, aLevel+1);
-      Result:= Result + Ident+'</'+NodeName+'>'+EOL;
+      Result:= Result + Ident+'</'+FullNodeName+'>'+EOL;
     end;
   end;
 end;
@@ -678,6 +713,14 @@ begin
     Result:= FValue;
 end;
 
+function TGvXmlAttribute.GetFullName: String;
+begin
+  if FNameSpace = '' then
+    Result:= FName
+  else
+    Result:= FNameSpace+':'+FName;
+end;
+
 procedure TGvXmlAttribute.SetAsBoolean(const Value: Boolean);
 begin
   FValue:= IfThen(Value, '1', '0')
@@ -717,6 +760,20 @@ begin
   else
   if VarType(Value) in [varSingle, varDouble] then
     AsFloat:= Value;
+end;
+
+procedure TGvXmlAttribute.SetFullName(const Value: String);
+begin
+  FNameSpace:= Value;
+  FName:= TakeBack5(FnameSpace, ':');
+end;
+
+procedure TGvXmlAttribute.SetName(const Value: String);
+begin
+  if Pos(':', Value) = 0 then
+    FName := Value
+  else
+    FullName:= Value;
 end;
 
 end.

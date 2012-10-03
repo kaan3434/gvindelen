@@ -14,8 +14,8 @@ type
     procedure LoadFromIniFile(IniFile: TIniFile; Section: String; AreaName: String='');
     procedure SaveSectionToIniFile(IniFileName, Section: String);
     procedure SaveToIniFile(IniFile: TIniFile; Section: String);
-    procedure SaveToFile(const FileName: string); virtual;
-    procedure LoadFromFile(const FileName: string); virtual;
+    procedure SaveToFile(const FileName: string); override;
+    procedure LoadFromFile(const FileName: string); override;
     function  IsNull(VarName: String): Boolean;
     function  IsNotNull(VarName: String): Boolean;
     procedure FreeVars(VarNames: String);
@@ -47,7 +47,7 @@ type
     procedure VarValueToArray(VarName, PropName: String);
     procedure ArrayToVarValue(VarName, PropName: String);
     procedure AddStringsAsArea(AreaName: String; List: TStringList);
-    procedure AddStrings(Strings: TStrings); virtual;
+    procedure AddStrings(Strings: TStrings); override;
     procedure Inc(VarName: String; Value: LongInt=1);
     function  VarNamesToStr(Delimiter: string=','): String;
     procedure Push(VarName, Value: String; Delimiter: Char=';');
@@ -224,7 +224,7 @@ end;
 procedure TVarList.SaveToFile(const FileName: string);
 begin
   ForceDirectories(ExtractFilePath(FileName));
-  inherited SaveToFile(FileName);
+  inherited;
 end;
 
 

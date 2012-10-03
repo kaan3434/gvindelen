@@ -774,8 +774,8 @@ begin
   end;
   PSE:= Max(1, VPos);
   repeat
+    PSB:= PosEx(ABegin, LSt, PSE);
     try
-      PSB:= PosEx(ABegin, LSt, PSE);
       if PSB = 0 then Exit;
       PSE:= PosEx(AEnd, LSt, PSB+LSB);
       if PSE = 0 then Exit;
@@ -832,8 +832,8 @@ begin
   end;
   PSE:= Max(1, VPos);
   repeat
+    PSB:= PosEx(ABegin, LSt, PSE);
     try
-      PSB:= PosEx(ABegin, LSt, PSE);
       if PSB = 0 then Exit;
       PSE:= PosEx(AEnd, LSt, PSB+LSB);
       if PSE = 0 then Exit;
@@ -2353,8 +2353,9 @@ begin
     begin
       Result[i]:= UpCase(St[i]);
       StartWord:= false;
-    end;
-    StartWord:= Pos(St[i], KeyChars) > 0;
+    end
+    else
+      StartWord:= Pos(St[i], KeyChars) > 0;
   end;
 end;
 

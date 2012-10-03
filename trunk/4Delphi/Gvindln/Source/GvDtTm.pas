@@ -441,14 +441,16 @@ var i,ii,iii : integer;
     Retvar : TDateTime;
     Tmp,
     Fmt,Data,Mask,Spec : string;
-    Y,M,D,H,N,S,Z, AP: string;
-    Day, Month, Year, Hour, Minute, Second, MSec,
-    AmPm : integer;
+    Day, Month, Year, Hour, Minute, Second, MSec, AmPm : integer;
   LSt: Integer;
 begin
   Year:= 0;
   Month:= 0;
   Day:= 0;
+  Hour:= 0;
+  Minute:= 0;
+  Second:= 0;
+  MSec:= 0;
   Fmt := UpperCase(DateTimeFormat);
   Data := UpperCase(DateTimeStr);
   i := 1;
