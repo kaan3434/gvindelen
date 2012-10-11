@@ -494,7 +494,7 @@ begin
         Tag:= Copy_3(aLine, '>', aLen, aIdx);
         j:= 3;
         Tag:= Copy_4(Tag, ' >', Length(Tag), j);
-        if LowerCase(Tag) = LowerCase(NodeName) then
+        if LowerCase(Tag) = LowerCase(FullNodeName) then
           Exit
         else
           raise Exception.CreateFmt('Error Parsing Xml at Offset %u', [aIdx]);
@@ -577,7 +577,7 @@ begin
   begin
     Result:= Ident + '<' + FullNodeName;
     for Attribute in FAttributes do
-      Result:= Result + ' '+Attribute.Name+'="'+Attribute.AsString+'"';
+      Result:= Result + ' '+Attribute.FullName+'="'+Attribute.AsString+'"';
     if (Text = '') and (ChildNodes.Count = 0) then
       Result:= Result + EndTerminator+'>'+EOL
     else
