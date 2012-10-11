@@ -6,7 +6,7 @@
     <Images>D:\Swim4\Images\</Images>
   </Path>
   <Bookers>
-    <Booker Id="1" Sign="bwin" Url="https://bwin.com" Title="BWin" ImgIndex="3"/>
+    <Booker Id="1" Sign="bwin" Url="https://bwin.com" Title="BWin" ImgIndex="3" Services="0"/>
     <Booker Id="2" Sign="olymp" Url="https://olympbet.com" Title="Olymp" ImgIndex="4"/>
     <Booker Id="3" Sign="marathon" Url="http://marathonbet.com" Title="Марафон" ImgIndex="5" Services="1"/>
   </Bookers>
@@ -16,7 +16,7 @@
     <Service Id="1" Url="http://gvindelen.site11.com/soap/ScanBooker.php"/>
   </Services>
   <Proxies>
-    <Proxy Id="kvg" Host="proxy.softclub.by" Port="3128"/>
+    <Proxy Id="kvg" Server="proxy.softclub.by" Port="3128"/>
   </Proxies>
 </Settings>
 

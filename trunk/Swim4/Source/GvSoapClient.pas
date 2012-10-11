@@ -14,12 +14,15 @@ type
     FRequest: TGvXmlNode;
     FSoapResponse: TGvXmlNode;
     FResponse : TGvXmlNode;
+    FProxyServer: String;
+    FProxyPort: word;
     function GetRequestMethod: String;
     procedure SetRequestMethod(const Value: String);
     procedure SetIdHttp(const Value: TIdHttp);
     procedure CreateIdHttp;
   public
-    constructor Create; virtual;
+    constructor Create; overload;virtual;
+    constructor Create(aProxyHost: string; aProxyPort: word); overload;virtual;
     procedure Clear;
     procedure Execute(const aURL: String);
     property IdHttp: TIdHttp read FIdHttp write SetIdHttp;
@@ -55,30 +58,53 @@ begin
   Clear;
 end;
 
+constructor TGvSoapClient.Create(aProxyHost: string; aProxyPort: word);
+begin
+  Create;
+  if aProxyHost <> '' then
+  begin
+    FProxyServer:= aProxyHost;
+    FProxyPort:= aProxyPort;
+  end;
+end;
+
 procedure TGvSoapClient.CreateIdHttp;
 begin
   FIdHttp:= TIdHttp.Create(nil);
   FIdHttp.Request.ContentType:= 'text/xml;charset=UTF-8';
-  FIdHttp.Request.AcceptEncoding:= 'gzip,deflate';
+  FIdHttp.Request.AcceptEncoding:= 'deflate';
   FIdHttp.Request.Accept:= 'text/xml;charset=UTF-8';
 end;
 
 procedure TGvSoapClient.Execute(const aURL: String);
 var
-  Strm: TStringStream;
+  stmRequest, stmResponse: TStringStream;
   strmResponse: TStream;
-  StrResponse: String;
+  Str: String;
   stHeader, stBodyNode, stBody: string;
   i: Integer;
 begin
-  Strm:= TStringStream.Create(FSoapRequest.WriteToString);
+  Root['Url']:= aURL;
+  stmRequest:= TStringStream.Create(UTF8Encode(FSoapRequest.WriteToString(true)));
   try
     if FIdHttp = nil then CreateIdHttp;
-    StrResponse:= FIdHTTP.Post(aURL, Strm);
-    stHeader:= CopyBe(StrResponse, '<?', '?>');
-    stBodyNode:= CopyBe(StrResponse, '<', 'envelope', '>');
+    if FProxyServer <> '' then
+    begin
+      FIdHttp.ProxyParams.ProxyServer:= FProxyServer;
+      FidHttp.ProxyParams.ProxyPort:= FProxyPort;
+    end;
+    try
+      Str:= FIdHTTP.Post(aURL, stmRequest);
+    except
+      FIdHttp.Request.RawHeaders.SaveToFile('d:\request.txt');
+      stmRequest.SaveToFile('d:\request.xml');
+    end;
+    stHeader:= CopyBe(Str, '<?', '?>');
+    if Pos('UTF-8',stHeader) > 0 then
+      Str:= UTF8Decode(Str);
+    stBodyNode:= CopyBe(Str, '<', 'envelope', '>');
     stBodyNode:= CopyBetween(stBodyNode, '<', ' ');
-    stBody:= CopyBE(StrResponse, '<'+stBodyNode+' ', '</'+stBodyNode+'>');
+    stBody:= CopyBE(Str, '<'+stBodyNode+' ', '</'+stBodyNode+'>');
     FSoapResponse:= Root.FindOrCreate('SoapResponse').AddChild('Response');
     FSoapResponse.LoadFromString(stBody);
     FResponse:= FSoapResponse.ChildNodes[0].ChildNodes[0].ChildNodes[0];
@@ -88,7 +114,7 @@ begin
       FIdHttp.Free;
       IdHttp:= nil;
     end;
-    Strm.Free;
+    stmRequest.Free;
   end;
 end;
 

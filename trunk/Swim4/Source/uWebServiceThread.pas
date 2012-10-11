@@ -91,13 +91,18 @@ end;
 procedure TWebServiceRequester.MyInit;
 var
   Addr: String;
+  Proxy: TGvXmlNode;
 begin
   FreeOnTerminate:= true;
   dm:= TdmSwimThread.Create(nil);
   FThreadId:= dm.dbSwim.QueryValue(
     'SELECT gen_id(gen_thread_id, 1) FROM RDB$DATABASE', 0);
   FNode:= TGvXmlNode.Create;
-  FSoapClient:= TGvSoapClient.Create;
+  Proxy:= Settings.Proxy;
+  if Proxy <> nil then
+    FSoapClient:= TGvSoapClient.Create(Proxy['Server'], Proxy.Attr['Port'].AsInteger)
+  else
+    FSoapClient:= TGvSoapClient.Create;
   CoInitialize(nil);
 end;
 
@@ -314,40 +319,49 @@ begin
   try
     try
       dm.trnWrite.StartTransaction;
-      for Event in FSoapClient.Response.Find('Tournirs').ChildNodes  do
-      begin
-        Node.Clear;
-        Node.NodeName:= 'putEvent';
-        Node.ReadAttributes(FNode.WriteToString, IsEmpty);
-        Node.Attr['Event_Dtm'].AsDateTime:= Event.Attr['DateTime'].AsDateTime;
-        Node.Attr['BGamer1_Name'].AsString:= Event['Gamer1_Name'];
-        Node.Attr['BGamer2_Name'].AsString:= Event['Gamer2_Name'];
-        dm.trnWrite.SetSavePoint('PutEvent');
-        try
-          dm.EventDetect(Node);
-          if Node.Attr['Ignore_Flg'].AsBooleanDef(false) then
-            // Это игнорируемое событие?
-          else
-          begin
-            // Добавляем запрос на получение турниров
-            for Bet in Event.Find('Bets').ChildNodes do
+      try
+        for Event in FSoapClient.Response.Find('Events').ChildNodes  do
+        begin
+          Node.Clear;
+          Node.NodeName:= 'putEvent';
+          Node.ReadAttributes(FNode.WriteToString, IsEmpty);
+          Node.Attr['Event_Dtm'].AsDateTime:= Event.Attr['DateTime'].AsDateTime;
+          Node.Attr['BGamer1_Name'].AsString:= Event['Gamer1_Name'];
+          Node.Attr['BGamer2_Name'].AsString:= Event['Gamer2_Name'];
+          dm.trnWrite.SetSavePoint('PutEvent');
+          try
+            dm.EventDetect(Node);
+            if Node.Attr['Ignore_Flg'].AsBooleanDef(false) then
+              // Это игнорируемое событие?
+            else
             begin
-              dm.BetAdd(Node.Attr['BEvent_Id'].AsInteger, Bet.Attr['Ways'].AsInteger,
-                Bet['Period'], Bet['Kind'], Bet['Subject'], Bet['Gamer'],
-                Bet['Value'], Bet['Modifier'], Bet.Attr['Koef'].AsFloat);
+              // Добавляем запрос на получение турниров
+              for Bet in Event.ChildNodes do
+              begin
+                dm.BetAdd(Node.Attr['BEvent_Id'].AsInteger, Bet.Attr['Ways'].AsInteger,
+                  Bet['Period'], Bet['Kind'], Bet['Subject'], Bet['Gamer'],
+                  Bet['Value'], Bet['Modifier'], Bet.Attr['Koef'].AsFloat);
+              end;
+            end;
+          except
+            on E:Exception do
+            begin
+              FSoapClient.SaveToFile('d:\soap.xml');
+              ShowMessage(E.Message+' '+Node.WriteToString);
+              dm.trnWrite.RollBackToSavePoint('PutEvent');
             end;
           end;
-        except
-          on E:Exception do
-          begin
-            ShowMessage(E.Message+' '+Node.WriteToString);
-            dm.trnWrite.RollBackToSavePoint('PutEvent');
-          end;
         end;
+      finally
+        dm.RequestCommit(FRequestId);
+        dm.trnWrite.Commit;
       end;
-    finally
-      dm.RequestCommit(FRequestId);
-      dm.trnWrite.Commit;
+    except
+      on E:Exception do
+      begin
+        FSoapClient.SaveToFile('d:\soap.xml');
+        ShowMessage(e.Message);
+      end;
     end;
   finally
     Node.Free;

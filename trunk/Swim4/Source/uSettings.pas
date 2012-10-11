@@ -38,6 +38,8 @@ type
     FScaners: TGvXmlNode;
     FServices: TGvXmlNode;
     FCurrencies: TGvXmlNode;
+    FProxies: TGvXmlNode;
+    function GetProxy: TGvXmlNode;
   public
     constructor Create; override;
     function DefaultService: TGvXmlNode;
@@ -47,6 +49,7 @@ type
     property Scaners: TGvXmlNode read FScaners;
     property Bookers: TGvXmlNode read FBookers;
     property Currencies: TGvXmlNode read FCurrencies;
+    property Proxy: TGvXmlNode read GetProxy;
   end;
 
 var
@@ -56,6 +59,8 @@ var
 implementation
 
 {$R *.dfm}
+uses
+  GvFile;
 
 { TSettings }
 
@@ -132,6 +137,7 @@ begin
     FScaners:= Root.FindOrCreate('Scaners');
     FServices:= Root.FindOrCreate('Services');
     FCurrencies:= Root.FindOrCreate('Currencies');
+    FProxies:= Root.FindOrCreate('Proxies');
   finally
     xml.Free;
   end;
@@ -154,6 +160,11 @@ begin
     Result['Default']:= DefaultServiceId;
     Result['Url']:= 'http://localhost:8080/soap/ScanBooker.php';
   end;
+end;
+
+function TScanSettings.GetProxy: TGvXmlNode;
+begin
+  Result:= FProxies.Find('Proxy', 'Id', GetUserFromWindows);
 end;
 
 function TScanSettings.RandomService: TGvXmlNode;
