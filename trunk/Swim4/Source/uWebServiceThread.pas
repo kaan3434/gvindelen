@@ -179,10 +179,14 @@ end;
 function TWebServiceRequester.GetURL: String;
 var
   Services: TStringList;
+  ndBooker: TGvXmlNode;
+  BookerId: String;
 begin
   Services:= TStringList.Create;
   try
-    Services.CommaText:= settings.Bookers.Find('Booker', 'Id', FNode['Booker_Id'])['Services'];
+    BookerId:= FNode['Booker_Id'];
+    ndBooker:= settings.Bookers.Find('Booker', 'Id', BookerId);
+    Services.CommaText:= ndBooker['Services'];
     Case Services.Count of
       0: result:= settings.RandomService['Url'];
       1: result:= settings.Services.Find('Service', 'Id', Services[0])['Url'];
