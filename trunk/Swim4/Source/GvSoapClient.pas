@@ -95,6 +95,11 @@ begin
     end;
     try
       Str:= FIdHTTP.Post(aURL, stmRequest);
+      if Str = '' then
+      begin
+        SaveToFile('d:\soap.xml');
+        ShowMessage('Empty Resposnse');
+      end;
     except
       FIdHttp.Request.RawHeaders.SaveToFile('d:\request.txt');
       stmRequest.SaveToFile('d:\request.xml');
