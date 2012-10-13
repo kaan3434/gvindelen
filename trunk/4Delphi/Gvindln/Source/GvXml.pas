@@ -8,6 +8,8 @@ uses
 type
   TGvXmlNodeList = class;
   TGvXml = class;
+  TGvNodeState = (stNone, stChanged, stSelected);
+  TGvNodeStateSet = Set of TGvNodeState;
 
   TGvXmlAttribute = class(TObject)
   private
@@ -53,6 +55,7 @@ type
   private
     FAttributes: TGvXmlAttributeList;
     FNodeName: String;
+    FState: TGvNodeState;
     function GetAttrValue(const AttrName: String): variant;
     procedure SetAttrValue(const AttrName: String; Value: variant);
     function GetAttribute(const aAttrName: String): TGvXmlAttribute;
@@ -80,7 +83,7 @@ type
     function FindOrCreate(aNodeName, aAttrName: String): TGvXmlNode; overload;
     function FindOrCreate(aNodeName, aAttrName: String; aAttrValue: variant): TGvXmlNode; overload;
     // Return a list of childodes with given Name/Attribute
-    function FindNodes(aNodeName: String): TGvXmlNodeList; virtual;
+    function FindNodes(aNodeName: String; aStates: TGvNodeStateSet = []): TGvXmlNodeList; virtual;
     // Returns True if the Attribute exits
     function HasAttribute(const aNodeName: String): Boolean; virtual;
     // Add a child node and return it
@@ -93,11 +96,15 @@ type
     function WriteToString(aReadable: Boolean = false; aLevel: integer = 0): string;
     procedure ImportAttrs(aStringList: TStringList);
     procedure ExportAttrs(aStringList: TStringList);
+    procedure DeleteChildsByState(aNodeName: String; aStates: TGvNodeStateSet);
+    procedure ChangeChildsState(aNodeName: String; aStates: TGvNodeStateSet; aNewState: TGvNodeState);
+    property Attributes: TGvXmlAttributeList read FAttributes;
     property AttributeValue[const aAttrName: String]: Variant read GetAttrValue
       write SetAttrValue; default;
     property NodeName: String read FNodeName write SetNodeName;
     property FullNodeName: String read GetFullNodeName write SetFullNodeName;
     property Attr[const aAttrName: string]: TGvXmlAttribute read GetAttribute;
+    property State: TGvNodeState read FState write FState;
   end;
 
   TGvXmlNodeList = class(TObjectList<TGvXmlNode>);
@@ -285,6 +292,15 @@ begin
   ChildNodes.Add(Result);
 end;
 
+procedure TGvXmlNode.ChangeChildsState(aNodeName: String;
+  aStates: TGvNodeStateSet; aNewState: TGvNodeState);
+var
+  Node: TGvXmlNode;
+begin
+  for Node in FindNodes(aNodeName, aStates) do
+    Node.State:= aNewState;
+end;
+
 procedure TGvXmlNode.Clear;
 begin
   ChildNodes.Clear;
@@ -297,6 +313,17 @@ begin
   Parent := NIL;
   FAttributes := TGvXmlAttributeList.Create;
   EndTerminator:= '/';
+end;
+
+procedure TGvXmlNode.DeleteChildsByState(aNodeName: String; aStates: TGvNodeStateSet);
+var
+  Node: TGvXmlNode;
+begin
+  for Node in FindNodes(aNodeName, aStates) do
+  begin
+    Node.Clear;
+    ChildNodes.Delete(ChildNodes.IndexOf(Node));
+  end;
 end;
 
 destructor TGvXmlNode.Destroy;
@@ -357,13 +384,15 @@ begin
     end;
 end;
 
-function TGvXmlNode.FindNodes(aNodeName: String): TGvXmlNodeList;
+function TGvXmlNode.FindNodes(aNodeName: String;
+  aStates: TGvNodeStateSet = []): TGvXmlNodeList;
 var
   Node: TGvXmlNode;
 begin
   Result := TGvXmlNodeList.Create(False);
   for Node in ChildNodes do
-    if (lowercase(Node.NodeName) = lowercase(aNodeName)) then
+    if (lowercase(Node.NodeName) = lowercase(aNodeName)) and
+       ((aStates = []) or (Node.State in aStates)) then
       Result.Add(Node);
 end;
 
