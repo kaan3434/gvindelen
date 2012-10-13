@@ -38,7 +38,6 @@ object Form1: TForm1
         Caption = 'Teacher'
         Page = rpTeacher
       end>
-    TabIndex = 2
     DesignSize = (
       732
       143)
@@ -47,24 +46,6 @@ object Form1: TForm1
       ActionManager = actMngRibbon
       OptionItems = <>
       RecentItems = <>
-    end
-    object rpScanner: TRibbonPage
-      Left = 0
-      Top = 50
-      Width = 731
-      Height = 93
-      Caption = 'Scanner'
-      Index = 0
-      object tbScannerBookers: TRibbonGroup
-        AlignWithMargins = True
-        Left = 4
-        Top = 3
-        Width = 123
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = 'Bookers'
-        GroupIndex = 0
-      end
     end
     object rpViewer: TRibbonPage
       Left = 0
@@ -113,13 +94,13 @@ object Form1: TForm1
         Rows = 2
         object edAmount: TRibbonSpinEdit
           Left = 61
-          Top = 11
+          Top = 10
           Width = 108
           Height = 22
           MaxValue = 0
           MinValue = 1
           TabOrder = 0
-          Value = 1
+          Value = 0
         end
       end
     end
@@ -149,7 +130,7 @@ object Form1: TForm1
         GroupIndex = 1
         object RibbonSpinEdit2: TRibbonSpinEdit
           Left = 50
-          Top = 3
+          Top = 2
           Width = 54
           Height = 22
           MaxValue = 0
@@ -159,7 +140,7 @@ object Form1: TForm1
         end
         object RibbonSpinEdit3: TRibbonSpinEdit
           Left = 50
-          Top = 25
+          Top = 24
           Width = 54
           Height = 22
           MaxValue = 0
@@ -169,7 +150,7 @@ object Form1: TForm1
         end
         object RibbonSpinEdit4: TRibbonSpinEdit
           Left = 50
-          Top = 47
+          Top = 46
           Width = 54
           Height = 22
           MaxValue = 0
@@ -179,7 +160,7 @@ object Form1: TForm1
         end
         object RibbonSpinEdit5: TRibbonSpinEdit
           Left = 150
-          Top = 3
+          Top = 2
           Width = 54
           Height = 22
           MaxValue = 0
@@ -187,6 +168,24 @@ object Form1: TForm1
           TabOrder = 3
           Value = 0
         end
+      end
+    end
+    object rpScanner: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 731
+      Height = 93
+      Caption = 'Scanner'
+      Index = 0
+      object tbScannerBookers: TRibbonGroup
+        AlignWithMargins = True
+        Left = 4
+        Top = 3
+        Width = 187
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = 'Bookers'
+        GroupIndex = 0
       end
     end
   end
@@ -3299,6 +3298,14 @@ object Form1: TForm1
             Caption = '&All'
             ImageIndex = 0
             CommandProperties.ButtonSize = bsLarge
+          end
+          item
+            Action = actDecThread
+            Caption = '&Dec Thread'
+          end
+          item
+            Action = actIncThread
+            Caption = '&Inc Thread'
           end>
         ActionBar = tbScannerBookers
       end
@@ -3587,6 +3594,15 @@ object Form1: TForm1
       Caption = 'Maximum'
       ImageIndex = 7
       OnExecute = actCalcMaxExecute
+    end
+    object actIncThread: TAction
+      Category = 'Scanner'
+      Caption = 'Inc Thread'
+      OnExecute = actIncThreadExecute
+    end
+    object actDecThread: TAction
+      Category = 'Scanner'
+      Caption = 'Dec Thread'
     end
   end
 end

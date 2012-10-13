@@ -217,7 +217,9 @@ begin
   try
     dm.trnWrite.StartTransaction;
     try
-      for Sport in FSoapClient.Response.Find('Sports').ChildNodes do
+      Sports:= FSoapClient.Response.Find('Sports');
+//      ShowMessage(Sports.WriteToString(true));
+      for Sport in Sports.ChildNodes do
       begin
         Node.Clear;
         Node.NodeName:= 'Sport';
@@ -254,6 +256,7 @@ var
   Tournir: TGvXmlNode;
   Node: TGvXmlNode;
   IsEmpty: Boolean;
+  Title: String;
 begin
   try
     FSoapClient.Clear;
@@ -275,6 +278,8 @@ begin
         Node.ReadAttributes(FNode.WriteToString, IsEmpty);
         Node.Attr['Tournir_Id'].AsString:= Tournir['Id'];
         Node.Attr['Tournir_Region'].AsString:= Tournir['Region'];
+        if pos('&amp;', Tournir['Title']) > 0 then
+          Tournir['Title']:= ReplaceAll(Tournir['Title'], '&amp;', '&');
         Node.Attr['BTournir_Name'].AsString:= UnEscapeString(Tournir['Title']);
         dm.TournirDetect(Node);
         dm.trnWrite.SetSavePoint('Tournir');

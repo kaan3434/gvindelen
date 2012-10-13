@@ -95,6 +95,7 @@ begin
     end;
     try
       Str:= FIdHTTP.Post(aURL, stmRequest);
+//      ShowMessage(FIdHttp.Response.ContentEncoding);
       if Str = '' then
       begin
         SaveToFile('d:\soap.xml');
@@ -105,8 +106,8 @@ begin
       stmRequest.SaveToFile('d:\request.xml');
     end;
     stHeader:= CopyBe(Str, '<?', '?>');
-    if Pos('UTF-8',stHeader) > 0 then
-      Str:= UTF8Decode(Str);
+//    if Pos('UTF-8',stHeader) > 0 then
+//      Str:= UTF8Decode(Str);
     stBodyNode:= CopyBe(Str, '<', 'envelope', '>');
     stBodyNode:= CopyBetween(stBodyNode, '<', ' ');
     stBody:= CopyBE(Str, '<'+stBodyNode+' ', '</'+stBodyNode+'>');

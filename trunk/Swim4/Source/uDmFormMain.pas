@@ -132,12 +132,13 @@ begin
   end;
 end;
 
-procedure TdmFormMain.Query2Xml(aXmlNode: TGvXmlNode; aSelectSQL, aRowNodeName, aMapping: string);
+procedure TdmFormMain.Query2Xml(aXmlNode: TGvXmlNode; aSelectSQL, aRowNodeName,
+  aMapping: string);
 begin
   qryTemp.SelectSQL.Text:= aSelectSQL;
   qryTemp.Open;
   try
-    BatchMove(aXmlNode, qryTemp, aRowNodeName, aMapping);
+    BatchMove(aXmlNode, qryTemp, aRowNodeName, aMapping, amMerge);
   finally
     qryTemp.Close;
   end;

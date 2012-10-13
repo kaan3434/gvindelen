@@ -24,8 +24,9 @@ type
     procedure Build;
   public
     constructor Create; overload; override;
-    constructor Create(aFileName: string); overload; virtual;
-    procedure SaveToFile; virtual;
+    constructor Create(aFileName: string = ''); overload; virtual;
+    procedure SaveToFile(const aFileName: String); overload; override;
+    procedure Save; overload; virtual;
     function SelfPath: string;
     property Changed: Boolean read FChanged;
     property Path[Name: string]: string read GetPath write SetPath;
@@ -60,7 +61,7 @@ implementation
 
 {$R *.dfm}
 uses
-  GvFile;
+  GvFile, GvXmlUtils;
 
 { TSettings }
 
@@ -99,10 +100,16 @@ begin
   end;
 end;
 
-procedure TApplicationSettings.SaveToFile;
+procedure TApplicationSettings.Save;
 begin
   inherited SaveToFile(FFileName);
   FChanged:= false;
+end;
+
+procedure TApplicationSettings.SaveToFile(const aFileName: String);
+begin
+  inherited SaveToFile(aFileName);
+
 end;
 
 function TApplicationSettings.SelfPath: string;
@@ -133,7 +140,7 @@ begin
   xml:= TGvXml.Create(Self.Path['Offline']+'Bookers.xml');
   try
     FBookers:= Root.FindOrCreate('Bookers');
-    FBookers.LoadFromString(xml.Root.Find('Bookers').WriteToString);
+    BatchMove(FBookers, xml.Root.Find('Bookers'), 'Booker', 'Id;*', amMerge);
     FScaners:= Root.FindOrCreate('Scaners');
     FServices:= Root.FindOrCreate('Services');
     FCurrencies:= Root.FindOrCreate('Currencies');
@@ -182,6 +189,6 @@ initialization
   Settings:= TScanSettings.Create;
 finalization
   if Settings.Changed then
-    Settings.SaveToFile;
+    Settings.Save;
   Settings.Free;
 end.

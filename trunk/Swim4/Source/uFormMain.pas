@@ -63,6 +63,8 @@ type
     actSetCalcValuteUSD: TAction;
     edAmount: TRibbonSpinEdit;
     actSetCalcValuteMNY: TAction;
+    actIncThread: TAction;
+    actDecThread: TAction;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure actScanAllBookerExecute(Sender: TObject);
@@ -77,6 +79,7 @@ type
     procedure cbValuteSignChange(Sender: TObject);
     procedure actSetCalcValuteExecute(Sender: TObject);
     procedure actCalcMaxExecute(Sender: TObject);
+    procedure actIncThreadExecute(Sender: TObject);
   private
     { Private declarations }
     FThreadList: TList;
@@ -174,6 +177,12 @@ end;
 procedure TForm1.actDummyExecute(Sender: TObject);
 begin
   //Dummy
+end;
+
+procedure TForm1.actIncThreadExecute(Sender: TObject);
+begin
+  ThreadCount := ThreadCount + 1;
+  StartThreads;
 end;
 
 procedure TForm1.actNeedScanExecute(Sender: TObject);
@@ -321,6 +330,7 @@ end;
 procedure TForm1.SetThreadCount(const Value: Integer);
 var
   ScanThread: TWebServiceRequester;
+  i: integer;
 begin
   settings.Scaners['ThreadCount']:= Value;
   while FThreadList.Count < Value do
@@ -329,8 +339,8 @@ begin
     FThreadList.Add(ScanThread);
     ScanThread.OnTerminate:= OnThreadTerminate;
   end;
-  while FThreadList.Count > Value do
-    TWebServiceRequester(FThreadList[0]).Terminate;
+  for i:= Value to FThreadList.Count-1 do
+    TWebServiceRequester(FThreadList[i]).Terminate;
 end;
 
 procedure TForm1.ShowQueueSize(var msg: TMessage);
@@ -343,7 +353,8 @@ var
   p: Pointer;
 begin
   for p in FThreadList do
-    TWebServiceRequester(p).Resume;
+    if TWebServiceRequester(p).Suspended then
+      TWebServiceRequester(p).Resume;
 end;
 
 end.
