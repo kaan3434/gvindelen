@@ -71,6 +71,7 @@ type
     procedure actBTournirMaskAddUpdate(Sender: TObject);
     procedure actATournirNewUpdate(Sender: TObject);
     procedure actBTournirPostponeExecute(Sender: TObject);
+    procedure edTournirLevelChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -195,6 +196,21 @@ begin
       cbIgnore.Checked:= DataSet['Ignore_Flg'];
     end;
     edTournirMask.Text:= '';
+  end;
+end;
+
+procedure TfrmTeachTournirs.edTournirLevelChange(Sender: TObject);
+begin
+  if not trnRead.Active then exit;
+  with qryATournirs do
+  begin
+    DisableControls;
+    try
+     Params.ParamByName('atournir_lvl').Value:= edTournirLevel.Value;
+     CloseOpen(true);
+    finally
+      EnableControls;
+    end;
   end;
 end;
 

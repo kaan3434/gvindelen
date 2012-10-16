@@ -3,7 +3,7 @@ object frmTeachTournirs: TfrmTeachTournirs
   Top = 0
   BorderStyle = bsDialog
   Caption = 'frmTeachTournirs'
-  ClientHeight = 679
+  ClientHeight = 593
   ClientWidth = 961
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -128,28 +128,30 @@ object frmTeachTournirs: TfrmTeachTournirs
     Left = 0
     Top = 220
     Width = 961
-    Height = 459
+    Height = 373
     Align = alClient
     BevelOuter = bvNone
     Caption = 'Panel1'
     TabOrder = 1
+    ExplicitHeight = 459
     object SpTBXMultiDock2: TSpTBXMultiDock
       Left = 0
       Top = 0
       Width = 313
-      Height = 459
+      Height = 373
+      ExplicitHeight = 459
       object SpTBXDockablePanel1: TSpTBXDockablePanel
         Left = 0
         Top = 0
         Width = 313
-        Height = 459
+        Height = 373
         Caption = #1056#1077#1075#1080#1089#1090#1088#1072#1094#1080#1103' '#1090#1091#1088#1085#1080#1088#1072
-        DockPos = 1
+        DockPos = 0
         TabOrder = 0
         Options.Close = False
         DesignSize = (
           309
-          455)
+          369)
         object Label1: TLabel
           Left = 12
           Top = 26
@@ -256,6 +258,7 @@ object frmTeachTournirs: TfrmTeachTournirs
           TabOrder = 6
           Value = 1.000000000000000000
           Visible = True
+          OnChange = edTournirLevelChange
         end
         object cbSwapable: TCheckBox
           Left = 77
@@ -297,16 +300,17 @@ object frmTeachTournirs: TfrmTeachTournirs
       Left = 313
       Top = 0
       Width = 648
-      Height = 459
+      Height = 373
       Caption = #1047#1072#1088#1077#1075#1080#1089#1090#1088#1080#1088#1086#1074#1072#1085#1085#1099#1077' '#1090#1091#1088#1085#1080#1088#1099
       Align = alClient
       TabOrder = 1
       Options.Close = False
+      ExplicitHeight = 459
       object gridATournirs: TDBGridEh
         Left = 0
         Top = 19
         Width = 648
-        Height = 440
+        Height = 354
         Align = alClient
         AutoFitColWidths = True
         Color = clBtnFace
@@ -441,6 +445,7 @@ object frmTeachTournirs: TfrmTeachTournirs
       'from atournirs a'
       'where a.asport_id = coalesce(:asport_id, a.asport_id)'
       '  and a.country_sign = :region_sign'
+      '  and a.atournir_lvl = coalesce(:atournir_lvl, a.atournir_lvl)'
       'order by a.start_dt desc')
     CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
     CacheModelOptions.BufferChunks = 100
@@ -515,6 +520,7 @@ object frmTeachTournirs: TfrmTeachTournirs
     end
   end
   object trnRead: TpFIBTransaction
+    Active = True
     DefaultDatabase = dmFormMain.dbSwim
     TimeoutAction = TARollback
     AfterStart = trnReadAfterStart

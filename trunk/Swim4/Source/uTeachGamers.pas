@@ -327,6 +327,7 @@ begin
     qryBGamers.Open;
     qryAGamers.Open;
     qryCountries.Open;
+    qryOpponents.Open;
   finally
     qryBGamers.EnableControls;
     actFillEditForm.Execute;

@@ -138,7 +138,7 @@ object frmTeachGamers: TfrmTeachGamers
           Action = actAGamerAdd
         end
         object edAGamerName: TDBEditEh
-          Left = 45
+          Left = 41
           Top = 0
           Width = 400
           Height = 21
@@ -169,7 +169,7 @@ object frmTeachGamers: TfrmTeachGamers
           OnChange = edAGamerNameChange
         end
         object lcbCountry: TDBLookupComboboxEh
-          Left = 498
+          Left = 490
           Top = 0
           Width = 89
           Height = 21
@@ -218,6 +218,13 @@ object frmTeachGamers: TfrmTeachGamers
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
         Columns = <
+          item
+            AutoFitColWidth = False
+            EditButtons = <>
+            FieldName = 'EVENT_DTM'
+            Footers = <>
+            Width = 64
+          end
           item
             EditButtons = <>
             FieldName = 'ATOURNIR_NAME'
@@ -385,7 +392,7 @@ object frmTeachGamers: TfrmTeachGamers
         'nd bt.atournir_id is not null)'
       
         'order by bt.teach_order, bt.asport_id, bt.country_sign, bt.atour' +
-        'nir_lvl')
+        'nir_lvl, gmr.gamer_name')
     AfterScroll = qryBGamersAfterScroll
     Transaction = trnRead
     Database = dmFormMain.dbSwim
@@ -505,13 +512,15 @@ object frmTeachGamers: TfrmTeachGamers
   end
   object qryOpponents: TpFIBDataSet
     SelectSQL.Strings = (
-      'select *'
+      'select distinct ae.event_dtm, t.atournir_name, g.agamer_name'
       
-        'from (select ae1.aevent_id, ae1.atournir_id, ae1.agamer2_id agam' +
-        'er_id'
+        'from (select ae1.event_dtm, ae1.aevent_id, ae1.atournir_id, ae1.' +
+        'agamer2_id agamer_id'
       'from aevents ae1'
       'union'
-      'select ae2.aevent_id, ae2.atournir_id, ae2.agamer1_id'
+      
+        'select ae2.event_dtm, ae2.aevent_id, ae2.atournir_id, ae2.agamer' +
+        '1_id'
       'from aevents ae2) ae'
       'inner join atournirs t on (t.atournir_id = ae.atournir_id)'
       'inner join agamers g on (g.agamer_id = ae.agamer_id)'
