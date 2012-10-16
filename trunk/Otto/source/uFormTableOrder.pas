@@ -191,7 +191,6 @@ procedure TFormTableOrders.actAssignPaymentExecute(Sender: TObject);
 var
   AccountId: Integer;
   Amount_BYR: Double;
-  Byr2Eur: Integer;
   Xml: TNativeXml;
   ndOrder, ndClient: TXmlNode;
   DlgManualPayment: TDlgManualPayment;
@@ -213,7 +212,7 @@ begin
     if DlgManualPayment.ShowModal = mrOk then
     begin
       Amount_BYR:= DlgManualPayment.edtAmountEur.Value;
-      Byr2Eur:= DlgManualPayment.edtByr2Eur.Value;
+//    Byr2Eur:= DlgManualPayment.edtByr2Eur.Value;
       Annotate:= DlgManualPayment.memAnnotate.Lines.Text;
       trnWrite.StartTransaction;
       try
@@ -286,7 +285,6 @@ var
   StatusId: Integer;
   StatusSign: String;
   OrderId: variant;
-  bm: TBookmark;
 begin
   OrderId:= qryMain['ORDER_ID'];
   qryMain.DisableControls;
@@ -363,7 +361,6 @@ end;
 
 procedure TFormTableOrders.actBalanceOrderExecute(Sender: TObject);
 var
-  AccountId, AmountEur: Variant;
   bm: TBookmark;
 begin
   qryMain.DisableControls;

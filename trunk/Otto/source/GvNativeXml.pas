@@ -233,7 +233,6 @@ function GetXmlAttrValue(aNode: TXmlNode; aAttributeName: string;
   aDefaultValue: variant): variant; overload;
 var
   AttrValue: string;
-  DtTm: TDateTime;
   Filtered: string;
 begin
   if AttrExists(aNode, aAttributeName) then

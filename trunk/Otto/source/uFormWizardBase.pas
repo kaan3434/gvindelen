@@ -100,8 +100,6 @@ end;
 
 constructor TFormWizardBase.CreateXml(AOwner: TComponent;
   aXml: TNativeXml);
-var
-  St: string;
 begin
   inherited Create(AOwner);
   SourceFlag:= sfXml;
