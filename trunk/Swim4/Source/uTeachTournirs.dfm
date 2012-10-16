@@ -1,10 +1,9 @@
 object frmTeachTournirs: TfrmTeachTournirs
   Left = 0
   Top = 0
-  BorderStyle = bsDialog
   Caption = 'frmTeachTournirs'
-  ClientHeight = 593
-  ClientWidth = 961
+  ClientHeight = 583
+  ClientWidth = 951
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,7 +19,7 @@ object frmTeachTournirs: TfrmTeachTournirs
   object Splitter1: TSplitter
     Left = 0
     Top = 217
-    Width = 961
+    Width = 951
     Height = 3
     Cursor = crVSplit
     Align = alTop
@@ -37,15 +36,16 @@ object frmTeachTournirs: TfrmTeachTournirs
   object GroupBox1: TGroupBox
     Left = 0
     Top = 0
-    Width = 961
+    Width = 951
     Height = 217
     Align = alTop
     Caption = #1053#1077#1080#1079#1074#1077#1089#1090#1085#1099#1077' '#1090#1091#1088#1085#1080#1088#1099
     TabOrder = 0
+    ExplicitWidth = 961
     object gridBTournirs: TDBGridEh
       Left = 2
       Top = 15
-      Width = 957
+      Width = 947
       Height = 200
       Align = alClient
       AutoFitColWidths = True
@@ -84,6 +84,7 @@ object frmTeachTournirs: TfrmTeachTournirs
           EditButtons = <>
           FieldName = 'ATOURNIR_NAME'
           Footers = <>
+          Visible = False
           Width = 200
         end
         item
@@ -127,31 +128,32 @@ object frmTeachTournirs: TfrmTeachTournirs
   object Panel1: TPanel
     Left = 0
     Top = 220
-    Width = 961
-    Height = 373
+    Width = 951
+    Height = 363
     Align = alClient
     BevelOuter = bvNone
     Caption = 'Panel1'
     TabOrder = 1
-    ExplicitHeight = 459
+    ExplicitWidth = 961
+    ExplicitHeight = 373
     object SpTBXMultiDock2: TSpTBXMultiDock
       Left = 0
       Top = 0
       Width = 313
-      Height = 373
-      ExplicitHeight = 459
+      Height = 363
+      ExplicitHeight = 373
       object SpTBXDockablePanel1: TSpTBXDockablePanel
         Left = 0
         Top = 0
         Width = 313
-        Height = 373
+        Height = 363
         Caption = #1056#1077#1075#1080#1089#1090#1088#1072#1094#1080#1103' '#1090#1091#1088#1085#1080#1088#1072
         DockPos = 0
         TabOrder = 0
         Options.Close = False
         DesignSize = (
           309
-          369)
+          359)
         object Label1: TLabel
           Left = 12
           Top = 26
@@ -299,18 +301,19 @@ object frmTeachTournirs: TfrmTeachTournirs
     object SpTBXDockablePanel2: TSpTBXDockablePanel
       Left = 313
       Top = 0
-      Width = 648
-      Height = 373
+      Width = 638
+      Height = 363
       Caption = #1047#1072#1088#1077#1075#1080#1089#1090#1088#1080#1088#1086#1074#1072#1085#1085#1099#1077' '#1090#1091#1088#1085#1080#1088#1099
       Align = alClient
       TabOrder = 1
       Options.Close = False
-      ExplicitHeight = 459
+      ExplicitWidth = 648
+      ExplicitHeight = 373
       object gridATournirs: TDBGridEh
         Left = 0
         Top = 19
-        Width = 648
-        Height = 354
+        Width = 638
+        Height = 344
         Align = alClient
         AutoFitColWidths = True
         Color = clBtnFace
@@ -404,7 +407,7 @@ object frmTeachTournirs: TfrmTeachTournirs
       'FROM'
       '    V_BTOURNIRS '
       'WHERE ATOURNIR_ID is null and coalesce(IGNORE_FLG, 0)=0'
-      'ORDER BY IGNORE_FLG, ATOURNIR_ID, ASPORT_ID, USED_DT DESC')
+      'ORDER BY IGNORE_FLG, ASPORT_ID, ATOURNIR_NAME, USED_DT DESC')
     CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
     CacheModelOptions.BufferChunks = 100
     AfterScroll = qryBTournirsAfterScroll
@@ -449,6 +452,7 @@ object frmTeachTournirs: TfrmTeachTournirs
       'order by a.start_dt desc')
     CacheModelOptions.CacheModelKind = cmkLimitedBufferSize
     CacheModelOptions.BufferChunks = 100
+    BeforeOpen = qryATournirsBeforeOpen
     AllowedUpdateKinds = []
     Transaction = trnRead
     Database = dmFormMain.dbSwim

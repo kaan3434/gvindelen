@@ -138,7 +138,7 @@ object frmTeachGamers: TfrmTeachGamers
           Action = actAGamerAdd
         end
         object edAGamerName: TDBEditEh
-          Left = 41
+          Left = 45
           Top = 0
           Width = 400
           Height = 21
@@ -169,7 +169,7 @@ object frmTeachGamers: TfrmTeachGamers
           OnChange = edAGamerNameChange
         end
         object lcbCountry: TDBLookupComboboxEh
-          Left = 490
+          Left = 498
           Top = 0
           Width = 89
           Height = 21
@@ -223,7 +223,6 @@ object frmTeachGamers: TfrmTeachGamers
             EditButtons = <>
             FieldName = 'EVENT_DTM'
             Footers = <>
-            Width = 64
           end
           item
             EditButtons = <>
@@ -392,7 +391,7 @@ object frmTeachGamers: TfrmTeachGamers
         'nd bt.atournir_id is not null)'
       
         'order by bt.teach_order, bt.asport_id, bt.country_sign, bt.atour' +
-        'nir_lvl, gmr.gamer_name')
+        'nir_lvl, bt.atournir_name, gmr.gamer_name')
     AfterScroll = qryBGamersAfterScroll
     Transaction = trnRead
     Database = dmFormMain.dbSwim

@@ -72,6 +72,7 @@ type
     procedure actATournirNewUpdate(Sender: TObject);
     procedure actBTournirPostponeExecute(Sender: TObject);
     procedure edTournirLevelChange(Sender: TObject);
+    procedure qryATournirsBeforeOpen(DataSet: TDataSet);
   private
     { Private declarations }
   public
@@ -186,6 +187,7 @@ begin
       edTournirLevel.Value:= ParamValue('o_tournir_lvl');
       cbIgnore.Checked:= ParamValue('o_ignore_flg')='1';
       cbSwapable.Checked:= ParamValue('o_swapable_flg') = '1';
+      qryATournirs.CloseOpen(true);
     end
     else
     begin
@@ -206,7 +208,6 @@ begin
   begin
     DisableControls;
     try
-     Params.ParamByName('atournir_lvl').Value:= edTournirLevel.Value;
      CloseOpen(true);
     finally
       EnableControls;
@@ -256,7 +257,6 @@ begin
   begin
     DisableControls;
     try
-     Params.ParamByName('asport_id').Value:= lcbASport.Value;
      CloseOpen(true);
     finally
       EnableControls;
@@ -271,7 +271,6 @@ begin
   begin
     DisableControls;
     try
-     Params.ParamByName('region_sign').Value:= lcbCountry.Value;
      CloseOpen(true);
     finally
       EnableControls;
@@ -279,10 +278,20 @@ begin
   end;
 end;
 
+procedure TfrmTeachTournirs.qryATournirsBeforeOpen(DataSet: TDataSet);
+begin
+  qryATournirs.Params.ParamByName('region_sign').Value:= lcbCountry.Value;
+  qryATournirs.Params.ParamByName('asport_id').Value:= lcbASport.Value;
+  qryATournirs.Params.ParamByName('atournir_lvl').Value:= edTournirLevel.Value;
+end;
+
 procedure TfrmTeachTournirs.qryBTournirsAfterScroll(DataSet: TDataSet);
 begin
   if not DataSet.ControlsDisabled then
+  begin
     actFillEditForm.Execute;
+    qryATournirs.CloseOpen(true);
+  end;
 end;
 
 procedure TfrmTeachTournirs.trnReadAfterStart(Sender: TObject);
