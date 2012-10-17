@@ -235,6 +235,23 @@ var
   Masks: TStringList;
   Mask: String;
 begin
+  // ѕытаемс€ найти в этом же спорте
+  Result:= trnRead.DefaultDatabase.QueryValueAsStr(
+    'select substring(ag.agamer_name from 1 for position(''/'', ag.agamer_name)-2) '+
+    'from AGamers ag '+
+    ' inner join bgamers bg on (bg.agamer_id = ag.agamer_id) '+
+    'where ag.asport_id = :asport_id '+
+    '  and bg.bgamer_name like :gamer_name||''%/%''',
+    0, [aSportId, St]);
+  if Result <> '' then Exit;
+  Result:= trnRead.DefaultDatabase.QueryValueAsStr(
+    'select substring(ag.agamer_name from position(''/'', ag.agamer_name)+2) '+
+    'from AGamers ag '+
+    ' inner join bgamers bg on (bg.agamer_id = ag.agamer_id) '+
+    'where ag.asport_id = :asport_id '+
+    '  and bg.bgamer_name like ''%/%''||:gamer_name',
+    0, [aSportId, St]);
+  if Result <> '' then Exit;
   Masks:= TStringList.Create;
   try
     BuildMasks(Masks, St);
@@ -244,7 +261,7 @@ begin
         'select ag.agamer_name from AGamers ag '+
         ' inner join asports a on (iif(:subsport=1, a.asubsport1_id, a.asubsport2_id) = ag.asport_id) '+
         'where ag.agamer_name similar to :mask '+
-        ' and a.asport_id = :asport_id',
+        '  and a.asport_id = :asport_id',
         0, [SubSport, Mask, aSportId]);
       if Result <> '' then Exit;
     end;

@@ -216,7 +216,7 @@
       <Phrase Caption="Gamer1" BetKind="Ways=2;Period=Set2;Kind=Win;Gamer=1;Modifier=Win"/>
       <Phrase Caption="Gamer2" BetKind="Ways=2;Period=Set2;Kind=Win;Gamer=2;Modifier=Win"/>
     </Section>
-  </tennis>  
+</tennis>  
   <soccer>
     <Section Caption="1x2">
       <Phrase Caption="Gamer1" BetKind="Ways=3;Period=Match;Kind=Win;Gamer=1;Modifier=Win"/>

@@ -184,7 +184,7 @@
       <Phrase Caption="Б(0.50)" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Over;Value=0.5"/>
       <Phrase Caption="М(2.5)" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Under;Value=2.5"/>
       <Phrase Caption="Б(2.5)" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Over;Value=2.5"/>
-    </Section>
+    <Phrase Caption="М(1)" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="Б(1)" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="Ф 1(0)" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="Ф 2(0)" Ignore="1" BetKind="Modifier=Unknown"/></Section>
     <Section Caption="2-й тайм">
       <Phrase Caption="П 1" BetKind="Ways=3;Period=Half2;Kind=Win;Gamer=1;Modifier=Win"/>
       <Phrase Caption="Н" BetKind="Ways=3;Period=Half2;Kind=Win;Modifier=Draw"/>
@@ -198,7 +198,7 @@
       <Phrase Caption="1Х" BetKind="Ways=3;Period=Half2;Kind=Win;Gamer=1;Modifier=NoLose"/>
       <Phrase Caption="12" BetKind="Ways=3;Period=Half2;Kind=Win;Modifier=NoDraw"/>
       <Phrase Caption="Х2" BetKind="Ways=3;Period=Half2;Kind=Win;Gamer=2;Modifier=NoLose"/>
-    </Section>
+    <Phrase Caption="Б(3.5)" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="Ф 1(0)" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="Ф 2(0)" Ignore="1" BetKind="Modifier=Unknown"/></Section>
     <Section Caption="Счёт" Ignore="1"/>
     <Section Caption="Тайм/матч" Ignore="1"/>
     <Section Caption="Голы (чет/нечет)">
@@ -241,7 +241,7 @@
       <Phrase Caption="Gamer2(1.5)мен." BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Gamer=2;Modifier=Under;Value=1.5"/>
       <Phrase Caption="Gamer2(2.5)бол." BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Gamer=2;Modifier=Over;Value=2.5"/>
       <Phrase Caption="Gamer2(2.5)мен." BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Gamer=2;Modifier=Under;Value=2.5"/>
-    </Section>
+    <Phrase Caption="Gamer1с(1.5)мен." Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="Gamer1с(1.5)бол." Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="Gamer2(2)мен." Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="Gamer2(2)бол." Ignore="1" BetKind="Modifier=Unknown"/></Section>
     <Section Caption="Сложная фора" Ignore="1"/>
     <Section Caption="Таймы" Ignore="1"/>
     <Section Caption="Taймы" Ignore="1"/>
@@ -267,7 +267,7 @@
       <Phrase Caption="Гол с 1 по 15 мин: НЕТ" Ignore="1"/>
       <Phrase Caption="Автогол - ДА" Ignore="1"/>
       <Phrase Caption="Автогол - НЕТ" Ignore="1"/>
-    </Section>
+    <Phrase Caption="первый гол Gamer1" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="первый гол Gamer2" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="первый гол Gamer1с" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="Gamer1с забьет" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="Gamer1с не забьет" Ignore="1" BetKind="Modifier=Unknown"/></Section>
     <Section Caption="Дополнительные форы">
       <Phrase Caption="Ф1(-1)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-1"/>
       <Phrase Caption="Ф1(-1.5)" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win;Value=-1.5"/>
