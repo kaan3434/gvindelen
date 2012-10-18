@@ -216,7 +216,7 @@
       <Phrase Caption="Gamer1" BetKind="Ways=2;Period=Set2;Kind=Win;Gamer=1;Modifier=Win"/>
       <Phrase Caption="Gamer2" BetKind="Ways=2;Period=Set2;Kind=Win;Gamer=2;Modifier=Win"/>
     </Section>
-</tennis>  
+  </tennis>  
   <soccer>
     <Section Caption="1x2">
       <Phrase Caption="Gamer1" BetKind="Ways=3;Period=Match;Kind=Win;Gamer=1;Modifier=Win"/>
@@ -297,6 +297,20 @@
       <Phrase Caption="Under 1,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Under;Value=1.5"/>
       <Phrase Caption="Under 2,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Under;Value=2.5"/>
       <Phrase Caption="Under 3,5" BetKind="Ways=2;Period=Half1;Kind=Total;Subject=Goal;Modifier=Under;Value=3.5"/>
+    </Section>
+    <Section Caption="How many goals will be scored in the 2nd Half?">
+      <Phrase Caption="1" Ignore="1"/>
+      <Phrase Caption="2" Ignore="1"/>
+      <Phrase Caption="3 or more" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="No goal" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="Over 0,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Over;Value=0.5"/>
+      <Phrase Caption="Over 1,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Over;Value=1.5"/>
+      <Phrase Caption="Over 2,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Over;Value=2.5"/>
+      <Phrase Caption="Over 3,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Over;Value=3.5"/>
+      <Phrase Caption="Under 0,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Under;Value=0.5"/>
+      <Phrase Caption="Under 1,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Under;Value=1.5"/>
+      <Phrase Caption="Under 2,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Under;Value=2.5"/>
+      <Phrase Caption="Under 3,5" BetKind="Ways=2;Period=Half2;Kind=Total;Subject=Goal;Modifier=Under;Value=3.5"/>
     </Section>
     <Section Caption="How many goals will be scored in the 2nd half?">
       <Phrase Caption="1" Ignore="1"/>

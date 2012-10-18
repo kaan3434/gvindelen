@@ -335,6 +335,8 @@ begin
           Node.NodeName:= 'putEvent';
           Node.ReadAttributes(FNode.WriteToString, IsEmpty);
           Node.Attr['Event_Dtm'].AsDateTime:= Event.Attr['DateTime'].AsDateTime;
+          if (Event['Gamer1_Name'] = '') or (Event['Gamer2_Name'] = '') then
+            continue;
           Node.Attr['BGamer1_Name'].AsString:= Event['Gamer1_Name'];
           Node.Attr['BGamer2_Name'].AsString:= Event['Gamer2_Name'];
           dm.trnWrite.SetSavePoint('PutEvent');
