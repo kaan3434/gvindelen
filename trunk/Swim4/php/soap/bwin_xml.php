@@ -52,6 +52,7 @@ class bwin_booker extends booker_xml {
     // получаем перечень турниров
     $file_name = $this->league_path."league";
     $url = $this->host.$this->sport_node['Url'];
+    copy("cookies.etalon/www.bwin.com.txt", "cookies/www.bwin.com.txt");
     $html = download_or_load($this->debug, $file_name.".html", $url, "GET", "");
     $this->extract_league($tournirs_node, $html);
     if ($this->debug) file_put_contents($file_name.".xml", $xml->asXML());
@@ -265,6 +266,7 @@ class bwin_booker extends booker_xml {
         $file_name = $this->league_path."$tournir_id.$category_id.$current_page.html";
         $url= $this->host."/betviewiframe.aspx?sorting=leaguedate&categoryIDs=$category_id&bv=bb&leagueIDs=$tournir_id";
         $referer = $this->host.(string)$this->sport_node['Url'];
+        copy("cookies.etalon/www.bwin.com.txt", "cookies/www.bwin.com.txt");
         $html = download_or_load($this->debug, $file_name, $url, "GET", $referer);
         if (!$this->categories) 
           $this->extract_categories($html);
