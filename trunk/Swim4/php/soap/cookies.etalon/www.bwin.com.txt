@@ -1,0 +1,5 @@
+FirstVisit=20120520 171225
+ASP.NET_SessionId=ynaybkqdrnsnys55cxnjqe2q
+userSettings=languageCode=1&C6=6302379&currencyId=31&timezone=27&CID=643&LocID=112&uip=-905200849
+ParentAppId=currentE
+DisplayOddsFormat=EU
