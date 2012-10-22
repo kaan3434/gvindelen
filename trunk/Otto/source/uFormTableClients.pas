@@ -30,6 +30,7 @@ type
     qryAdresses: TpFIBDataSet;
     dsAdresses: TDataSource;
     spAccountRecalcRest: TpFIBStoredProc;
+    actRestMovement: TAction;
     procedure FormCreate(Sender: TObject);
     procedure actAccountManualDebitExecute(Sender: TObject);
     procedure actAccountManualCreditExecute(Sender: TObject);
