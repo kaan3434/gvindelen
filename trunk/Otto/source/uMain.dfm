@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 255
-  Top = 165
+  Left = 291
+  Top = 120
   Width = 845
   Height = 512
   Caption = 'PPZ'
@@ -1879,7 +1879,7 @@ object MainForm: TMainForm
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 40907.121787245400000000
+    ReportOptions.LastChange = 41204.885235370370000000
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
     Left = 352
