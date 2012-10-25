@@ -18,7 +18,8 @@ uses
   ScanWSDL in 'ScanWSDL.pas',
   GvXmlUtils in 'D:\4Delphi\Gvindln\Source\GvXmlUtils.pas',
   GvRibbon in 'GvRibbon.pas',
-  GvSoapClient in 'GvSoapClient.pas';
+  GvSoapClient in 'GvSoapClient.pas',
+  GvMath in 'D:\4Delphi\Gvindln\Source\GvMath.pas';
 
 {$R *.res}
 

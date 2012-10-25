@@ -6,9 +6,9 @@
     <Images>D:\Swim4\Images\</Images>
   </Path>
   <Bookers>
-    <Booker Id="1" Sign="bwin" Url="https://bwin.com" Title="BWin" ImgIndex="3"/>
-    <Booker Id="2" Sign="olymp" Url="https://olympbet.com" Title="Olymp" ImgIndex="4"/>
-    <Booker Id="3" Sign="marathon" Url="http://marathonbet.com" Title="Марафон" ImgIndex="5" Services="1"/>
+    <Booker Id="1" Sign="bwin" Url="https://bwin.com" Title="BWin" ImgIndex="3" Money_Step="1"/>
+    <Booker Id="2" Sign="olymp" Url="https://olympbet.com" Title="Olymp" ImgIndex="4" Money_Step="100"/>
+    <Booker Id="3" Sign="marathon" Url="http://marathonbet.com" Title="Марафон" ImgIndex="5" Services="1" Money_Step="1"/>
   </Bookers>
   <Scaners ThreadCount="1" AutoStart="0" MaxThreads="10" MinThreads="1"/>
   <Services Default="1">

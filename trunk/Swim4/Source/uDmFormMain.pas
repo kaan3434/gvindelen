@@ -30,6 +30,8 @@ type
     procedure Bookers2Xml(aXmlNode: TGvXmlNode);
     procedure calcSwimMin(aValuteSign: String; aAmount: Integer);
     procedure calcSwimMax(aValuteSign: String; aAmount: Integer);
+    procedure setBet1(aSwimId: integer; aValuteSign: String; aAmount, aDelta: Double);
+    procedure setBet2(aSwimId: integer; aValuteSign: String; aAmount, aDelta: Double);
   end;
 
 implementation
@@ -37,7 +39,7 @@ implementation
 {$R *.dfm}
 
 uses
-  GvVars, GvXmlUtils, GvStr;
+  GvVars, GvXmlUtils, GvStr, GvMath;
 
 { TdmFormMain }
 
@@ -154,6 +156,56 @@ begin
       Params.ClearValues;
       Params.ParamByName('I_BOOKER_ID').AsInteger := aBookerId;
       Params.ParamByName('I_ONOFF').AsInteger := Byte(aChecked);
+      ExecProc;
+    end;
+    trnWrite.Commit;
+  Except
+    trnWrite.Rollback;
+  end;
+end;
+
+procedure TdmFormMain.setBet1(aSwimId: integer; aValuteSign: String; aAmount, aDelta: Double);
+var
+  vAmount: Extended;
+begin
+  vAmount:= RoundPrecision(aAmount, abs(aDelta));
+  if aAmount = vAmount then
+    vAmount:= aAmount + aDelta;
+
+  trnWrite.StartTransaction;
+  try
+    with spTemp do
+    begin
+      StoredProcName := 'SWIM_MONEY_1';
+      Params.ClearValues;
+      Params.ParamByName('I_SWIM_ID').AsInteger:= aSwimId;
+      Params.ParamByName('I_VALUTE_SIGN').AsString := aValuteSign;
+      Params.ParamByName('I_AMOUNT').AsFloat := vAmount;
+      ExecProc;
+    end;
+    trnWrite.Commit;
+  Except
+    trnWrite.Rollback;
+  end;
+end;
+
+procedure TdmFormMain.setBet2(aSwimId: integer; aValuteSign: String; aAmount, aDelta: Double);
+var
+  vAmount: Extended;
+begin
+  vAmount:= RoundPrecision(aAmount, abs(aDelta));
+  if aAmount = vAmount then
+    vAmount:= aAmount + aDelta;
+
+  trnWrite.StartTransaction;
+  try
+    with spTemp do
+    begin
+      StoredProcName := 'SWIM_MONEY_2';
+      Params.ClearValues;
+      Params.ParamByName('I_SWIM_ID').AsInteger:= aSwimId;
+      Params.ParamByName('I_VALUTE_SIGN').AsString := aValuteSign;
+      Params.ParamByName('I_AMOUNT').AsFloat := vAmount;
       ExecProc;
     end;
     trnWrite.Commit;

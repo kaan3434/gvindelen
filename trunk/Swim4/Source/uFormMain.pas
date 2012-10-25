@@ -65,6 +65,12 @@ type
     actSetCalcValuteMNY: TAction;
     actIncThread: TAction;
     actDecThread: TAction;
+    actIncBet1: TAction;
+    actDecBet1: TAction;
+    actIncBet2: TAction;
+    actDecBet2: TAction;
+    actCalcSwim: TAction;
+    actSetExchangeRates: TAction;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure actScanAllBookerExecute(Sender: TObject);
@@ -80,6 +86,11 @@ type
     procedure actSetCalcValuteExecute(Sender: TObject);
     procedure actCalcMaxExecute(Sender: TObject);
     procedure actIncThreadExecute(Sender: TObject);
+    procedure actIncBet1Execute(Sender: TObject);
+    procedure actDecBet1Execute(Sender: TObject);
+    procedure actIncBet2Execute(Sender: TObject);
+    procedure actDecBet2Execute(Sender: TObject);
+    procedure actCalcSwimExecute(Sender: TObject);
   private
     { Private declarations }
     FThreadList: TList;
@@ -174,9 +185,82 @@ begin
   end;
 end;
 
+procedure TForm1.actCalcSwimExecute(Sender: TObject);
+var
+  vSwimCount: Integer;
+begin
+  dm.dbSwim.QueryValue('select * from swim_get', 0);
+  dm.trnRead.Commit;
+  dm.trnRead.StartTransaction;
+end;
+
+procedure TForm1.actDecBet1Execute(Sender: TObject);
+var
+  vDataSet: TDataSet;
+begin
+  vDataSet:= grdSwimItems.DataSource.DataSet;
+  vDataSet.DisableControls;
+  try
+    dm.setBet1(vDataSet['Swim_Id'], vDataSet['Valute1_Sign'], vDataSet['SV1'],
+      -Settings.Bookers.Find('Booker', 'Id', vDataSet['Booker1_Id']).Attr['Money_Step'].AsFloatDef(1));
+    vDataSet.Close;
+    vDataSet.Open;
+  finally
+    vDataSet.EnableControls;
+  end;
+end;
+
+procedure TForm1.actDecBet2Execute(Sender: TObject);
+var
+  vDataSet: TDataSet;
+begin
+  vDataSet:= grdSwimItems.DataSource.DataSet;
+  vDataSet.DisableControls;
+  try
+    dm.setBet2(vDataSet['Swim_Id'], vDataSet['Valute2_Sign'], vDataSet['SV2'],
+      -Settings.Bookers.Find('Booker', 'Id', vDataSet['Booker2_Id']).Attr['Money_Step'].AsFloatDef(1));
+    vDataSet.Close;
+    vDataSet.Open;
+  finally
+    vDataSet.EnableControls;
+  end;
+end;
+
 procedure TForm1.actDummyExecute(Sender: TObject);
 begin
   //Dummy
+end;
+
+procedure TForm1.actIncBet1Execute(Sender: TObject);
+var
+  vDataSet: TDataSet;
+begin
+  vDataSet:= grdSwimItems.DataSource.DataSet;
+  vDataSet.DisableControls;
+  try
+    dm.setBet1(vDataSet['Swim_Id'], vDataSet['Valute1_Sign'], vDataSet['SV1'],
+      Settings.Bookers.Find('Booker', 'Id', vDataSet['Booker1_Id']).Attr['Money_Step'].AsFloatDef(1));
+    vDataSet.Close;
+    vDataSet.Open;
+  finally
+    vDataSet.EnableControls;
+  end;
+end;
+
+procedure TForm1.actIncBet2Execute(Sender: TObject);
+var
+  vDataSet: TDataSet;
+begin
+  vDataSet:= grdSwimItems.DataSource.DataSet;
+  vDataSet.DisableControls;
+  try
+    dm.setBet2(vDataSet['Swim_Id'], vDataSet['Valute2_Sign'], vDataSet['SV2'],
+      Settings.Bookers.Find('Booker', 'Id', vDataSet['Booker2_Id']).Attr['Money_Step'].AsFloatDef(1));
+    vDataSet.Close;
+    vDataSet.Open;
+  finally
+    vDataSet.EnableControls;
+  end;
 end;
 
 procedure TForm1.actIncThreadExecute(Sender: TObject);

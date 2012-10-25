@@ -4,7 +4,6 @@ inherited dmFormMain: TdmFormMain
     Connected = True
   end
   inherited trnRead: TpFIBTransaction
-    Active = True
     AfterStart = trnReadAfterStart
   end
   inherited spTemp: TpFIBStoredProc
@@ -28,10 +27,8 @@ inherited dmFormMain: TdmFormMain
       'FROM'
       '    V_SWIMEVENTS '
       'ORDER BY PROFICIT desc')
-    Active = True
     Transaction = trnRead
     Database = dbSwim
-    UpdateTransaction = trnWrite
     Left = 152
     Top = 224
   end
@@ -86,10 +83,8 @@ inherited dmFormMain: TdmFormMain
       'WHERE'
       '  AEVENT_ID = :AEVENT_ID'
       'ORDER BY PROFICIT desc')
-    Active = True
     Transaction = trnRead
     Database = dbSwim
-    UpdateTransaction = trnWrite
     DataSource = dsSwimEvents
     Left = 152
     Top = 280

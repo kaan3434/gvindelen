@@ -38,6 +38,8 @@ object Form1: TForm1
         Caption = 'Teacher'
         Page = rpTeacher
       end>
+    TabIndex = 2
+    ExplicitTop = -6
     DesignSize = (
       732
       143)
@@ -66,24 +68,26 @@ object Form1: TForm1
       object rgIgnore1: TRibbonGroup
         Left = 56
         Top = 3
-        Width = 105
+        Width = 129
         Height = 86
         ActionManager = actMngRibbon
-        Caption = #1048#1075#1085#1086#1088#1099' 1-'#1075#1086' '#1055#1083#1077#1095#1072
+        Caption = #1051#1077#1074#1086#1077' '#1055#1083#1077#1095#1086
         GroupIndex = 1
+        Rows = 2
       end
       object rgIgnore2: TRibbonGroup
-        Left = 163
+        Left = 187
         Top = 3
-        Width = 105
+        Width = 129
         Height = 86
         ActionManager = actMngRibbon
-        Caption = #1048#1075#1085#1086#1088#1099' 2-'#1075#1086' '#1087#1083#1077#1095#1072
+        Caption = #1055#1088#1072#1074#1086#1077' '#1055#1083#1077#1095#1086
         GroupIndex = 2
+        Rows = 2
       end
       object rgBetAmount: TRibbonGroup
         AlignWithMargins = True
-        Left = 270
+        Left = 318
         Top = 3
         Width = 174
         Height = 86
@@ -100,8 +104,26 @@ object Form1: TForm1
           MaxValue = 0
           MinValue = 1
           TabOrder = 0
-          Value = 0
+          Value = 1
         end
+      end
+    end
+    object rpScanner: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 731
+      Height = 93
+      Caption = 'Scanner'
+      Index = 0
+      object tbScannerBookers: TRibbonGroup
+        AlignWithMargins = True
+        Left = 4
+        Top = 3
+        Width = 255
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = 'Bookers'
+        GroupIndex = 0
       end
     end
     object rpTeacher: TRibbonPage
@@ -123,15 +145,16 @@ object Form1: TForm1
       object RibbonGroup5: TRibbonGroup
         Left = 106
         Top = 3
-        Width = 208
+        Width = 318
         Height = 86
         ActionManager = actMngRibbon
         Caption = 'ExchangeRates'
         GroupIndex = 1
+        Rows = 2
         object RibbonSpinEdit2: TRibbonSpinEdit
           Left = 50
-          Top = 2
-          Width = 54
+          Top = 10
+          Width = 74
           Height = 22
           MaxValue = 0
           MinValue = 0
@@ -140,8 +163,8 @@ object Form1: TForm1
         end
         object RibbonSpinEdit3: TRibbonSpinEdit
           Left = 50
-          Top = 24
-          Width = 54
+          Top = 32
+          Width = 74
           Height = 22
           MaxValue = 0
           MinValue = 0
@@ -149,9 +172,9 @@ object Form1: TForm1
           Value = 0
         end
         object RibbonSpinEdit4: TRibbonSpinEdit
-          Left = 50
-          Top = 46
-          Width = 54
+          Left = 170
+          Top = 10
+          Width = 74
           Height = 22
           MaxValue = 0
           MinValue = 0
@@ -159,33 +182,15 @@ object Form1: TForm1
           Value = 0
         end
         object RibbonSpinEdit5: TRibbonSpinEdit
-          Left = 150
-          Top = 2
-          Width = 54
+          Left = 170
+          Top = 32
+          Width = 74
           Height = 22
           MaxValue = 0
           MinValue = 0
           TabOrder = 3
           Value = 0
         end
-      end
-    end
-    object rpScanner: TRibbonPage
-      Left = 0
-      Top = 50
-      Width = 731
-      Height = 93
-      Caption = 'Scanner'
-      Index = 0
-      object tbScannerBookers: TRibbonGroup
-        AlignWithMargins = True
-        Left = 4
-        Top = 3
-        Width = 187
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = 'Bookers'
-        GroupIndex = 0
       end
     end
   end
@@ -304,7 +309,7 @@ object Form1: TForm1
         end
         item
           Alignment = taCenter
-          Color = clLime
+          Color = clMoneyGreen
           DisplayFormat = '###,##0'
           EditButtons = <>
           FieldName = 'SP1'
@@ -313,7 +318,7 @@ object Form1: TForm1
         end
         item
           Alignment = taCenter
-          Color = clMoneyGreen
+          Color = clLime
           DisplayFormat = '###,##0.##'
           EditButtons = <>
           FieldName = 'SV1'
@@ -377,7 +382,7 @@ object Form1: TForm1
         end
         item
           Alignment = taCenter
-          Color = clLime
+          Color = clMoneyGreen
           DisplayFormat = '###,##0'
           EditButtons = <>
           FieldName = 'SP2'
@@ -386,7 +391,7 @@ object Form1: TForm1
         end
         item
           Alignment = taCenter
-          Color = clMoneyGreen
+          Color = clLime
           DisplayFormat = '###,##0.##'
           EditButtons = <>
           FieldName = 'SV2'
@@ -3300,6 +3305,10 @@ object Form1: TForm1
             CommandProperties.ButtonSize = bsLarge
           end
           item
+            Action = actCalcSwim
+            CommandProperties.ButtonSize = bsLarge
+          end
+          item
             Action = actDecThread
             Caption = '&Dec Thread'
           end
@@ -3340,29 +3349,45 @@ object Form1: TForm1
       item
         Items = <
           item
+            Action = actIncBet1
+            Caption = '&Inc'
+            ImageIndex = 7
+          end
+          item
+            Action = actDecBet1
+            Caption = '&Dec'
+            ImageIndex = 6
+          end
+          item
             Action = actIgnoreBet1
             ImageIndex = 5
-            CommandProperties.ButtonSize = bsLarge
           end
           item
             Action = actIgnoreEvent1
             ImageIndex = 4
-            CommandProperties.ButtonSize = bsLarge
           end>
         ActionBar = rgIgnore1
       end
       item
         Items = <
           item
+            Action = actIncBet2
+            Caption = '&Inc'
+            ImageIndex = 7
+          end
+          item
+            Action = actDecBet2
+            Caption = '&Dec'
+            ImageIndex = 6
+          end
+          item
             ChangesAllowed = []
             Action = actIgnoreBet2
             ImageIndex = 5
-            CommandProperties.ButtonSize = bsLarge
           end
           item
             Action = actIgnoreEvent2
             ImageIndex = 4
-            CommandProperties.ButtonSize = bsLarge
           end>
         ActionBar = rgIgnore2
       end
@@ -3387,7 +3412,7 @@ object Form1: TForm1
             Caption = '&BYR'
             CommandStyle = csControl
             ImageIndex = 9
-            CommandProperties.Width = 100
+            CommandProperties.Width = 120
             CommandProperties.ContainedControl = RibbonSpinEdit2
             CommandProperties.LabelWidth = 44
           end
@@ -3395,7 +3420,7 @@ object Form1: TForm1
             Caption = '&RUR'
             CommandStyle = csControl
             ImageIndex = 10
-            CommandProperties.Width = 100
+            CommandProperties.Width = 120
             CommandProperties.ContainedControl = RibbonSpinEdit3
             CommandProperties.LabelWidth = 44
           end
@@ -3403,7 +3428,7 @@ object Form1: TForm1
             Caption = '&EUR'
             CommandStyle = csControl
             ImageIndex = 11
-            CommandProperties.Width = 100
+            CommandProperties.Width = 120
             CommandProperties.ContainedControl = RibbonSpinEdit4
             CommandProperties.LabelWidth = 44
           end
@@ -3411,9 +3436,13 @@ object Form1: TForm1
             Caption = '&USD'
             CommandStyle = csControl
             ImageIndex = 12
-            CommandProperties.Width = 100
+            CommandProperties.Width = 120
             CommandProperties.ContainedControl = RibbonSpinEdit5
             CommandProperties.LabelWidth = 44
+          end
+          item
+            Action = actSetExchangeRates
+            CommandProperties.ButtonSize = bsLarge
           end>
         ActionBar = RibbonGroup5
       end
@@ -3603,6 +3632,39 @@ object Form1: TForm1
     object actDecThread: TAction
       Category = 'Scanner'
       Caption = 'Dec Thread'
+    end
+    object actIncBet1: TAction
+      Category = 'Viewer'
+      Caption = 'Inc'
+      ImageIndex = 7
+      OnExecute = actIncBet1Execute
+    end
+    object actDecBet1: TAction
+      Category = 'Viewer'
+      Caption = 'Dec'
+      ImageIndex = 6
+      OnExecute = actDecBet1Execute
+    end
+    object actIncBet2: TAction
+      Category = 'Viewer'
+      Caption = 'Inc'
+      ImageIndex = 7
+      OnExecute = actIncBet2Execute
+    end
+    object actDecBet2: TAction
+      Category = 'Viewer'
+      Caption = 'Dec'
+      ImageIndex = 6
+      OnExecute = actDecBet2Execute
+    end
+    object actCalcSwim: TAction
+      Category = 'Scanner'
+      Caption = #1056#1072#1089#1089#1095#1080#1090#1072#1090#1100
+      OnExecute = actCalcSwimExecute
+    end
+    object actSetExchangeRates: TAction
+      Category = 'Teacher'
+      Caption = #1059#1089#1090#1072#1085#1086#1074#1080#1090#1100
     end
   end
 end
