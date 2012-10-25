@@ -81,6 +81,10 @@ type
     procedure grdMainGetCellParams(Sender: TObject; Column: TColumnEh;
       AFont: TFont; var Background: TColor; State: TGridDrawState);
     procedure trnReadAfterStart(Sender: TObject);
+    procedure grdMainRowDetailPanelShow(Sender: TCustomDBGridEh;
+      var CanShow: Boolean);
+    procedure grdMainRowDetailPanelHide(Sender: TCustomDBGridEh;
+      var CanHide: Boolean);
   private
     procedure ApplyFilter(aStatusSign: string);
     { Private declarations }
@@ -189,7 +193,6 @@ end;
 
 procedure TFormTableOrders.actAssignPaymentExecute(Sender: TObject);
 var
-  AccountId: Integer;
   Amount_BYR: Double;
   Xml: TNativeXml;
   ndOrder, ndClient: TXmlNode;
@@ -201,31 +204,19 @@ begin
   ndOrder:= Xml.Root;
   try
     dmOtto.ObjectGet(ndOrder, qryMain['ORDER_ID'], trnRead);
-    ndClient:= ndOrder.NodeNew('CLIENT');
-    dmOtto.ObjectGet(ndClient, qryMain['CLIENT_ID'], trnRead);
 
     DlgManualPayment.Caption:= 'Ручное зачисление на заявку';
     DlgManualPayment.lblAmountEur.Caption:= 'Сумма, BYR';
     DlgManualPayment.edtAmountEur.DecimalPlaces:= 0;
     DlgManualPayment.edtAmountEur.DisplayFormat:= '### ### ##0';
     DlgManualPayment.edtByr2Eur.Value:= GetXmlAttrValue(ndOrder, 'BYR2EUR');
+    DlgManualPayment.edtByr2Eur.ReadOnly:= True;
     if DlgManualPayment.ShowModal = mrOk then
     begin
       Amount_BYR:= DlgManualPayment.edtAmountEur.Value;
-//    Byr2Eur:= DlgManualPayment.edtByr2Eur.Value;
       Annotate:= DlgManualPayment.memAnnotate.Lines.Text;
       trnWrite.StartTransaction;
       try
-        if GetXmlAttrValue(ndClient, 'ACCOUNT_ID') = null then
-        begin
-          // Создаем счет
-          AccountId:= dmOtto.GetNewObjectId('ACCOUNT');
-          dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_CREATE', '', AccountId);
-          SetXmlAttr(ndClient, 'ACCOUNT_ID', AccountId);
-          dmOtto.ActionExecute(trnWrite, ndClient);
-          SetXmlAttr(ndOrder, 'ACCOUNT_ID', AccountId);
-          dmOtto.ActionExecute(trnWrite, ndOrder);
-        end;
         dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_PAYMENTIN',
           XmlAttrs2Vars(ndOrder, 'ORDER_ID=ID;ID=ACCOUNT_ID',
           Value2Vars(Amount_BYR, 'AMOUNT_BYR',
@@ -447,18 +438,37 @@ begin
   qryMain.DisableControls;
   try
     qryMain.Open;
-    qryOrderAttrs.Open;
-    qryOrderItems.Open;
-    qryOrderTaxs.Open;
     qryStatuses.Open;
-    qryAccountMovements.Open;
-    qryRest.Open;
-    qryHistory.Open;
     qryNextStatus.Open;
-    qryClientAttrs.Open;
   finally
     qryMain.EnableControls;
   end;
+end;
+
+procedure TFormTableOrders.grdMainRowDetailPanelShow(
+  Sender: TCustomDBGridEh; var CanShow: Boolean);
+begin
+  inherited;
+  qryOrderAttrs.Open;
+  qryOrderItems.Open;
+  qryOrderTaxs.Open;
+  qryAccountMovements.Open;
+  qryRest.Open;
+  qryHistory.Open;
+  qryClientAttrs.Open;
+end;
+
+procedure TFormTableOrders.grdMainRowDetailPanelHide(
+  Sender: TCustomDBGridEh; var CanHide: Boolean);
+begin
+  inherited;
+  qryOrderAttrs.Close;
+  qryOrderItems.Close;
+  qryOrderTaxs.Close;
+  qryAccountMovements.Close;
+  qryRest.Close;
+  qryHistory.Close;
+  qryClientAttrs.Close;
 end;
 
 end.

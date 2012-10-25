@@ -112,7 +112,7 @@ inherited FormTableClients: TFormTableClients
             Top = 0
             Width = 830
             Height = 198
-            ActivePage = tsClientAccountMovements
+            ActivePage = tsAdresses
             Align = alClient
             TabOrder = 0
             object tsAdresses: TTabSheet
@@ -191,7 +191,7 @@ inherited FormTableClients: TFormTableClients
               object grdClientOrders: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 757
+                Width = 822
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True

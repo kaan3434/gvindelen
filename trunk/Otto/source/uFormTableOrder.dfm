@@ -45,6 +45,8 @@ inherited FormTableOrders: TFormTableOrders
         OnDblClick = grdMainDblClick
         OnFillSTFilterListValues = grdMainFillSTFilterListValues
         OnGetCellParams = grdMainGetCellParams
+        OnRowDetailPanelHide = grdMainRowDetailPanelHide
+        OnRowDetailPanelShow = grdMainRowDetailPanelShow
         Columns = <
           item
             EditButtons = <>

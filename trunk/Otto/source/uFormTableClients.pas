@@ -129,7 +129,6 @@ end;
 
 procedure TFormTableClients.actAccountManualCreditExecute(Sender: TObject);
 var
-  AccountId: Integer;
   Amount_Eur: Double;
   Byr2Eur: Integer;
   Xml: TNativeXml;
@@ -154,20 +153,10 @@ begin
         trnWrite.StartTransaction;
         dmOtto.ObjectGet(ndClient, qryMain['CLIENT_ID'], trnWrite);
         try
-        if GetXmlAttrValue(ndClient, 'ACCOUNT_ID') = null then
-          begin
-            // Создаем счет
-            AccountId:= dmOtto.GetNewObjectId('ACCOUNT');
-            dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_CREATE', '', AccountId);
-            SetXmlAttr(ndClient, 'ACCOUNT_ID', AccountId);
-            dmOtto.ActionExecute(trnWrite, ndClient);
-          end
-          else
-            AccountId:= qryMain['ACCOUNT_ID'];
           dmOtto.ActionExecute(trnWrite, 'ACCOUNT','ACCOUNT_MANUALCREDIT',
             Value2Vars(Amount_EUR, 'AMOUNT_EUR',
             Value2Vars(Byr2Eur, 'BYR2EUR',
-            Value2Vars(Annotate, 'ANNOTATE'))), AccountId);
+            Value2Vars(Annotate, 'ANNOTATE'))), qryMain['ACCOUNT_ID']);
           trnWrite.Commit;
         except
           on E:Exception do
