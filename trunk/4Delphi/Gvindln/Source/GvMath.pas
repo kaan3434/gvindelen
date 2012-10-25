@@ -3,7 +3,7 @@ unit GvMath;
 interface
 
 uses
-  Variants;
+  Variants, Math;
 
 function Max(Flt1, Flt2: Extended): Extended;
 function Min(Flt1, Flt2: Extended): Extended;
@@ -14,6 +14,8 @@ function MinInt(Int1, Int2: LongInt): LongInt;
 function RoundPower(Value: Extended; Power: Integer):Extended;
 function RoundDown(Value: Extended; Power: Integer):Extended;
 function RoundUp(Value: Extended; Power: Integer):Extended;
+
+function RoundPrecision(aValue, aPrecision: Extended):Extended;
 
 function Between(Value, RangeStart, RangeEnd: Extended): Boolean;
 function IfThen(Condition: Boolean; ValueTrue: Variant; ValueElse: Variant): variant;
@@ -117,5 +119,11 @@ begin
   else
     Result:= ValueElse;
 end;
+
+function RoundPrecision(aValue, aPrecision: Extended):Extended;
+begin
+  Result:= Floor(aValue/aPrecision + 5/9) * aPrecision
+end;
+
 
 end.
