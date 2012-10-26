@@ -11,7 +11,7 @@ uses
   frxExportPDF, frxFIBComponents, frxExportMail, IdBaseComponent,
   IdComponent, IdTCPConnection, IdTCPClient, IdExplicitTLSClientServerBase,
   IdMessageClient, IdSMTPBase, IdSMTP, IdMessage, frxExportXML,
-  JvZlibMultiple, SevenZipVCL;
+  SevenZipVCL;
 
 type
   TdmOtto = class(TDataModule)
@@ -234,8 +234,12 @@ begin
        (not FileExists(BackupFileName+'.7z')) then
     try
       dbOtto.Close;
+      CreateAlert('Ежедневная резервная копия', Format(
+        'Создание копии (%s)', [BackupFileName]), mtInformation, 10000);
       try
         BackupDatabase(BackupFileName+'.fbk');
+        CreateAlert('Ежедневная резервная копия', Format(
+          'Архивирование копии (%s)', [BackupFileName]), mtInformation, 10000);
         MoveToZip(BackupFileName+'.fbk', BackupFileName+'.7z');
         CreateAlert('Ежедневная резервная копия', Format(
           'Успеспешно создана (%s)', [BackupFileName]), mtInformation);

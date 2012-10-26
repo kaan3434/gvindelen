@@ -11,6 +11,7 @@ inherited FormTableOrders: TFormTableOrders
       Top = 26
       FullSize = True
       Images = imgListMain
+      TabOrder = 1
       object btnMakeInvoice: TTBXItem
         Action = actMakeInvoice
         DisplayMode = nbdmImageAndText
@@ -37,7 +38,7 @@ inherited FormTableOrders: TFormTableOrders
       Caption = 'barUserBar'
       FullSize = True
       Images = imgListMain
-      TabOrder = 1
+      TabOrder = 0
       object btnRest2Order: TTBXItem
         Action = actRest2Order
         DisplayMode = nbdmImageAndText
@@ -46,12 +47,12 @@ inherited FormTableOrders: TFormTableOrders
   end
   inherited pnlMain: TJvPanel
     Top = 52
-    Height = 446
+    Height = 450
     inherited grBoxMain: TJvGroupBox
-      Height = 436
+      Height = 440
       Caption = #1047#1072#1103#1074#1082#1080
       inherited grdMain: TDBGridEh
-        Height = 419
+        Height = 423
         AllowedOperations = [alopDeleteEh]
         IndicatorTitle.ShowDropDownSign = True
         Options = [dgTitles, dgIndicator, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
@@ -221,7 +222,7 @@ inherited FormTableOrders: TFormTableOrders
             Top = 0
             Width = 931
             Height = 198
-            ActivePage = tsOrderItems
+            ActivePage = ts1
             Align = alClient
             TabOrder = 0
             object tsOrderAttrs: TTabSheet
@@ -407,7 +408,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdOrderTaxs: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 900
+                Width = 923
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -492,7 +493,7 @@ inherited FormTableOrders: TFormTableOrders
               Caption = #1044#1074#1080#1078#1077#1085#1080#1077' '#1089#1088#1077#1076#1089#1090#1074
               ImageIndex = 3
               object spl1: TSplitter
-                Left = 565
+                Left = 588
                 Top = 0
                 Height = 170
                 Align = alRight
@@ -500,7 +501,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdAccountMovements: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 565
+                Width = 588
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -566,7 +567,7 @@ inherited FormTableOrders: TFormTableOrders
                 end
               end
               object grdRests: TDBGridEh
-                Left = 568
+                Left = 591
                 Top = 0
                 Width = 332
                 Height = 170
@@ -990,11 +991,7 @@ inherited FormTableOrders: TFormTableOrders
   end
   inherited trnRead: TpFIBTransaction
     Active = True
-    TRParams.Strings = (
-      'read'
-      'nowait'
-      'rec_version'
-      'read_committed')
+    TPBMode = tpbReadCommitted
   end
   object qryOrderAttrs: TpFIBDataSet
     SelectSQL.Strings = (
@@ -1266,5 +1263,17 @@ inherited FormTableOrders: TFormTableOrders
     DataSet = qryRest
     Left = 813
     Top = 407
+  end
+  object frxExportEmail: TfrxMailExport
+    UseFileCache = True
+    ShowProgress = True
+    OverwritePrompt = False
+    ShowExportDialog = True
+    SmtpPort = 25
+    UseIniFile = True
+    TimeOut = 60
+    ConfurmReading = False
+    Left = 417
+    Top = 199
   end
 end

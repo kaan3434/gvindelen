@@ -9,7 +9,7 @@ uses
   DBGridEh, StdCtrls, JvExStdCtrls, JvGroupBox, ExtCtrls, JvExExtCtrls,
   JvExtComponent, JvPanel, TB2Item, TBX, TB2Dock, TB2Toolbar, ComCtrls,
   NativeXml, GvNativeXml, EhLibFIB, DBGridEhGrouping, frxClass,
-  frxFIBComponents, frxExportPDF;
+  frxFIBComponents, frxExportPDF, frxExportMail;
 
 type
   TFormTableOrders = class(TBaseNSIForm)
@@ -65,6 +65,7 @@ type
     actRest2Order: TAction;
     barUserBar: TTBXToolbar;
     btnRest2Order: TTBXItem;
+    frxExportEmail: TfrxMailExport;
     procedure actFilterApprovedExecute(Sender: TObject);
     procedure actFilterAcceptRequestExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -489,9 +490,6 @@ var
   ndOrder, ndAccount: TXmlNode;
   vAccountRest, vOrderBalance, vAmount: Extended;
 begin
-  Xml:= TNativeXml.CreateName('ORDER');
-  ndOrder:= Xml.Root;
-  ndAccount:= ndOrder.NodeNew('ACCOUNT');
   qryMain.DisableControls;
   bm:= qryMain.GetBookmark;
   if not trnWrite.Active then
@@ -499,16 +497,12 @@ begin
   try
     trnWrite.SetSavePoint('BeforeBalanceOrder');
     try
-      dmOtto.ObjectGet(ndOrder, qryMain['Order_Id'], trnWrite);
-      dmOtto.ObjectGet(ndAccount, qryMain['Account_Id'], trnWrite);
-      vAccountRest:= ToFloat(GetXmlAttrAsMoney(ndAccount, 'REST_EUR'));
-      vOrderBalance:= ToFloat(GetXmlAttrAsMoney(ndOrder, 'BALANCE_EUR'));
-      vAmount:= Min(vAccountRest, vOrderBalance);
+      vAmount:= Min(qryMain['COST_EUR'], qryMain['REST_EUR']);
       dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_CREDITORDER',
         DataSet2Vars(qryMain, 'ORDER_ID',
         Value2Vars(vAmount, 'AMOUNT_EUR')), qryMain['ACCOUNT_ID']);
-      ShowMessage(Format('%3.2f EUR перенесены на заявку', [vAmount]));
       trnWrite.Commit;
+      ShowMessage(Format('%3.2f EUR перенесены на заявку', [vAmount]));
     except
       on E: Exception do
       begin
@@ -520,7 +514,6 @@ begin
     qryMain.GotoBookmark(bm);
     qryMain.FreeBookmark(bm);
     qryMain.EnableControls;
-    Xml.Free;
   end;
 end;
 
