@@ -10,7 +10,8 @@ uses
   gsFileVersionInfo, dbf, pFIBErrorHandler, FIB, frxExportXLS, frxClass,
   frxExportPDF, frxFIBComponents, frxExportMail, IdBaseComponent,
   IdComponent, IdTCPConnection, IdTCPClient, IdExplicitTLSClientServerBase,
-  IdMessageClient, IdSMTPBase, IdSMTP, IdMessage, frxExportXML;
+  IdMessageClient, IdSMTPBase, IdSMTP, IdMessage, frxExportXML,
+  JvZlibMultiple, SevenZipVCL;
 
 type
   TdmOtto = class(TDataModule)
@@ -45,6 +46,7 @@ type
     smtpMain: TIdSMTP;
     frxReport: TfrxReport;
     frxExportXLS: TfrxXMLExport;
+    svnZipBackup: TSevenZip;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
     procedure dbOttoAfterConnect(Sender: TObject);
@@ -135,6 +137,7 @@ type
       aTransaction: TpFIBTransaction): Variant;
     procedure ExportCommitRequest(aNode: TXmlNode; aTransaction: TpFIBTransaction);
     procedure SendEmail(aReceiver, aSubject, aMessage: String);
+    procedure MoveToZip(aFileName, aZipName: String);
   end;
 
 var
@@ -223,14 +226,17 @@ begin
     FUserName:= dbOtto.DBParams.Values['user_name'];
     FPassword:= dbOtto.DBParams.Values['password'];
     FRole:= dbOtto.QueryValue('select current_role from rdb$database', 0);
-    BackupFileName:= Format('%s%s_%s_Dayly.fbk',
+    BackupFileName:= Format('%s%s_%s_Dayly',
       [Path['Backup'], FormatDateTime('YYYYMMDD', Date),
        FillFront(IntToStr(dmOtto.Build), 6, '0')]);
-    if isAdminRole and (not FileExists(BackupFileName)) then
+    if isAdminRole and
+       (not FileExists(BackupFileName+'.fbk')) and
+       (not FileExists(BackupFileName+'.7z')) then
     try
       dbOtto.Close;
       try
-        BackupDatabase(BackupFileName);
+        BackupDatabase(BackupFileName+'.fbk');
+        MoveToZip(BackupFileName+'.fbk', BackupFileName+'.7z');
         CreateAlert('Ежедневная резервная копия', Format(
           'Успеспешно создана (%s)', [BackupFileName]), mtInformation);
       except
@@ -1112,6 +1118,14 @@ begin
   finally
     SmtpSettings.Free;
   end;
+end;
+
+procedure TdmOtto.MoveToZip(aFileName, aZipName: String);
+begin
+  svnZipBackup.SZFileName:= aZipName;
+  svnZipBackup.Files.AddString(aFileName);
+  svnZipBackup.Add;
+  DeleteFiles(aFileName);
 end;
 
 initialization

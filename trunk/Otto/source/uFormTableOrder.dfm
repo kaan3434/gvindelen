@@ -1,12 +1,15 @@
 inherited FormTableOrders: TFormTableOrders
-  Left = 246
-  Top = 164
+  Left = 254
+  Top = 141
   Caption = #1047#1072#1103#1074#1082#1080
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   inherited dckTop: TTBXDock
+    Height = 52
     inherited tlBarNsiActions: TTBXToolbar
+      Top = 26
+      FullSize = True
       Images = imgListMain
       object btnMakeInvoice: TTBXItem
         Action = actMakeInvoice
@@ -28,11 +31,27 @@ inherited FormTableOrders: TFormTableOrders
         DisplayMode = nbdmImageAndText
       end
     end
+    object barUserBar: TTBXToolbar
+      Left = 0
+      Top = 0
+      Caption = 'barUserBar'
+      FullSize = True
+      Images = imgListMain
+      TabOrder = 1
+      object btnRest2Order: TTBXItem
+        Action = actRest2Order
+        DisplayMode = nbdmImageAndText
+      end
+    end
   end
   inherited pnlMain: TJvPanel
+    Top = 52
+    Height = 446
     inherited grBoxMain: TJvGroupBox
+      Height = 436
       Caption = #1047#1072#1103#1074#1082#1080
       inherited grdMain: TDBGridEh
+        Height = 419
         AllowedOperations = [alopDeleteEh]
         IndicatorTitle.ShowDropDownSign = True
         Options = [dgTitles, dgIndicator, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
@@ -160,6 +179,7 @@ inherited FormTableOrders: TFormTableOrders
             EditButtons = <>
             FieldName = 'USER_SIGN'
             Footers = <>
+            Title.Caption = #1054#1090#1089#1090#1072#1090#1086#1082', EUR'
           end
           item
             EditButtons = <>
@@ -173,6 +193,7 @@ inherited FormTableOrders: TFormTableOrders
             EditButtons = <>
             FieldName = 'IS_INVOICED'
             Footers = <>
+            Visible = False
             Width = 20
           end
           item
@@ -181,18 +202,24 @@ inherited FormTableOrders: TFormTableOrders
             EditButtons = <>
             FieldName = 'IS_INVOICEPRINTED'
             Footers = <>
+            Visible = False
             Width = 20
           end
           item
             EditButtons = <>
             FieldName = 'BYR2EUR'
             Footers = <>
+          end
+          item
+            EditButtons = <>
+            FieldName = 'REST_EUR'
+            Footers = <>
           end>
         inherited RowDetailData: TRowDetailPanelControlEh
           object pcDetailInfo: TPageControl
             Left = 0
             Top = 0
-            Width = 908
+            Width = 931
             Height = 198
             ActivePage = tsOrderItems
             Align = alClient
@@ -202,7 +229,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdOrderProperties: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 900
+                Width = 923
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -255,7 +282,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdOrderItems: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 900
+                Width = 923
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -711,12 +738,6 @@ inherited FormTableOrders: TFormTableOrders
     end
   end
   inherited qryMain: TpFIBDataSet
-    DeleteSQL.Strings = (
-      'DELETE FROM'
-      '    ORDERS'
-      'WHERE'
-      '    ORDER_ID = :OLD_ORDER_ID'
-      '    ')
     RefreshSQL.Strings = (
       'SELECT'
       '    orders.ORDER_ID,'
@@ -730,7 +751,16 @@ inherited FormTableOrders: TFormTableOrders
       '    statuses.STATUS_SIGN,'
       '    orders.STATUS_DTM,'
       '    v_order_summary.cost_eur,'
-      '    v_order_summary.cost_byr'
+      '    v_order_summary.cost_byr,'
+      '    orders.bar_code,'
+      '    orders.user_sign,'
+      '    orders.account_id,'
+      '    orders.source,'
+      '    1 is_invoiced,'
+      '    0 is_invoiceprinted,'
+      '    orders.byr2eur,'
+      '    accounts.rest_eur,'
+      '    v_order_attrs.attr_value note'
       'FROM ORDERS '
       
         '  inner join v_clients_fio on (v_clients_fio.client_id = orders.' +
@@ -739,9 +769,15 @@ inherited FormTableOrders: TFormTableOrders
       
         '  inner join v_order_summary on (v_order_summary.order_id = orde' +
         'rs.order_id)'
+      
+        '  left join v_order_attrs on (v_order_attrs.object_id = orders.o' +
+        'rder_id and v_order_attrs.attr_sign='#39'NOTE'#39')'
+      
+        '  inner join accounts on (accounts.account_id = orders.account_i' +
+        'd)'
       'where  '
-      '/*FILTER*/ ORDERS.ORDER_ID = :OLD_ORDER_ID'
-      ''
+      '/*FILTER*/ 1=1'
+      'and ORDERS.ORDER_ID = :OLD_ORDER_ID  '
       '    ')
     SelectSQL.Strings = (
       'SELECT'
@@ -764,6 +800,7 @@ inherited FormTableOrders: TFormTableOrders
       '    1 is_invoiced,'
       '    0 is_invoiceprinted,'
       '    orders.byr2eur,'
+      '    accounts.rest_eur,'
       '    v_order_attrs.attr_value note'
       'FROM ORDERS '
       
@@ -776,6 +813,9 @@ inherited FormTableOrders: TFormTableOrders
       
         '  left join v_order_attrs on (v_order_attrs.object_id = orders.o' +
         'rder_id and v_order_attrs.attr_sign='#39'NOTE'#39')'
+      
+        '  inner join accounts on (accounts.account_id = orders.account_i' +
+        'd)'
       'where '
       '/*FILTER*/ 1=1'
       'order by Create_dtm desc')
@@ -822,6 +862,12 @@ inherited FormTableOrders: TFormTableOrders
       ImageIndex = 3
       OnExecute = actBalanceOrderExecute
       OnUpdate = actBalanceOrderUpdate
+    end
+    object actRest2Order: TAction
+      Caption = #1054#1089#1090#1072#1090#1086#1082' '#1085#1072' '#1079#1072#1103#1074#1082#1091
+      ImageIndex = 1
+      OnExecute = actRest2OrderExecute
+      OnUpdate = actRest2OrderUpdate
     end
   end
   inherited imgListMain: TPngImageList
@@ -943,11 +989,12 @@ inherited FormTableOrders: TFormTableOrders
     Bitmap = {}
   end
   inherited trnRead: TpFIBTransaction
+    Active = True
     TRParams.Strings = (
-      'write'
-      'isc_tpb_nowait'
-      'read_committed'
-      'rec_version')
+      'read'
+      'nowait'
+      'rec_version'
+      'read_committed')
   end
   object qryOrderAttrs: TpFIBDataSet
     SelectSQL.Strings = (

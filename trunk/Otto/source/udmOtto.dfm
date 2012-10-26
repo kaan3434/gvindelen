@@ -2,11 +2,12 @@ object dmOtto: TdmOtto
   OldCreateOrder = False
   OnCreate = DataModuleCreate
   OnDestroy = DataModuleDestroy
-  Left = 553
-  Top = 239
-  Height = 405
-  Width = 624
+  Left = 418
+  Top = 192
+  Height = 444
+  Width = 589
   object dbOtto: TpFIBDatabase
+    Connected = True
     DBName = 'localhost:D:\otto\Data\otto_ppz.fdb'
     DBParams.Strings = (
       'lc_ctype=CYRL'
@@ -111,6 +112,7 @@ object dmOtto: TdmOtto
     Top = 176
   end
   object trnAutonomouse: TpFIBTransaction
+    Active = True
     DefaultDatabase = dbOtto
     TimeoutAction = TARollback
     TRParams.Strings = (
@@ -361,5 +363,20 @@ object dmOtto: TdmOtto
     Split = ssRPages
     Left = 440
     Top = 312
+  end
+  object svnZipBackup: TSevenZip
+    SFXCreate = False
+    SFXModule = '7z.sfx'
+    AddOptions = [AddStoreOnlyFilename]
+    ExtractOptions = []
+    LZMACompressType = LZMA
+    LZMACompressStrength = NORMAL
+    LZMAStrength = 0
+    LPPMDmem = 30
+    LPPMDsize = 10
+    NumberOfFiles = -1
+    VolumeSize = 0
+    Left = 168
+    Top = 320
   end
 end

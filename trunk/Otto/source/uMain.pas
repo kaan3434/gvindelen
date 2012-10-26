@@ -13,7 +13,7 @@ uses
   JvBaseDlg,
   gsFileVersionInfo, JvLogFile, JvProgressDialog,
   frxExportXML,
-  ComCtrls, TBXExtItems, frxExportXLS;
+  ComCtrls, TBXExtItems, frxExportXLS, JvZlibMultiple;
 
 type
   TMainForm = class(TForm)
@@ -694,16 +694,18 @@ const
   HeaderText = 'Резерная копия';
 var
   Build, FileName: string;
+  FileList: TStringList;
 begin
   Build := FillFront(IntToStr(dmOtto.Build), 6, '0');
   dmOtto.CreateAlert(HeaderText, Format('Создание копии %s ...', [Build]),
     mtInformation, 10000);
-  FileName:= GetNextFileName(Format('%s%s_%s_%%u.fbk',
+  FileName:= GetNextFileName(Format('%s%s_%s_%%u',
     [Path['Backup'], FormatDateTime('YYYYMMDD', Date), Build]), 1);
   try
     if dmOtto.dbOtto.Connected then
       dmOtto.dbOtto.Close;
-    dmOtto.BackupDatabase(FileName);
+    dmOtto.BackupDatabase(FileName+'.fbk');
+    dmOtto.MoveToZip(FileName+'.fbk', FileName+'.7z');
     dmOtto.CreateAlert(HeaderText, Format('Резерная копия %s создана',
        [ExtractFileNameOnly(FileName)]), mtInformation);
   finally

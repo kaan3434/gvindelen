@@ -62,6 +62,9 @@ type
     dsRest: TDataSource;
     grdRests: TDBGridEh;
     spl1: TSplitter;
+    actRest2Order: TAction;
+    barUserBar: TTBXToolbar;
+    btnRest2Order: TTBXItem;
     procedure actFilterApprovedExecute(Sender: TObject);
     procedure actFilterAcceptRequestExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -85,6 +88,8 @@ type
       var CanShow: Boolean);
     procedure grdMainRowDetailPanelHide(Sender: TCustomDBGridEh;
       var CanHide: Boolean);
+    procedure actRest2OrderUpdate(Sender: TObject);
+    procedure actRest2OrderExecute(Sender: TObject);
   private
     procedure ApplyFilter(aStatusSign: string);
     { Private declarations }
@@ -98,7 +103,8 @@ var
 implementation
 
 uses
-  udmOtto, uFormWizardOrder, uMain, uDlgPayment, GvStr, GvVariant, GvColor;
+  udmOtto, uFormWizardOrder, uMain, uDlgPayment, GvStr, GvVariant, GvColor,
+  Math;
 
 {$R *.dfm}
 
@@ -205,12 +211,13 @@ begin
   try
     dmOtto.ObjectGet(ndOrder, qryMain['ORDER_ID'], trnRead);
 
-    DlgManualPayment.Caption:= 'Ручное зачисление на заявку';
+    DlgManualPayment.Caption:= 'Ручное зачисление банковского платежа на заявку';
     DlgManualPayment.lblAmountEur.Caption:= 'Сумма, BYR';
     DlgManualPayment.edtAmountEur.DecimalPlaces:= 0;
     DlgManualPayment.edtAmountEur.DisplayFormat:= '### ### ##0';
     DlgManualPayment.edtByr2Eur.Value:= GetXmlAttrValue(ndOrder, 'BYR2EUR');
     DlgManualPayment.edtByr2Eur.ReadOnly:= True;
+    DlgManualPayment.edtByr2Eur.Color:= clBtnFace;
     if DlgManualPayment.ShowModal = mrOk then
     begin
       Amount_BYR:= DlgManualPayment.edtAmountEur.Value;
@@ -230,8 +237,6 @@ begin
           end
       end;
     end;
-    trnRead.Commit;
-    trnRead.StartTransaction;
   finally
     Xml.Free;
     DlgManualPayment.Free;
@@ -362,7 +367,8 @@ begin
     trnWrite.SetSavePoint('BeforeBalanceOrder');
     try
       dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_DEBITORDER',
-        DataSet2Vars(qryMain, 'AMOUNT_EUR=COST_EUR;ORDER_ID'), qryMain['ACCOUNT_ID']);
+        DataSet2Vars(qryMain, 'ORDER_ID;AMOUNT_EUR=COST_EUR'), qryMain['ACCOUNT_ID']);
+      trnWrite.Commit;
       ShowMessage('Заявка сбалансирована');
     except
       on E: Exception do
@@ -469,6 +475,53 @@ begin
   qryRest.Close;
   qryHistory.Close;
   qryClientAttrs.Close;
+end;
+
+procedure TFormTableOrders.actRest2OrderUpdate(Sender: TObject);
+begin
+  actRest2Order.Enabled:= qryMain['REST_EUR'] <> 0;
+end;
+
+procedure TFormTableOrders.actRest2OrderExecute(Sender: TObject);
+var
+  bm: TBookmark;
+  Xml: TNativeXml;
+  ndOrder, ndAccount: TXmlNode;
+  vAccountRest, vOrderBalance, vAmount: Extended;
+begin
+  Xml:= TNativeXml.CreateName('ORDER');
+  ndOrder:= Xml.Root;
+  ndAccount:= ndOrder.NodeNew('ACCOUNT');
+  qryMain.DisableControls;
+  bm:= qryMain.GetBookmark;
+  if not trnWrite.Active then
+    trnWrite.StartTransaction;
+  try
+    trnWrite.SetSavePoint('BeforeBalanceOrder');
+    try
+      dmOtto.ObjectGet(ndOrder, qryMain['Order_Id'], trnWrite);
+      dmOtto.ObjectGet(ndAccount, qryMain['Account_Id'], trnWrite);
+      vAccountRest:= ToFloat(GetXmlAttrAsMoney(ndAccount, 'REST_EUR'));
+      vOrderBalance:= ToFloat(GetXmlAttrAsMoney(ndOrder, 'BALANCE_EUR'));
+      vAmount:= Min(vAccountRest, vOrderBalance);
+      dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_CREDITORDER',
+        DataSet2Vars(qryMain, 'ORDER_ID',
+        Value2Vars(vAmount, 'AMOUNT_EUR')), qryMain['ACCOUNT_ID']);
+      ShowMessage(Format('%3.2f EUR перенесены на заявку', [vAmount]));
+      trnWrite.Commit;
+    except
+      on E: Exception do
+      begin
+        trnWrite.RollBackToSavePoint('BeforeBalanceOrder');
+        ShowMessage(e.Message);
+      end;
+    end;
+  finally
+    qryMain.GotoBookmark(bm);
+    qryMain.FreeBookmark(bm);
+    qryMain.EnableControls;
+    Xml.Free;
+  end;
 end;
 
 end.
