@@ -45,6 +45,7 @@ type
     ndOrderTax: TXmlNode;
     ndOrderMoneys: TXmlNode;
     ndAccount: TXmlNode;
+    ndProduct: TXmlNode;
     frmOrderItems: TFrameOrderItems;
     frmOrder: TFrameOrder;
     frmClient: TFrameClient;
@@ -80,6 +81,7 @@ begin
   Root.Name:= 'ORDER';
   ndOrder:= Root;
   ndAdress:= ndOrder.NodeFindOrCreate('ADRESS');
+  ndProduct:= ndOrder.NodeFindOrCreate('PRODUCT');
   ndPlace:= ndAdress.NodeFindOrCreate('PLACE');
   ndClient:= ndOrder.NodeFindOrCreate('CLIENT');
   ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
@@ -125,6 +127,7 @@ begin
   dmOtto.ObjectGet(ndAccount, GetXmlAttrValue(ndClient, 'ACCOUNT_ID'), trnRead);
   dmOtto.ObjectGet(ndAdress, GetXmlAttrValue(ndOrder, 'ADRESS_ID'), trnRead);
   dmOtto.ObjectGet(ndPlace, GetXmlAttrValue(ndAdress, 'PLACE_ID'), trnRead);
+  dmOtto.ObjectGet(ndProduct, GetXmlAttrValue(ndOrder, 'PRODUCT_ID'), trnRead);
   dmOtto.OrderItemsGet(ndOrderItems, OrderId, trnRead);
   dmOtto.OrderTaxsGet(ndOrderTaxs, OrderId, trnRead);
   dmOtto.OrderMoneysGet(ndOrderMoneys, OrderId, trnRead);
@@ -172,6 +175,7 @@ begin
   frmOrderSummary.ndAdress:= ndAdress;
   frmOrderSummary.ndPlace:= ndPlace;
   frmOrderSummary.ndAccount:= ndAccount;
+  frmOrderSummary.ndProduct:= ndProduct;
   IncludeForm(wzIPageOrderSummary, frmOrderSummary);
 
 //  if SourceFlag = sfDataBase then

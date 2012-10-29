@@ -209,7 +209,7 @@ end;
 
 procedure TFrameClient.grdClientDblClick(Sender: TObject);
 begin
-  if grBoxClient.Enabled then
+  if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'NEW') then
   begin
     dmOtto.ClientRead(ndClient, qryClient['CLIENT_ID'], trnRead);
     Read;

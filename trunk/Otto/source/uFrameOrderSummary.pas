@@ -64,6 +64,7 @@ type
     ndPlace: TXmlNode;
     ndAccount: TXmlNode;
     ndBonus: TXmlNode;
+    ndProduct: TXmlNode;
     procedure InitData; override;
     procedure FreeData; override;
     procedure OpenTables; override;
@@ -120,6 +121,7 @@ begin
   txtClientEmailOnFinal.Caption:= GetXmlAttr(ndClient, 'EMAIL');
   txtAdressOnFinal.Caption:= FullAdress;
   RestEur:= GetXmlAttrAsMoney(ndAccount, 'REST_EUR');
+  chkUseRest.Visible:= GetXmlAttrValue(ndProduct, 'PRODUCT_CODE') = 1;
   chkUseRest.Enabled:= RestEur <> 0;
   chkUseRest.Checked:= RestEur < 0;
   txtAccountRest.Caption:= GetXmlAttr(ndAccount, 'REST_EUR', '', ' EUR');

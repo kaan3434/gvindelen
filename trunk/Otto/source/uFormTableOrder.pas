@@ -497,7 +497,7 @@ begin
   try
     trnWrite.SetSavePoint('BeforeBalanceOrder');
     try
-      vAmount:= Min(qryMain['COST_EUR'], qryMain['REST_EUR']);
+      vAmount:= Min(qryMain.FieldByName('COST_EUR').AsFloat, qryMain.FieldByName('REST_EUR').AsFloat);
       dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_CREDITORDER',
         DataSet2Vars(qryMain, 'ORDER_ID',
         Value2Vars(vAmount, 'AMOUNT_EUR')), qryMain['ACCOUNT_ID']);
