@@ -47,12 +47,12 @@ inherited FormTableOrders: TFormTableOrders
   end
   inherited pnlMain: TJvPanel
     Top = 52
-    Height = 450
+    Height = 446
     inherited grBoxMain: TJvGroupBox
-      Height = 440
+      Height = 436
       Caption = #1047#1072#1103#1074#1082#1080
       inherited grdMain: TDBGridEh
-        Height = 423
+        Height = 419
         AllowedOperations = [alopDeleteEh]
         IndicatorTitle.ShowDropDownSign = True
         Options = [dgTitles, dgIndicator, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
@@ -222,7 +222,7 @@ inherited FormTableOrders: TFormTableOrders
             Top = 0
             Width = 931
             Height = 198
-            ActivePage = ts1
+            ActivePage = tsNote
             Align = alClient
             TabOrder = 0
             object tsOrderAttrs: TTabSheet
@@ -722,14 +722,14 @@ inherited FormTableOrders: TFormTableOrders
             object tsNote: TTabSheet
               Caption = #1055#1088#1080#1084#1077#1095#1072#1085#1080#1103
               ImageIndex = 6
-              object mmoNote: TMemo
+              object dbmmoATTR_VALUE: TDBMemo
                 Left = 0
                 Top = 0
-                Width = 900
+                Width = 923
                 Height = 170
                 Align = alClient
-                ReadOnly = True
-                ScrollBars = ssBoth
+                DataField = 'ATTR_VALUE'
+                DataSource = dsNotes
                 TabOrder = 0
               end
             end
@@ -792,28 +792,19 @@ inherited FormTableOrders: TFormTableOrders
       '    statuses.STATUS_NAME,'
       '    statuses.STATUS_SIGN,'
       '    orders.STATUS_DTM,'
-      '    v_order_summary.cost_eur,'
-      '    v_order_summary.cost_byr,'
+      '    orders.cost_eur,'
+      '    orders.cost_byr,'
       '    orders.bar_code,'
       '    orders.user_sign,'
       '    orders.account_id,'
       '    orders.source,'
-      '    1 is_invoiced,'
-      '    0 is_invoiceprinted,'
       '    orders.byr2eur,'
-      '    accounts.rest_eur,'
-      '    v_order_attrs.attr_value note'
+      '    accounts.rest_eur'
       'FROM ORDERS '
       
         '  inner join v_clients_fio on (v_clients_fio.client_id = orders.' +
         'client_id)'
       '  inner join statuses on (statuses.status_id = orders.status_id)'
-      
-        '  inner join v_order_summary on (v_order_summary.order_id = orde' +
-        'rs.order_id)'
-      
-        '  left join v_order_attrs on (v_order_attrs.object_id = orders.o' +
-        'rder_id and v_order_attrs.attr_sign='#39'NOTE'#39')'
       
         '  inner join accounts on (accounts.account_id = orders.account_i' +
         'd)'
@@ -1251,9 +1242,9 @@ inherited FormTableOrders: TFormTableOrders
       '--  and ar.rest_byr <> 0'
       '--  and ar.rest_eur <> 0'
       'order by ar.account_id, ar.rest_dtm')
-    Active = True
-    Transaction = dmOtto.trnAutonomouse
+    Transaction = trnRead
     Database = dmOtto.dbOtto
+    UpdateTransaction = trnWrite
     DataSource = dsMain
     Left = 741
     Top = 407
@@ -1275,5 +1266,39 @@ inherited FormTableOrders: TFormTableOrders
     ConfurmReading = False
     Left = 417
     Top = 199
+  end
+  object qryNotes: TpFIBDataSet
+    UpdateSQL.Strings = (
+      'UPDATE ORDER_ATTRS'
+      'SET '
+      '    ATTR_VALUE = :ATTR_VALUE'
+      'WHERE ATTR_ID = :OLD_ATTR_ID'
+      'and OBJECT_ID = :ORDER_ID'
+      ''
+      '    ')
+    DeleteSQL.Strings = (
+      ''
+      '    ')
+    RefreshSQL.Strings = (
+      'SELECT *'
+      'FROM v_order_attrs oa'
+      'where oa.object_id = :order_id'
+      '  and oa.attr_sign = '#39'NOTE'#39)
+    SelectSQL.Strings = (
+      'SELECT *'
+      'FROM v_order_attrs oa'
+      'where oa.object_id = :order_id'
+      '  and oa.attr_sign = '#39'NOTE'#39';')
+    Transaction = trnRead
+    Database = dmOtto.dbOtto
+    UpdateTransaction = trnWrite
+    DataSource = dsMain
+    Left = 861
+    Top = 407
+  end
+  object dsNotes: TDataSource
+    DataSet = qryNotes
+    Left = 901
+    Top = 409
   end
 end

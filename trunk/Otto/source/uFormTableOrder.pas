@@ -9,7 +9,7 @@ uses
   DBGridEh, StdCtrls, JvExStdCtrls, JvGroupBox, ExtCtrls, JvExExtCtrls,
   JvExtComponent, JvPanel, TB2Item, TBX, TB2Dock, TB2Toolbar, ComCtrls,
   NativeXml, GvNativeXml, EhLibFIB, DBGridEhGrouping, frxClass,
-  frxFIBComponents, frxExportPDF, frxExportMail;
+  frxFIBComponents, frxExportPDF, frxExportMail, DBCtrls;
 
 type
   TFormTableOrders = class(TBaseNSIForm)
@@ -57,7 +57,6 @@ type
     qryClientAttrs: TpFIBDataSet;
     dsClientAttrs: TDataSource;
     tsNote: TTabSheet;
-    mmoNote: TMemo;
     qryRest: TpFIBDataSet;
     dsRest: TDataSource;
     grdRests: TDBGridEh;
@@ -66,6 +65,9 @@ type
     barUserBar: TTBXToolbar;
     btnRest2Order: TTBXItem;
     frxExportEmail: TfrxMailExport;
+    qryNotes: TpFIBDataSet;
+    dbmmoATTR_VALUE: TDBMemo;
+    dsNotes: TDataSource;
     procedure actFilterApprovedExecute(Sender: TObject);
     procedure actFilterAcceptRequestExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -251,7 +253,6 @@ var
   i: Integer;
 begin
   if DataSet.ControlsDisabled then Exit;
-  mmoNote.Text:= qryMain.FieldByName('Note').AsString;
   for i:= 0 to subSetStatuses.Count - 1 do
     subSetStatuses.Items[i].Visible:= False;
   if qryNextStatus.Active then
@@ -285,7 +286,6 @@ var
 begin
   OrderId:= qryMain['ORDER_ID'];
   qryMain.DisableControls;
-
   try
     if not trnWrite.Active then trnWrite.StartTransaction;
     try
@@ -297,8 +297,8 @@ begin
       trnWrite.RollBackToSavePoint('SetStatus');
     end;
   finally
-    qryMain.Close;
-    qryMain.Open;
+    qryMain.CloseOpen(false);
+    qryMain.Locate('ORDER_ID', OrderId, []);
     qryMain.EnableControls;
   end;
 end;
@@ -345,7 +345,6 @@ begin
       ShowMessage('Ошибка при удалении заявки');
     end;
   end;
-
 end;
 
 procedure TFormTableOrders.actBalanceOrderUpdate(Sender: TObject);
@@ -358,8 +357,9 @@ end;
 
 procedure TFormTableOrders.actBalanceOrderExecute(Sender: TObject);
 var
-  bm: TBookmark;
+  OrderId: Integer;
 begin
+  OrderId:= qryMain['ORDER_ID'];
   qryMain.DisableControls;
   bm:= qryMain.GetBookmark;
   if not trnWrite.Active then
@@ -378,9 +378,9 @@ begin
         ShowMessage(e.Message);
       end;
     end;
+    qryMain.CloseOpen(false);
   finally
-    qryMain.GotoBookmark(bm);
-    qryMain.FreeBookmark(bm);
+    qryMain.Locate('ORDER_ID', OrderId, []);
     qryMain.EnableControls;
   end;
 end;
@@ -463,6 +463,7 @@ begin
   qryRest.Open;
   qryHistory.Open;
   qryClientAttrs.Open;
+  qryNotes.Open;
 end;
 
 procedure TFormTableOrders.grdMainRowDetailPanelHide(
@@ -476,6 +477,7 @@ begin
   qryRest.Close;
   qryHistory.Close;
   qryClientAttrs.Close;
+  qryNotes.Close;
 end;
 
 procedure TFormTableOrders.actRest2OrderUpdate(Sender: TObject);
@@ -485,13 +487,11 @@ end;
 
 procedure TFormTableOrders.actRest2OrderExecute(Sender: TObject);
 var
-  bm: TBookmark;
-  Xml: TNativeXml;
-  ndOrder, ndAccount: TXmlNode;
-  vAccountRest, vOrderBalance, vAmount: Extended;
+  OrderId: Integer;
+  vAmount: Extended;
 begin
+  OrderId:= qryMain['ORDER_ID'];
   qryMain.DisableControls;
-  bm:= qryMain.GetBookmark;
   if not trnWrite.Active then
     trnWrite.StartTransaction;
   try
@@ -510,9 +510,9 @@ begin
         ShowMessage(e.Message);
       end;
     end;
+    qryMain.CloseOpen(false);
   finally
-    qryMain.GotoBookmark(bm);
-    qryMain.FreeBookmark(bm);
+    qryMain.Locate('ORDER_ID', OrderId, []);
     qryMain.EnableControls;
   end;
 end;
