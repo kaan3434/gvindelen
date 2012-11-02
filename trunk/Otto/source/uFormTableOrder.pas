@@ -361,7 +361,6 @@ var
 begin
   OrderId:= qryMain['ORDER_ID'];
   qryMain.DisableControls;
-  bm:= qryMain.GetBookmark;
   if not trnWrite.Active then
     trnWrite.StartTransaction;
   try

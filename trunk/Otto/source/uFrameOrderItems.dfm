@@ -1,6 +1,6 @@
 inherited FrameOrderItems: TFrameOrderItems
-  Left = 188
-  Top = 161
+  Left = 268
+  Top = 152
   Width = 1125
   Height = 462
   PixelsPerInch = 96

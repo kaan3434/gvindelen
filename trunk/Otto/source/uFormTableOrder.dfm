@@ -47,12 +47,12 @@ inherited FormTableOrders: TFormTableOrders
   end
   inherited pnlMain: TJvPanel
     Top = 52
-    Height = 446
+    Height = 450
     inherited grBoxMain: TJvGroupBox
-      Height = 436
+      Height = 440
       Caption = #1047#1072#1103#1074#1082#1080
       inherited grdMain: TDBGridEh
-        Height = 419
+        Height = 423
         AllowedOperations = [alopDeleteEh]
         IndicatorTitle.ShowDropDownSign = True
         Options = [dgTitles, dgIndicator, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
@@ -222,7 +222,7 @@ inherited FormTableOrders: TFormTableOrders
             Top = 0
             Width = 931
             Height = 198
-            ActivePage = tsNote
+            ActivePage = tsOrderItems
             Align = alClient
             TabOrder = 0
             object tsOrderAttrs: TTabSheet
@@ -1026,17 +1026,11 @@ inherited FormTableOrders: TFormTableOrders
       '    oi.STATUS_DTM,'
       '    oi.ORDERITEM_INDEX,'
       
-        '    coalesce(oia1.attr_value, '#39#39')||'#39' '#39'||coalesce(oia2.attr_value' +
-        ', '#39#39') name_rus,'
+        '    coalesce(oi.name_rus, '#39#39')||'#39' '#39'||coalesce(oi.kind_rus, '#39#39') na' +
+        'me_rus,'
       '    oi.auftrag_id'
       'FROM ORDERITEMS oi'
       '  inner join statuses s on (s.status_id = oi.status_id)'
-      
-        '  left join v_orderitem_attrs oia1 on (oia1.object_id = oi.order' +
-        'item_id and oia1.attr_sign='#39'NAME_RUS'#39')'
-      
-        '  left join v_orderitem_attrs oia2 on (oia2.object_id = oi.order' +
-        'item_id and oia2.attr_sign='#39'KIND_RUS'#39')'
       '  left join statuses ss on (ss.status_id = oi.state_id)'
       'WHERE ORDER_ID = :ORDER_ID'
       'ORDER BY ORDERITEM_ID')
