@@ -2,6 +2,6 @@
 <Root>
   <Sports>
     <Sport Id="10" Sign="tennis" Title="Теннис" Url="/bets/bets.php?line_id[]=2"/>
-    <Sport Id="20" Sign="soccer" Title="Футбол" Url="/soccer-odds.html"/>
+    <Sport Id="20" Sign="soccer" Title="Футбол" Url="/bets/bets.php?line_id[]=1"/>
   </Sports>
  </Root>
