@@ -39,7 +39,7 @@ class betcity_booker extends booker_xml {
     // получаем перечень турниров
     $file_name = $this->league_path."league";
     $url = $this->host.$this->sport_node['Url'];
-    $html = download_or_load($this->debug, $file_name.".html", $url, "GET", );
+    $html = download_or_load($this->debug, $file_name.".html", $url, "GET");
     $this->extract_league($tournirs_node, win1251_to_utf8($html));
     if ($this->debug) file_put_contents($file_name.".xml", $xml->asXML());
     return $xml;
@@ -184,12 +184,12 @@ class betcity_booker extends booker_xml {
     $rnd = rand(1000000000, 2000000000);
     $url = $this->host."/bets/bets2.php?rnd=$rnd";
     $referer = $this->host.(string)$this->sport_node['Url'];
-    $post_hash('time') = 1;
-    $post_hash('gcheck') = 9;
-    $post_hash('line_id[]') = $tournir_id;
+    $post_hash['time'] = 1;
+    $post_hash['gcheck'] = 9;
+    $post_hash['line_id[]'] = $tournir_id;
     
     $html = download_or_load($this->debug, $file_name.".html", $url, "POST", $referer, $post_hash);
-    $this->extract_bets($tournir_node, $html, (string)$this->sport_node['Sign'], $tournir_id);
+    $this->extract_bets($tournir_node, win1251_to_utf8($html), (string)$this->sport_node['Sign'], $tournir_id);
 
     if ($this->debug) file_put_contents($file_name.".xml", $xml->asXML());
     return $xml;

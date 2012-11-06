@@ -18,9 +18,9 @@
 //    $tournir_id = (string) $child['Id'];
 //    $events = $booker->getEvents(10, $tournir_id, '');
 //  }
-//    $tournir_id = '749786';
-//    $events = $booker->getEvents(10, $tournir_id, '');
-//  print '<xmp>'.$sports->asXml().'</xmp>';
+    $tournir_id = '12140';
+    $events = $booker->getEvents(10, $tournir_id, '');
+  print '<xmp>'.$sports->asXml().'</xmp>';
   print '<xmp>'.$tournirs->asXml().'</xmp>';
 ?>
 </body>
