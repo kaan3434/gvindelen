@@ -8,6 +8,7 @@
 class betcity_booker extends booker_xml {
   
   private $header;
+  private $event_date;
   
   function __construct() { 
     $this->booker = 'betcity'; 
@@ -45,15 +46,26 @@ class betcity_booker extends booker_xml {
     return $xml;
   }
 
-  private function decode_datetime($str) {
-    preg_match('/(\d{1,2})\/(\d{2}) (\d{1,2}):(\d\d)/i', $str, $matches);
-    $day_no = $matches[1];
-    $month_no = $matches[2];
-    $hour = $matches[3];
-    $minute = $matches[4];
-    $year_no = date('Y');
-    if (mktime($hour, $minute, 0, $month_no, $day_no, $year_no) < time()-2*100*24*3600) $year_no++;
-    return array($day_no, $month_no, $year_no, $hour, $minute);
+  private function decode_date($str) {
+    if (preg_match('/(\d{1,2})\.(\d{1,2})\.(\d{4})/i', $str, $matches)) { //MMM DD, YYYY
+      $day_no = $matches[1];
+      $month_no = $matches[2];
+      $year_no = $matches[3];
+    }
+    return array($day_no, $month_no, $year_no);
+  }
+
+  private function decode_time($str) {
+    preg_match('/(\d{1,2}):(\d\d) (PM|AM)/i', $str, $matches);
+    $hour = $matches[1];
+    $minute = $matches[2];
+    $pmam = $matches[3];
+    if (($pmap == 'AM') and ($hour == 12)) {
+      $hour = 0;
+    } elseif (($pmam == 'PM') and ($hour < 12)) {
+      $hour = $hour + 12;
+    }
+    return array($hour, $minute);
   }
 
   private function event_find(&$tournir_node, $event_id) {
@@ -79,27 +91,17 @@ class betcity_booker extends booker_xml {
      return $event_node;
   }
 
-  private function extract_header($sport_sign) {
-    $phrase_node = $this->findPhrase($sport_sign, 'Header', '1');
-    $this->header[3] = (string) $phrase_node['BetKind'];
-    $phrase_node = $this->findPhrase($sport_sign, 'Header', 'X');
-    $this->header[4] = (string) $phrase_node['BetKind'];
-    $phrase_node = $this->findPhrase($sport_sign, 'Header', '2');
-    $this->header[5] = (string) $phrase_node['BetKind'];
-    $phrase_node = $this->findPhrase($sport_sign, 'Header', '1X');
-    $this->header[6] = (string) $phrase_node['BetKind'];
-    $phrase_node = $this->findPhrase($sport_sign, 'Header', '12');
-    $this->header[7] = (string) $phrase_node['BetKind'];
-    $phrase_node = $this->findPhrase($sport_sign, 'Header', 'X2');
-    $this->header[8] = (string) $phrase_node['BetKind'];
-    $phrase_node = $this->findPhrase($sport_sign, 'Header', 'HCap1');
-    $this->header[9] = (string) $phrase_node['BetKind'];
-    $phrase_node = $this->findPhrase($sport_sign, 'Header', 'HCap2');
-    $this->header[10] = (string) $phrase_node['BetKind'];
-    $phrase_node = $this->findPhrase($sport_sign, 'Header', 'TotalUnder');
-    $this->header[12] = (string) $phrase_node['BetKind'];
-    $phrase_node = $this->findPhrase($sport_sign, 'Header', 'TotalOver');
-    $this->header[13] = (string) $phrase_node['BetKind'];
+  private function extract_header($sport_sign, $thead) {
+    $thead = str_ireplace('фора', 'фора1', $thead, 1);
+    $thead = str_ireplace('фора', 'фора2', $thead, 1);
+    $thead = str_ireplace('кф', 'кф1', $thead, 1);
+    $thead = str_ireplace('кф', 'кф2', $thead, 1);
+    $cols = extract_all_tags($thead, '<td', '</td>');
+    foreach ($cols as $col) {
+      $col = delete_all($col, '<', '>');
+      $phrase_node = $this->findPhrase($sport_sign, 'Header', $col);
+      $this->header[] = (string) $phrase_node['BetKind'];
+    }
   }
   
   
@@ -167,14 +169,22 @@ class betcity_booker extends booker_xml {
     }
   }
     
-  private function extract_bets(&$tournir_node, $html, $sport_sign, $tournir_id) {
-    $this->extract_header($sport_sign);
+  private function extract_events(&$tournir_node, $html, $sport_sign, $tournir_id) {
+    $html = copy_be($html, '<table', '</table>', 'class=date');
     $html = kill_space($html);
-    $html = numbering_tag($html, 'ul');
-    $events = extract_all_numbered_tags($html, 'ul', 'e-td ');
-    foreach($events as $event) $this->extract_main_bets(&$tournir_node, $event, $sport_sign, $tournir_id);
-    $events = extract_all_numbered_tags($html, 'ul', 'e-r ');
-    foreach($events as $event) $this->extract_extra_bets(&$tournir_node, $event, $sport_sign, $tournir_id);
+    $tbodies = extract_all_tags($html, '<tbody', '</tbody>');
+    foreach($tbodies as $tbody) {
+      $tbody_class = extract_property_values(copy_be($tbody, '<', '>'), 'class', '');
+      if ($tbody_class == 'date') {
+        $event_date = $this->decode_date($tbody);
+      } else if ($tbody_class == 'chead') {
+        $this->extract_header($sport_sign, $tbody);
+      } else if ($tbody_class == 'line') {
+        $this->extract_bets($tournir_node, $tbody, $sport_sign, $tournir_id);
+      } else {
+        
+      }
+    }
   }
 
   public function getEvents($sport_id, $tournir_id, $tournir_url) {
@@ -189,7 +199,7 @@ class betcity_booker extends booker_xml {
     $post_hash['line_id[]'] = $tournir_id;
     
     $html = download_or_load($this->debug, $file_name.".html", $url, "POST", $referer, $post_hash);
-    $this->extract_bets($tournir_node, win1251_to_utf8($html), (string)$this->sport_node['Sign'], $tournir_id);
+    $this->extract_events($tournir_node, win1251_to_utf8($html), (string)$this->sport_node['Sign'], $tournir_id);
 
     if ($this->debug) file_put_contents($file_name.".xml", $xml->asXML());
     return $xml;
