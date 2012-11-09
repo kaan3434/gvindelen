@@ -32,6 +32,14 @@ type
       var Stop: Boolean);
     procedure wzIPageOrderItemsNextButtonClick(Sender: TObject;
       var Stop: Boolean);
+    procedure wzIPageAdressEnterPage(Sender: TObject;
+      const FromPage: TJvWizardCustomPage);
+    procedure wzIPageClientEnterPage(Sender: TObject;
+      const FromPage: TJvWizardCustomPage);
+    procedure wzIPageOrderSummaryEnterPage(Sender: TObject;
+      const FromPage: TJvWizardCustomPage);
+    procedure wzIPageOrderEnterPage(Sender: TObject;
+      const FromPage: TJvWizardCustomPage);
   private
     { Private declarations }
     ndOrder: TXmlNode;
@@ -286,6 +294,30 @@ procedure TFormWizardOrder.wzIPageOrderItemsNextButtonClick(
   Sender: TObject; var Stop: Boolean);
 begin
   frmOrderItems.Write;
+end;
+
+procedure TFormWizardOrder.wzIPageAdressEnterPage(Sender: TObject;
+  const FromPage: TJvWizardCustomPage);
+begin
+  frmAdress.FormShow(sender);
+end;
+
+procedure TFormWizardOrder.wzIPageClientEnterPage(Sender: TObject;
+  const FromPage: TJvWizardCustomPage);
+begin
+  frmClient.FormShow(sender);
+end;
+
+procedure TFormWizardOrder.wzIPageOrderSummaryEnterPage(Sender: TObject;
+  const FromPage: TJvWizardCustomPage);
+begin
+  frmOrderSummary.FormShow(sender);
+end;
+
+procedure TFormWizardOrder.wzIPageOrderEnterPage(Sender: TObject;
+  const FromPage: TJvWizardCustomPage);
+begin
+  frmOrder.FormShow(sender);
 end;
 
 end.

@@ -80,6 +80,7 @@ type
     procedure Read; override;
     procedure Write; override;
     procedure UpdateCaptions; override;
+    procedure ClearClient;
     property OrderId: Integer read GetOrderId;
     property ClientId: Integer read GetClientId;
     property AccountId: Integer read GetAccountId;
@@ -209,9 +210,11 @@ end;
 
 procedure TFrameClient.grdClientDblClick(Sender: TObject);
 begin
-  if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'NEW') then
+  if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'NEW,DRAFT') then
   begin
+    ClearClient;
     dmOtto.ClientRead(ndClient, qryClient['CLIENT_ID'], trnRead);
+    dmOtto.AdressReadByClient(ndAdress, qryClient['CLIENT_ID'], trnRead);
     Read;
     SetXmlAttr(ndOrder, 'CLIENT_ID', ClientId);
     UpdateCaptions;
@@ -245,11 +248,26 @@ end;
 
 procedure TFrameClient.dedLastNameKeyPress(Sender: TObject; var Key: Char);
 begin
-  if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'NEW') then
+  if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'NEW,DRAFT') then
   begin
-    SetXmlAttr(ndClient, 'ID', null);
+    if (GetXmlAttrValue(ndClient, 'ID') <> null) and
+       (MessageDlg('Вы хотите заменить клиента?', mtWarning, [mbYes,mbNo], 0) = mrYes) then
+      ClearClient;
     UpdateCaptions;
   end;
+end;
+
+procedure TFrameClient.ClearClient;
+begin
+  SetXmlAttr(ndClient, 'ID', null);
+  SetXmlAttr(ndOrder, 'CLIENT_ID', null);
+  SetXmlAttr(ndAccount, 'ID', null);
+  SetXmlAttr(ndOrder, 'ACCOUNT_ID', null);
+  SetXmlAttr(ndClient, 'ACCOUNT_ID', null);
+  SetXmlAttr(ndAdress, 'ID', null);
+  SetXmlAttr(ndOrder, 'ADRESS_ID', null);
+  ndAdress.AttributesClear;
+  ndPlace.AttributesClear;
 end;
 
 end.

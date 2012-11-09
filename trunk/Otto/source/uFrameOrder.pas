@@ -81,8 +81,6 @@ begin
 end;
 
 procedure TFrameOrder.Write;
-var
-  OrderCode: string;
 begin
   inherited;
   if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'NEW') then
@@ -92,17 +90,19 @@ begin
     dmOtto.ActionExecute(trnWrite, ndOrder, 'DRAFT');
   end
   else
-  if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'APPROVED') then
+  if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'DRAFT,APPROVED') then
   begin
     if GetXmlAttrValue(ndOrder, 'PRODUCT_ID') <> lcbProduct.Value then
     begin
       if MessageDlg('¬ы действительно хотите изменить тип продукта?',
                     mtConfirmation, mbOKCancel, 0) = mrOk then
       begin
+        SetXmlAttr(ndOrder, 'ORDER_CODE', null);
         SetXmlAttr(ndOrder, 'PRODUCT_ID', lcbProduct.Value);
-        OrderCode:= dmOtto.GetNextCounterValue('PRODUCT', 'ORDER_CODE', lcbProduct.Value);
-        SetXmlAttr(ndOrder, 'ORDER_CODE', OrderCode);
-        dmOtto.ActionExecute(trnWrite, ndOrder);
+        SetXmlAttr(ndOrder, 'TAXPLAN_ID', lcbTaxPlan.Value);
+        dmOtto.ActionExecute(trnWrite, 'ORDER', 'ORDER_RENEW',
+          XmlAttrs2Vars(ndOrder, 'PRODUCT_ID;TAXPLAN_ID'), OrderId);
+        dmOtto.ActionExecute(trnWrite, ndOrder, 'DRAFT');
       end;
     end;
   end;

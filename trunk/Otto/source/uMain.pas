@@ -13,7 +13,7 @@ uses
   JvBaseDlg,
   gsFileVersionInfo, JvLogFile, JvProgressDialog,
   frxExportXML,
-  ComCtrls, TBXExtItems, frxExportXLS;
+  ComCtrls, TBXExtItems, frxExportXLS, frxDCtrl;
 
 type
   TMainForm = class(TForm)
@@ -32,11 +32,8 @@ type
     btnParseOrderXml: TTBXItem;
     actImportArticles: TAction;
     btnImportMagazine: TTBXItem;
-    tbSubMenuNSI: TTBXSubmenuItem;
     actNSICatalogs: TAction;
-    btnCatalogs: TTBXItem;
     actNSISettings: TAction;
-    btnSettings: TTBXItem;
     tbSubMenuTables: TTBXSubmenuItem;
     btnTableClients: TTBXItem;
     imgListTables: TPngImageList;
@@ -156,6 +153,10 @@ type
     actExportReturn: TAction;
     btnExportReturns: TTBXItem;
     trnTimer: TpFIBTransaction;
+    subMenuReports: TTBXSubmenuItem;
+    btnStatByPeriod: TTBXItem;
+    actReportByPeriod: TAction;
+    frxdlgcntrls1: TfrxDialogControls;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -198,6 +199,7 @@ type
     procedure actReestrReturnsExecute(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure actExportReturnExecute(Sender: TObject);
+    procedure actReportByPeriodExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -833,6 +835,12 @@ end;
 procedure TMainForm.actExportReturnExecute(Sender: TObject);
 begin
   ExportReturns(trnWrite);
+end;
+
+procedure TMainForm.actReportByPeriodExecute(Sender: TObject);
+begin
+  frxReport.LoadFromFile(Path['FastReport']+'OperStats.fr3');
+  frxReport.ShowReport;
 end;
 
 end.

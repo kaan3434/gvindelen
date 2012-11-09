@@ -226,7 +226,7 @@ end;
 
 procedure TFrameAdress.grdAdressesDblClick(Sender: TObject);
 begin
-  if grBoxAdress.Enabled then
+  if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'NEW,DRAFT') then
   begin
     dmOtto.AdressRead(ndAdress, qryAdresses['ADRESS_ID'], trnRead);
     UpdateCaptions;
@@ -235,7 +235,7 @@ end;
 
 procedure TFrameAdress.grdPlacesDblClick(Sender: TObject);
 begin
-  if grBoxPlace.Enabled then
+  if XmlAttrIn(ndClient, 'STATUS_SIGN', 'NEW') then
   begin
     dmOtto.ObjectGet(ndPlace, qryPlaces['PLACE_ID'], trnRead);
     UpdateCaptions;

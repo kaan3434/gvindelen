@@ -98,6 +98,8 @@ type
       aTransaction: TpFIBTransaction);
     procedure ClientRead(ndClient: TxmlNode; aClientId: Integer; aTransaction: TpFIBTransaction);
     procedure AdressRead(ndAdress: TXmlNode; aAdressId: Integer; aTransaction: TpFIBTransaction);
+    procedure AdressReadByClient(ndAdress: TXmlNode; aClientId: Integer;
+      aTransaction: TpFIBTransaction);
     procedure PlaceRead(ndPlace: TXmlNode; aPlaceId: Integer; aTransaction: TpFIBTransaction);
     procedure MagazineRead(ndMagazine: TxmlNode; aMagazineId: Integer; aTransaction: TpFIBTransaction);
     procedure AccountRead(ndAccount: TxmlNode; aAccountId: Integer; aTransaction: TpFIBTransaction);
@@ -632,6 +634,24 @@ begin
   ObjectGet(ndAdress, aAdressId, aTransaction);
   if ndAdress.ReadAttributeInteger('PLACE_ID', 0) <> 0 then
     PlaceRead(ndAdress.NodeByName('PLACE'), GetXmlAttrValue(ndAdress, 'PLACE_ID'), aTransaction);
+end;
+
+procedure TdmOtto.AdressReadByClient(ndAdress: TXmlNode; aClientId: Integer;
+  aTransaction: TpFIBTransaction);
+var
+  vAdressId: variant;
+begin
+  vAdressId := aTransaction.DefaultDatabase.QueryValue(
+    'select first 1 adress_id '+
+    'from Adresses a inner join statuses s on (s.status_id = a.status_id and s.status_sign = ''APPROVED'') '+
+    'where a.client_id = :client_id', 0, [aClientId], aTransaction);
+  if vAdressId = null then
+    vAdressId := aTransaction.DefaultDatabase.QueryValue(
+      'select first 1 adress_id '+
+      'from Adresses a inner join statuses s on (s.status_id = a.status_id and s.status_sign = ''NEW'') '+
+      'where a.client_id = :client_id', 0, [aClientId], aTransaction);
+  if vAdressId <> null then
+    AdressRead(ndAdress, vAdressId, aTransaction);
 end;
 
 procedure TdmOtto.ClientRead(ndClient: TxmlNode; aClientId: Integer;

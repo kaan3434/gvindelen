@@ -89,6 +89,7 @@ inherited FormWizardOrder: TFormWizardOrder
       Header.Subtitle.Font.Style = []
       Panel.Visible = True
       Color = clWindow
+      OnEnterPage = wzIPageOrderEnterPage
       OnNextButtonClick = wzIPageOrderNextButtonClick
     end
     object wzIPageClient: TJvWizardInteriorPage
@@ -113,6 +114,7 @@ inherited FormWizardOrder: TFormWizardOrder
       Header.Subtitle.Font.Style = []
       Panel.Visible = True
       Color = clWindow
+      OnEnterPage = wzIPageClientEnterPage
       OnNextButtonClick = wzIPageClientNextButtonClick
     end
     object wzIPageAdress: TJvWizardInteriorPage
@@ -138,6 +140,7 @@ inherited FormWizardOrder: TFormWizardOrder
       Panel.Visible = True
       Color = clWindow
       Caption = 'wzIPageAdress'
+      OnEnterPage = wzIPageAdressEnterPage
       OnNextButtonClick = wzIPageAdressNextButtonClick
     end
     object wzIPageOrderSummary: TJvWizardInteriorPage
@@ -164,6 +167,7 @@ inherited FormWizardOrder: TFormWizardOrder
       VisibleButtons = [bkBack, bkCancel]
       Color = clWindow
       Caption = 'wzIPageOrderSummary'
+      OnEnterPage = wzIPageOrderSummaryEnterPage
     end
   end
   inherited actListWzrdBtn: TActionList

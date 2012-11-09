@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 286
-  Top = 150
+  Left = 400
+  Top = 203
   Width = 845
   Height = 512
   Caption = 'PPZ'
@@ -23,8 +23,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 829
-    Height = 69
+    Width = 837
+    Height = 65
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -139,23 +139,6 @@ object MainForm: TMainForm
         Layout = tbxlGlyphTop
         Visible = False
       end
-      object tbSubMenuNSI: TTBXSubmenuItem
-        Caption = #1057#1087#1088#1072#1074#1086#1095#1085#1080#1082#1080
-        DisplayMode = nbdmImageAndText
-        GroupIndex = 1
-        ImageIndex = 6
-        Layout = tbxlGlyphTop
-        Options = [tboDropdownArrow]
-        SubMenuImages = imgListNSI
-        object btnCatalogs: TTBXItem
-          Action = actNSICatalogs
-          ImageIndex = 1
-        end
-        object btnSettings: TTBXItem
-          Action = actNSISettings
-          ImageIndex = 0
-        end
-      end
       object tbSubMenuTables: TTBXSubmenuItem
         Caption = #1050#1072#1088#1090#1086#1090#1077#1082#1080
         DisplayMode = nbdmImageAndText
@@ -216,10 +199,19 @@ object MainForm: TMainForm
         GroupIndex = 1
         Layout = tbxlGlyphTop
       end
+      object subMenuReports: TTBXSubmenuItem
+        Caption = #1054#1090#1095#1077#1090#1099
+        DisplayMode = nbdmImageAndText
+        ImageIndex = 19
+        Layout = tbxlGlyphTop
+        object btnStatByPeriod: TTBXItem
+          Action = actReportByPeriod
+        end
+      end
     end
     object barInfo: TTBXToolbar
       Left = 0
-      Top = 49
+      Top = 47
       Caption = 'barInfo'
       TabOrder = 1
       object lblBYR2EUR: TTBXLabelItem
@@ -228,16 +220,16 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 432
-    Width = 829
+    Top = 436
+    Width = 837
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object pbMain: TProgressBar
     Left = 0
-    Top = 415
-    Width = 829
+    Top = 419
+    Width = 837
     Height = 17
     Align = alBottom
     TabOrder = 1
@@ -439,6 +431,11 @@ object MainForm: TMainForm
       Category = 'Export'
       Caption = #1069#1082#1089#1087#1086#1088#1090' '#1074#1086#1079#1074#1088#1072#1090#1072
       OnExecute = actExportReturnExecute
+    end
+    object actReportByPeriod: TAction
+      Category = 'Reports'
+      Caption = 'actReportByPeriod'
+      OnExecute = actReportByPeriodExecute
     end
   end
   object imgListMainMenu: TPngImageList
@@ -1246,6 +1243,50 @@ object MainForm: TMainForm
           8C8762EFB53772160000000049454E44AE426082}
         Name = 'PngImage18'
         Background = clWindow
+      end
+      item
+        PngImage.Data = {
+          89504E470D0A1A0A0000000D4948445200000018000000180806000000E0773D
+          F80000001974455874536F6674776172650041646F626520496D616765526561
+          647971C9653C000004654944415478DAB5557B489B5714FF7D8975891A1F74CD
+          9C8E81B505F58FEAA8502CE26CC589D8C97C304ACBA0B06633B1157CCDEA1A63
+          24CB62376727A60ED93465AD45C7B0AC6E2DA59D480B63508BFE33E674C3C2D6
+          149BDAD4BCDF3BF723C97C449BFEB1038773CFBDF73BBF73CE3DE77C5C2010C0
+          FF495C6D67E7E64D8E7B9BC4AB51DAF8999C5CF4FBFDD103107DF88D52F995D3
+          E381973EF4519491229D9D9DC5B7B76ED5311002588808507DF66CA4FDBA11A5
+          72D06AB7C3EDF5C2EDF3F1401B41E6E6E670ACBC1C354AA5DC69B7DF70381C4B
+          9B00AA3A3A22025C54A9069D6E373C0C600B90A9A9A9F0BAFFF2652509CDE614
+          D5D6F20BFFCE9DF0A5A484F6E597BABB2FB80980A5673B10461289040D5AAD82
+          96834C173E7D0AC19327EB01E861E1178BE14E4D65AAE28A46A377D31B3063CF
+          036100A7349A7A5A5E887DF4080287237CBE0E808F442482532AADFF4EA71B60
+          00FEE0036F07C200146AF529D1F2B25EE074F27B1B0104045041328D29131313
+          7B1B1B1B9B9F5FA1FF515F5F5F6F555555A8921E12C08FCC5FAEBABA9A6DBC9C
+          9D9D5DDFD0D0D0E5250F753A1DA452293C14C15614F29049A15088959515B4B6
+          B642201040AFD777CDCFCFEBE9D8C4555656B2F464959696B69597979F60467B
+          7A7A909E9E0E8BC51295F7B1B1B130994C686B6BE3012627270DD3D3D33D04FE
+          3B5751C13283376532992A3333F310F348AD5683D6309BCD61232C329BCD8667
+          CF5641F50E56616C8F515252227112643205121313B0B0303F353E3EA6A6A369
+          AEACAC8CDD7997BCD6D247994CE9A0DEC8C9C9E1C3F678BCBC51ABD586ADC641
+          4C4C0C45218442D14C1108E17239FF1C1ED6B3061BE74A4A4AF8BAA7BCF55198
+          2F31A5A9A909FBF6E5C2687C4CDE3AC9F0F6039155A0CDB602A5F21CAE1D19C5
+          3BD7DF73F5F67635B2BEE08A8A8AD89DC6FEFEFE2F8C4623796AA58B4AE4E51D
+          A01445F7068C96967EA3C8D5888F4F204E8656DBDEC48A8B2B282860E7CD0683
+          E173F6A85EAF0FB5B5353878F02D0AD51335C0CCCC14AE5EBD1DD64F9F3ED142
+          A297CBCFCF677AEBC0C0C039B379958CFA70F3E60D646464C1E763CD142A4B3E
+          19A1A46C90C08307F3A8A9391ED6DBDBEB3E22F119979B9BCBF433F4069F9A4C
+          5688A893474606A3F67C2D9D3CD91A5EB7B4BCDF4E42C78969FE5053751A0CA3
+          6A972BC057C1D8D8D790CBE5908D0259AF00D9349ED212813F8C33B87E6F02AB
+          ABAB880F1CA65CC7F3C6CED71FC6F0D0108E1E95AF01AB512D2F2F77B31893E9
+          E2716A90F4D021D539F59BA7F3D09740E16EE08DD7811431B04B02FC746F1C3F
+          FC7A0D025B193F83187DAF3A028948D44DCEEE08D9A092FE9BFAE6120310118B
+          83924F6A5A61E107FFDCB9A32A3E0FE4BD061CC80052C9565A32FDC5FEFA05C3
+          B70D3431CB101717CF8F8A2B674AB1BBB858FDF0EEDDA1A07D1FF393D8C56DCC
+          63C29E3DD821917CB272FFFEA63F51006B665070CD24EB03E9FEFD5A8FC5F2B1
+          757171DD37EB00849453415C1CE3668158BCEB451ED8EF703CF6DBEDBDC4F0D1
+          488908B08624417E11B204791DFD0BC640339F76C3A40C0000000049454E44AE
+          426082}
+        Name = 'PngImage19'
+        Background = clWindow
       end>
     PngOptions = [pngBlendOnDisabled, pngGrayscaleOnDisabled]
     Left = 192
@@ -1541,6 +1582,7 @@ object MainForm: TMainForm
     ShowProgress = False
     OverwritePrompt = False
     EmbeddedFonts = True
+    OpenAfterExport = True
     PrintOptimized = False
     Outline = False
     Background = False
@@ -1857,6 +1899,7 @@ object MainForm: TMainForm
     UseFileCache = True
     ShowProgress = True
     OverwritePrompt = False
+    OpenExcelAfterExport = True
     Background = True
     Creator = 'FastReport'
     EmptyLines = True
@@ -1872,14 +1915,13 @@ object MainForm: TMainForm
     IniFile = '\Software\Fast Reports'
     PreviewOptions.AllowEdit = False
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
-    PreviewOptions.MDIChild = True
     PreviewOptions.ShowCaptions = True
     PreviewOptions.Zoom = 1.000000000000000000
     PreviewOptions.ZoomMode = zmManyPages
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 41204.885235370370000000
+    ReportOptions.LastChange = 41218.392157627300000000
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
     Left = 352
@@ -1896,5 +1938,9 @@ object MainForm: TMainForm
     TPBMode = tpbDefault
     Left = 192
     Top = 144
+  end
+  object frxdlgcntrls1: TfrxDialogControls
+    Left = 408
+    Top = 192
   end
 end

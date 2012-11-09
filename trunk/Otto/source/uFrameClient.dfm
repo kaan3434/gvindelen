@@ -442,6 +442,7 @@ inherited FrameClient: TFrameClient
         OnEnter = EditEnter
         OnExit = NameExit
         OnKeyDown = EditKeyDown
+        OnKeyPress = dedLastNameKeyPress
       end
       object dedMidName: TDBEditEh
         Tag = 4
@@ -455,6 +456,7 @@ inherited FrameClient: TFrameClient
         OnEnter = EditEnter
         OnExit = NameExit
         OnKeyDown = EditKeyDown
+        OnKeyPress = dedLastNameKeyPress
       end
       object dedEmail: TDBEditEh
         Tag = 2
