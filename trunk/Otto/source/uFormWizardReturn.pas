@@ -85,6 +85,7 @@ procedure TFormWizardReturn.ReadFromDB(aObjectId: Integer);
 begin
   inherited;
   dmOtto.ObjectGet(ndOrder, aObjectId, trnRead);
+  trnWrite.StartTransaction;
   if not FlagPresent('DELIVERED', ndOrder, 'STATUS_FLAG_LIST') then
   begin
     SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'DELIVERED');

@@ -1,6 +1,6 @@
 inherited FrameMoneyBack: TFrameMoneyBack
-  Left = 232
-  Top = 152
+  Left = 252
+  Top = 153
   Width = 960
   Height = 512
   Caption = 'FrameMoneyBack'
@@ -110,14 +110,6 @@ inherited FrameMoneyBack: TFrameMoneyBack
       Height = 13
       Caption = #1044#1072#1090#1072' '#1074#1099#1076#1072#1095#1080
     end
-    object lblBonus: TLabel
-      Left = 664
-      Top = 24
-      Width = 72
-      Height = 13
-      Caption = #1057#1091#1084#1084#1072' '#1073#1086#1085#1091#1089#1072
-      FocusControl = edBonus
-    end
     object edBelPostBarCode: TLabeledEdit
       Left = 152
       Top = 104
@@ -126,7 +118,7 @@ inherited FrameMoneyBack: TFrameMoneyBack
       EditLabel.Width = 120
       EditLabel.Height = 13
       EditLabel.Caption = #1050#1086#1076' '#1087#1086#1089#1099#1083#1082#1080' '#1041#1077#1083#1055#1086#1095#1090#1099
-      TabOrder = 6
+      TabOrder = 5
     end
     object edPassportNum: TLabeledEdit
       Left = 152
@@ -159,20 +151,6 @@ inherited FrameMoneyBack: TFrameMoneyBack
       EditLabel.Caption = #1053#1072#1080#1084#1077#1085#1086#1074#1072#1085#1080#1077' '#1086#1088#1075#1072#1085#1080#1079#1072#1094#1080#1080' '#1074#1099#1076#1072#1074#1096#1077#1081' '#1076#1086#1082#1091#1084#1077#1085#1090
       TabOrder = 3
     end
-    object edBonus: TDBNumberEditEh
-      Left = 664
-      Top = 40
-      Width = 73
-      Height = 21
-      currency = False
-      DisplayFormat = '##0.00'
-      Enabled = False
-      EditButton.Visible = True
-      EditButtons = <>
-      TabOrder = 4
-      Value = 0.000000000000000000
-      Visible = True
-    end
     object chkPayByFirm: TCheckBox
       Left = 368
       Top = 72
@@ -180,7 +158,7 @@ inherited FrameMoneyBack: TFrameMoneyBack
       Height = 17
       Caption = #1054#1087#1083#1072#1090#1072' '#1087#1077#1088#1077#1074#1086#1076#1072' '#1079#1072' '#1089#1095#1077#1090' '#1092#1080#1088#1084#1099
       Enabled = False
-      TabOrder = 5
+      TabOrder = 4
     end
     object rgArtReturnKind: TRadioGroup
       Left = 16

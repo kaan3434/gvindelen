@@ -20,7 +20,6 @@ function init_mail_4zakaz() {
   $mail->SMTPAuth = false;                  // включить SMTP аутентификацию
   $mail->AddAddress('orders@otto.by', 'otto.by'); // кому - адрес, Имя
 //  $mail->AddAddress('zajavka@koruda.com', 'Имя'); // кому - адрес, Имя
-  $mail->AddAddress('gvin99@mail.ru', 'otto.by'); // кому - адрес, Имя
   return $mail;
 }
 
@@ -31,7 +30,6 @@ function init_mail_4message () {
   $mail->Host     = 'localhost';             // SMTP сервер
   $mail->SMTPAuth = false;                  // включить SMTP аутентификацию
   $mail->AddAddress('office@otto.by', 'otto.by'); // кому - адрес, Имя
-  $mail->AddAddress('gvin99@mail.ru', 'otto.by'); // кому - адрес, Имя
   return $mail;
 }
 ?>

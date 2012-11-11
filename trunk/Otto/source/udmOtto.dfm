@@ -337,7 +337,6 @@ object dmOtto: TdmOtto
     IniFile = '\Software\Fast Reports'
     PreviewOptions.AllowEdit = False
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
-    PreviewOptions.MDIChild = True
     PreviewOptions.ShowCaptions = True
     PreviewOptions.Zoom = 1.000000000000000000
     PreviewOptions.ZoomMode = zmManyPages
@@ -378,5 +377,9 @@ object dmOtto: TdmOtto
     VolumeSize = 0
     Left = 168
     Top = 320
+  end
+  object frxdlgcntrls1: TfrxDialogControls
+    Left = 272
+    Top = 264
   end
 end

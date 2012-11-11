@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 400
-  Top = 203
+  Left = 380
+  Top = 168
   Width = 845
   Height = 512
   Caption = 'PPZ'
@@ -23,8 +23,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 837
-    Height = 65
+    Width = 829
+    Height = 69
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -211,7 +211,7 @@ object MainForm: TMainForm
     end
     object barInfo: TTBXToolbar
       Left = 0
-      Top = 47
+      Top = 49
       Caption = 'barInfo'
       TabOrder = 1
       object lblBYR2EUR: TTBXLabelItem
@@ -220,16 +220,16 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 436
-    Width = 837
+    Top = 432
+    Width = 829
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object pbMain: TProgressBar
     Left = 0
-    Top = 419
-    Width = 837
+    Top = 415
+    Width = 829
     Height = 17
     Align = alBottom
     TabOrder = 1
@@ -1576,29 +1576,6 @@ object MainForm: TMainForm
     Left = 248
     Top = 96
   end
-  object frxPDFExport: TfrxPDFExport
-    ShowDialog = False
-    UseFileCache = True
-    ShowProgress = False
-    OverwritePrompt = False
-    EmbeddedFonts = True
-    OpenAfterExport = True
-    PrintOptimized = False
-    Outline = False
-    Background = False
-    HTMLTags = True
-    Author = 'Otto.by'
-    Subject = 'FastReport PDF export'
-    ProtectionFlags = [eModify, eCopy, eAnnot]
-    HideToolbar = False
-    HideMenubar = False
-    HideWindowUI = False
-    FitWindow = False
-    CenterWindow = False
-    PrintScaling = False
-    Left = 416
-    Top = 96
-  end
   object tmrImportMessages: TTimer
     Interval = 60000
     OnTimer = tmrImportMessagesTimer
@@ -1889,44 +1866,6 @@ object MainForm: TMainForm
     Left = 648
     Top = 256
   end
-  object frxFIBComponents1: TfrxFIBComponents
-    DefaultDatabase = dmOtto.dbOtto
-    Left = 512
-    Top = 144
-  end
-  object frxExportXLS: TfrxXMLExport
-    ShowDialog = False
-    UseFileCache = True
-    ShowProgress = True
-    OverwritePrompt = False
-    OpenExcelAfterExport = True
-    Background = True
-    Creator = 'FastReport'
-    EmptyLines = True
-    SuppressPageHeadersFooters = False
-    RowsCount = 0
-    Split = ssRPages
-    Left = 408
-    Top = 144
-  end
-  object frxReport: TfrxReport
-    Version = '4.9.64'
-    DotMatrixReport = False
-    IniFile = '\Software\Fast Reports'
-    PreviewOptions.AllowEdit = False
-    PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
-    PreviewOptions.ShowCaptions = True
-    PreviewOptions.Zoom = 1.000000000000000000
-    PreviewOptions.ZoomMode = zmManyPages
-    PrintOptions.Printer = 'Default'
-    PrintOptions.PrintOnSheet = 0
-    ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 41218.392157627300000000
-    ScriptLanguage = 'PascalScript'
-    StoreInDFM = False
-    Left = 352
-    Top = 96
-  end
   object trnTimer: TpFIBTransaction
     DefaultDatabase = dmOtto.dbOtto
     TimeoutAction = TARollback
@@ -1938,9 +1877,5 @@ object MainForm: TMainForm
     TPBMode = tpbDefault
     Left = 192
     Top = 144
-  end
-  object frxdlgcntrls1: TfrxDialogControls
-    Left = 408
-    Top = 192
   end
 end

@@ -68,6 +68,8 @@ type
     qryNotes: TpFIBDataSet;
     dbmmoATTR_VALUE: TDBMemo;
     dsNotes: TDataSource;
+    actSetServTax: TAction;
+    btn1: TTBXItem;
     procedure actFilterApprovedExecute(Sender: TObject);
     procedure actFilterAcceptRequestExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);

@@ -26,8 +26,6 @@ type
     lblPasportIssued: TLabel;
     edPassportIssuer: TLabeledEdit;
     rgMoneyBackKind: TRadioGroup;
-    edBonus: TDBNumberEditEh;
-    lblBonus: TLabel;
     chkPayByFirm: TCheckBox;
     btnMakeReturn: TTBXItem;
     actCreateReturn: TAction;
@@ -123,7 +121,6 @@ begin
   try
     SetXmlAttr(ndOrder, 'MONEYBACK_KIND', ExtractWord(rgMoneyBackKind.ItemIndex+1, 'LEAVE;BELPOST;BANK', ';'));
     SetXmlAttr(ndOrder, 'BELPOST_BAR_CODE', edBelPostBarCode.Text);
-    SetXmlAttr(ndOrder, 'BONUS_EUR', edBonus.text);
 
     SetXmlAttr(ndClient, 'PASSPORT_NUM', edPassportNum.Text);
     SetXmlAttr(ndClient, 'PASSPORT_ISSUED', edtPassportIssued.Value);
@@ -204,21 +201,12 @@ begin
   Write;
   if Valid then
   try
-    SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'HAVERETURN');
-    dmOtto.ActionExecute(trnWrite, ndOrder);
+    dmOtto.ActionExecute(trnWrite, 'ORDER', 'ORDER_RETURN',
+      XmlAttrs2Vars(ndOrder, 'MONEYBACK_KIND;BONUS_EUR'),
+        OrderId);
     dmOtto.ObjectGet(ndOrder, OrderId, trnWrite);
 
-//    if GetXmlAttrValue(ndOrder, 'MONEYBACK_KIND') = 'LEAVE' then
-//    begin
-//      MoneyEur:= trnWrite.DefaultDatabase.QueryValue(
-//        'select cost_eur from v_order_summary os where os.order_id = :order_id',
-//        0, [GetXmlAttrValue(ndOrder, 'ID')]);
-//      dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_DEBITORDER',
-//        XmlAttrs2Vars(ndOrder, 'ID=ACCOUNT_ID;ORDER_ID=ID;ORDER_CODE',
-//        Value2Vars(MoneyEur, 'AMOUNT_EUR')));
-//    end;
     trnWrite.Commit;
-    trnRead.Commit;
     ShowMessage('Возврат оформлен');
     TForm(Owner).Close;
   except

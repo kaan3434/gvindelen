@@ -11,7 +11,7 @@ uses
   frxExportPDF, frxFIBComponents, frxExportMail, IdBaseComponent,
   IdComponent, IdTCPConnection, IdTCPClient, IdExplicitTLSClientServerBase,
   IdMessageClient, IdSMTPBase, IdSMTP, IdMessage, frxExportXML,
-  SevenZipVCL;
+  SevenZipVCL, frxDCtrl;
 
 type
   TdmOtto = class(TDataModule)
@@ -47,6 +47,7 @@ type
     frxReport: TfrxReport;
     frxExportXLS: TfrxXMLExport;
     svnZipBackup: TSevenZip;
+    frxdlgcntrls1: TfrxDialogControls;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
     procedure dbOttoAfterConnect(Sender: TObject);

@@ -93,7 +93,6 @@ type
     actPrintInvoices: TAction;
     btn3: TTBXItem;
     trnRead: TpFIBTransaction;
-    frxPDFExport: TfrxPDFExport;
     actImportPayments: TAction;
     btn8: TTBXItem;
     btn9: TTBXItem;
@@ -126,8 +125,6 @@ type
     btn2: TTBXItem;
     btnCancellation: TTBXItem;
     actProcessCancellation: TAction;
-    frxFIBComponents1: TfrxFIBComponents;
-    frxExportXLS: TfrxXMLExport;
     pbMain: TProgressBar;
     actReturn: TAction;
     btnReturn: TTBXItem;
@@ -147,7 +144,6 @@ type
     actMoneyBackAccount: TAction;
     actReestrReturns: TAction;
     btn16: TTBXItem;
-    frxReport: TfrxReport;
     barInfo: TTBXToolbar;
     lblBYR2EUR: TTBXLabelItem;
     actExportReturn: TAction;
@@ -156,7 +152,6 @@ type
     subMenuReports: TTBXSubmenuItem;
     btnStatByPeriod: TTBXItem;
     actReportByPeriod: TAction;
-    frxdlgcntrls1: TfrxDialogControls;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -358,12 +353,15 @@ end;
 procedure TMainForm.PrintPackList(aTransaction: TpFIBTransaction;
   Packlist_No: Integer; aFileName: string);
 begin
-  frxExportXLS.DefaultPath:= Path['DbfPackLists'];
-  frxExportXLS.FileName:= aFileName;
-  frxReport.LoadFromFile(Path['FastReport'] + 'packlistpi3.fr3');
-  frxReport.Variables.Variables['PackList_No']:= Format('''%u''', [Packlist_No]);
-  frxReport.PrepareReport(true);
-  frxReport.Export(frxExportXLS);
+  with dmOtto do
+  begin
+    frxExportXLS.DefaultPath:= Path['DbfPackLists'];
+    frxExportXLS.FileName:= aFileName;
+    frxReport.LoadFromFile(Path['FastReport'] + 'packlistpi3.fr3');
+    frxReport.Variables.Variables['PackList_No']:= Format('''%u''', [Packlist_No]);
+    frxReport.PrepareReport(true);
+    frxReport.Export(frxExportXLS);
+  end;
 end;
 
 
@@ -818,7 +816,7 @@ end;
 
 procedure TMainForm.actMoneyBackAccountExecute(Sender: TObject);
 begin
-  ReportMoneyBackAccount(trnWrite, frxReport);
+  ReportMoneyBackAccount(trnWrite);
 end;
 
 procedure TMainForm.actReestrReturnsExecute(Sender: TObject);
@@ -839,8 +837,11 @@ end;
 
 procedure TMainForm.actReportByPeriodExecute(Sender: TObject);
 begin
-  frxReport.LoadFromFile(Path['FastReport']+'OperStats.fr3');
-  frxReport.ShowReport;
+  with dmOtto do
+  begin
+    frxReport.LoadFromFile(Path['FastReport']+'OperStats.fr3');
+    frxReport.ShowReport;
+  end;
 end;
 
 end.

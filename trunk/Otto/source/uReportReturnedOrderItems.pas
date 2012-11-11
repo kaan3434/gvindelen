@@ -74,7 +74,7 @@ begin
     frxExportXLS.ShowProgress:= True;
 
     frxPDFExport.DefaultPath:= Path['Returns'];
-    frxPDFExport.FileName:= FileName+'.xls';
+    frxPDFExport.FileName:= FileName+'.pdf';
 
     frxReport.LoadFromFile(Path['FastReport'] + 'OrderItemReturns.fr3');
     frxReport.PrepareReport(true);

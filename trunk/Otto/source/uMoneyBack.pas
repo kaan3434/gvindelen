@@ -8,7 +8,7 @@ procedure ReportMoneyBackBelpost(aTransaction: TpFIBTransaction);
 
 procedure ReportMoneyBackBank(aTransaction: TpFIBTransaction);
 
-procedure ReportMoneyBackAccount(aTransaction: TpFIBTransaction; frxReport: TFrxReport);
+procedure ReportMoneyBackAccount(aTransaction: TpFIBTransaction);
 
 implementation
 
@@ -49,7 +49,7 @@ begin
           frxExportXLS.ShowProgress:= True;
 
           frxPDFExport.DefaultPath:= Path['Returns'];
-          frxPDFExport.FileName:= FileName+'.xls';
+          frxPDFExport.FileName:= FileName+'.pdf';
 
           frxReport.LoadFromFile(Path['FastReport'] + 'MoneyBackBelPost.fr3');
           frxReport.PrepareReport(true);
@@ -106,7 +106,7 @@ begin
           frxExportXLS.ShowProgress:= True;
 
           frxPDFExport.DefaultPath:= Path['Returns'];
-          frxPDFExport.FileName:= FileName+'.xls';
+          frxPDFExport.FileName:= FileName+'.pdf';
 
           frxReport.LoadFromFile(Path['FastReport'] + 'MoneyBackBank.fr3');
           frxReport.PrepareReport(true);
@@ -130,7 +130,7 @@ begin
   end;
 end;
 
-procedure ReportMoneyBackAccount(aTransaction: TpFIBTransaction; frxReport: TFrxReport);
+procedure ReportMoneyBackAccount(aTransaction: TpFIBTransaction);
 var
   Orders: string;
   OrderId: Variant;
@@ -140,23 +140,26 @@ begin
   xml:= TNativeXml.CreateName('Order');
   try
     ndOrder:= xml.Root;
-    frxReport.LoadFromFile(Path['FastReport']+'MoneyBackAccount.fr3');
-    frxReport.PrepareReport(true);
-    frxReport.ShowPreparedReport;
-    Orders:= aTransaction.DefaultDatabase.QueryValue(
-      'select list(distinct o.order_id) '+
-      'from orders o '+
-      'inner join v_order_attrs oa on (oa.object_id = o.order_id and oa.attr_sign=''MONEYBACK_KIND'' and oa.attr_value=''LEAVE'') '+
-      'inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign=''HAVERETURN'') '+
-      'left join statuses s2 on (s2.status_id = o.state_id) '+
-      'where coalesce(s2.status_sign, '''')  <> ''MONEYSENT''',
-      0, [], aTransaction);
-    while Orders <> '' do
+    with dmOtto do
     begin
-      OrderId:= TakeFront5(Orders,',');
-      dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
-      SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'MONEYSENT');
-      dmOtto.ActionExecute(aTransaction, ndOrder);
+      frxReport.LoadFromFile(Path['FastReport']+'MoneyBackAccount.fr3');
+      frxReport.PrepareReport(true);
+      frxReport.ShowPreparedReport;
+      Orders:= aTransaction.DefaultDatabase.QueryValue(
+        'select list(distinct o.order_id) '+
+        'from orders o '+
+        'inner join v_order_attrs oa on (oa.object_id = o.order_id and oa.attr_sign=''MONEYBACK_KIND'' and oa.attr_value=''LEAVE'') '+
+        'inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign=''HAVERETURN'') '+
+        'left join statuses s2 on (s2.status_id = o.state_id) '+
+        'where coalesce(s2.status_sign, '''')  <> ''MONEYSENT''',
+        0, [], aTransaction);
+      while Orders <> '' do
+      begin
+        OrderId:= TakeFront5(Orders,',');
+        dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
+        SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'MONEYSENT');
+        dmOtto.ActionExecute(aTransaction, ndOrder);
+      end;
     end;
   finally
     xml.Free;

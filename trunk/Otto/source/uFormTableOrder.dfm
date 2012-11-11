@@ -31,6 +31,9 @@ inherited FormTableOrders: TFormTableOrders
         Action = actBalanceOrder
         DisplayMode = nbdmImageAndText
       end
+      object btn1: TTBXItem
+        Action = actSetServTax
+      end
     end
     object barUserBar: TTBXToolbar
       Left = 0
@@ -47,12 +50,12 @@ inherited FormTableOrders: TFormTableOrders
   end
   inherited pnlMain: TJvPanel
     Top = 52
-    Height = 450
+    Height = 446
     inherited grBoxMain: TJvGroupBox
-      Height = 440
+      Height = 436
       Caption = #1047#1072#1103#1074#1082#1080
       inherited grdMain: TDBGridEh
-        Height = 423
+        Height = 419
         AllowedOperations = [alopDeleteEh]
         IndicatorTitle.ShowDropDownSign = True
         Options = [dgTitles, dgIndicator, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
@@ -222,7 +225,7 @@ inherited FormTableOrders: TFormTableOrders
             Top = 0
             Width = 931
             Height = 198
-            ActivePage = tsOrderItems
+            ActivePage = tsOrderTaxs
             Align = alClient
             TabOrder = 0
             object tsOrderAttrs: TTabSheet
@@ -860,6 +863,9 @@ inherited FormTableOrders: TFormTableOrders
       ImageIndex = 1
       OnExecute = actRest2OrderExecute
       OnUpdate = actRest2OrderUpdate
+    end
+    object actSetServTax: TAction
+      Caption = #1048#1079#1084#1077#1085#1080#1090#1100' '#1057'/'#1057
     end
   end
   inherited imgListMain: TPngImageList
