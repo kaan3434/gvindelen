@@ -225,6 +225,7 @@ ALTER TABLE WAYS ADD CONSTRAINT FK_WAYS_STATUS FOREIGN KEY (STATUS_ID) REFERENCE
 /******************************************************************************/
 
 CREATE INDEX ARTICLECODES_IDX1 ON ARTICLECODES (ARTICLE_SIGN);
+CREATE DESCENDING INDEX IK_ORDERS_CREATE_DTM ON ORDERS (CREATE_DTM);
 CREATE INDEX SEARCHES_IDX1 ON SEARCHES (SEARCH_ID, OBJECT_ID);
 CREATE INDEX IDX_TMP_SEARCHES_1 ON TMP_SEARCHES (SEARCH_ID, OBJECT_ID);
 
@@ -306,57 +307,27 @@ begin
       from setting_get('BYR2EUR', new.accoper_dtm)
       into new.byr2eur;
 
-  if (new.amount_byr is null) then
-    new.amount_byr = round(new.amount_eur * new.byr2eur, -1);
   if (new.amount_eur is null) then
     new.amount_eur = (0.00 + new.amount_byr) / new.byr2eur;
 
-  v_amount_byr = new.amount_byr;
   v_amount_eur = new.amount_eur;
-  if (v_amount_byr < 0) then
-  begin
-    for select ar.accrest_id, ar.rest_byr, ar.byr2eur
-          from accrests ar
-          where ar.account_id = new.account_id
-            and ar.rest_byr <> 0
-          order by ar.accrest_id desc
-          into :v_accrest_id, :v_rest_byr, :v_byr2eur do
-    begin
-      if (abs(v_amount_byr) < abs(v_rest_byr)) then
-        v_delta_byr = v_amount_byr;
-      else
-        v_delta_byr = v_rest_byr;
-      v_amount_byr = v_amount_byr + v_delta_byr;
-      v_delta_eur = (0.00 + v_delta_byr) / v_byr2eur;
-      v_amount_eur = v_amount_eur + v_delta_eur;
-      update accrests ar
-        set ar.rest_byr = ar.rest_byr - :v_delta_byr,
-            ar.rest_eur = ar.rest_eur - :v_delta_eur
-        where ar.accrest_id = :v_accrest_id
-        returning accrest_id
-        into new.accrest_id;
 
-    end
-  end
-
-  v_byr2eur = coalesce(:v_byr2eur, new.byr2eur);
   select ar.accrest_id
     from accrests ar
     where ar.account_id = new.account_id
-      and ar.byr2eur = :v_byr2eur
+      and ar.byr2eur = new.byr2eur
     into :v_accrest_id;
 
   if (:v_accrest_id is null) then
-    insert into accrests (account_id, byr2eur, rest_eur, rest_byr)
-      values(new.account_id, :v_byr2eur, new.amount_eur, new.amount_byr)
+    insert into accrests (account_id, byr2eur, rest_eur)
+      values(new.account_id, :v_byr2eur, new.amount_eur)
       returning accrest_id
       into new.accrest_id;
   else
-  if (:v_amount_byr <> 0) then
     update accrests ar
-      set ar.rest_byr = ar.rest_byr + new.amount_byr,
-          ar.rest_eur = ar.rest_eur + new.amount_eur
+      set ar.rest_eur = ar.rest_eur + new.amount_eur
       where ar.accrest_id = :v_accrest_id
+        and ar.byr2eur = new.byr2eur
       returning accrest_id
       into new.accrest_id;
 end
@@ -369,9 +340,8 @@ AS
 begin
   if ((old.amount_eur <> new.amount_eur) and (old.amount_byr = new.amount_byr)) then
     new.amount_byr = round(new.amount_eur*new.byr2eur, -1);
+
   if (old.byr2eur<>new.byr2eur) then
-    new.amount_byr = round(new.amount_eur*new.byr2eur, -1);
-  if (new.amount_byr is null) then
     new.amount_byr = round(new.amount_eur*new.byr2eur, -1);
 end
 ^
@@ -415,11 +385,11 @@ begin
   if (new.byr2eur is null) then
     select o_value from setting_get('BYR2EUR', new.rest_dtm) into new.byr2eur;
 
-  if (new.rest_byr is null and new.rest_eur is not null) then
-    new.rest_byr = round(new.rest_eur * new.byr2eur, -1);
-
   if (new.rest_eur is null and new.rest_byr is not null) then
     new.rest_eur = cast(new.rest_byr as numeric(12,2)) / new.byr2eur;
+
+  new.rest_byr = round(new.rest_eur * new.byr2eur, -1);
+
 end
 ^
 
@@ -429,11 +399,8 @@ ACTIVE BEFORE UPDATE POSITION 0
 AS
 begin
   new.rest_dtm = current_timestamp;
-  if (new.rest_byr = old.rest_byr and new.rest_eur <> old.rest_eur) then
-    new.rest_byr = old.rest_byr + round(new.rest_eur * old.byr2eur, -1);
-  else
-  if (new.rest_eur = old.rest_eur and new.rest_byr <> old.rest_byr) then
-    new.rest_eur = old.rest_eur + new.rest_byr / old.byr2eur;
+
+  new.rest_byr = round(new.rest_eur * new.byr2eur, -1);
 end
 ^
 
@@ -797,6 +764,16 @@ begin
 end
 ^
 
+/* Trigger: ORDERITEMS_AIUD0 */
+CREATE OR ALTER TRIGGER ORDERITEMS_AIUD0 FOR ORDERITEMS
+ACTIVE AFTER INSERT OR UPDATE OR DELETE POSITION 0
+AS
+begin
+  if ((inserting) or (deleting) or (new.cost_eur <> old.cost_eur)) then
+      execute procedure order_updatecost(coalesce(new.order_id, old.order_id));
+end
+^
+
 /* Trigger: ORDERITEMS_BI0 */
 CREATE OR ALTER TRIGGER ORDERITEMS_BI0 FOR ORDERITEMS
 ACTIVE BEFORE INSERT POSITION 0
@@ -838,6 +815,16 @@ begin
 end
 ^
 
+/* Trigger: ORDERMONEYS_AIUD0 */
+CREATE OR ALTER TRIGGER ORDERMONEYS_AIUD0 FOR ORDERMONEYS
+ACTIVE AFTER INSERT OR UPDATE OR DELETE POSITION 0
+AS
+begin
+  if ((inserting) or (deleting) or (new.amount_eur <> old.amount_eur)) then
+      execute procedure order_updatecost(coalesce(new.order_id, old.order_id));
+end
+^
+
 /* Trigger: ORDERMONEYS_BI0 */
 CREATE OR ALTER TRIGGER ORDERMONEYS_BI0 FOR ORDERMONEYS
 ACTIVE BEFORE INSERT POSITION 0
@@ -864,8 +851,7 @@ CREATE OR ALTER TRIGGER ORDERMONEYS_BU0 FOR ORDERMONEYS
 ACTIVE BEFORE UPDATE POSITION 0
 AS
 begin
-  if (new.amount_byr is null) then
-    new.amount_byr = round(new.amount_eur * new.byr2eur, -1);
+  new.amount_byr = round(new.amount_eur * new.byr2eur, -1);
 end
 ^
 
@@ -895,6 +881,19 @@ begin
     new.status_dtm = current_timestamp;
     new.state_id = null;
   end
+
+  if (old.cost_eur <> new.cost_eur) then
+    select o_money_byr from money_eur2byr(new.cost_eur, new.byr2eur) into new.cost_byr;
+end
+^
+
+/* Trigger: ORDERTAXS_AIUD0 */
+CREATE OR ALTER TRIGGER ORDERTAXS_AIUD0 FOR ORDERTAXS
+ACTIVE AFTER INSERT OR UPDATE OR DELETE POSITION 0
+AS
+begin
+  if ((inserting) or (deleting) or (new.cost_eur <> old.cost_eur)) then
+      execute procedure order_updatecost(coalesce(new.order_id, old.order_id));
 end
 ^
 
@@ -1300,14 +1299,14 @@ end^
 
 
 CREATE OR ALTER PROCEDURE ACT_ACCOUNT_CREDITORDER (
-    I_PARAM_ID TYPE OF ID_PARAM,
-    I_OBJECT_ID TYPE OF ID_OBJECT,
+    I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
+    I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL,
     I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ACCOUNT')
 AS
 declare variable V_AMOUNT_EUR type of MONEY_EUR;
 declare variable V_ORDER_ID type of ID_ORDER;
 declare variable V_NOTES type of VALUE_ATTR;
-declare variable V_ACC_AMOUNT_EUR type of MONEY_EUR;
+declare variable V_REST_EUR type of MONEY_EUR;
 declare variable V_ACC_BYR2EUR type of MONEY_BYR;
 declare variable V_DELTA_EUR type of MONEY_EUR;
 declare variable V_DELTA_BYR type of MONEY_BYR;
@@ -1320,24 +1319,23 @@ begin
   select cast(o_value as money_eur) from param_get(:i_param_id, 'AMOUNT_EUR') into :v_amount_eur;
   select o_value from param_get(:i_param_id, 'ORDER_ID') into :v_order_id;
 
-  for select ao.byr2eur, sum(ao.amount_eur)
-        from accopers ao
-        where ao.account_id = :i_object_id
-        group by ao.byr2eur
-        having sum(ao.amount_eur) <> 0
-        into :v_acc_byr2eur, :v_acc_amount_eur do
+  for select ar.byr2eur, ar.rest_eur
+        from accrests ar
+        where ar.account_id = :i_object_id
+          and ar.rest_eur <> 0
+        into :v_acc_byr2eur, :v_rest_eur do
   begin
-    if (abs(v_amount_eur) < abs(v_acc_amount_eur)) then
+    if (abs(v_amount_eur) < abs(v_rest_eur)) then
       v_delta_eur = v_amount_eur;
     else
-      v_delta_eur = v_acc_amount_eur;
+      v_delta_eur = v_rest_eur;
 
     v_amount_eur = v_amount_eur - v_delta_eur;
     v_delta_byr = round(v_acc_byr2eur * v_delta_eur, -1);
 
-    execute procedure param_set(:i_param_id, 'AMOUNT_BYR', :v_delta_byr);
-    execute procedure param_set(:i_param_id, 'AMOUNT_EUR', :v_delta_eur);
     select o_value from param_get(:i_param_id, 'NOTES') into :v_notes;
+    select o_pattern from param_fill(:v_notes, 'AMOUNT_BYR', :v_delta_byr) into v_notes;
+    select o_pattern from param_fill(:v_notes, 'AMOUNT_EUR', :v_delta_eur) into v_notes;
     select o_pattern from param_fillpattern(:i_param_id, :v_notes) into :v_notes;
 
     insert into ordermoneys (account_id, amount_eur, byr2eur, order_id, amount_byr)
@@ -1348,6 +1346,7 @@ begin
       values(:i_object_id, -:v_delta_eur, :v_acc_byr2eur, -:v_delta_byr, :v_order_id, :v_notes, :v_ordermoney_id);
     if (v_amount_eur = 0) then break;
   end
+
 end^
 
 
@@ -1951,7 +1950,7 @@ end^
 CREATE OR ALTER PROCEDURE ACT_ORDER_DEBIT (
     I_PARAM_ID TYPE OF ID_PARAM,
     I_OBJECT_ID TYPE OF ID_OBJECT,
-    I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ORDERITEM')
+    I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ORDER')
 AS
 declare variable V_PARAM_ID type of ID_PARAM;
 declare variable V_ACTION_SIGN type of SIGN_ACTION;
@@ -2133,6 +2132,37 @@ begin
 end^
 
 
+CREATE OR ALTER PROCEDURE ACT_ORDER_RENEW (
+    I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
+    I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL,
+    I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ORDER')
+AS
+declare variable V_STATUS_ID type of ID_STATUS;
+declare variable V_PRODUCT_ID type of ID_PRODUCT;
+declare variable V_TAXPLAN_ID type of ID_TAXPLAN;
+begin
+  select o_value from param_get(:i_param_id, 'PRODUCT_ID') into :v_product_id;
+  select o_value from param_get(:i_param_id, 'TAXPLAN_ID') into :v_taxplan_id;
+
+  delete from ordertaxs ot where ot.order_id = :i_object_id;
+
+  select status_id
+    from statuses s
+    where s.object_sign = :i_object_sign
+      and s.status_sign = 'NEW'
+    into :v_status_id;
+
+  update orders o
+    set o.order_code = null,
+        o.status_id = :v_status_id,
+        o.state_id = null,
+        o.product_id = :v_product_id,
+        o.taxplan_id = :v_taxplan_id
+    where o.order_id = :i_object_id;
+
+end^
+
+
 CREATE OR ALTER PROCEDURE ACT_ORDER_STORE (
     I_PARAM_ID TYPE OF ID_PARAM,
     I_OBJECT_ID TYPE OF ID_OBJECT,
@@ -2198,6 +2228,49 @@ begin
   end
   else
     exception ex_status_conversion_unavail 'From '||:v_now_status_id||' to '||:v_new_status_id;
+end^
+
+
+CREATE OR ALTER PROCEDURE ACT_ORDER_UPDATECOST (
+    I_PARAM_ID TYPE OF ID_PARAM,
+    I_OBJECT_ID TYPE OF ID_OBJECT,
+    I_OBJECT_SIGN TYPE OF SIGN_OBJECT DEFAULT 'ORDERITEM')
+AS
+declare variable V_PARAM_ID type of ID_PARAM;
+declare variable V_ACTION_SIGN type of SIGN_ACTION;
+declare variable V_OBJECT_ID type of ID_OBJECT;
+declare variable V_NEW_STATUS_SIGN type of SIGN_ATTR;
+declare variable V_ACTION_ID type of ID_ACTION;
+declare variable V_ACTIONTREEITEM_ID type of ID_ACTIONTREEITEM;
+declare variable V_NEW_FLAG_SIGN type of SIGN_OBJECT;
+begin
+  select o_value from param_get(:i_param_id, 'NEW.STATUS_SIGN') into :v_new_status_sign;
+  select o_value from param_get(:v_param_id, 'NEW.FLAG_SIGN') into :v_new_flag_sign;
+  select o_value from param_get(:i_param_id, 'ACTIONTREEITEM_ID') into :v_actiontreeitem_id;
+
+  for select oi.orderitem_id
+        from orderitems oi
+        where oi.order_id = :i_object_id
+        into :v_object_id do
+  begin
+    select o_param_id from param_create(:i_object_sign, :v_object_id) into :v_param_id;
+    insert into params(param_id, param_name, param_value)
+      select :v_param_id, p.param_name, p.param_value
+        from params p
+          inner join actiontree_params atp on (atp.param_name = p.param_name)
+        where p.param_id = :i_param_id
+          and atp.actiontreeitem_id = :v_actiontreeitem_id;
+
+    select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign, :v_new_flag_sign, 0)
+      into :v_action_sign;
+
+    if (:v_action_sign is null) then
+      select o_value from param_get(:i_param_id, 'ACTION_SIGN') into :v_action_sign;
+
+    if (v_action_sign is not null) then
+      execute procedure action_run(:i_object_sign, :v_action_sign, :v_param_id, :v_object_id)
+        returning_values :v_action_id;
+  end
 end^
 
 
@@ -2866,6 +2939,9 @@ begin
 
   if (v_valid_criterias = 1) then
   begin
+    if (v_procedure_name = 'ORDER_RENEW') then
+      execute procedure act_order_renew(:i_param_id, :i_object_id);
+    else
     if (v_procedure_name = 'BONUS_USE') then
       execute procedure act_bonus_use(:i_param_id, :i_object_id);
     else
@@ -3576,6 +3652,18 @@ begin
 end^
 
 
+CREATE OR ALTER PROCEDURE MONEY_EUR2BYR (
+    I_MONEY_EUR TYPE OF MONEY_EUR NOT NULL,
+    I_BYR2EUR TYPE OF MONEY_BYR NOT NULL)
+RETURNS (
+    O_MONEY_BYR TYPE OF MONEY_BYR)
+AS
+begin
+  o_money_byr = round(:i_money_eur*:i_byr2eur, -1);
+  suspend;
+end^
+
+
 CREATE OR ALTER PROCEDURE MONEY_TO_ORDER (
     I_ORDER_CODE TYPE OF CODE_ORDER)
 AS
@@ -4028,6 +4116,34 @@ begin
 end^
 
 
+CREATE OR ALTER PROCEDURE ORDER_UPDATECOST (
+    I_ORDER_ID TYPE OF ID_ORDER NOT NULL)
+AS
+declare variable V_ORDERITEMS_COST type of MONEY_EUR;
+declare variable V_ORDERTAXS_COST type of MONEY_EUR;
+declare variable V_ORDERMONEYS_COST type of MONEY_EUR;
+begin
+  select coalesce(sum(oi.cost_eur), 0)
+    from orderitems oi
+    where oi.order_id = :i_order_id
+    into :v_orderitems_cost;
+
+  select coalesce(sum(ot.cost_eur), 0)
+    from ordertaxs ot
+    where ot.order_id = :i_order_id
+    into :v_ordertaxs_cost;
+
+  select coalesce(sum(om.amount_eur), 0)
+    from ordermoneys om
+    where om.order_id = :i_order_id
+    into :v_ordermoneys_cost;
+
+  update orders o
+    set o.cost_eur = :v_orderitems_cost+:v_ordertaxs_cost-:v_ordermoneys_cost
+    where o.order_id = :i_order_id;
+end^
+
+
 CREATE OR ALTER PROCEDURE ORDER_X_ACTIVEITEMSCOUNT (
     I_DEST_PARAM_ID TYPE OF ID_PARAM NOT NULL,
     I_PARAM_NAME TYPE OF SIGN_ATTR NOT NULL,
@@ -4395,8 +4511,14 @@ begin
       into :v_value;
     if (:i_param_datatype = 'N') then
     begin
-      v_numeric = to_float(:v_value);
-      v_param_numeric_1 = to_float(:i_param_value_1);
+      if (v_value is not null) then
+        v_numeric = to_float(:v_value);
+      else
+        v_numeric = null;
+      if (:i_param_value_1 <> 'NULL') then
+        v_param_numeric_1 = to_float(:i_param_value_1);
+      else
+        v_param_numeric_2 = null;
       if (:i_param_value_2 is not null) then
         v_param_numeric_2 = to_float(:i_param_value_2);
       else
@@ -4468,6 +4590,19 @@ begin
     delete from params
       where param_id = :i_param_id
         and param_name = :i_param_name;
+end^
+
+
+CREATE OR ALTER PROCEDURE PARAM_FILL (
+    I_PATTERN TYPE OF VALUE_ATTR NOT NULL,
+    I_PARAM_NAME TYPE OF OBJ_CODE NOT NULL,
+    I_PARAM_VALUE TYPE OF VALUE_ATTR NOT NULL)
+RETURNS (
+    O_PATTERN TYPE OF VALUE_ATTR)
+AS
+begin
+  o_pattern = replace(i_pattern, '['||:i_param_name||']', :i_param_value);
+  suspend;
 end^
 
 
