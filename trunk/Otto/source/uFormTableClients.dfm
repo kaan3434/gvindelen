@@ -16,6 +16,9 @@ inherited FormTableClients: TFormTableClients
         Action = actAccountManualCredit
         DisplayMode = nbdmImageAndText
       end
+      object btnMoneyBack: TTBXItem
+        Action = actMoneyBack
+      end
     end
   end
   inherited pnlMain: TJvPanel
@@ -382,9 +385,10 @@ inherited FormTableClients: TFormTableClients
       ImageIndex = 1
       OnExecute = actAccountManualCreditExecute
     end
-    object actRestMovement: TAction
-      Caption = 'actRestMovement'
-      ImageIndex = 2
+    object actMoneyBack: TAction
+      Caption = #1042#1077#1088#1085#1091#1090#1100' '#1076#1077#1085#1100#1075#1080
+      OnExecute = actMoneyBackExecute
+      OnUpdate = actMoneyBackUpdate
     end
   end
   inherited imgListMain: TPngImageList

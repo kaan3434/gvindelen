@@ -45,7 +45,9 @@ uses
   uExportReturns in 'uExportReturns.pas',
   uExportCancellation in 'uExportCancellation.pas',
   uMoneyBack in 'uMoneyBack.pas',
-  uReportReturnedOrderItems in 'uReportReturnedOrderItems.pas';
+  uReportReturnedOrderItems in 'uReportReturnedOrderItems.pas',
+  uFrameMoneyBack3 in 'uFrameMoneyBack3.pas' {FrameMoneyBack3},
+  uFormWizardMoneyBack3 in 'uFormWizardMoneyBack3.pas' {FormWizardBase1};
 
 {$R *.res}
 
@@ -54,6 +56,5 @@ begin
   Application.Initialize;
   Application.CreateForm(TdmOtto, dmOtto);
   Application.CreateForm(TMainForm, MainForm);
-  Application.CreateForm(TDlgManualPayment, DlgManualPayment);
   Application.Run;
 end.

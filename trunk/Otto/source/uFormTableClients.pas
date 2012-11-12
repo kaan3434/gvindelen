@@ -30,7 +30,8 @@ type
     qryAdresses: TpFIBDataSet;
     dsAdresses: TDataSource;
     spAccountRecalcRest: TpFIBStoredProc;
-    actRestMovement: TAction;
+    actMoneyBack: TAction;
+    btnMoneyBack: TTBXItem;
     procedure FormCreate(Sender: TObject);
     procedure actAccountManualDebitExecute(Sender: TObject);
     procedure actAccountManualCreditExecute(Sender: TObject);
@@ -41,6 +42,8 @@ type
       var CanHide: Boolean);
     procedure actAccOpersEditExecute(Sender: TObject);
     procedure qryMainBeforeScroll(DataSet: TDataSet);
+    procedure actMoneyBackExecute(Sender: TObject);
+    procedure actMoneyBackUpdate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -53,7 +56,7 @@ var
 implementation
 
 uses
-  udmOtto, NativeXml, GvNativeXml, uDlgPayment;
+  udmOtto, NativeXml, GvNativeXml, uDlgPayment, uFormWizardMoneyBack3;
 
 {$R *.dfm}
 
@@ -232,6 +235,16 @@ begin
       DataSet.Cancel;
   end;
 
+end;
+
+procedure TFormTableClients.actMoneyBackExecute(Sender: TObject);
+begin
+  TFormWizardBase1.CreateDB(Self, qryMain['client_id']).Show;
+end;
+
+procedure TFormTableClients.actMoneyBackUpdate(Sender: TObject);
+begin
+  actMoneyBack.Enabled:= qryMain['REST_EUR'] > 0;
 end;
 
 end.

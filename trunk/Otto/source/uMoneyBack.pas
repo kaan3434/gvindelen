@@ -20,7 +20,7 @@ var
   MoneyBacks: string;
   MoneyBackId: Variant;
   xml: TNativeXml;
-  ndMoneyBack: TXmlNode;
+  ndMoneyBacks, ndMoneyBack: TXmlNode;
   FileName: String;
 begin
   ForceDirectories(Path['Returns']);
@@ -30,7 +30,7 @@ begin
   try
     aTransaction.StartTransaction;
     try
-      ndMoneyBack:= xml.Root;
+      ndMoneyBacks:= xml.Root;
       MoneyBacks:= aTransaction.DefaultDatabase.QueryValue(
         'select list(mb.moneyback_id) '+
         'from moneybacks mb '+
@@ -59,13 +59,14 @@ begin
 
         while MoneyBacks <> '' do
         begin
+          ndMoneyBack:= ndMoneyBacks.NodeNew('MONEYBACK');
           MoneyBackId:= TakeFront5(MoneyBacks,',');
           dmOtto.ObjectGet(ndMoneyBack, MoneyBackId, aTransaction);
           SetXmlAttr(ndMoneyBack, 'NEW.STATUS_SIGN', 'APPROVED');
           dmOtto.ActionExecute(aTransaction, ndMoneyBack);
         end;
       end;
-      dmOtto.ExportCommitRequest(ndMoneyBack, aTransaction);
+      dmOtto.ExportCommitRequest(ndMoneyBacks, aTransaction);
     except
       aTransaction.Rollback;
     end;
@@ -79,7 +80,7 @@ var
   MoneyBacks, FileName: string;
   MoneyBackId: Variant;
   xml: TNativeXml;
-  ndMoneyBack: TXmlNode;
+  ndMoneyBacks, ndMoneyBack: TXmlNode;
 begin
   ForceDirectories(Path['Returns']);
   FileName:= GetNextFileName(Format('%sBank_%%.2u.%.3d', [
@@ -88,7 +89,7 @@ begin
   try
     aTransaction.StartTransaction;
     try
-      ndMoneyBack:= xml.Root;
+      ndMoneyBacks:= xml.Root;
       MoneyBacks:= aTransaction.DefaultDatabase.QueryValue(
         'select list(mb.moneyback_id) from moneybacks mb '+
         'inner join statuses s on (s.status_id = mb.status_id) '+
@@ -115,13 +116,14 @@ begin
         end;
         while MoneyBacks <> '' do
         begin
+          ndMoneyBack:= ndMoneyBacks.NodeNew('MONEYBACK');
           MoneyBackId:= TakeFront5(MoneyBacks,',');
           dmOtto.ObjectGet(ndMoneyBack, MoneyBackId, aTransaction);
           SetXmlAttr(ndMoneyBack, 'NEW.STATUS_SIGN', 'APPROVED');
           dmOtto.ActionExecute(aTransaction, ndMoneyBack);
         end;
       end;
-      dmOtto.ExportCommitRequest(ndMoneyBack, aTransaction);
+      dmOtto.ExportCommitRequest(ndMoneyBacks, aTransaction);
     except
       aTransaction.Rollback;
     end;

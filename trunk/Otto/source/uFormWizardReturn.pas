@@ -120,7 +120,7 @@ begin
     frmMoneyBack:= TFrameMoneyBack.Create(Self);
     frmMoneyBack.ndOrder:= ndOrder;
     frmMoneyBack.ndClient:= ndClient;
-    frmMoneyBack.ndMoneyBack:= ndMoneyBack;
+//    frmMoneyBack.ndMoneyBack:= ndMoneyBack;
     IncludeForm(wzIPageMoneyBackKind, frmMoneyBack);
 
     wzForm.ActivePageIndex:= 0;
