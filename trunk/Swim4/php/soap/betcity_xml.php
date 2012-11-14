@@ -105,7 +105,45 @@ class betcity_booker extends booker_xml {
   }
   
   
-  private function extract_main_bets(&$tournir_node, $html, $sport_sign, $tournir_id) {
+  private function extract_main_bets_tennis(&$tournir_node, $html, $sport_sign, $tournir_id) {
+    $html = copy_be($html, '<tr class="tc', '</tr>');
+    $html = kill_tag_bound($html, 'b|a');
+    $cells = extract_all_tags($html, '<td>', '</td>');
+    $i = 0;
+    foreach($cells as $cell) $cells[$i++] = delete_all($cell, '<', '>', 'li');
+    list($day_no, $month_no, $year_no, $hour, $minute) = $this->decode_datetime(str_ireplace('<br>', ' ', $cells[0]));
+    list($gamer1_name, $gamer2_name) = explode('<br/>', $cells[2]);
+    $event_node = $this->event_create($tournir_node, $event_id, mktime($hour, $minute, 0, $month_no, $day_no, $year_no), $gamer1_name, $gamer2_name);
+    if ($cells[3] <> '') $this->addBet($event_node, $this->header[3].';Koef='.$cells[3]);
+    if ($cells[4] <> '') $this->addBet($event_node, $this->header[4].';Koef='.$cells[4]);
+    if ($cells[5] <> '') $this->addBet($event_node, $this->header[5].';Koef='.$cells[5]);
+    if ($cells[6] <> '') $this->addBet($event_node, $this->header[6].';Koef='.$cells[6]);
+    if ($cells[7] <> '') $this->addBet($event_node, $this->header[7].';Koef='.$cells[7]);
+    if ($cells[8] <> '') $this->addBet($event_node, $this->header[8].';Koef='.$cells[8]);
+
+    if ($cells[9] <> '') {
+      preg_match('/\(([\+\-]*?)(.+?)\)<br\/>(.+?)/iU', $cells[9], $matches);
+      if (($matches[1] == '') and ($matches[2] <> '0')) $matches[1] = '+';
+      $this->addBet($event_node, $this->header[9].';Value='.$matches[1].$matches[2].';Koef='.$matches[3]);
+    }
+    if ($cells[10] <> '') {
+      preg_match('/\(([\+\-]*?)(.+?)\)<br\/>(.+?)/iU', $cells[10], $matches);
+      if (($matches[1] == '') and ($matches[2] <> '0')) $matches[1] = '+';
+      $this->addBet($event_node, $this->header[10].';Value='.$matches[1].$matches[2].';Koef='.$matches[3]);
+    }
+    if ($cells[12] <> '') {
+      $value = $cells[11];
+      if (!strpos($value, '.')) $value = $value-0.5;
+      $this->addBet($event_node, $this->header[12].';Value='.$value.';Koef='.$cells[12]);
+    }
+    if ($cells[13] <> '') { 
+      $value = $cells[11];
+      if (!strpos($value, '.')) $value = $value+0.5;
+      $this->addBet($event_node, $this->header[13].';Value='.$value.';Koef='.$cells[13]);
+    }
+  }
+
+  private function extract_main_bets_soccer(&$tournir_node, $html, $sport_sign, $tournir_id) {
     $event_id = extract_property_values(copy_be($html, '<ul', '>', 'rel'), 'rel', '');
     $html = kill_tag_bound($html, 'u');
     $cells = extract_all_tags($html, '<li', '</li>');
@@ -142,7 +180,7 @@ class betcity_booker extends booker_xml {
       $this->addBet($event_node, $this->header[13].';Value='.$value.';Koef='.$cells[13]);
     }
   }
-
+  
   private function extract_extra_bets(&$tournir_node, $html, $sport_sign, $tournir_id) {
     $html = str_ireplace('<li><h2>', '<li class="extra"><h2>', $html);
     $html = numbering_tag($html, 'li');
@@ -180,9 +218,11 @@ class betcity_booker extends booker_xml {
       } else if ($tbody_class == 'chead') {
         $this->extract_header($sport_sign, $tbody);
       } else if ($tbody_class == 'line') {
-        $this->extract_bets($tournir_node, $tbody, $sport_sign, $tournir_id);
-      } else {
-        
+        if ($sport_sign == 'tennis') {
+          $this->extract_main_bets_tennis($tournir_node, $tbody, $sport_sign, $tournir_id);
+        } elseif ($sport_sign == 'soccer') {
+          $this->extract_main_bets_soccer($tournir_node, $tbody, $sport_sign, $tournir_id);
+        }
       }
     }
   }
