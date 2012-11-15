@@ -235,7 +235,7 @@ end;
 
 procedure TFrameAdress.grdPlacesDblClick(Sender: TObject);
 begin
-  if XmlAttrIn(ndClient, 'STATUS_SIGN', 'NEW') then
+  if XmlAttrIn(ndClient, 'STATUS_SIGN', 'NEW,DRAFT') then
   begin
     dmOtto.ObjectGet(ndPlace, qryPlaces['PLACE_ID'], trnRead);
     UpdateCaptions;

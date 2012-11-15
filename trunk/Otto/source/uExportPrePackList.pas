@@ -61,11 +61,10 @@ begin
       'select list(distinct order_id) from ('+
       'select o.order_id '+
       'from orders o '+
-      '  inner join v_order_attrs oa on (oa.object_id = o.order_id and oa.attr_sign = ''PACKLIST_NO'') '+
       '  inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign = ''PREPACKED'') '+
       '  left join statuses s2 on (s2.status_id = o.state_id and s2.status_sign = ''PREPACKSENT'') '+
       'where coalesce(s2.status_sign, '''')  <> ''PREPACKSENT'' '+
-      '  and oa.attr_value = :packlist_no '+
+      '  and o.packlist_no = :packlist_no '+
       'order by o.order_code)',
       0, [aPacklistNo], aTransaction);
     dmOtto.InitProgress(WordCount(OrderList,','), 'Формирование ответа на ПреПаклист');
@@ -99,9 +98,8 @@ begin
   dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
 
   PackList:= aTransaction.DefaultDatabase.QueryValue(
-        'select list(distinct oa.attr_value) '+
+        'select list(distinct o.packlist_no) '+
         'from orders o '+
-        'inner join v_order_attrs oa on (oa.object_id = o.order_id and oa.attr_sign = ''PACKLIST_NO'') '+
         'inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign = ''PREPACKED'') '+
         'left join statuses s2 on (s2.status_id = o.state_id and s2.status_sign = ''PREPACKSENT'') '+
         'where coalesce(s2.status_sign, '''')  <> ''PREPACKSENT'' '+

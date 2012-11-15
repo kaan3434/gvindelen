@@ -222,8 +222,7 @@ begin
         'select list(distinct o.order_id) '+
         'from orders o '+
         'inner join statuses s on (s.status_id = o.status_id and s.status_sign = ''PACKED'') '+
-        'inner join v_order_attrs oa on (oa.object_id = o.order_id and oa.attr_sign = ''PACKLIST_NO'') '+
-        'where oa.attr_value = :pack_no',
+        'where o.packlist_no = :packlist_no',
         0, [aPacklistNo], aTransaction);
       dmOtto.InitProgress(WordCount(OrderList, ','), Format('Формирование паклиста %u', [aPacklistNo]));
       while OrderList <> '' do
@@ -256,10 +255,9 @@ begin
 
   dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
   PackList:= aTransaction.DefaultDatabase.QueryValue(
-    'select list(distinct oa.attr_value) '+
+    'select list(distinct o.packlist_no) '+
     'from orders o '+
     'inner join statuses s on (s.status_id = o.status_id and s.status_sign = ''PACKED'') '+
-    'inner join v_order_attrs oa on (oa.object_id = o.order_id and oa.attr_sign = ''PACKLIST_NO'') '+
     'where o.product_id = :product_id',
     0, [aProductId], aTransaction);
   while PackList <> '' do
