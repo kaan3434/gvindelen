@@ -152,6 +152,9 @@ type
     subMenuReports: TTBXSubmenuItem;
     btnStatByPeriod: TTBXItem;
     actReportByPeriod: TAction;
+    subReturns: TTBXSubmenuItem;
+    btnNonDelivered: TTBXItem;
+    actOrderUnclaimed: TAction;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -195,6 +198,7 @@ type
     procedure FormActivate(Sender: TObject);
     procedure actExportReturnExecute(Sender: TObject);
     procedure actReportByPeriodExecute(Sender: TObject);
+    procedure actOrderUnclaimedExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -841,6 +845,35 @@ begin
   begin
     frxReport.LoadFromFile(Path['FastReport']+'OperStats.fr3');
     frxReport.ShowReport;
+  end;
+end;
+
+procedure TMainForm.actOrderUnclaimedExecute(Sender: TObject);
+var
+  OrderId: variant;
+  OrderCode: string;
+begin
+//  OrderCode:= '7002';
+  if InputQuery('Возврат невостребованной заявки', 'Укажите номер заявки', OrderCode) then
+  begin
+    OrderId := trnRead.DefaultDatabase.QueryValue(
+      'select o.order_id from orders o '+
+      ' inner join statuses s on (s.status_id = o.status_id and s.status_sign = ''DELIVERING'') '+
+      'where order_code like ''%''||:order_code '
+      , 0, [FillFront(FilterString(OrderCode, '0123456789'), 5, '0')], trnRead);
+    if OrderId <> null then
+    begin
+      trnWrite.StartTransaction;
+      try
+        dmOtto.ActionExecute(trnWrite, 'ORDER', 'ORDER_UNCLAIM', '', OrderId);
+        trnWrite.Commit;
+        ShowMessage('Заявка переведена в статус "Невостребована"');
+      except
+        trnWrite.Rollback;
+      end
+    end
+    else
+      ShowMessage('Заявка еще не доставлена или не существует');
   end;
 end;
 
