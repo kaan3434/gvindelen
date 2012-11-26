@@ -13,21 +13,22 @@ class booker extends booker_xml {
   private $day_no;
   
   function __construct() { 
-    $this->booker = 'betcity'; 
-    $this->host = 'http://betcityru.com';
+    $this->booker = 'plusminus'; 
+    $this->host = 'http://plusminus1.com';
     parent::__construct();
   }
   
   private function extract_league(&$tournirs_node, $html) {
-    $html = copy_be($html, '<table ', '</table>', 'class="bt"');
-    $tournirs = extract_all_tags($html, '<tr>', '</tr>', 'line_id[]');
+//    $html = copy_be($html, '<table ', '</table>', 'class="bt"');
+    $html = delete_all($html, '<a', '>', 'chSport');
+    $tournirs = extract_all_tags($html, '<tr>', '</tr>', 'events[]');
     foreach($tournirs as $tournir) {
       $tournir = kill_space($tournir);
       $tournir_name = copy_be($tournir, '<a', '</a>');
       $tournir_name = copy_between($tournir_name, '>', '</');
       $tournir_node = $tournirs_node->addChild('Tournir');
       $tournir_id = copy_be($tournir, '<input', '>');
-      $league = copy_between($tournir_id, 'value="', '"');
+      $league = copy_between($tournir_id, 'value=\'', '\'');
       $tournir_node->addAttribute('Id', $league);
       $tournir_node->addAttribute('Region', 'World');
       $tournir_node->addAttribute('Title',  $tournir_name);

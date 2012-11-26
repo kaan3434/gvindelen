@@ -74,6 +74,12 @@ function copy_be($Html, $Begin, $End, $Contain1=null, $Contain2=null, $Contain3=
   return (null);
 }
 
+function replace_once($search, $replace, $text) 
+{ 
+   $pos = stripos($text, $search); 
+   return $pos!==false ? substr_replace($text, $replace, $pos, strlen($search)) : $text; 
+} 
+
 function copy_ibe($Html, $Begin, $End, $Contain1=null, $Contain2=null, $Contain3=null) {
   $BArr = explode($Begin, $Html);
   for ($i=1, $m=count($BArr); $i<$m; $i++) {

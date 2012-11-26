@@ -5,7 +5,7 @@
   require_once "libs/utf2win.php";
   require_once "booker_xml.php";
   
-class bwin_booker extends booker_xml {
+class booker extends booker_xml {
   
   private $categories;
   

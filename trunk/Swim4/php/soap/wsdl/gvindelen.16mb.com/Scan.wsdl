@@ -191,7 +191,7 @@
     </binding>
     <service name="ScanService">
         <port name="ScanPort" binding="tns:ScanBinding">
-            <soap:address location="http://localhost:8080/file:/D:/Swim4/php/soap/ScanBooker.php" />
+            <soap:address location="http://gvindelen.16mb.com/soap/ScanBooker.php" />
         </port>
     </service>
 </definitions>

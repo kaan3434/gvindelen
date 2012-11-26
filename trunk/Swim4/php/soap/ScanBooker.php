@@ -1,13 +1,17 @@
 <?php
   require_once "libs/GvStrings.php";
   require_once "booker_xml.php";
-  require_once "bwin_xml.php";
-  require_once "olymp_xml.php";
-  require_once "marathon_xml.php";
   
 define("DEFAULT_LOG","/afs/ir/default.log");
   
 
+function create_booker($booker_sign) {
+  require_once $booker_sign.'_xml.php';
+  $booker = new booker();
+  return $booker;  
+}
+  
+  
 function write_log($message, $logfile='') {
   // Determine log file
   if($logfile == '') {
@@ -92,26 +96,32 @@ function getSports ($booker_sign) {
 }
     
 function getTournirs($booker_sign, $sport_id) {
-  if ($booker_sign == 'bwin') {
-    $booker = new bwin_booker();
-  } elseif ($booker_sign == 'olymp') {
-    $booker = new olymp_booker();
-  } elseif ($booker_sign == 'marathon') {
-    $booker = new marathon_booker();
-  }
+  $booker = create_booker($booker_sign);
+//  if ($booker_sign == 'bwin') {
+//    $booker = new bwin_booker();
+//  } elseif ($booker_sign == 'olymp') {
+//    $booker = new olymp_booker();
+//  } elseif ($booker_sign == 'marathon') {
+//    $booker = new marathon_booker();
+//  } elseif ($booker_sign == 'betcity') {
+//    $booker = new betcity_booker();
+//  }
   $xml = $booker->getTournirs($sport_id);
   $out = xml2array($xml);
   return $out;
 }
 
 function getEvents($booker_sign, $sport_id, $tournir_id) {
-  if ($booker_sign == 'bwin') {
-    $booker = new bwin_booker();
-  } elseif ($booker_sign == 'olymp') {
-    $booker = new olymp_booker();
-  } elseif ($booker_sign == 'marathon') {
-    $booker = new marathon_booker();
-  }
+  $booker = create_booker($booker_sign);
+//  if ($booker_sign == 'bwin') {
+//    $booker = new bwin_booker();
+//  } elseif ($booker_sign == 'olymp') {
+//    $booker = new olymp_booker();
+//  } elseif ($booker_sign == 'marathon') {
+//    $booker = new marathon_booker();
+//  } elseif ($booker_sign == 'betcity') {
+//    $booker = new betcity_booker();
+//  }
   $xml = $booker->getEvents($sport_id, $tournir_id, null);
   $out = xml2array($xml);
   return $out;

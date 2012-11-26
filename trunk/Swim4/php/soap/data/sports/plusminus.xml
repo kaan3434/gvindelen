@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Root>
+  <Sports>
+    <Sport Id="10" Sign="tennis" Title="Теннис" Url="/bet.php?events=3"/>
+    <Sport Id="20" Sign="soccer" Title="Футбол" Url="/bet.php?events=5"/>
+  </Sports>
+ </Root>

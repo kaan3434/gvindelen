@@ -4,5 +4,6 @@
     <Booker Id="1" Sign="bwin" Url="https://bwin.com" Title="BWin"/>
     <Booker Id="2" Sign="olymp" Url="https://olympbet.com" Title="Olymp"/>
     <Booker Id="3" Sign="marathon" Url="http://marathonbet.com" Title="Марафон"/>
+    <Booker Id="4" Sign="betcity" Url="http://betcityru.com" Title="БетСити"/>
   </Bookers>
 </Root>

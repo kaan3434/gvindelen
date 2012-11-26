@@ -2,7 +2,44 @@
 <Root>
   <tennis>
     <Section Caption="Header">
-      <Phrase Caption="1" Ignore="1" BetKind="Modifier=Unknown"/>
+      <Phrase Caption="время" Ignore="1"/>
+      <Phrase Caption="Игрок 1" Ignore="1"/>
+      <Phrase Caption="HCap1V" Ignore="1"/>
+      <Phrase Caption="HCap1" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win"/>
+      <Phrase Caption="HCap2V" Ignore="1"/>
+      <Phrase Caption="HCap2" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win"/>
+      <Phrase Caption="Игрок 2" Ignore="1"/>
+      <Phrase Caption="Тотал" Ignore="1"/>
+      <Phrase Caption="мен" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Under"/>
+      <Phrase Caption="бол" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Game;Modifier=Over"/>
+      <Phrase Caption="1" BetKind="Ways=2;Period=Match;Kind=Win;Gamer=1;Modifier=Win"/>
+      <Phrase Caption="2" BetKind="Ways=2;Period=Match;Kind=Win;Gamer=2;Modifier=Win"/>
+      <Phrase Caption="2:0" Ignore="1"/>
+      <Phrase Caption="2:1" Ignore="1"/>
+      <Phrase Caption="1:2" Ignore="1"/>
+      <Phrase Caption="0:2" Ignore="1"/>
+      <Phrase Caption="ДОП" Ignore="1"/>
     </Section>
   </tennis>
+  <soccer>
+    <Section Caption="Header">
+      <Phrase Caption="время" Ignore="1"/>
+      <Phrase Caption="Команда 1" Ignore="1"/>
+      <Phrase Caption="HCap1V" Ignore="1"/>
+      <Phrase Caption="HCap1" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=1;Modifier=Win"/>
+      <Phrase Caption="Команда 2" Ignore="1"/>
+      <Phrase Caption="HCap2V" Ignore="1"/>
+      <Phrase Caption="HCap2" BetKind="Ways=2;Period=Match;Kind=Fora;Gamer=2;Modifier=Win"/>
+      <Phrase Caption="1" BetKind="Ways=3;Period=Match;Kind=Win;Gamer=1;Modifier=Win"/>
+      <Phrase Caption="X" BetKind="Ways=3;Period=Match;Kind=Win;Modifier=Draw"/>
+      <Phrase Caption="2" BetKind="Ways=3;Period=Match;Kind=Win;Gamer=2;Modifier=Win"/>
+      <Phrase Caption="1X" BetKind="Ways=3;Period=Match;Kind=Win;Gamer=1;Modifier=NoLose"/>
+      <Phrase Caption="12" BetKind="Ways=3;Period=Match;Kind=Win;Modifier=NoDraw"/>
+      <Phrase Caption="X2" BetKind="Ways=3;Period=Match;Kind=Win;Gamer=2;Modifier=NoLose"/>
+      <Phrase Caption="Тотал" Ignore="1"/>
+      <Phrase Caption="мен" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Under"/>
+      <Phrase Caption="бол" BetKind="Ways=2;Period=Match;Kind=Total;Subject=Goal;Modifier=Over"/>
+      <Phrase Caption="ДОП" Ignore="1"/>
+    </Section>
+  </soccer>
 </Root>

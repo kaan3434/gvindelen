@@ -1,0 +1,134 @@
+﻿<table cellspacing=2 cellpadding=1 width=100%>
+  <thead>
+    <tr>
+      <td align="left" colspan="17"><b><a name=c12140></a>Теннис. ATP World Tour Finals. Лондон. Indoor Hard.</b></td>
+    </tr>
+  </thead>
+  <tbody class=date>
+    <tr>
+      <td colspan="17">05.11.2012</td>
+    </tr>
+  </tbody>
+  <tbody class="chead">
+    <tr class="th">
+      <td nowrap>время</td>
+      <td nowrap>Игрок 1</td>
+      <td nowrap>фора</td>
+      <td nowrap>кф</td>
+      <td nowrap>Игрок 2</td>
+      <td nowrap>фора</td>
+      <td nowrap>кф</td>
+      <td nowrap>Тотал</td>
+      <td nowrap>мен</td>
+      <td nowrap>бол</td>
+      <td nowrap><b>1</b></td>
+      <td nowrap><b>2</b></td>
+      <td nowrap>2:0</td>
+      <td nowrap>2:1</td>
+      <td nowrap>1:2</td>
+      <td nowrap>0:2</td>
+      <td>ДОП</td>
+    </tr>
+  </tbody>
+  <Tbody id="line">
+    <Tr class="tc">
+      <td>23:55</td>
+      <td><b>Джокович Н.</b></td>
+      <td><b> -4.5</b></td>
+      <td><a href="#" onClick="return al();">2.15</a></td>
+      <td><b>Тсонга Дж.</b></td><td><b> +4.5</b></td>
+      <td><a href="#" onClick="return al();">1.70</a></td>
+      <td><b>  21.5</b></td>
+      <td><a href="#" onClick="return al();">1.95</a></td>
+      <td><a href="#" onClick="return al();">1.85</a></td>
+      <td><a href="#" onClick="return al();" class=red>1.25</a></td>
+      <td><a href="#" onClick="return al();" class=red>3.95</a></td>
+      <td><a href="#" onClick="return al();">1.65</a></td>
+      <td><a href="#" onClick="return al();">4.20</a></td>
+      <td><a href="#" onClick="return al();">8.50</a></td>
+      <td><a href="#" onClick="return al();">6.70</a></td>
+      <Td id="d1699561" onmouseover="mo(this);" onclick="shdop('1699561','51');"><b style="color:#CC3333">+51</b></td>
+      <td><a href="/mstat.php?p=12140:6346:3857:1699561" onclick="return so('s1699561', '/mstat.php?p=12140:6346:3857:1699561');" target="s1699561"><img src="/img/stat_ico.gif" border=0 alt="Статистика"></a></td>
+    </tr>
+    <tr id="tr1699561" style="display:none;">
+      <td id="td1699561" colspan=17 class="tcd"></td>
+    </tr>
+    <tr>
+      <td colspan=17 class="t_comment">НТВ+Теннис</td>
+    </tr>
+  </tbody>
+  <tbody class=date>
+    <tr>
+      <td colspan="17">06.11.2012</td>
+    </tr>
+  </tbody>
+  <tbody class="chead">
+    <tr class="th">
+      <td nowrap>время</td>
+      <td nowrap>Игрок 1</td>
+      <td nowrap>фора</td>
+      <td nowrap>кф</td>
+      <td nowrap>Игрок 2</td>
+      <td nowrap>фора</td>
+      <td nowrap>кф</td>
+      <td nowrap>Тотал</td>
+      <td nowrap>мен</td>
+      <td nowrap>бол</td>
+      <td nowrap><b>1</b></td>
+      <td nowrap><b>2</b></td>
+      <td nowrap>2:0</td>
+      <td nowrap>2:1</td>
+      <td nowrap>1:2</td>
+      <td nowrap>0:2</td>
+      <td>ДОП</td>
+    </tr>
+  </tbody>
+  <Tbody id="line">
+    <Tr class="tc1">
+      <td>17:45</td>
+      <td><b>Федерер Р.</b></td>
+      <td><b> -4.5</b></td>
+      <td><a href="#" onClick="return al();">1.75</a></td>
+      <td><b>Типсаревич Я.</b></td><td><b> +4.5</b></td>
+      <td><a href="#" onClick="return al();">2.07</a></td>
+      <td><b>  20.5</b></td><td><a href="#" onClick="return al();">1.90</a></td>
+      <td><a href="#" onClick="return al();">1.90</a></td>
+      <td><a href="#" onClick="return al();" class=red>1.10</a></td>
+      <td><a href="#" onClick="return al();" class=red>6.96</a></td>
+      <td><a href="#" onClick="return al();">1.35</a></td>
+      <td><a href="#" onClick="return al();">4.30</a></td>
+      <td><a href="#" onClick="return al();">15.00</a></td>
+      <td><a href="#" onClick="return al();">13.00</a></td>
+      <Td id="d1699570" onmouseover="mo(this);" onclick="shdop('1699570','8');"><b style="color:#CC3333">+8</b></td>
+      <td><a href="/mstat.php?p=12140:1867:2749:1699570" onclick="return so('s1699570', '/mstat.php?p=12140:1867:2749:1699570');" target="s1699570"><img src="/img/stat_ico.gif" border=0 alt="Статистика"></a></td>
+    </tr>
+    <tr id="tr1699570" style="display:none;">
+      <td id="td1699570" colspan=17 class="tcd1"></td>
+    </tr>
+    <tr>
+      <td colspan=17 class="t_comment1">НТВ+Теннис</td>
+    </tr>
+  </tbody>
+  <Tbody id="line">
+    <Tr class="tc">
+      <td>23:45</td>
+      <td><b>Феррер Д.</b></td>
+      <td><b> +2.5</b></td>
+      <td><a href="#" onClick="return al();">1.95</a></td>
+      <td><b>Дель Потро Х.М.</b></td><td><b> -2.5</b></td>
+      <td><a href="#" onClick="return al();">1.85</a></td>
+      <td><b>  22.5</b></td><td><a href="#" onClick="return al();">1.90</a></td>
+      <td><a href="#" onClick="return al();">1.90</a></td>
+      <td><a href="#" onClick="return al();" class=red>2.31</a></td>
+      <td><a href="#" onClick="return al();" class=red>1.61</a></td>
+      <td><a href="#" onClick="return al();">3.90</a></td>
+      <td><a href="#" onClick="return al();">5.00</a></td>
+      <td><a href="#" onClick="return al();">3.90</a></td>
+      <td><a href="#" onClick="return al();">2.50</a></td>
+      <Td id="d1699571" onmouseover="mo(this);" onclick="shdop('1699571','8');"><b style="color:#CC3333">+8</b></td>
+      <td><a href="/mstat.php?p=12140:1007:13284:1699571" onclick="return so('s1699571', '/mstat.php?p=12140:1007:13284:1699571');" target="s1699571"><img src="/img/stat_ico.gif" border=0 alt="Статистика"></a></td>
+    </tr>
+    <tr id="tr1699571" style="display:none;">
+    <td id="td1699571" colspan=17 class="tcd"></td></tr><tr><td colspan=17 class="t_comment">НТВ+Теннис</td></tr></tbody></table><div align="right"><a href="#cc" class="btnIndex" target="_self">оглавление</a></div><br>   </td>
+</tr>
+</table>

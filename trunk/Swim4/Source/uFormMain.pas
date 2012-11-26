@@ -71,6 +71,10 @@ type
     actDecBet2: TAction;
     actCalcSwim: TAction;
     actSetExchangeRates: TAction;
+    actIncKoef1: TAction;
+    actDecKoef1: TAction;
+    actIncKoef2: TAction;
+    actDecKoef2: TAction;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure actScanAllBookerExecute(Sender: TObject);

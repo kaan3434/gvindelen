@@ -38,7 +38,7 @@ object Form1: TForm1
         Caption = 'Teacher'
         Page = rpTeacher
       end>
-    TabIndex = 2
+    TabIndex = 1
     ExplicitTop = -6
     DesignSize = (
       732
@@ -48,65 +48,6 @@ object Form1: TForm1
       ActionManager = actMngRibbon
       OptionItems = <>
       RecentItems = <>
-    end
-    object rpViewer: TRibbonPage
-      Left = 0
-      Top = 50
-      Width = 731
-      Height = 93
-      Caption = 'Viewer'
-      Index = 1
-      object tbViewerBookers: TRibbonGroup
-        Left = 4
-        Top = 3
-        Width = 50
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = 'Bookers'
-        GroupIndex = 0
-      end
-      object rgIgnore1: TRibbonGroup
-        Left = 56
-        Top = 3
-        Width = 129
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = #1051#1077#1074#1086#1077' '#1055#1083#1077#1095#1086
-        GroupIndex = 1
-        Rows = 2
-      end
-      object rgIgnore2: TRibbonGroup
-        Left = 187
-        Top = 3
-        Width = 129
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = #1055#1088#1072#1074#1086#1077' '#1055#1083#1077#1095#1086
-        GroupIndex = 2
-        Rows = 2
-      end
-      object rgBetAmount: TRibbonGroup
-        AlignWithMargins = True
-        Left = 318
-        Top = 3
-        Width = 174
-        Height = 86
-        ActionManager = actMngRibbon
-        Caption = #1056#1072#1079#1084#1077#1088' '#1089#1090#1072#1074#1086#1082
-        GroupAlign = gaHorizontal
-        GroupIndex = 3
-        Rows = 2
-        object edAmount: TRibbonSpinEdit
-          Left = 61
-          Top = 10
-          Width = 108
-          Height = 22
-          MaxValue = 0
-          MinValue = 1
-          TabOrder = 0
-          Value = 1
-        end
-      end
     end
     object rpScanner: TRibbonPage
       Left = 0
@@ -190,6 +131,65 @@ object Form1: TForm1
           MinValue = 0
           TabOrder = 3
           Value = 0
+        end
+      end
+    end
+    object rpViewer: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 731
+      Height = 93
+      Caption = 'Viewer'
+      Index = 1
+      object tbViewerBookers: TRibbonGroup
+        Left = 4
+        Top = 3
+        Width = 50
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = 'Bookers'
+        GroupIndex = 0
+      end
+      object rgIgnore1: TRibbonGroup
+        Left = 56
+        Top = 3
+        Width = 181
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = #1051#1077#1074#1086#1077' '#1055#1083#1077#1095#1086
+        GroupIndex = 1
+        Rows = 2
+      end
+      object rgIgnore2: TRibbonGroup
+        Left = 239
+        Top = 3
+        Width = 181
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = #1055#1088#1072#1074#1086#1077' '#1055#1083#1077#1095#1086
+        GroupIndex = 2
+        Rows = 2
+      end
+      object rgBetAmount: TRibbonGroup
+        AlignWithMargins = True
+        Left = 422
+        Top = 3
+        Width = 174
+        Height = 86
+        ActionManager = actMngRibbon
+        Caption = #1056#1072#1079#1084#1077#1088' '#1089#1090#1072#1074#1086#1082
+        GroupAlign = gaHorizontal
+        GroupIndex = 3
+        Rows = 2
+        object edAmount: TRibbonSpinEdit
+          Left = 61
+          Top = 10
+          Width = 108
+          Height = 22
+          MaxValue = 0
+          MinValue = 1
+          TabOrder = 0
+          Value = 1
         end
       end
     end
@@ -592,7 +592,7 @@ object Form1: TForm1
     Left = 560
     Top = 8
     Bitmap = {
-      494C01010D006E00800010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
+      494C01010D006E00880010001000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1134,7 +1134,7 @@ object Form1: TForm1
     Left = 472
     Top = 8
     Bitmap = {
-      494C01010D006600780020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01010D006600800020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000008000000001002000000000000000
       0100000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -3359,8 +3359,18 @@ object Form1: TForm1
             ImageIndex = 6
           end
           item
+            Action = actIncKoef1
+            Caption = 'I&nc Koef'
+            NewRow = True
+          end
+          item
+            Action = actDecKoef1
+            Caption = 'D&ec Koef'
+          end
+          item
             Action = actIgnoreBet1
             ImageIndex = 5
+            NewRow = True
           end
           item
             Action = actIgnoreEvent1
@@ -3379,6 +3389,13 @@ object Form1: TForm1
             Action = actDecBet2
             Caption = '&Dec'
             ImageIndex = 6
+          end
+          item
+            Action = actIncKoef2
+            Caption = 'I&nc Koef'
+          end
+          item
+            Action = actDecKoef2
           end
           item
             ChangesAllowed = []
@@ -3665,6 +3682,22 @@ object Form1: TForm1
     object actSetExchangeRates: TAction
       Category = 'Teacher'
       Caption = #1059#1089#1090#1072#1085#1086#1074#1080#1090#1100
+    end
+    object actIncKoef1: TAction
+      Category = 'Viewer'
+      Caption = 'Inc Koef'
+    end
+    object actDecKoef1: TAction
+      Category = 'Viewer'
+      Caption = 'Dec Koef'
+    end
+    object actIncKoef2: TAction
+      Category = 'Viewer'
+      Caption = 'Inc Koef'
+    end
+    object actDecKoef2: TAction
+      Category = 'Viewer'
+      Caption = 'Dec Koef'
     end
   end
 end
