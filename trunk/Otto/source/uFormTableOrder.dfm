@@ -218,12 +218,17 @@ inherited FormTableOrders: TFormTableOrders
             EditButtons = <>
             FieldName = 'REST_EUR'
             Footers = <>
+          end
+          item
+            EditButtons = <>
+            FieldName = 'PACKLIST_NO'
+            Footers = <>
           end>
         inherited RowDetailData: TRowDetailPanelControlEh
           object pcDetailInfo: TPageControl
             Left = 0
             Top = 0
-            Width = 931
+            Width = 959
             Height = 198
             ActivePage = tsOrderTaxs
             Align = alClient
@@ -233,7 +238,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdOrderProperties: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 923
+                Width = 951
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -411,7 +416,7 @@ inherited FormTableOrders: TFormTableOrders
               object grdOrderTaxs: TDBGridEh
                 Left = 0
                 Top = 0
-                Width = 923
+                Width = 951
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
@@ -802,7 +807,8 @@ inherited FormTableOrders: TFormTableOrders
       '    orders.account_id,'
       '    orders.source,'
       '    orders.byr2eur,'
-      '    accounts.rest_eur'
+      '    accounts.rest_eur,'
+      '    orders.packlist_no'
       'FROM ORDERS '
       
         '  inner join v_clients_fio on (v_clients_fio.client_id = orders.' +

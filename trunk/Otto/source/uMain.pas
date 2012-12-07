@@ -155,6 +155,8 @@ type
     subReturns: TTBXSubmenuItem;
     btnNonDelivered: TTBXItem;
     actOrderUnclaimed: TAction;
+    actPacklistByPeriod: TAction;
+    btn17: TTBXItem;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -199,6 +201,7 @@ type
     procedure actExportReturnExecute(Sender: TObject);
     procedure actReportByPeriodExecute(Sender: TObject);
     procedure actOrderUnclaimedExecute(Sender: TObject);
+    procedure actPacklistByPeriodExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -874,6 +877,15 @@ begin
     end
     else
       ShowMessage('«а€вка еще не доставлена или не существует');
+  end;
+end;
+
+procedure TMainForm.actPacklistByPeriodExecute(Sender: TObject);
+begin
+  with dmOtto do
+  begin
+    frxReport.LoadFromFile(Path['FastReport']+'PacklistStats.fr3');
+    frxReport.ShowReport;
   end;
 end;
 

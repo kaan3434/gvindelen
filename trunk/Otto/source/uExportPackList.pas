@@ -83,7 +83,7 @@ begin
       'GOSNUM=POSTINDEX');
     BatchMoveFields2(tblCons, ndClient,
       'BLACKLIST="0"');
-    tblCons['NEWICHT']:= GetXmlAttrValue(ndOrder, 'WEIGHT');
+    tblCons['NEWICHT']:= GetXmlAttrValue(ndOrder, 'WEIGHT', 0)/1000;
 
     tblCons['KTNAME']:= Translit(
       GetXmlAttr(ndClient, 'FIRST_NAME') + ' '+
@@ -127,7 +127,7 @@ begin
       'NRAUFPOS=ORDERITEM_INDEX');
     tblConsPi3['STREET']:= GetStreet(ndAdress);
     tblConsPi3['HOME']:= GetHome(ndAdress);
-    tblConsPi3['NEWICHT']:= GetXmlAttrValue(ndOrderItem, 'WEIGHT');
+    tblConsPi3['NEWICHT']:= GetXmlAttrValue(ndOrderItem, 'WEIGHT', 0)/1000;
     tblConsPi3.Post;
     SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'DELIVERING');
     dmOtto.ActionExecute(aTransaction, ndOrderItem);

@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 288
-  Top = 238
+  Left = 230
+  Top = 157
   Width = 845
   Height = 512
   Caption = 'PPZ'
@@ -23,8 +23,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 837
-    Height = 65
+    Width = 829
+    Height = 69
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -218,11 +218,14 @@ object MainForm: TMainForm
         object btnStatByPeriod: TTBXItem
           Action = actReportByPeriod
         end
+        object btn17: TTBXItem
+          Action = actPacklistByPeriod
+        end
       end
     end
     object barInfo: TTBXToolbar
       Left = 0
-      Top = 47
+      Top = 49
       Caption = 'barInfo'
       TabOrder = 1
       object lblBYR2EUR: TTBXLabelItem
@@ -231,16 +234,16 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 436
-    Width = 837
+    Top = 432
+    Width = 829
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object pbMain: TProgressBar
     Left = 0
-    Top = 419
-    Width = 837
+    Top = 415
+    Width = 829
     Height = 17
     Align = alBottom
     TabOrder = 1
@@ -445,13 +448,18 @@ object MainForm: TMainForm
     end
     object actReportByPeriod: TAction
       Category = 'Reports'
-      Caption = 'actReportByPeriod'
+      Caption = #1054#1087#1077#1088#1072#1090#1086#1088#1099
       OnExecute = actReportByPeriodExecute
     end
     object actOrderUnclaimed: TAction
       Caption = #1053#1077#1074#1086#1089#1090#1088#1077#1073#1086#1074#1072#1085#1085#1099#1077
       ImageIndex = 4
       OnExecute = actOrderUnclaimedExecute
+    end
+    object actPacklistByPeriod: TAction
+      Category = 'Reports'
+      Caption = #1055#1072#1082#1083#1080#1089#1090#1099
+      OnExecute = actPacklistByPeriodExecute
     end
   end
   object imgListMainMenu: TPngImageList
