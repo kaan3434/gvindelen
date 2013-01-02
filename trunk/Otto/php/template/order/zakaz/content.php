@@ -125,7 +125,7 @@ for($i=1;$i<=12; $i++) {
 <?php
   if ($orderitems_node->children()) {
     // получаем номер файла
-    $file_counter = 'cache/orders.'.date('Ydm').'.cnt';
+    $file_counter = 'cache/orders.'.date('Ymd').'.cnt';
     $handle = fopen($file_counter, 'a+');
     fputs($handle, "\r\n".session_id());
     fclose($handle);

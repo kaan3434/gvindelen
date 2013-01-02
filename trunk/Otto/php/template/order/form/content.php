@@ -1,6 +1,6 @@
 <?php
   require_once "libs/GvXmlUtils.php";
-  $file_counter = 'cache/orders.'.date('Ydm').'.cnt';
+  $file_counter = 'cache/orders.'.date('Ymd').'.cnt';
   $sessions = array();
   if (file_exists($file_counter)) $sessions = explode("\r\n", file_get_contents($file_counter));
   $idx = array_search(session_id(), $sessions);
