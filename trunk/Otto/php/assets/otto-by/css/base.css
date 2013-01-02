@@ -432,14 +432,6 @@ ul#serviceLayer li ul#dropdownlayer li a:hover {
 
 }
 
-#pagenavigation.homenav a {
-  color: #fbbb00;
-}
-
-#pagenavigation.homenav #square {
-  background-color: #fbbb00 !important;
-}
-
 #pagenavigation.homenav #order { /*height:166px;*/
   height: 173px;
 }
@@ -495,49 +487,11 @@ ul#serviceLayer li ul#dropdownlayer li a:hover {
 /* ##### square ##### */
 #pagenavigation #square {
   margin: 0px;
-  color: #ffffff;
   font-size: 23px;
   font-weight: normal;
   height: 181px;
   position: relative;
   color: #ffffff;
-  background-color: #8EBD22;
-}
-
-.colorscheme1 #pagenavigation #square {
-  background-color: #DA2031;
-}
-
-.colorscheme2 #pagenavigation #square {
-  background-color: #0089C0;
-}
-
-.colorscheme3 #pagenavigation #square {
-  background-color: #F88000;
-}
-
-.colorscheme4 #pagenavigation #square {
-  background-color: #BF2F7F;
-}
-
-.colorscheme5 #pagenavigation #square {
-  background-color: #11A3A1;
-}
-
-.colorscheme6 #pagenavigation #square {
-  background-color: #FE297A;
-}
-
-.colorscheme7 #pagenavigation #square {
-  background-color: #A1CDF2;
-}
-
-.colorscheme8 #pagenavigation #square {
-  background-color: #8F2855;
-}
-
-.colorscheme9 #pagenavigation #square {
-  background-color: #7F9A01;
 }
 
 

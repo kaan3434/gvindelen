@@ -1,17 +1,5 @@
-<style type="text/css">
-#pagenavigation.homenav a {
-  color:#8F2855;
-}
-#pagenavigation.homenav #square {
-  background-color:#8F2855 !important;
-}
-#pagenavigation.homenav .block .headline {
-  color:#8F2855;
-}
-</style>
-
 <div id="pagenavigation" class="homenav">
-  <h1 id="square"><span class="text">Осень с ОТТО</span></h1><div id="order" class="block dotline">
+  <h1 id="square"><span class="text"><? echo detect_caption($scheme);?></span></h1><div id="order" class="block dotline">
     <div class="headline">
       Просто введите коды артикулов из каталога</div>
     <div class="buttons">

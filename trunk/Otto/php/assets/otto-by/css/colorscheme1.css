@@ -1,6 +1,15 @@
 /* Colorscheme 1 */
 
-.colorscheme1 .NavigationBox div.Wrapper h2 a{
+.colorscheme1 .NavigationBox div.Wrapper h1 a{
+  color:#DA2031;
+}
+#pagenavigation.homenav a {
+  color:#DA2031;
+}
+#pagenavigation.homenav #square {
+  background-color:#DA2031;
+}
+#pagenavigation.homenav .block .headline {
   color:#DA2031;
 }
 

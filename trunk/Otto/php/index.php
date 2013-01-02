@@ -9,7 +9,51 @@
   require "settings/$server_name/mysql.inc";
   $ext = '.php';
   $template_path = 'template/';
+
+function detect_scheme() {
+  $month_no = date('m');
   
+  if ($month_no == '01') {
+    $scheme = 1;
+  } elseif ($month_no == '02') {
+    $scheme = 2;
+  } elseif ($month_no == '03') {
+    $scheme = 2;
+  } elseif ($month_no == '04') {
+    $scheme = 2;
+  } elseif ($month_no == '05') {
+    $scheme = 3;
+  } elseif ($month_no == '06') {
+    $scheme = 3;
+  } elseif ($month_no == '07') {
+    $scheme = 3;
+  } elseif ($month_no == '08') {
+    $scheme = 4;
+  } elseif ($month_no == '09') {
+    $scheme = 4;
+  } elseif ($month_no == '10') {
+    $scheme = 4;
+  } elseif ($month_no == '11') {
+    $scheme = 1;
+  } elseif ($month_no == '12') {
+    $scheme = 1;
+  }
+  return $scheme;
+}
+  $scheme = detect_scheme();
+
+function detect_caption($scheme) {
+  if ($scheme == 1) {
+    return 'Зима с OTTO';
+  } elseif ($scheme == 2) {
+    return 'Весна с OTTO';
+  } elseif ($scheme == 3) {
+    return 'Лето с OTTO';
+  } elseif ($scheme == 4) {
+    return 'Осень с OTTO';
+  }
+}
+ 
 function extract_searches($template_path, $path) {
   $path_arr = explode("/", $path);
   if ($path_arr[0] == null) $path_arr[0] = 'start';
@@ -62,4 +106,15 @@ function extract_searches($template_path, $path) {
   $fname = 'cache/'.session_id().'.php';
   file_put_contents($fname, $html);
   include $fname;
+  unlink($fname);
+
+//  $fpath = 'cache/';
+  
+//  $files = scandir($fpath);
+//  foreach($files as $f) {
+//    if ((substr($f, -4) == '.php')){
+//      unlink($fpath . $f);
+//    }
+//  }
+  
 ?>
