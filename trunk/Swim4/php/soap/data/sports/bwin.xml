@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Root>
   <Sports>
-    <Sport Id="10" Sign="tennis" Title="Теннис" Url="/tennis?ShowDays=168">
+    <Sport Id="10" Sign="tennis" Title="Теннис" Url="/en/sports/navigation/index/5" SportId="5">
 	  <Category Id="33" Title="2Way - Who will win?" Parse="1x2"/>
       <Category Id="35" Title="Set related bets" Parse="Annotated"/>
 	  <Category Id="36" Title="Number of games" Parse="Annotated"/>
 	  <Category Id="524" Title="Tie breaks" Parse="Annotated"/>
 	</Sport>
-    <Sport Id="20" Sign="soccer" Title="Футбол" Url="/football?ShowDays=168">
+    <Sport Id="20" Sign="soccer" Title="Футбол" Url="/en/sports/navigation/index/4" SportId="4">
 	  <Category Id="25" Title="3Way" Parse="1x2"/>
 	  <Category Id="190" Title="Double chance" Parse="Annotated"/>
 	  <Category Id="31" Title="Number of goals?" Parse="Annotated"/>

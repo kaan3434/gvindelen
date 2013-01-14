@@ -11,34 +11,37 @@ class booker extends booker_xml {
   
   function __construct() { 
     $this->booker = 'bwin'; 
-    $this->host = 'https://www.bwin.com';
+    $this->host = 'https://sports.bwin.com';
     parent::__construct();
   }
   
   public function extract_league(&$tournirs_node, $html) {
     $html = kill_space($html);
-    $html = extract_tags($html, '<noscript>', '</noscript>', '', 'sportNavigationRegionExpandedNew');
-    $html = str_ireplace('<div class="leftnav">', '@@@<div class="leftnav">', $html);
-    $html = numbering_tag($html, 'div');
-    $regions = explode('@@@', $html);
-    unset($regions[0]);
-    foreach($regions as $region) {
+    $html = numbering_tag($html, 'ul');
+    $html = numbering_tag($html, 'li');
+    $groups = extract_all_numbered_tags($html, 'ul', 'nav-');
+    foreach($groups as $group) {
       // получаем название региона
-      $region_name = copy_be($region, '<a', '</a>', 'sportsNavigationArrowButtonNew');
-      $region_name = copy_between($region_name, '>', '</a');
-      $tournirs = extract_all_tags($region, '<a href=\'betsnew.aspx?leagueids=', '</a>');
-      foreach($tournirs as $tournir) {
-        $tournir_name = copy_between($tournir, '>', '</a');
-        preg_match('/(.+) \((\d+)\)$/m', $tournir_name, $matches);
-        $tournir_name = $matches[1];
-        // бракуем турниры
-        if (!preg_match('/(- live)/', $tournir_name)) {
-          $tournir_node = $tournirs_node->addChild('Tournir');
-          $league = copy_be($tournir, '<a', '>', 'leagueids');
-          $league_id = copy_between($league, 'leagueids=', "'");
-          $tournir_node->addAttribute('Id', $league_id);
-          $tournir_node->addAttribute('Region', $region_name);
-          $tournir_node->addAttribute('Title',  $tournir_name);
+      $regions = extract_all_numbered_tags($group, 'li', 'nav-toggle');
+      foreach($regions as $region) {
+        $tournirs = extract_all_numbered_tags($region, 'li', 'nav-league');
+        $region = kill_property($region, 'TagNo');
+        $region = delete_all($region, '<ul', '</ul>');
+        $region_name = delete_all($region, '<', '>');
+        foreach($tournirs as $tournir) {
+          $tournir = copy_be($tournir, '<a', '</a>');
+          $tournir_name = copy_between($tournir, '>', '</a');
+          preg_match('/(.+) \((\d+)\)$/m', $tournir_name, $matches);
+          $tournir_name = $matches[1];
+          if (!preg_match('/(- live)/', $tournir_name)) {
+            $tournir_url = extract_property_values($tournir, 'href', '');
+            preg_match('|/(\d+)/betting|m', $tournir_url, $matches);
+            $tournir_node = $tournirs_node->addChild('Tournir');
+            $tournir_node->addAttribute('Id', $matches[1]);
+            $tournir_node->addAttribute('Region', $region_name);
+            $tournir_node->addAttribute('Title',  $tournir_name);
+            $tournir_node->addAttribute('Url',  $tournir_url);
+          }
         }
       }
     }
@@ -52,7 +55,7 @@ class booker extends booker_xml {
     // получаем перечень турниров
     $file_name = $this->league_path."league";
     $url = $this->host.$this->sport_node['Url'];
-    copy("cookies.etalon/www.bwin.com.txt", "cookies/www.bwin.com.txt");
+    //copy("cookies.etalon/www.bwin.com.txt", "cookies/www.bwin.com.txt");
     $html = download_or_load($this->debug, $file_name.".html", $url, "GET", "");
     $this->extract_league($tournirs_node, $html);
     if ($this->debug) file_put_contents($file_name.".xml", $xml->asXML());
@@ -228,11 +231,8 @@ class booker extends booker_xml {
   }
   
   private function extract_bets(&$tournir_node, $html, $sport_sign, $tournir_id, $parse) {
-    $html = str_ireplace('<wbr/>', '', $html);
     $html = numbering_tag($html, 'div');
-    $html = extract_numbered_tags($html, 'div', "", "bet-list");
-    $html = extract_numbered_tags($html, 'div', "", "dsBodyContent");
-    $html = extract_numbered_tags($html, 'div', "", "ControlContent");
+    $html = extract_numbered_tags($html, 'div', "", "ui-widget-content-body");
       
     if ($parse == '1x2') {
       if ($html <> '') $this->extract_bets_1x2($tournir_node, $html, $sport_sign);
@@ -256,22 +256,25 @@ class booker extends booker_xml {
     }
   } 
     
-  private function getBets(&$tournir_node, $sport_id, $tournir_id) {
+  private function getBets(&$tournir_node, $sport_id, $tournir_id, $tournir_url) {
     foreach($this->sport_node as $category_node) {
       $category_id = (string) $category_node['Id'];
       $parse = (string) $category_node['Parse'];
       $current_page = 0;
       do {
-        $current_page++;
         $file_name = $this->league_path."$tournir_id.$category_id.$current_page.html";
-        $url= $this->host."/betviewiframe.aspx?sorting=leaguedate&categoryIDs=$category_id&bv=bb&leagueIDs=$tournir_id";
+        $url= $this->host."/en/sports/indexmultileague";
         $referer = $this->host.(string)$this->sport_node['Url'];
-        copy("cookies.etalon/www.bwin.com.txt", "cookies/www.bwin.com.txt");
-        $html = download_or_load($this->debug, $file_name, $url, "GET", $referer);
+        $post_hash['sportId'] = (string) $this->sport_node['SportId'];
+        $post_hash['leagueIds'] = $tournir_id;
+        $post_hash['categoryIds'] = $category_id;
+        $post_hash['page'] = $current_page;
+        $html = download_or_load($this->debug, $file_name, $url, "POST", $referer, $post_hash);
         if (!$this->categories) 
           $this->extract_categories($html);
         if ($this->categories[$category_id])
           $this->extract_bets($tournir_node, $html, (string) $this->sport_node['Sign'], $tournir_id, $parse);
+        $current_page++;
       } while ($this->to_be_continue($html, $current_page+1));
     }
     
@@ -280,7 +283,7 @@ class booker extends booker_xml {
   function getEvents($sport_id, $tournir_id, $tournir_url) {
     $xml = parent::getEvents($sport_id, $tournir_id, $tournir_url);
     $tournir_node = $xml->addChild('Events');
-    $this->getBets($tournir_node, $sport_id, $tournir_id);
+    $this->getBets($tournir_node, $sport_id, $tournir_id, $tournir_url);
     if ($this->debug) file_put_contents($this->league_path."$tournir_id.xml", $xml->asXML());
     return $xml;
   }
