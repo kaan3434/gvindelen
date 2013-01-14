@@ -231,8 +231,24 @@ class booker extends booker_xml {
   }
   
   private function extract_bets(&$tournir_node, $html, $sport_sign, $tournir_id, $parse) {
+    $html = kill_space($html);
     $html = numbering_tag($html, 'div');
-    $html = extract_numbered_tags($html, 'div', "", "ui-widget-content-body");
+    $div_heads = extract_all_tags($html, '<div', '>', 'ui-widget-content-body');
+    $inner_tagno = 0;
+    $inner_div = '';
+    foreach ($div_heads as $div_head) {
+      $tag_no = extract_tagno($div_head, 'div');
+      $div = extract_numbered_tag($html, 'div', $tag_no);
+      if ($inner_tagno < $tag_no) {
+//        file_put_contents('content.html', $div);
+        if (strpos($div, 'betslip')) {
+          $inner_div = $div;
+          $inner_tagno = $tag_no;
+        }
+      }
+    }
+    $html = $inner_div;
+//    file_put_contents('content.html', $html);
       
     if ($parse == '1x2') {
       if ($html <> '') $this->extract_bets_1x2($tournir_node, $html, $sport_sign);
@@ -249,10 +265,10 @@ class booker extends booker_xml {
   }
     
   private function extract_categories($html) {
-    $html = copy_be($html, '<table', '</table>', 'SelectSingleCategory');
-    $categories = extract_all_tags($html, 'SelectSingleCategory(', ')');
+    $html = copy_be($html, '<ul', '</ul>', 'cat-filter-list');
+    $categories = extract_all_tags($html, '<input', '>', 'checkbox', 'categoryIds');
     foreach($categories as $category) {
-      $this->categories[copy_between($category, '(', ')')] = 1;
+      $this->categories[copy_between($category, 'value="', '"')] = 1;
     }
   } 
     

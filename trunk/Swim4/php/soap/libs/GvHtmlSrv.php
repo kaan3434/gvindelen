@@ -151,6 +151,7 @@ function extract_all_numbered_tags($Html, $TagName, $Contain1="", $Contain2="", 
   return $Result;
 }
 
+
 function extract_numbered_tags($Html, $TagName, $Separator, $Contain1="", $Contain2="", $Contain3="") {
   return implode($Separator, extract_all_numbered_tags($Html, $TagName, $Contain1, $Contain2, $Contain3));
 }
