@@ -248,7 +248,7 @@ class booker extends booker_xml {
       }
     }
     $html = $inner_div;
-//    file_put_contents('content.html', $html);
+    file_put_contents('content.html', $html);
       
     if ($parse == '1x2') {
       if ($html <> '') $this->extract_bets_1x2($tournir_node, $html, $sport_sign);
