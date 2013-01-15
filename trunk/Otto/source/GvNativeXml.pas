@@ -101,7 +101,9 @@ begin
   if (VarType(aValue) and VarTypeMask) = varString then
   begin
     if aValue <> '' then
-      aNode.WriteAttributeString(aAttributeName, aValue);
+      aNode.WriteAttributeString(aAttributeName, aValue)
+    else
+      aNode.AttributeDelete(aNode.AttributeIndexByname(aAttributeName));
   end
   else
     aNode.WriteAttributeString(aAttributeName, aValue);

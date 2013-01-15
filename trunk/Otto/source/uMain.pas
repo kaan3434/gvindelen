@@ -463,6 +463,7 @@ var
   MessageId: Variant;
   StatusSign, FileName: string;
 begin
+  if not dmOtto.dbOtto.Connected then Exit;
   sl := TStringList.Create;
   trnTimer.StartTransaction;
   try

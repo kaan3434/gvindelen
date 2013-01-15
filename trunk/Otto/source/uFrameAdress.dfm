@@ -424,7 +424,7 @@ inherited FrameAdress: TFrameAdress
             FieldName = 'ADRESS_ID'
             Footers = <>
             Title.Alignment = taCenter
-            Visible = False
+            Title.Caption = 'Id'
           end
           item
             EditButtons = <>

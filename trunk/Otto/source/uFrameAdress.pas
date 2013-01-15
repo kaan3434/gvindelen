@@ -226,16 +226,17 @@ end;
 
 procedure TFrameAdress.grdAdressesDblClick(Sender: TObject);
 begin
-  if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'NEW,DRAFT') then
+  if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'NEW,DRAFT,APPROVED') then
   begin
     dmOtto.AdressRead(ndAdress, qryAdresses['ADRESS_ID'], trnRead);
+    Read;
     UpdateCaptions;
   end;
 end;
 
 procedure TFrameAdress.grdPlacesDblClick(Sender: TObject);
 begin
-  if XmlAttrIn(ndClient, 'STATUS_SIGN', 'NEW,DRAFT') then
+  if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'NEW,DRAFT,APPROVED') then
   begin
     dmOtto.ObjectGet(ndPlace, qryPlaces['PLACE_ID'], trnRead);
     UpdateCaptions;
@@ -265,7 +266,7 @@ procedure TFrameAdress.OpenTables;
 begin
   inherited;
   qryAdresses.OpenWP([ClientId]);
-  if qryAdresses.RecordCount = 1 then
+  if qryAdresses.RecordCountFromSrv = 1 then
     dmOtto.AdressRead(ndAdress, qryAdresses['ADRESS_ID'], trnRead);
 
   qryPlaces.OpenWP([GetXmlAttrValue(ndPlace, 'PLACE_NAME')]);
@@ -302,7 +303,7 @@ begin
   inherited;
   if GetXmlAttrValue(ndAdress, 'ID') <> null then
   begin
-    if MessageDlg('Заменить адрес клиента?', mtConfirmation, mbOKCancel, 0) = mrOk then
+    if MessageDlg('Добавить адрес клиента?', mtConfirmation, mbOKCancel, 0) = mrOk then
     begin
       SetXmlAttr(ndOrder, 'ADRESS_ID', null);
       SetXmlAttr(ndAdress, 'ID', null);
