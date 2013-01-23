@@ -53,17 +53,20 @@ begin
 end;
 
 
-procedure ReportReturnedOrderItems(aTransaction: TpFIBTransaction);
+procedure ReportOrderItemsByProduct(aTransaction: TpFIBTransaction;
+  ndProducts: TXmlNode; aProductId: Integer);
 var
-  ProductList: string;
-  OrderId: Variant;
-  xml: TNativeXml;
-  ndProducts, ndOrder: TXmlNode;
-  FileName: string;
+  ndProduct, ndFastReport: TXmlNode;
+  FileName: String;
+  i: Integer;
 begin
+  ndProduct:= ndProducts.NodeNew('PRODUCT');
+  ndFastReport:= ndProducts.NodeFindOrCreate('FASTREPORT');
+  dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
   ForceDirectories(Path['Returns']);
-  FileName:= GetNextFileName(Format('%sArticles_%%.2u.%.3d', [
-    Path['Returns'], DayOfTheYear(Date)]));
+  FileName:= GetNextFileName(Format(
+    '%s%s_retart_%%.2u.%.3d', [
+    Path['Returns'], GetXmlAttr(ndProduct, 'PARTNER_NUMBER'), DayOfTheYear(Date)]));
   with dmOtto do
   begin
     frxExportXLS.DefaultPath:= Path['Returns'];
@@ -77,9 +80,40 @@ begin
     frxPDFExport.FileName:= FileName+'.pdf';
 
     frxReport.LoadFromFile(Path['FastReport'] + 'OrderItemReturns.fr3');
+    for i:= 0 to ndFastReport.AttributeCount-1 do
+      frxReport.Variables[ndFastReport.AttributeName[i]]:= ndFastReport.AttributeValue[i]; 
+    frxReport.Variables['ProductId']:= aProductId;
     frxReport.PrepareReport(true);
+    for i:= 0 to frxReport.Variables.Count-1 do
+      SetXmlAttr(ndFastReport, frxReport.Variables.Items[i].Name, frxReport.Variables.Items[i].Value);
     frxReport.Export(frxExportXLS);
     frxReport.Export(frxPDFExport);
+  end;
+end;
+
+procedure ReportReturnedOrderItems(aTransaction: TpFIBTransaction);
+var
+  Xml: TNativeXml;
+  ndProducts: TXmlNode;
+  ProductId: Variant;
+  ProductList: string;
+begin
+  xml:= TNativeXml.CreateName('PRODUCTS');
+  try
+    ndProducts:= Xml.Root;
+    ProductList:= aTransaction.DefaultDatabase.QueryValue(
+      'select list(distinct o.product_id) '+
+      'from OrderItems oi '+
+      '  inner join flags2statuses f2s on (f2s.status_id = oi.status_id and f2s.flag_sign = ''RETURN'') '+
+      '  inner join orders o on (o.order_id = oi.order_id)',
+      0, aTransaction);
+    while ProductList <> '' do
+    begin
+      ProductId:= TakeFront5(ProductList, ',');
+      ReportOrderItemsByProduct(aTransaction, ndProducts, ProductId);
+    end;
+  finally
+    xml.Free;
   end;
 end;
 
