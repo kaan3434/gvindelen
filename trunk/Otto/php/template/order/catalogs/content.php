@@ -25,7 +25,7 @@ vertical-align: middle; text-align: center;
 <div class="maincontent" id="servicecontent">
   <div id="headline_item">
     <div class="text">
-      <h1 class="content_headline">В мире каталогов: Весна - Лето 2012 г.</h1>
+      <h1 class="content_headline">В мире каталогов: Весна - Лето 2013 г.</h1>
     </div>
   </div>
 
@@ -36,7 +36,7 @@ vertical-align: middle; text-align: center;
         <div class="categories">
           <p>Лучший способ выбрать товар – полистать каталог, лежа на диване или сидя в любимом кресле. 
              Для этого есть несколько способов:
-             <p>-&nbsp;Приобрести каталог на <a href="oz.by">oz.by</a></p>
+             <p>-&nbsp;Приобрести каталог на <a href="http://ottokatalogi.by">ottokatalogi.by</a></p>
              <p>-&nbsp;Взять каталог на время, как в библиотеке, в наших офисах на..</p>
              <p>-&nbsp;Если у Вас есть свободное время, приходите к нам в офис полистать каталоги.</p>
           </p>
