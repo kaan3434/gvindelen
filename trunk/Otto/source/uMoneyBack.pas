@@ -21,15 +21,15 @@ var
   MoneyBackId: Variant;
   xml: TNativeXml;
   ndMoneyBacks, ndMoneyBack: TXmlNode;
-  FileName: String;
+  FileName, ReestrNum: String;
 begin
   ForceDirectories(Path['Returns']);
-  FileName:= GetNextFileName(Format('%sBelPost_%%.2u.%.3d', [
-    Path['Returns'], DayOfTheYear(Date)]));
   xml:= TNativeXml.CreateName('MoneyBack');
   try
     aTransaction.StartTransaction;
     try
+      ReestrNum:= dmOtto.GetNextCounterValue('MONEYBACK', 'BELPOST', 0, aTransaction);
+      FileName:= Format('%sBelPost_%s', [Path['Returns'], ReestrNum]);
       ndMoneyBacks:= xml.Root;
       MoneyBacks:= aTransaction.DefaultDatabase.QueryValue(
         'select list(mb.moneyback_id) '+
@@ -52,6 +52,7 @@ begin
           frxPDFExport.FileName:= FileName+'.pdf';
 
           frxReport.LoadFromFile(Path['FastReport'] + 'MoneyBackBelPost.fr3');
+          frxReport.Variables['ReestrNum']:= ReestrNum;
           frxReport.PrepareReport(true);
           frxReport.Export(frxExportXLS);
           frxReport.Export(frxPDFExport);
@@ -81,14 +82,15 @@ var
   MoneyBackId: Variant;
   xml: TNativeXml;
   ndMoneyBacks, ndMoneyBack: TXmlNode;
+  ReestrNum: string;
 begin
   ForceDirectories(Path['Returns']);
-  FileName:= GetNextFileName(Format('%sBank_%%.2u.%.3d', [
-    Path['Returns'], DayOfTheYear(Date)]));
   xml:= TNativeXml.CreateName('MoneyBack');
   try
     aTransaction.StartTransaction;
     try
+      ReestrNum:= dmOtto.GetNextCounterValue('MONEYBACK', 'BANK', 0, aTransaction);
+      FileName:= Format('%sBank_%s', [Path['Returns'], ReestrNum]);
       ndMoneyBacks:= xml.Root;
       MoneyBacks:= aTransaction.DefaultDatabase.QueryValue(
         'select list(mb.moneyback_id) from moneybacks mb '+
@@ -110,6 +112,7 @@ begin
           frxPDFExport.FileName:= FileName+'.pdf';
 
           frxReport.LoadFromFile(Path['FastReport'] + 'MoneyBackBank.fr3');
+          frxReport.Variables['ReestrNum']:= ReestrNum;
           frxReport.PrepareReport(true);
           frxReport.Export(frxExportXLS);
           frxReport.Export(frxPDFExport);

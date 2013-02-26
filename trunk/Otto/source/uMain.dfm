@@ -222,6 +222,10 @@ object MainForm: TMainForm
         object btn17: TTBXItem
           Action = actPacklistByPeriod
         end
+        object btnUnclaimed: TTBXItem
+          Action = actUnclaimed
+          OnClick = btnUnclaimedClick
+        end
       end
     end
     object barInfo: TTBXToolbar
@@ -461,6 +465,10 @@ object MainForm: TMainForm
       Category = 'Reports'
       Caption = #1055#1072#1082#1083#1080#1089#1090#1099
       OnExecute = actPacklistByPeriodExecute
+    end
+    object actUnclaimed: TAction
+      Category = 'Reports'
+      Caption = #1053#1077#1074#1086#1089#1090#1088#1077#1073#1086#1074#1072#1085#1085#1099#1077
     end
   end
   object imgListMainMenu: TPngImageList

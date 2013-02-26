@@ -9,6 +9,7 @@
   require "settings/$server_name/mysql.inc";
   $ext = '.php';
   $template_path = 'template/';
+  if (file_exists('default.php')) unlink('default.php');
 
 function detect_scheme() {
   $month_no = date('m');

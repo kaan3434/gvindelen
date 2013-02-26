@@ -60,6 +60,12 @@ begin
             XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
             Value2Vars(LineNo, 'LINE_NO'))));
         end;
+        if GetXmlAttrValue(ndOrderItem, 'NREGWG') = null then
+          SetXmlAttr(ndOrderItem, 'NREGWG', ToNumber(sl[19]));
+        if GetXmlAttrValue(ndOrderItem, 'NRRETCODE') = null then
+          SetXmlAttr(ndOrderItem, 'NRRETCODE', ToNumber(sl[17]));
+        if GetXmlAttrValue(ndOrderItem, 'DESCRIPTION') = null then
+          SetXmlAttr(ndOrderItem, 'DESCRIPTION', Trim(sl[10]));
         try
           dmOtto.ActionExecute(aTransaction, ndOrderItem);
           dmOtto.Notify(aMessageId,

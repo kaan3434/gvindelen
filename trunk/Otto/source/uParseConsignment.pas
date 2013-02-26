@@ -11,7 +11,7 @@ implementation
 
 uses
   Classes, SysUtils, GvStr, udmOtto, Variants, GvNativeXml,
-  Dialogs, Controls;
+  Dialogs, Controls, DateUtils;
 
 procedure ParseConsignmentLine100(aMessageId, LineNo: Integer; sl: TStringList;
   ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
@@ -112,7 +112,9 @@ function GetBarCode(ndOrder, ndProduct: TXmlNode): string;
 var
   Body: string;
 begin
-  Body:= CopyLast(GetXmlAttr(ndOrder, 'PACKLIST_NO'), 3) +
+
+  Body:= CopyLast(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'), 1)+
+         FillFront(IntToStr(WeekOfTheYear(Date)), 2, '0')+
          CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5);
   Result:= GetXmlAttr(ndProduct, 'BARCODE_SIGN')+Body+CalcControlChar(Body)+'LT';
 end;

@@ -2,8 +2,8 @@ object dmOtto: TdmOtto
   OldCreateOrder = False
   OnCreate = DataModuleCreate
   OnDestroy = DataModuleDestroy
-  Left = 418
-  Top = 192
+  Left = 419
+  Top = 137
   Height = 444
   Width = 589
   object dbOtto: TpFIBDatabase
@@ -343,7 +343,7 @@ object dmOtto: TdmOtto
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 40907.121787245400000000
+    ReportOptions.LastChange = 41052.624095972200000000
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
     Left = 280

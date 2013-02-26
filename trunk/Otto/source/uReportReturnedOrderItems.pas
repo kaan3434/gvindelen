@@ -57,7 +57,7 @@ procedure ReportOrderItemsByProduct(aTransaction: TpFIBTransaction;
   ndProducts: TXmlNode; aProductId: Integer);
 var
   ndProduct, ndFastReport: TXmlNode;
-  FileName: String;
+  FileName, PartnerNumber: String;
   i: Integer;
 begin
   ndProduct:= ndProducts.NodeNew('PRODUCT');
@@ -86,6 +86,7 @@ begin
     frxReport.PrepareReport(true);
     for i:= 0 to frxReport.Variables.Count-1 do
       SetXmlAttr(ndFastReport, frxReport.Variables.Items[i].Name, frxReport.Variables.Items[i].Value);
+
     frxReport.Export(frxExportXLS);
     frxReport.Export(frxPDFExport);
   end;

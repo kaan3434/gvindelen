@@ -25,6 +25,7 @@ type
     edPersonalNum: TLabeledEdit;
     btnMoneyBack: TTBXItem;
     actMoneyBack: TAction;
+    chkPayByFirm: TCheckBox;
     procedure actMoneyBackExecute(Sender: TObject);
   private
     procedure rgMoneyBackKindClick(Sender: TObject);
@@ -169,7 +170,8 @@ begin
   try
     dmOtto.ActionExecute(trnWrite, 'MONEYBACK', 'MONEYBACK_CREATE',
       XmlAttrs2Vars(ndClient, 'ACCOUNT_ID',
-      Value2Vars(ExtractWord(rgMoneyBackKind.ItemIndex+1, 'BELPOST;BANK', ';'), 'KIND')));
+      Value2Vars(Byte(chkPayByFirm.Checked), 'PAYBYFIRM',
+      Value2Vars(ExtractWord(rgMoneyBackKind.ItemIndex+1, 'BELPOST;BANK', ';'), 'KIND'))));
 
     trnWrite.Commit;
     ShowMessage('Возврат оформлен');

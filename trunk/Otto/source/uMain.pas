@@ -157,6 +157,8 @@ type
     actOrderUnclaimed: TAction;
     actPacklistByPeriod: TAction;
     btn17: TTBXItem;
+    actUnclaimed: TAction;
+    btnUnclaimed: TTBXItem;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -202,6 +204,7 @@ type
     procedure actReportByPeriodExecute(Sender: TObject);
     procedure actOrderUnclaimedExecute(Sender: TObject);
     procedure actPacklistByPeriodExecute(Sender: TObject);
+    procedure btnUnclaimedClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -886,6 +889,15 @@ begin
   with dmOtto do
   begin
     frxReport.LoadFromFile(Path['FastReport']+'PacklistStats.fr3');
+    frxReport.ShowReport;
+  end;
+end;
+
+procedure TMainForm.btnUnclaimedClick(Sender: TObject);
+begin
+  with dmOtto do
+  begin
+    frxReport.LoadFromFile(Path['FastReport']+'UnClaimed.fr3');
     frxReport.ShowReport;
   end;
 end;

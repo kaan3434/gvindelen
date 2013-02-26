@@ -1,14 +1,14 @@
 inherited FrameMoneyBack3: TFrameMoneyBack3
-  Left = 504
-  Top = 294
+  Left = 308
+  Top = 128
   Width = 788
   Height = 492
   Caption = 'FrameMoneyBack3'
   PixelsPerInch = 96
   TextHeight = 13
   inherited dckTop: TTBXDock
-    Width = 780
-    Height = 23
+    Width = 772
+    Height = 25
     inherited tlBarTop: TTBXToolbar
       object btnMoneyBack: TTBXItem
         Action = actMoneyBack
@@ -16,14 +16,14 @@ inherited FrameMoneyBack3: TFrameMoneyBack3
     end
   end
   inherited sb: TTBXStatusBar
-    Top = 436
-    Width = 780
+    Top = 432
+    Width = 772
   end
   object grpCommon: TJvGroupBox [2]
     Left = 0
-    Top = 23
-    Width = 780
-    Height = 79
+    Top = 25
+    Width = 772
+    Height = 104
     Align = alTop
     Caption = #1055#1072#1089#1087#1086#1088#1090#1085#1099#1077' '#1076#1072#1085#1085#1099#1077' '#1082#1083#1080#1077#1085#1090#1072
     TabOrder = 1
@@ -65,11 +65,19 @@ inherited FrameMoneyBack3: TFrameMoneyBack3
       EditLabel.Caption = #1053#1072#1080#1084#1077#1085#1086#1074#1072#1085#1080#1077' '#1086#1088#1075#1072#1085#1080#1079#1072#1094#1080#1080' '#1074#1099#1076#1072#1074#1096#1077#1081' '#1076#1086#1082#1091#1084#1077#1085#1090
       TabOrder = 2
     end
+    object chkPayByFirm: TCheckBox
+      Left = 8
+      Top = 72
+      Width = 369
+      Height = 17
+      Caption = #1054#1087#1083#1072#1090#1072' '#1087#1077#1088#1077#1074#1086#1076#1072' '#1079#1072' '#1089#1095#1077#1090' '#1092#1080#1088#1084#1099
+      TabOrder = 3
+    end
   end
   object rgMoneyBackKind: TRadioGroup [3]
     Left = 0
-    Top = 102
-    Width = 780
+    Top = 129
+    Width = 772
     Height = 48
     Align = alTop
     Caption = #1044#1077#1081#1089#1090#1074#1080#1103' '#1089' '#1086#1089#1090#1072#1090#1082#1086#1084
@@ -81,8 +89,8 @@ inherited FrameMoneyBack3: TFrameMoneyBack3
   end
   object grpBankMovement: TJvGroupBox [4]
     Left = 0
-    Top = 150
-    Width = 780
+    Top = 177
+    Width = 772
     Height = 152
     Align = alTop
     Caption = #1040#1090#1088#1080#1073#1091#1090#1099' '#1073#1072#1085#1082#1086#1074#1089#1082#1086#1075#1086' '#1087#1077#1088#1077#1074#1086#1076#1072

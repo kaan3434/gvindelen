@@ -89,6 +89,13 @@ inherited FormTableOrders: TFormTableOrders
             Title.TitleButton = True
           end
           item
+            AutoFitColWidth = False
+            EditButtons = <>
+            FieldName = 'PRODUCT_ID'
+            Footers = <>
+            Width = 20
+          end
+          item
             EditButtons = <>
             FieldName = 'CLIENT_ID'
             Footers = <>
@@ -792,6 +799,7 @@ inherited FormTableOrders: TFormTableOrders
       'SELECT'
       '    orders.ORDER_ID,'
       '    orders.ORDER_CODE,'
+      '    orders.Product_id,'
       '    orders.CLIENT_ID,'
       '    v_clients_fio.client_fio,'
       '    orders.ADRESS_ID,'

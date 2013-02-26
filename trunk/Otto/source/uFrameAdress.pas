@@ -252,7 +252,9 @@ begin
     try
       if qryPlaces.Active then qryPlaces.Close;
       qryPlaces.OpenWP([dedPlaceName.Text]);
-      if qryPlaces.RecordCount = 1 then
+      if (qryPlaces.RecordCount = 1) and
+         (qryPlaces['O_VALID'] = 100) and
+         (qryPlaces['PLACETYPE_CODE'] = 4) then
       begin
         grdPlaces.OnDblClick(Self);
       end;
@@ -281,8 +283,6 @@ end;
 procedure TFrameAdress.dedPlaceNameExit(Sender: TObject);
 begin
   actPlaceSearch.Execute;
-  if qryPlaces.RecordCount = 1 then
-
 end;
 
 procedure TFrameAdress.SetKeyLayout(Sender: TObject);

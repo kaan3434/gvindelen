@@ -202,7 +202,8 @@ begin
   if Valid then
   try
     dmOtto.ActionExecute(trnWrite, 'ORDER', 'ORDER_RETURN',
-      XmlAttrs2Vars(ndOrder, 'MONEYBACK_KIND;BONUS_EUR'),
+      XmlAttrs2Vars(ndOrder, 'MONEYBACK_KIND;BONUS_EUR',
+      Value2Vars(Byte(chkPayByFirm.Checked), 'PAYBYFIRM')),
         OrderId);
     dmOtto.ObjectGet(ndOrder, OrderId, trnWrite);
 

@@ -2,22 +2,22 @@ inherited FrameAdress: TFrameAdress
   Left = 247
   Top = 160
   Width = 920
-  Height = 450
+  Height = 502
   Constraints.MinHeight = 450
   PixelsPerInch = 96
   TextHeight = 13
   inherited dckTop: TTBXDock
-    Width = 912
+    Width = 904
   end
   inherited sb: TTBXStatusBar
-    Top = 394
-    Width = 912
+    Top = 442
+    Width = 904
   end
   object pnlRightOnAdress: TJvPanel [2]
-    Left = 622
+    Left = 614
     Top = 26
     Width = 290
-    Height = 368
+    Height = 416
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
@@ -30,7 +30,7 @@ inherited FrameAdress: TFrameAdress
     TabOrder = 2
     object grBoxAdress: TJvGroupBox
       Left = 5
-      Top = 212
+      Top = 260
       Width = 280
       Height = 151
       Align = alBottom
@@ -156,7 +156,7 @@ inherited FrameAdress: TFrameAdress
     end
     object grBoxPlace: TJvGroupBox
       Left = 5
-      Top = 92
+      Top = 140
       Width = 280
       Height = 120
       Align = alBottom
@@ -259,7 +259,7 @@ inherited FrameAdress: TFrameAdress
       Left = 5
       Top = 5
       Width = 280
-      Height = 87
+      Height = 135
       Align = alClient
       Caption = #1050#1083#1080#1077#1085#1090' ('#1053#1086#1074#1099#1081')'
       TabOrder = 0
@@ -268,7 +268,7 @@ inherited FrameAdress: TFrameAdress
         Left = 2
         Top = 15
         Width = 276
-        Height = 70
+        Height = 118
         Align = alClient
         AutoSize = False
         BorderStyle = sbsSunken
@@ -279,16 +279,16 @@ inherited FrameAdress: TFrameAdress
   object pnlCenterOnAdress: TPanel [3]
     Left = 0
     Top = 26
-    Width = 622
-    Height = 368
+    Width = 614
+    Height = 416
     Align = alClient
     BorderWidth = 4
     Caption = 'pCenter'
     TabOrder = 1
     object split1: TJvNetscapeSplitter
       Left = 5
-      Top = 177
-      Width = 612
+      Top = 225
+      Width = 604
       Height = 10
       Cursor = crVSplit
       Align = alBottom
@@ -299,16 +299,16 @@ inherited FrameAdress: TFrameAdress
     object grBoxgb2: TJvGroupBox
       Left = 5
       Top = 5
-      Width = 612
-      Height = 172
+      Width = 604
+      Height = 220
       Align = alClient
       Caption = #1053#1072#1089#1077#1083#1077#1085#1085#1099#1077' '#1087#1091#1085#1082#1090#1099
       TabOrder = 0
       object grdPlaces: TDBGridEh
         Left = 2
         Top = 15
-        Width = 608
-        Height = 155
+        Width = 600
+        Height = 203
         TabStop = False
         Align = alClient
         AutoFitColWidths = True
@@ -387,8 +387,8 @@ inherited FrameAdress: TFrameAdress
     end
     object grBoxgb1: TJvGroupBox
       Left = 5
-      Top = 187
-      Width = 612
+      Top = 235
+      Width = 604
       Height = 176
       Align = alBottom
       Caption = #1040#1076#1088#1077#1089#1072
@@ -396,7 +396,7 @@ inherited FrameAdress: TFrameAdress
       object grdAdresses: TDBGridEh
         Left = 2
         Top = 15
-        Width = 608
+        Width = 600
         Height = 159
         TabStop = False
         Align = alBottom
@@ -468,6 +468,9 @@ inherited FrameAdress: TFrameAdress
       end
     end
   end
+  inherited trnWrite: TpFIBTransaction
+    Active = True
+  end
   inherited actList: TActionList
     object actPlaceSearch: TAction
       Caption = 'actPlaceSearch'
@@ -495,8 +498,8 @@ inherited FrameAdress: TFrameAdress
   object qryPlaces: TpFIBDataSet
     SelectSQL.Strings = (
       
-        'select v.* from search(:i_value, '#39'v_places'#39', '#39'place_id'#39', '#39'place_' +
-        'name'#39', null, 50) s'
+        'select v.*, s.o_valid from search(:i_value, '#39'v_places'#39', '#39'place_i' +
+        'd'#39', '#39'place_name'#39', null, 50) s'
       '  inner join v_places v on (v.place_id = s.o_object_id)'
       'order by v.place_name')
     Transaction = trnWrite

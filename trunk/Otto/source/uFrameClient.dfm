@@ -1,29 +1,29 @@
 inherited FrameClient: TFrameClient
-  Left = 265
-  Top = 234
+  Left = 145
+  Top = 95
   Width = 1116
   Height = 569
   PixelsPerInch = 96
   TextHeight = 13
   inherited dckTop: TTBXDock
-    Width = 1108
+    Width = 1100
   end
   inherited sb: TTBXStatusBar
-    Top = 513
-    Width = 1108
+    Top = 509
+    Width = 1100
   end
   object pnlCenterOnClient: TPanel [2]
     Left = 0
     Top = 26
-    Width = 818
-    Height = 487
+    Width = 810
+    Height = 483
     Align = alClient
     BorderWidth = 4
     TabOrder = 1
     object splitClient: TJvNetscapeSplitter
       Left = 5
-      Top = 327
-      Width = 808
+      Top = 323
+      Width = 800
       Height = 10
       Cursor = crVSplit
       Align = alBottom
@@ -34,8 +34,8 @@ inherited FrameClient: TFrameClient
     object grdClient: TDBGridEh
       Left = 5
       Top = 5
-      Width = 808
-      Height = 322
+      Width = 800
+      Height = 318
       Align = alClient
       AutoFitColWidths = True
       DataGrouping.GroupLevels = <>
@@ -125,8 +125,8 @@ inherited FrameClient: TFrameClient
     end
     object grdClientOrders: TDBGridEh
       Left = 5
-      Top = 337
-      Width = 808
+      Top = 333
+      Width = 800
       Height = 145
       Align = alBottom
       AutoFitColWidths = True
@@ -337,10 +337,10 @@ inherited FrameClient: TFrameClient
     end
   end
   object pnlRightOnClient: TPanel [3]
-    Left = 818
+    Left = 810
     Top = 26
     Width = 290
-    Height = 487
+    Height = 483
     Align = alRight
     BorderWidth = 4
     Constraints.MaxWidth = 290
@@ -498,7 +498,7 @@ inherited FrameClient: TFrameClient
       Left = 5
       Top = 189
       Width = 280
-      Height = 293
+      Height = 289
       Align = alClient
       Caption = #1040#1076#1088#1077#1089
       TabOrder = 1
@@ -506,7 +506,7 @@ inherited FrameClient: TFrameClient
         Left = 2
         Top = 15
         Width = 276
-        Height = 276
+        Height = 272
         Align = alClient
         AutoSize = False
         BorderStyle = sbsSunken
