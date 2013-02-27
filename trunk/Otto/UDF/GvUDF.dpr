@@ -29,7 +29,8 @@ exports
   StrLen_UTF8,
   StrPos_UTF8,
   StrLenMM_UTF8,
-  ToFloat;
+  ToFloat,
+  RoundPrecision;
 
 begin
 end.

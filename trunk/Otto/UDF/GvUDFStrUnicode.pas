@@ -25,11 +25,12 @@ function UnEscapeStringEx_UTF8(const CString, CAddChars: PAnsiChar): PAnsiChar; 
 
 function StrPos_UTF8(const CSubString, CString: PAnsiChar): Integer; cdecl; export;
 function ToFloat(const CString: PAnsiChar): Single; cdecl; export;
+function RoundPrecision(var aAmount, aPrecision: Double): Double; cdecl; export;
 
 implementation
 
 uses
-  Windows, GvStr, SysUtils, StrUtils, Graphics;
+  Windows, GvStr, SysUtils, StrUtils, Graphics, GvMath;
 
 //function ChangeMyString(const p: PChar): PChar; cdecl;
 //var
@@ -300,6 +301,11 @@ begin
     Result:= StrToFloat(ReplaceAll(CString, '.', ','))
   else
     Result:= StrToFloat(ReplaceAll(CString, ',', '.'));
+end;
+
+function RoundPrecision(var aAmount, aPrecision: Double): Double; cdecl; export;
+begin
+  Result:= GvMath.RoundPrecision(aAmount, aPrecision);
 end;
 
 end.
