@@ -209,6 +209,7 @@ ALTER TABLE STATUS_RULES ADD CONSTRAINT FK_STATUS_RULES_ACTIONCODE FOREIGN KEY (
 ALTER TABLE STATUS_RULES ADD CONSTRAINT FK_STATUS_RULES_NEWSTATUS FOREIGN KEY (NEW_STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE STATUS_RULES ADD CONSTRAINT FK_STATUS_RULES_OLDSTATUS FOREIGN KEY (OLD_STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE TAXPLANS ADD CONSTRAINT FK_TAXPLANS_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
+ALTER TABLE TAXRATES ADD CONSTRAINT FK_TAXRATES_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE TAXRATES ADD CONSTRAINT FK_TAXRATES_TAXPLAN FOREIGN KEY (TAXPLAN_ID) REFERENCES TAXPLANS (TAXPLAN_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE TAXRATES ADD CONSTRAINT FK_TAXRATES_TAXSERV FOREIGN KEY (TAXSERV_ID) REFERENCES TAXSERVS (TAXSERV_ID) ON DELETE CASCADE ON UPDATE CASCADE
   USING INDEX FK_TAXRATES_SERVS;
@@ -291,7 +292,6 @@ CREATE OR ALTER TRIGGER ACCOPERS_BI FOR ACCOPERS
 ACTIVE BEFORE INSERT POSITION 0
 as
 declare variable v_accrest_id id_accrest;
-declare variable v_byr2eur kurs_exch;
 declare variable v_rest_byr money_byr;
 declare variable v_delta_byr money_byr;
 declare variable v_delta_eur money_eur;
@@ -307,6 +307,9 @@ begin
       from setting_get('BYR2EUR', new.accoper_dtm)
       into new.byr2eur;
 
+  if (new.amount_byr is null) then
+    new.amount_byr = round(new.amount_eur * new.byr2eur, -1);
+
   if (new.amount_eur is null) then
     new.amount_eur = (0.00 + new.amount_byr) / new.byr2eur;
 
@@ -320,7 +323,7 @@ begin
 
   if (:v_accrest_id is null) then
     insert into accrests (account_id, byr2eur, rest_eur)
-      values(new.account_id, :v_byr2eur, new.amount_eur)
+      values(new.account_id, new.byr2eur, new.amount_eur)
       returning accrest_id
       into new.accrest_id;
   else
@@ -338,11 +341,7 @@ CREATE OR ALTER TRIGGER ACCOPERS_BU0 FOR ACCOPERS
 ACTIVE BEFORE UPDATE POSITION 0
 AS
 begin
-  if ((old.amount_eur <> new.amount_eur) and (old.amount_byr = new.amount_byr)) then
-    new.amount_byr = round(new.amount_eur*new.byr2eur, -1);
-
-  if (old.byr2eur<>new.byr2eur) then
-    new.amount_byr = round(new.amount_eur*new.byr2eur, -1);
+  new.amount_byr = round(new.amount_eur*new.byr2eur, -1);
 end
 ^
 
@@ -769,8 +768,7 @@ CREATE OR ALTER TRIGGER ORDERITEMS_AIUD0 FOR ORDERITEMS
 ACTIVE AFTER INSERT OR UPDATE OR DELETE POSITION 0
 AS
 begin
-  if ((inserting) or (deleting) or (new.cost_eur <> old.cost_eur)) then
-      execute procedure order_updatecost(coalesce(new.order_id, old.order_id));
+  execute procedure order_updatecost(coalesce(new.order_id, old.order_id));
 end
 ^
 
@@ -820,8 +818,7 @@ CREATE OR ALTER TRIGGER ORDERMONEYS_AIUD0 FOR ORDERMONEYS
 ACTIVE AFTER INSERT OR UPDATE OR DELETE POSITION 0
 AS
 begin
-  if ((inserting) or (deleting) or (new.amount_eur <> old.amount_eur)) then
-      execute procedure order_updatecost(coalesce(new.order_id, old.order_id));
+  execute procedure order_updatecost(coalesce(new.order_id, old.order_id));
 end
 ^
 
@@ -892,8 +889,7 @@ CREATE OR ALTER TRIGGER ORDERTAXS_AIUD0 FOR ORDERTAXS
 ACTIVE AFTER INSERT OR UPDATE OR DELETE POSITION 0
 AS
 begin
-  if ((inserting) or (deleting) or (new.cost_eur <> old.cost_eur)) then
-      execute procedure order_updatecost(coalesce(new.order_id, old.order_id));
+  execute procedure order_updatecost(coalesce(new.order_id, old.order_id));
 end
 ^
 
@@ -1311,6 +1307,7 @@ declare variable V_ACC_BYR2EUR type of MONEY_BYR;
 declare variable V_DELTA_EUR type of MONEY_EUR;
 declare variable V_DELTA_BYR type of MONEY_BYR;
 declare variable V_ORDERMONEY_ID type of ID_ORDERITEM;
+declare variable V_BYR2EUR type of MONEY_BYR;
 begin
   update paramheads set object_id = :i_object_id where param_id = :i_param_id;
 
@@ -1347,6 +1344,28 @@ begin
     if (v_amount_eur = 0) then break;
   end
 
+  if (v_amount_eur > 0) then
+  begin
+    select o.byr2eur
+      from orders o
+      where o.order_id = :v_order_id
+      into :v_byr2eur;
+
+    v_delta_eur = v_amount_eur;
+    v_delta_byr = round(v_byr2eur * v_delta_eur, -1);
+
+    select o_value from param_get(:i_param_id, 'NOTES') into :v_notes;
+    select o_pattern from param_fill(:v_notes, 'AMOUNT_BYR', :v_delta_byr) into v_notes;
+    select o_pattern from param_fill(:v_notes, 'AMOUNT_EUR', :v_delta_eur) into v_notes;
+    select o_pattern from param_fillpattern(:i_param_id, :v_notes) into :v_notes;
+
+    insert into ordermoneys (account_id, amount_eur, byr2eur, order_id, amount_byr)
+      values(:i_object_id, :v_delta_eur, :v_byr2eur, :v_order_id, :v_delta_byr)
+      returning ordermoney_id
+      into :v_ordermoney_id;
+    insert into accopers (account_id, amount_eur, byr2eur, amount_byr, order_id, notes, ordermoney_id)
+      values(:i_object_id, -:v_delta_eur, :v_byr2eur, -:v_delta_byr, :v_order_id, :v_notes, :v_ordermoney_id);
+  end
 end^
 
 
@@ -1392,8 +1411,8 @@ end^
 
 
 CREATE OR ALTER PROCEDURE ACT_ACCOUNT_DEBITORDER (
-    I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
-    I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL,
+    I_PARAM_ID TYPE OF ID_PARAM,
+    I_OBJECT_ID TYPE OF ID_OBJECT,
     I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ACCOUNT')
 AS
 declare variable V_AMOUNT_EUR type of MONEY_EUR;
@@ -1897,6 +1916,59 @@ begin
 end^
 
 
+CREATE OR ALTER PROCEDURE ACT_MONEYBACK_CREATE (
+    I_PARAM_ID TYPE OF ID_PARAM,
+    I_OBJECT_ID TYPE OF ID_OBJECT,
+    I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'MONEYBACK')
+AS
+declare variable V_REST_EUR type of MONEY_EUR;
+declare variable V_AMOUNT_BYR type of MONEY_BYR;
+declare variable V_ACCOUNT_ID type of ID_ACCOUNT;
+declare variable V_REST_BYR type of MONEY_BYR;
+declare variable V_BYR2EUR type of MONEY_BYR;
+declare variable V_NOTES type of VALUE_ATTR;
+declare variable V_MONEYBACK_KIND type of SIGN_ACTION;
+declare variable V_PAYBYFIRM type of BOOLEAN;
+begin
+  if (coalesce(i_object_id, 0) = 0) then i_object_id = gen_id(seq_moneyback_id, 1);
+
+  update paramheads set object_id = :i_object_id where param_id = :i_param_id;
+
+  execute procedure param_set(:i_param_id, 'ID', :i_object_id);
+
+  select o_value from param_get(:i_param_id, 'ACCOUNT_ID') into :v_account_id;
+  select o_value from param_get(:i_param_id, 'KIND') into :v_moneyback_kind;
+  select o_value from param_get(:i_param_id, 'PAYBYFIRM', '0') into :v_paybyfirm;
+
+  select sum(ar.rest_byr)
+    from accrests ar
+    where ar.account_id = :v_account_id
+    into :v_amount_byr;
+
+  insert into moneybacks(moneyback_id, account_id, amount_byr, kind, paybyfirm)
+    values(:i_object_id, :v_account_id, :v_amount_byr, :v_moneyback_kind, :v_paybyfirm);
+
+  execute procedure object_put(:i_param_id);
+
+  for select ar.rest_eur, ar.byr2eur, ar.rest_byr
+    from accrests ar
+    where ar.rest_eur <> 0
+      and ar.account_id = :v_account_id
+    into :v_rest_eur, :v_byr2eur, :v_rest_byr do
+  begin
+    select o_value from param_get(:i_param_id, 'NOTES') into :v_notes;
+    select o_pattern from param_fill(:v_notes, 'AMOUNT_BYR', :v_amount_byr) into :v_notes;
+    select o_pattern from param_fill(:v_notes, 'REST_BYR', :v_rest_byr) into :v_notes;
+    select o_pattern from param_fill(:v_notes, 'REST_EUR', :v_rest_eur) into :v_notes;
+    select o_pattern from param_fill(:v_notes, 'BYR2EUR', :v_byr2eur) into :v_notes;
+    select o_pattern from param_fill(:v_notes, 'MONEYBACK_KIND', :v_moneyback_kind) into :v_notes;
+
+    insert into accopers (account_id, amount_eur, byr2eur, notes)
+      values (:v_account_id, -:v_rest_eur, :v_byr2eur, :v_notes);
+  end
+end^
+
+
 CREATE OR ALTER PROCEDURE ACT_MONEYBACK_STORE (
     I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
     I_OBJECT_ID TYPE OF ID_OBJECT,
@@ -2091,10 +2163,12 @@ declare variable V_COST_EUR type of MONEY_EUR;
 declare variable V_OBJECT_ID type of ID_OBJECT;
 declare variable V_ACTIONTREEITEM_ID type of ID_ACTIONTREEITEM;
 declare variable V_NEW_FLAG_SIGN type of SIGN_OBJECT;
+declare variable V_CALCPOINT_ID type of ID_CALCPOINT;
 begin
   select o_value from param_get(:i_param_id, 'NEW.STATUS_SIGN') into :v_new_status_sign;
   select o_value from param_get(:i_param_id, 'ACTIONTREEITEM_ID') into :v_actiontreeitem_id;
   select o_value from param_get(:i_param_id, 'NEW.FLAG_SIGN') into :v_new_flag_sign;
+  select o_value from param_get(:i_param_id, 'CALCPOINT_ID') into :v_calcpoint_id;
 
   for select tr.taxrate_id, tr.tax_procedure
     from orders o
@@ -2109,12 +2183,14 @@ begin
     v_object_id = gen_id(seq_ordertax_id, 1);
 
     select o_param_id from param_create(:i_object_sign, :v_object_id) into :v_param_id;
+
     insert into params(param_id, param_name, param_value)
-      select :v_param_id, p.param_name, p.param_value
-        from params p
-          inner join actiontree_params atp on (atp.param_name = p.param_name)
-        where p.param_id = :i_param_id
-          and atp.actiontreeitem_id = :v_actiontreeitem_id;
+    select :v_param_id, p.param_name, p.param_value
+      from params p
+        inner join actiontree_params atp on (atp.param_name = p.param_name)
+      where p.param_id = :i_param_id
+        and atp.actiontreeitem_id = :v_actiontreeitem_id
+        and p.param_name not in (select param_name from params where param_id = :v_param_id);
 
     execute statement ('select o_cost_eur from '||v_tax_procedure||'(:taxrate_id, :param_id)')
       (taxrate_id := :v_taxrate_id, param_id := :v_param_id)
@@ -2133,8 +2209,8 @@ end^
 
 
 CREATE OR ALTER PROCEDURE ACT_ORDER_RENEW (
-    I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
-    I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL,
+    I_PARAM_ID TYPE OF ID_PARAM,
+    I_OBJECT_ID TYPE OF ID_OBJECT,
     I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ORDER')
 AS
 declare variable V_STATUS_ID type of ID_STATUS;
@@ -2234,7 +2310,7 @@ end^
 CREATE OR ALTER PROCEDURE ACT_ORDER_UPDATECOST (
     I_PARAM_ID TYPE OF ID_PARAM,
     I_OBJECT_ID TYPE OF ID_OBJECT,
-    I_OBJECT_SIGN TYPE OF SIGN_OBJECT DEFAULT 'ORDERITEM')
+    I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ORDERITEM')
 AS
 declare variable V_PARAM_ID type of ID_PARAM;
 declare variable V_ACTION_SIGN type of SIGN_ACTION;
@@ -2939,6 +3015,9 @@ begin
 
   if (v_valid_criterias = 1) then
   begin
+    if (v_procedure_name = 'MONEYBACK_CREATE') then
+      execute procedure act_moneyback_create(:i_param_id, :i_object_id);
+    else
     if (v_procedure_name = 'ORDER_RENEW') then
       execute procedure act_order_renew(:i_param_id, :i_object_id);
     else
@@ -3293,8 +3372,8 @@ end^
 
 
 CREATE OR ALTER PROCEDURE BONUS_MAKE (
-    I_FIO TYPE OF NAME_REF NOT NULL,
-    I_TAXSERV_ID TYPE OF ID_TAX NOT NULL)
+    I_FIO TYPE OF NAME_REF,
+    I_TAXSERV_ID TYPE OF ID_TAX)
 RETURNS (
     O_ACTION_ID TYPE OF ID_BONUS)
 AS
@@ -3408,14 +3487,24 @@ end^
 CREATE OR ALTER PROCEDURE COUNTER_NEXTVAL (
     I_OBJECT_SIGN TYPE OF SIGN_OBJECT NOT NULL,
     I_COUNTER_SIGN TYPE OF SIGN_ATTR NOT NULL,
-    I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL)
+    I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL,
+    I_NONAUTONOMOUS TYPE OF BOOLEAN = null)
 RETURNS (
     O_NEXTVAL TYPE OF NAME_SHORT)
 AS
 declare variable V_PEFIX type of NAME_SHORT;
 declare variable V_MAX_VALUE type of NAME_SHORT;
 begin
-  in autonomous transaction do
+  if (i_nonautonomous is null) then
+    in autonomous transaction do
+    update counters c
+      set c.curr_value = c.curr_value + 1
+      where c.object_sign = :i_object_sign
+        and c.attr_sign = :i_counter_sign
+        and c.object_id = :i_object_id
+      returning c.curr_value, c.prefix_text, c.max_value
+      into :o_nextval, :v_pefix, :v_max_value;
+  else
     update counters c
       set c.curr_value = c.curr_value + 1
       where c.object_sign = :i_object_sign
@@ -3653,13 +3742,14 @@ end^
 
 
 CREATE OR ALTER PROCEDURE MONEY_EUR2BYR (
-    I_MONEY_EUR TYPE OF MONEY_EUR NOT NULL,
+    I_AMOUNT_EUR TYPE OF MONEY_EUR NOT NULL,
     I_BYR2EUR TYPE OF MONEY_BYR NOT NULL)
 RETURNS (
     O_MONEY_BYR TYPE OF MONEY_BYR)
 AS
+declare variable V_PRECISION_BYR type of MONEY_BYR = 50;
 begin
-  o_money_byr = round(:i_money_eur*:i_byr2eur, -1);
+  o_money_byr = round_precision(:i_amount_eur * :i_byr2eur, :v_precision_byr);
   suspend;
 end^
 
@@ -4596,12 +4686,12 @@ end^
 CREATE OR ALTER PROCEDURE PARAM_FILL (
     I_PATTERN TYPE OF VALUE_ATTR NOT NULL,
     I_PARAM_NAME TYPE OF OBJ_CODE NOT NULL,
-    I_PARAM_VALUE TYPE OF VALUE_ATTR NOT NULL)
+    I_PARAM_VALUE TYPE OF VALUE_ATTR)
 RETURNS (
     O_PATTERN TYPE OF VALUE_ATTR)
 AS
 begin
-  o_pattern = replace(i_pattern, '['||:i_param_name||']', :i_param_value);
+  o_pattern = replace(i_pattern, '['||:i_param_name||']', coalesce(:i_param_value, ''));
   suspend;
 end^
 
@@ -4627,7 +4717,8 @@ end^
 
 CREATE OR ALTER PROCEDURE PARAM_GET (
     I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
-    I_PARAM_NAME TYPE OF SIGN_OBJECT NOT NULL)
+    I_PARAM_NAME TYPE OF SIGN_OBJECT NOT NULL,
+    I_DEFAULT_VALUE TYPE OF VALUE_ATTR = null)
 RETURNS (
     O_VALUE TYPE OF VALUE_ATTR)
 AS
@@ -4637,6 +4728,7 @@ begin
     where param_id = :i_param_id
       and param_name = upper(:i_param_name)
     into :o_value;
+  o_value = coalesce(:o_value, :i_default_value);
   suspend;
 end^
 
@@ -5251,7 +5343,7 @@ declare variable V_ORDER_ID type of ID_ORDER;
 declare variable V_PRICE_AMOUNT type of VALUE_INTEGER;
 declare variable V_PRICE_EUR type of MONEY_EUR;
 declare variable V_TAX_AMOUNT type of VALUE_INTEGER;
-declare variable V_FREE_AMOUNT type of VALUE_INTEGER;
+declare variable V_WEIGHT_TRASHOLD type of VALUE_INTEGER;
 begin
   select o_value from param_get(:i_param_id, 'ORDER_ID') into :v_order_id;
 
@@ -5270,18 +5362,17 @@ begin
   select ta.attr_value
     from v_taxrate_attrs ta
     where ta.object_id = :i_taxrate_id
-      and ta.attr_sign = 'FREE_AMOUNT'
-    into :v_free_amount;
+      and ta.attr_sign = 'WEIGHT_TRASHOLD'
+    into :v_weight_trashold;
 
-  select oa.attr_value
-    from v_order_attrs oa
-    where oa.object_id = :v_order_id
-      and oa.attr_sign = 'WEIGHT'
-      into :v_amount;
+  select o.weight
+    from orders o
+    where o.order_id = :v_order_id
+    into :v_amount;
 
-  if (v_amount - v_free_amount > 0) then
+  if (v_amount - v_weight_trashold > 0) then
   begin
-    v_tax_amount = (v_amount-v_free_amount)/ v_price_amount;
+    v_tax_amount = (v_amount-v_weight_trashold)/ v_price_amount;
     if (v_tax_amount * v_price_amount < v_amount) then
      v_tax_amount = v_tax_amount + 1;
   end
