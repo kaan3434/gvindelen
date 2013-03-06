@@ -52,6 +52,7 @@ type
     procedure actSetStateApprovedExecute(Sender: TObject);
     procedure actStoreExecute(Sender: TObject);
     procedure actStoreUpdate(Sender: TObject);
+    procedure actSetStateApprovedUpdate(Sender: TObject);
   private
     function GetOrderId: Integer;
     function FullAdress: String;
@@ -237,6 +238,13 @@ end;
 procedure TFrameOrderSummary.actStoreUpdate(Sender: TObject);
 begin
   actStore.Enabled:= dmOtto.FlagExists(ndOrder, 'EDITABLE');
+end;
+
+procedure TFrameOrderSummary.actSetStateApprovedUpdate(Sender: TObject);
+begin
+  inherited;
+  actSetStateApproved.Enabled:= (GetXmlAttrValue(ndOrder, 'PRODUCT_ID') = 1) or
+                                (ToFloat(GetXmlAttrAsMoney(ndAccount, 'REST_EUR')) >= 0);
 end;
 
 end.

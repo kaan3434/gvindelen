@@ -6,8 +6,8 @@ inherited FrameOrderSummary: TFrameOrderSummary
   PixelsPerInch = 96
   TextHeight = 13
   inherited dckTop: TTBXDock
-    Width = 880
-    Height = 25
+    Width = 888
+    Height = 23
     inherited tlBarTop: TTBXToolbar
       object btn2: TTBXItem
         Action = actSetStateDraft
@@ -21,13 +21,13 @@ inherited FrameOrderSummary: TFrameOrderSummary
     end
   end
   inherited sb: TTBXStatusBar
-    Top = 435
-    Width = 880
+    Top = 439
+    Width = 888
   end
   object pnlTopOnFinal: TJvPanel [2]
     Left = 0
-    Top = 25
-    Width = 880
+    Top = 23
+    Width = 888
     Height = 131
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
@@ -40,7 +40,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
     object pnlClientOnFinal: TJvPanel
       Left = 0
       Top = 0
-      Width = 368
+      Width = 376
       Height = 131
       HotTrackFont.Charset = DEFAULT_CHARSET
       HotTrackFont.Color = clWindowText
@@ -53,13 +53,13 @@ inherited FrameOrderSummary: TFrameOrderSummary
       object grBoxClientOfFinal: TJvGroupBox
         Left = 5
         Top = 5
-        Width = 358
+        Width = 366
         Height = 121
         Align = alClient
         Caption = #1050#1083#1080#1077#1085#1090
         TabOrder = 0
         DesignSize = (
-          358
+          366
           121)
         object lblClientFIO: TLabel
           Left = 8
@@ -220,7 +220,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
       end
     end
     object pnlOrderOnFinal: TJvPanel
-      Left = 368
+      Left = 376
       Top = 0
       Width = 512
       Height = 131
@@ -310,17 +310,17 @@ inherited FrameOrderSummary: TFrameOrderSummary
   end
   object grBoxSummaryOrderItems: TJvGroupBox [3]
     Left = 0
-    Top = 156
-    Width = 880
-    Height = 279
+    Top = 154
+    Width = 888
+    Height = 285
     Align = alClient
     Caption = 'grBoxSummaryOrderItems'
     TabOrder = 2
     object grdOrderFullSpecification: TDBGridEh
       Left = 2
       Top = 15
-      Width = 876
-      Height = 262
+      Width = 884
+      Height = 268
       Align = alClient
       AutoFitColWidths = True
       DataGrouping.GroupLevels = <>
@@ -484,6 +484,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
     object actSetStateApproved: TAction
       Caption = #1055#1088#1080#1089#1074#1086#1080#1090#1100' '#1085#1086#1084#1077#1088' '#1079#1072#1103#1074#1082#1077
       OnExecute = actSetStateApprovedExecute
+      OnUpdate = actSetStateApprovedUpdate
     end
     object actStore: TAction
       Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100

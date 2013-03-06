@@ -343,7 +343,7 @@ object dmOtto: TdmOtto
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 41052.624095972200000000
+    ReportOptions.LastChange = 41339.585063750000000000
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
     Left = 280
