@@ -13,7 +13,8 @@ library GvUDF;
 {$R *.res}
 
 uses
-  GvUDFStrUnicode in 'GvUDFStrUnicode.pas';
+  GvUDFStrUnicode in 'GvUDFStrUnicode.pas',
+  GvUDFMath in 'GvUDFMath.pas';
 
 exports
   CopyFront_WithKey_UTF8,
