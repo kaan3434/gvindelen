@@ -141,6 +141,13 @@ function extract_numbered_tag($Html, $TagName, $TagNo) {
    return (copy_be($Html, "<$TagName\tTagNo=\"$TagName$TagNo\"", "</$TagName\tTagNo=\"$TagName$TagNo\">"));
 }
 
+function extract_numbered_body($Html, $TagName, $TagNo) {
+  $Html = extract_numbered_tag($Html, $TagName, $TagNo);
+  $Html = delete_all($Html, "<$TagName\tTagNo=\"$TagName$TagNo\"", '>');
+  $Html = delete_all($Html, "</$TagName\tTagNo=\"$TagName$TagNo\"", '>');
+  return $Html;
+}
+
 function extract_all_numbered_tags($Html, $TagName, $Contain1="", $Contain2="", $Contain3="") {
   $Tags = extract_all_tags($Html, "<$TagName\tTagNo=", ">", $Contain1, $Contain2, $Contain3);
   $Result= array();

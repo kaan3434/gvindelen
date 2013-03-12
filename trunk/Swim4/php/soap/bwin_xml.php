@@ -8,6 +8,7 @@
 class booker extends booker_xml {
   
   private $categories;
+  private $event_date;
   
   function __construct() { 
     $this->booker = 'bwin'; 
@@ -138,8 +139,13 @@ class booker extends booker_xml {
     }
   }
   
-  private function extract_bets_1x2(&$tournir_node, $html, $sport_sign) {
-    $html = kill_space($html);
+  private function extract_events(&$tournir_node, $html, $sport_sign, $tournir_id, $parse) {
+    $html = numbering_tag($html, 'ul');
+    $ul_tagno = extract_tagno(copy_be($html, '<ul', '>'), 'ul');
+    $html = extract_numbered_body($html, 'ul', $ul_tagno);
+    file_put_contents('content.html', $html);
+    
+    /*$html = kill_space($html);
     $html = numbering_tag($html, 'tr');
     $table_rows = extract_all_numbered_tags($html, 'tr', 'class');
     foreach($table_rows as $row) {
@@ -161,10 +167,10 @@ class booker extends booker_xml {
         list($hour, $minute) = $this->decode_time($time);
         $this->extract_new_event($tournir_node, $row, $sport_sign, '1x2', mktime($hour, $minute, 0, $month_no, $day_no, $year_no));
       }
-    }
+    } */
   }
 
-  private function extract_bets_noannotated(&$tournir_node, $html, $sport_sign) {
+ /* private function extract_bets_noannotated(&$tournir_node, $html, $sport_sign) {
     $html = kill_space($html);
     $html = numbering_tag($html, 'tr');
     $table_rows = extract_all_numbered_tags($html, 'tr', 'class');
@@ -185,9 +191,9 @@ class booker extends booker_xml {
           $this->extract_new_event($tournir_node, $row, $sport_sign, $phrase, mktime(0, 0, 0, $month_no, $day_no, $year_no)); 
       }
     }
-  }
+  }*/
 
-  private function extract_bets_foratotal(&$tournir_node, $html, $sport_sign) {
+/*  private function extract_bets_foratotal(&$tournir_node, $html, $sport_sign) {
     $html = kill_space($html);
     $html = numbering_tag($html, 'tr');
     $table_rows = extract_all_numbered_tags($html, 'tr', 'class');
@@ -228,6 +234,28 @@ class booker extends booker_xml {
         }
       }
     }
+  }*/
+  
+  
+  
+  private function extract_days(&$tournir_node, $html, $sport_sign, $tournir_id, $parse) {
+    $html = numbering_tag($html, 'li');
+    $days = extract_all_tags($html, '<li', '</h2>', 'event-group-level1');
+    foreach($days as $day) {
+      $day_tagno = extract_tagno($day, 'li');
+      $day_html = extract_numbered_body($html, 'li', $day_tagno);
+      file_put_contents('content.html', $day_html);
+      $date_str = copy_be($day_html, '<h2', '</h2>');
+      $date_str = delete_all($date_str, '<', '>');
+      $this->extract_events($tournir_node, $day_html, $sport_sign, $tournir_id, $parse);
+      //if ($parse == '1x2') {
+//        if ($day_html <> '') $this->extract_events_1x2($tournir_node, $day_html, $sport_sign);
+  //    } elseif ($parse == 'NoAnnotated') {
+//        if ($html <> '') $this->extract_bets_noannotated($tournir_node, $html, $sport_sign);  
+   //   } elseif ($parse == 'Annotated') {
+//        if ($html <> '') $this->extract_bets_foratotal($tournir_node, $html, $sport_sign);
+     // }
+    }
   }
   
   private function extract_bets(&$tournir_node, $html, $sport_sign, $tournir_id, $parse) {
@@ -249,14 +277,7 @@ class booker extends booker_xml {
     }
     $html = $inner_div;
     file_put_contents('content.html', $html);
-      
-    if ($parse == '1x2') {
-      if ($html <> '') $this->extract_bets_1x2($tournir_node, $html, $sport_sign);
-    } elseif ($parse == 'NoAnnotated') {
-      if ($html <> '') $this->extract_bets_noannotated($tournir_node, $html, $sport_sign);  
-    } elseif ($parse == 'Annotated') {
-      if ($html <> '') $this->extract_bets_foratotal($tournir_node, $html, $sport_sign);
-    }
+    $this->extract_days($tournir_node, $html, $sport_sign, $tournir_id, $parse);
   }
 
   private function to_be_continue($html, $next_page) {
@@ -268,7 +289,8 @@ class booker extends booker_xml {
     $html = copy_be($html, '<ul', '</ul>', 'cat-filter-list');
     $categories = extract_all_tags($html, '<input', '>', 'checkbox', 'categoryIds');
     foreach($categories as $category) {
-      $this->categories[copy_between($category, 'value="', '"')] = 1;
+      $cat = copy_between($category, 'value="', '"');
+      $this->categories[(string)$cat] = 1;
     }
   } 
     
