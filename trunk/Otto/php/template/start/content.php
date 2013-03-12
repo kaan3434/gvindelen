@@ -1,25 +1,9 @@
 <div class="maincontent" id="servicecontent">
   <div style="position: relative; margin-top: 10px;">
-    <ul class="ulist2h">
-      <li>
-        <div class="widetxt2h">
-          <div class="hl">
-            <a href="">Уважаемые дамы и господа!</a>
-          </div>
-          <font color="green" size="4">                              
-          <p>Представительство ЗАО «BALT-POST» поздравляет вас с наступающими праздниками: 
-             <font color="blue"><b>Днем защитника Отечества</b></font> и 
-             <font color="red"><b>Днем 8 марта</b></font> 
-             и сообщает, что только на заявки, 
-             сделанные по предоплате в период с <font color="blue">18 февраля по 8 марта</font>, 
-             устанавливается 
-             сервисный сбор <font color="red"><b>3&euro;</b></font>.<br/><br/></p>
-          </font>
-        </div>
-      </li>
-    
-      <li>
-        <div class="widetxt2h">
+    <ul class="ulist">
+
+      <li class="li2h">
+        <div class="widetxt">
           <div class="hl">
             <a href="">Уважаемые клиенты!</a>
           </div>
@@ -34,10 +18,21 @@
           </font>
         </div>
       </li>
-    </ul>  
 
-    <ul class="ulist">
-       <li>
+      <li>
+        <div class="widetxt">
+          <div class="hl">
+            <a href="">Уважаемые дамы и господа!</a>
+          </div>
+          <font color="green" size="4">     
+          <p>Мы получили большое количество различных каталогов.<br/><br/></p>
+          <p>Ждем вас в наших офисах на Козлова, 3-11 и Уманская, 54-49.</p>
+          </font>
+        </div>
+      </li>
+    
+
+      <li>
         <div class="widetxt">
           <div class="hl">
             <a href="">Уважаемые клиенты!</a>
