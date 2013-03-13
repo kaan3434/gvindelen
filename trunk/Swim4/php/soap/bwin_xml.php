@@ -239,15 +239,20 @@ class booker extends booker_xml {
   
   
   private function extract_days(&$tournir_node, $html, $sport_sign, $tournir_id, $parse) {
+    $html = numbering_tag($html, 'ul');
     $html = numbering_tag($html, 'li');
-    $days = extract_all_tags($html, '<li', '</h2>', 'event-group-level1');
-    foreach($days as $day) {
-      $day_tagno = extract_tagno($day, 'li');
-      $day_html = extract_numbered_body($html, 'li', $day_tagno);
-      file_put_contents('content.html', $day_html);
-      $date_str = copy_be($day_html, '<h2', '</h2>');
-      $date_str = delete_all($date_str, '<', '>');
-      $this->extract_events($tournir_node, $day_html, $sport_sign, $tournir_id, $parse);
+    $categories = extract_tag_from_tag($html, 'ul', 'li');
+//    extract_all_tags($html, '<li', '</h2>', 'event-group-level1');
+    foreach($categories as $category) {
+      $days = extract_tag_from_tag($category, 'ul', 'li');
+      foreach ($days as $day) {
+        $day_tagno = extract_tagno($day, 'li');
+        $day_html = extract_numbered_body($html, 'li', $day_tagno);
+        file_put_contents('content.html', $day_html);
+        $date_str = copy_be($day_html, '<h2', '</h2>');
+        $date_str = delete_all($date_str, '<', '>');
+        $this->extract_events($tournir_node, $day_html, $sport_sign, $tournir_id, $parse);
+      }
       //if ($parse == '1x2') {
 //        if ($day_html <> '') $this->extract_events_1x2($tournir_node, $day_html, $sport_sign);
   //    } elseif ($parse == 'NoAnnotated') {

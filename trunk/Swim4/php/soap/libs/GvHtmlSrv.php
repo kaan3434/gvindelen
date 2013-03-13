@@ -158,7 +158,6 @@ function extract_all_numbered_tags($Html, $TagName, $Contain1="", $Contain2="", 
   return $Result;
 }
 
-
 function extract_numbered_tags($Html, $TagName, $Separator, $Contain1="", $Contain2="", $Contain3="") {
   return implode($Separator, extract_all_numbered_tags($Html, $TagName, $Contain1, $Contain2, $Contain3));
 }
@@ -228,6 +227,20 @@ function convert_to_utf8($Html) {
     $Html = str_ireplace('charset=windows-1251', 'charset=utf-8', $Html);
   }
   return ($Html);
+}
+
+function extract_tag_from_tag($html, $outer_tag, $inner_tag) {
+  $ul_tagno = copy_be($html, "<$outer_tag", '>');
+  $ul_tagno = extract_tagno($ul_tagno, $outer_tag);
+  $html = extract_numbered_tag($html, $outer_tag, $ul_tagno);
+  $result = array();
+  while ($li_tagno = copy_be($html, "<$inner_tag", '>')) {
+    $li_tagno = extract_tagno($li_tagno, $inner_tag);
+    $li_html = extract_numbered_tag($html, $inner_tag, $li_tagno);
+    $html = str_replace($li_html, '', $html);
+    $result[] = $li_html;
+  }
+  return $result;
 }
 
 ?>
