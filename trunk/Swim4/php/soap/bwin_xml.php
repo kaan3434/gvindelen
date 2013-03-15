@@ -64,12 +64,12 @@ class booker extends booker_xml {
   }
 
   private function decode_date($str) {
-    if (preg_match('/(\w+) (\d{1,2}), (\d{4})/i', $str, $matches)) { //MMM DD, YYYY
-      $month_no = decode_month_name($matches[1]);
-      $year_no = $matches[3];
+    if (preg_match('/\- (\d{1,2})\/(\d{1,2})\/(\d{4})/i', $str, $matches)) { //MMM DD, YYYY
+      $month_no = $matches[1];
       $day_no = $matches[2];
+      $year_no = $matches[3];
     }
-    return array($day_no, $month_no, $year_no);
+    $this->event_date = array($year_no, $month_no, $day_no);
   }
 
   private function decode_time($str) {
@@ -82,9 +82,15 @@ class booker extends booker_xml {
     } elseif (($pmam == 'PM') and ($hour < 12)) {
       $hour = $hour + 12;
     }
-    return array($hour, $minute);
+    return array($hour, $minute, 0);
   }
 
+  private function make_datetime($date_arr, $time_arr) {
+    list($year, $month, $day) = $date_arr;
+    list($hour, $minute, $second) = $time_arr;
+    return mktime($hour, $minute, $second, $month, $day, $year);
+  }
+  
   private function extract_label_koef($html) {
     $html = kill_tag_bound($html, 'div|tr');
     $label = delete_all(copy_be($html, '<td', '</td>', 'label'), '<', '>');
@@ -139,11 +145,59 @@ class booker extends booker_xml {
     }
   }
   
+  private function extract_event_1x2(&$tournir_node, $html, $sport_sign, $tournir_id) {
+    $phrase = '1x2';
+    $event_time = $this->decode_time(delete_all(copy_be($html, '<h6', '</h6>'), '<', '>'));
+    $html = copy_be($html, '<tr', '</tr>', 'col3 three-way');
+    $tds = extract_all_tags($html, '<td', '</td>');
+    
+    foreach ($tds as $td) {
+      $koef = delete_all(copy_be($td, '<span', '</span>', 'odds'), '<', '>');
+      $label = delete_all(copy_be($td, '<span', '</span>', 'option-name'), '<', '>');
+
+      if ($label == 'X') {
+        $draw_koef = $koef;
+      } elseif (!$gamer1_name) {
+        $gamer1_name = $label;
+        $win1_koef = $koef; 
+      } else {
+        $gamer2_name = $label;
+        $win2_koef = $koef;
+      }
+    }
+    $event_dtm = $this->make_datetime($this->event_date, $event_time);
+    $event_node = $this->event_find_or_create($tournir_node, $event_dtm, $gamer1_name, $gamer2_name);
+    if ($win1_koef) {
+      $phrase_node = $this->findPhrase($sport_sign, $phrase, 'Gamer1');
+      if (!$phrase_node['Ignore'])
+        $this->addBet($event_node, (string)$phrase_node['BetKind'].';Koef='.$win1_koef);
+    }  
+    if ($draw_koef) {
+      $phrase_node = $this->findPhrase($sport_sign, $phrase, 'X');
+      if (!$phrase_node['Ignore'])
+        $this->addBet($event_node, (string)$phrase_node['BetKind'].';Koef='.$draw_koef);
+    }  
+    if ($win2_koef) {
+      $phrase_node = $this->findPhrase($sport_sign, $phrase, 'Gamer2');
+      if (!$phrase_node['Ignore'])
+        $this->addBet($event_node, (string)$phrase_node['BetKind'].';Koef='.$win2_koef);
+    }
+  }
+  
   private function extract_events(&$tournir_node, $html, $sport_sign, $tournir_id, $parse) {
-    $html = numbering_tag($html, 'ul');
-    $ul_tagno = extract_tagno(copy_be($html, '<ul', '>'), 'ul');
-    $html = extract_numbered_body($html, 'ul', $ul_tagno);
-    file_put_contents('content.html', $html);
+    $this->decode_date(delete_all(copy_be($html, '<h2', '</h2>'), '<', '>'));
+    file_put_contents('events.html', $html);
+    $events = extract_tag_from_tag($html, 'ul', 'li', 1);
+    foreach($events as $event) {
+      file_put_contents('event.html', $event);
+      $subevents = extract_tag_from_tag($event, 'ul', 'li', 1);
+      foreach ($subevents as $subevent) {
+        file_put_contents('subevent.html', $subevent);
+        if ($parse == '1x2') {
+          if ($subevent <> '') $this->extract_event_1x2($tournir_node, $subevent, $sport_sign, $tournir_id);
+        }
+      }
+    }
     
     /*$html = kill_space($html);
     $html = numbering_tag($html, 'tr');
@@ -241,17 +295,14 @@ class booker extends booker_xml {
   private function extract_days(&$tournir_node, $html, $sport_sign, $tournir_id, $parse) {
     $html = numbering_tag($html, 'ul');
     $html = numbering_tag($html, 'li');
-    $categories = extract_tag_from_tag($html, 'ul', 'li');
+    $categories = extract_tag_from_tag($html, 'ul', 'li', 1);
 //    extract_all_tags($html, '<li', '</h2>', 'event-group-level1');
     foreach($categories as $category) {
-      $days = extract_tag_from_tag($category, 'ul', 'li');
+       file_put_contents('category.html', $category);
+      $days = extract_tag_from_tag($category, 'ul', 'li', 1);
       foreach ($days as $day) {
-        $day_tagno = extract_tagno($day, 'li');
-        $day_html = extract_numbered_body($html, 'li', $day_tagno);
-        file_put_contents('content.html', $day_html);
-        $date_str = copy_be($day_html, '<h2', '</h2>');
-        $date_str = delete_all($date_str, '<', '>');
-        $this->extract_events($tournir_node, $day_html, $sport_sign, $tournir_id, $parse);
+        file_put_contents('day.html', $day);
+        $this->extract_events($tournir_node, $day, $sport_sign, $tournir_id, $parse);
       }
       //if ($parse == '1x2') {
 //        if ($day_html <> '') $this->extract_events_1x2($tournir_node, $day_html, $sport_sign);

@@ -229,7 +229,7 @@ function convert_to_utf8($Html) {
   return ($Html);
 }
 
-function extract_tag_from_tag($html, $outer_tag, $inner_tag) {
+function extract_tag_from_tag($html, $outer_tag, $inner_tag, $kill_bounds = null) {
   $ul_tagno = copy_be($html, "<$outer_tag", '>');
   $ul_tagno = extract_tagno($ul_tagno, $outer_tag);
   $html = extract_numbered_tag($html, $outer_tag, $ul_tagno);
@@ -238,9 +238,14 @@ function extract_tag_from_tag($html, $outer_tag, $inner_tag) {
     $li_tagno = extract_tagno($li_tagno, $inner_tag);
     $li_html = extract_numbered_tag($html, $inner_tag, $li_tagno);
     $html = str_replace($li_html, '', $html);
+    if ($kill_bounds) {
+      $li_html = delete_all($li_html, "<$inner_tag", '>', "TagNo=\"$inner_tag$li_tagno\"");
+      $li_html = delete_all($li_html, "</$inner_tag", '>', "TagNo=\"$inner_tag$li_tagno\"");
+    }
     $result[] = $li_html;
   }
   return $result;
 }
+
 
 ?>

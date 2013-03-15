@@ -693,7 +693,7 @@
       
     </Section>
     
-    <Section Mask=".* in the tournament\?.*" Ignore="1"/>
+    <Section Mask=".* in the tournament\?.*" Ignore="1"><Phrase Caption="Gamer1" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="X" Ignore="1" BetKind="Modifier=Unknown"/><Phrase Caption="Gamer2" Ignore="1" BetKind="Modifier=Unknown"/></Section>
     
     <Section Caption="Will there be a red card given? (Regular time)">
       <Phrase Caption="Yes" BetKind="Ways=2;Period=Regular;Kind=Total;Subject=RedCard;Modifier=Over;Value=0.5"/>
