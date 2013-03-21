@@ -145,7 +145,7 @@ class booker extends booker_xml {
     }
   }
   
-  private function extract_event_1x2(&$tournir_node, $html, $sport_sign, $tournir_id) {
+  private function extract_bets_1x2(&$tournir_node, $html, $sport_sign, $tournir_id) {
     $phrase = '1x2';
     $event_time = $this->decode_time(delete_all(copy_be($html, '<h6', '</h6>'), '<', '>'));
     $html = copy_be($html, '<tr', '</tr>', 'col3 three-way');
@@ -184,49 +184,9 @@ class booker extends booker_xml {
     }
   }
   
-  private function extract_events(&$tournir_node, $html, $sport_sign, $tournir_id, $parse) {
-    $this->decode_date(delete_all(copy_be($html, '<h2', '</h2>'), '<', '>'));
-    file_put_contents('events.html', $html);
-    $events = extract_tag_from_tag($html, 'ul', 'li', 1);
-    foreach($events as $event) {
-      file_put_contents('event.html', $event);
-      $subevents = extract_tag_from_tag($event, 'ul', 'li', 1);
-      foreach ($subevents as $subevent) {
-        file_put_contents('subevent.html', $subevent);
-        if ($parse == '1x2') {
-          if ($subevent <> '') $this->extract_event_1x2($tournir_node, $subevent, $sport_sign, $tournir_id);
-        }
-      }
-    }
-    
-    /*$html = kill_space($html);
-    $html = numbering_tag($html, 'tr');
-    $table_rows = extract_all_numbered_tags($html, 'tr', 'class');
-    foreach($table_rows as $row) {
-      $row = kill_property($row, 'TagNo');
-      $gamer1_name = null;
-      $gamer2_name = null;
-      $win1_koef = null;
-      $win2_koef = null;
-      $draw_koef = null;
-      $header = copy_be($row, '<tr', '>');
-      $row_class_name = extract_property_values($header, 'class', null);
-      if ($row_class_name == 'topbar') { // разбираем дату
-        $row = copy_between($row, '<h3>', '</h3>');
-        list($day_no, $month_no, $year_no) = $this->decode_date($row);
-      } elseif ($row_class_name == 'normal') { // основная ставка
-        // берем время из первой ячейки
-        $time = copy_be($row, '<td', '</td>', 'leftcell minwidth');
-        $time = copy_between($time, '>', '<');
-        list($hour, $minute) = $this->decode_time($time);
-        $this->extract_new_event($tournir_node, $row, $sport_sign, '1x2', mktime($hour, $minute, 0, $month_no, $day_no, $year_no));
-      }
-    } */
-  }
-
- /* private function extract_bets_noannotated(&$tournir_node, $html, $sport_sign) {
+  private function extract_bets_noannotated(&$tournir_node, $html, $sport_sign) {
     $html = kill_space($html);
-    $html = numbering_tag($html, 'tr');
+/*    $html = numbering_tag($html, 'tr');
     $table_rows = extract_all_numbered_tags($html, 'tr', 'class');
     foreach($table_rows as $row) {
       $row = kill_property($row, 'TagNo');
@@ -244,12 +204,12 @@ class booker extends booker_xml {
         if (!$section_node['Ignore'])
           $this->extract_new_event($tournir_node, $row, $sport_sign, $phrase, mktime(0, 0, 0, $month_no, $day_no, $year_no)); 
       }
-    }
-  }*/
+    }*/
+  }  
 
-/*  private function extract_bets_foratotal(&$tournir_node, $html, $sport_sign) {
+  private function extract_bets_foratotal(&$tournir_node, $html, $sport_sign) {
     $html = kill_space($html);
-    $html = numbering_tag($html, 'tr');
+/*    $html = numbering_tag($html, 'tr');
     $table_rows = extract_all_numbered_tags($html, 'tr', 'class');
     foreach($table_rows as $row) {
       $row = kill_property($row, 'TagNo');
@@ -287,11 +247,29 @@ class booker extends booker_xml {
           }  
         }
       }
+    } */
+  }
+  
+  private function extract_events(&$tournir_node, $html, $sport_sign, $tournir_id, $parse) {
+    $this->decode_date(delete_all(copy_be($html, '<h2', '</h2>'), '<', '>'));
+    file_put_contents('events.html', $html);
+    $events = extract_tag_from_tag($html, 'ul', 'li', 1);
+    foreach($events as $event) {
+      file_put_contents('event.html', $event);
+      $subevents = extract_tag_from_tag($event, 'ul', 'li', 1);
+      foreach ($subevents as $subevent) {
+        file_put_contents('subevent.html', $subevent);
+        if ($parse == '1x2') {
+          if ($subevent <> '') $this->extract_bets_1x2($tournir_node, $subevent, $sport_sign, $tournir_id);
+        } elseif ($parse == 'NoAnnotated') {
+          if ($subevent <> '') $this->extract_bets_noannotated($tournir_node, $html, $sport_sign, $tournit_id);  
+        } elseif ($parse == 'Annotated') {
+          if ($html <> '') $this->extract_bets_foratotal($tournir_node, $html, $sport_sign);
+        }
+      }
     }
-  }*/
-  
-  
-  
+  }
+
   private function extract_days(&$tournir_node, $html, $sport_sign, $tournir_id, $parse) {
     $html = numbering_tag($html, 'ul');
     $html = numbering_tag($html, 'li');
@@ -304,13 +282,6 @@ class booker extends booker_xml {
         file_put_contents('day.html', $day);
         $this->extract_events($tournir_node, $day, $sport_sign, $tournir_id, $parse);
       }
-      //if ($parse == '1x2') {
-//        if ($day_html <> '') $this->extract_events_1x2($tournir_node, $day_html, $sport_sign);
-  //    } elseif ($parse == 'NoAnnotated') {
-//        if ($html <> '') $this->extract_bets_noannotated($tournir_node, $html, $sport_sign);  
-   //   } elseif ($parse == 'Annotated') {
-//        if ($html <> '') $this->extract_bets_foratotal($tournir_node, $html, $sport_sign);
-     // }
     }
   }
   
