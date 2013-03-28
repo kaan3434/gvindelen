@@ -4,7 +4,6 @@ uses
   FastMM4,
   SysUtils,
   Forms,
-  uMain in 'uMain.pas' {MainForm},
   udmOtto in 'udmOtto.pas' {dmOtto: TDataModule},
   uParseCancellation in 'uParseCancellation.pas',
   uFormWizardBase in 'uFormWizardBase.pas' {FormWizardBase},
@@ -47,7 +46,9 @@ uses
   uMoneyBack in 'uMoneyBack.pas',
   uReportReturnedOrderItems in 'uReportReturnedOrderItems.pas',
   uFrameMoneyBack3 in 'uFrameMoneyBack3.pas' {FrameMoneyBack3},
-  uFormWizardMoneyBack3 in 'uFormWizardMoneyBack3.pas' {FormWizardBase1};
+  uFormWizardMoneyBack3 in 'uFormWizardMoneyBack3.pas' {FormWizardBase1},
+  uParseInfoKomnr in 'uParseInfoKomnr.pas',
+  uMain in 'uMain.pas' {MainForm};
 
 {$R *.res}
 

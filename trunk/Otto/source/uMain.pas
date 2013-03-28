@@ -159,6 +159,8 @@ type
     btn17: TTBXItem;
     actUnclaimed: TAction;
     btnUnclaimed: TTBXItem;
+    actProcessKomnR: TAction;
+    btnParseInfoKomnr: TTBXItem;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -205,6 +207,7 @@ type
     procedure actOrderUnclaimedExecute(Sender: TObject);
     procedure actPacklistByPeriodExecute(Sender: TObject);
     procedure btnUnclaimedClick(Sender: TObject);
+    procedure actProcessKomnRExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -228,7 +231,7 @@ uses
   uExportCancellation, uExportOrder, uExportInvoices, uExportPackList,
   uParseArtN, uParseCancellation, uFormWizardReturn, uParseInfo2Pay,
   uExportToSite, uExportPrePackList, uMoneyBack, uReportReturnedOrderItems, 
-  uExportReturns;
+  uExportReturns, uParseInfoKomnr;
 
 procedure TMainForm.actParseOrderXmlExecute(Sender: TObject);
 var
@@ -900,6 +903,20 @@ begin
     frxReport.LoadFromFile(Path['FastReport']+'UnClaimed.fr3');
     frxReport.ShowReport;
   end;
+end;
+
+procedure TMainForm.actProcessKomnRExecute(Sender: TObject);
+var
+  vMessageId: Integer;
+begin
+  repeat
+    vMessageId := dmOtto.MessageBusy(14);
+    if vMessageId > 0 then
+    begin
+      ProcessInfoKomnr(vMessageId, trnWrite);
+      Application.ProcessMessages;
+    end;
+  until vMessageId = 0;
 end;
 
 end.

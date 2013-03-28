@@ -93,32 +93,6 @@ begin
       Value2Vars(LineNo, 'LINE_NO')));
 end;
 
-function CalcControlChar(St: string): Char;
-var
-  k: Integer;
-begin
-  k:= 11 - (8*StrToInt(st[1]) + 6*StrToInt(st[2]) + 4*StrToInt(st[3]) +
-            2*StrToInt(st[4]) + 3*StrToInt(st[5]) + 5*StrToInt(st[6]) +
-            9*StrToInt(st[7]) + 7*StrToInt(st[8])) mod 11;
-  case k of
-    10 : Result:= '0';
-    11 : Result:= '5';
-  else
-    Result:= IntToStr(k)[1];
-  end;
-end;
-
-function GetBarCode(ndOrder, ndProduct: TXmlNode): string;
-var
-  Body: string;
-begin
-
-  Body:= CopyLast(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'), 1)+
-         FillFront(IntToStr(WeekOfTheYear(Date)), 2, '0')+
-         CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5);
-  Result:= GetXmlAttr(ndProduct, 'BARCODE_SIGN')+Body+CalcControlChar(Body)+'LT';
-end;
-
 procedure ParseConsignmentLine300(aMessageId, LineNo: Integer; sl: TStringList;
   ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
@@ -136,7 +110,9 @@ begin
       SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'PACKED');
       BatchMoveFields2(ndOrder, ndOrders, 'PACKLIST_NO;PACKLIST_DT;PALETTE_NO');
       SetXmlAttr(ndOrder, 'PACKET_NO', sl[1]);
-      SetXmlAttr(ndOrder, 'BAR_CODE', GetBarCode(ndOrder, ndProduct));
+      SetXmlAttr(ndOrder, 'BAR_CODE', aTransaction.DefaultDatabase.QueryValue(
+        'select o_barcode from barcode_get(:order_id)',
+        0, [GetXmlAttrValue(ndOrder, 'ID')], aTransaction));
 
       try
         dmOtto.ActionExecute(aTransaction, ndOrder);

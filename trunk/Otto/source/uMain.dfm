@@ -72,6 +72,9 @@ object MainForm: TMainForm
         object btnImportInfo2Pay: TTBXItem
           Action = actProcessInfo2Pay
         end
+        object btnParseInfoKomnr: TTBXItem
+          Action = actProcessKomnR
+        end
       end
       object subExportActions: TTBXSubmenuItem
         Caption = #1048#1089#1093#1086#1076#1103#1097#1080#1077
@@ -224,7 +227,6 @@ object MainForm: TMainForm
         end
         object btnUnclaimed: TTBXItem
           Action = actUnclaimed
-          OnClick = btnUnclaimedClick
         end
       end
     end
@@ -469,6 +471,11 @@ object MainForm: TMainForm
     object actUnclaimed: TAction
       Category = 'Reports'
       Caption = #1053#1077#1074#1086#1089#1090#1088#1077#1073#1086#1074#1072#1085#1085#1099#1077
+    end
+    object actProcessKomnR: TAction
+      Category = 'Import'
+      Caption = 'Info_XXXXXXXX_komnr_YYY.txt'
+      OnExecute = actProcessKomnRExecute
     end
   end
   object imgListMainMenu: TPngImageList
