@@ -10,6 +10,7 @@
   $ext = '.php';
   $template_path = 'template/';
   if (file_exists('default.php')) unlink('default.php');
+  
 
 function detect_scheme() {
   $month_no = date('m');
@@ -68,7 +69,11 @@ function extract_searches($template_path, $path) {
   }
   return $searches;
 }
-  $path = $_GET['path'];
+  $path = $_GET['path'];      
+  if (!$path and $_SERVER['QUERY_STRING']) {
+    echo 'page_not_found';
+    exit; 
+  }
 
   // проверяем перенаправление страницы
   $event_fname = $template_path . $path .'/'.'on_redirect_path' . '.php';
@@ -108,14 +113,5 @@ function extract_searches($template_path, $path) {
   file_put_contents($fname, $html);
   include $fname;
   unlink($fname);
-
-//  $fpath = 'cache/';
-  
-//  $files = scandir($fpath);
-//  foreach($files as $f) {
-//    if ((substr($f, -4) == '.php')){
-//      unlink($fpath . $f);
-//    }
-//  }
-  
+ 
 ?>

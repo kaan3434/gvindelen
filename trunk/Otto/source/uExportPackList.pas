@@ -43,6 +43,13 @@ begin
 end;
 
 
+function GetMobilePhone(aPhone: string): string;
+begin
+  Result:= replaceAll(aPhone, '+3750', '+375');
+  Result:= ReplaceAll(Result, '+37580', '+375');
+  Result:= ReplaceAll(Result, '+', '');
+end;
+
 procedure ExportOrderItem(aTransaction: TpFIBTransaction;
   ndProduct, ndOrder, ndOrderItems, ndOrderTaxs: TXmlNode;
   tblCons, tblConsPi3: TDataSet; aOrderItemId: variant);
@@ -103,6 +110,7 @@ begin
     tblCons['CITY']:= Translit(GetPlace(ndPlace));
     tblCons['REGION']:= Translit(GetXmlAttr(ndPlace, 'AREA_NAME', '', ' р-н., ')+
                            GetXmlAttr(ndPlace, 'REGION_NAME', '', ' обл.'));
+
     tblCons['TEL']:= ReplaceAll(replaceAll(GetXmlAttr(ndClient, 'MOBILE_PHONE', '+375'), '+3750', '+375'), '+', '');
     tblCons['COSTBYR']:= aTransaction.DefaultDatabase.QueryValue(
       'select round(cast(:cost_eur as money_eur) * cast(:byr2eur as value_integer), -1) from rdb$database',

@@ -45,22 +45,22 @@
              <table cellspacing="2" cellpadding="0" border="0" class="catalog_tbl"><tbody>
                <tr> 
                  <td width="30%"><font color="red">Фамилия</font></td>
-                 <td width="30%"><input type="text" size="35" name="LastName" class="cat_tables_form" value="<? echo $_POST['LastName'];?>"></td>
+                 <td width="30%"><input type="text" maxlength="25" size="35" name="LastName" class="cat_tables_form" value="<? echo $_POST['LastName'];?>"></td>
                  <td width="40%"><font color="red"><? echo $_POST['LastName_Error'];?></font></td>
                </tr> 
                <tr> 
                  <td width="30%"><font color="red">Имя</font></td> 
-                 <td width="30%"><input type="text" size="35" name="FirstName" class="cat_tables_form" value="<? echo $_POST['FirstName'];?>"></td> 
+                 <td width="30%"><input type="text" maxlength="25" size="35" name="FirstName" class="cat_tables_form" value="<? echo $_POST['FirstName'];?>"></td> 
                  <td width="40%"><font color="red"><? echo $_POST['FirstName_Error'];?></font></td>
                </tr> 
                <tr> 
                  <td width="30%"><font color="red">Отчество</font></td> 
-                 <td width="30%"><input type="text" size="35" name="MidName" class="cat_tables_form" value="<? echo $_POST['MidName'];?>"></td> 
+                 <td width="30%"><input type="text" maxlength="25" size="35" name="MidName" class="cat_tables_form" value="<? echo $_POST['MidName'];?>"></td> 
                  <td width="40%"><font color="red"><? echo $_POST['MidName_Error'];?></font></td>
                </tr> 
                <tr> 
                  <td width="30%"><font color="red">Email</font></td> 
-                 <td width="30%"><input type="text" size="35" name="Email" class="cat_tables_form" value="<? echo $_POST['Email'];?>"></td> 
+                 <td width="30%"><input type="text" maxlength="25" size="35" name="Email" class="cat_tables_form" value="<? echo $_POST['Email'];?>"></td> 
                  <td width="40%"><font color="red"><? echo $_POST['Email_Error'];?></font></td>
                </tr> 
                <tr> 
@@ -79,27 +79,27 @@
                                    <option value="11"<? if ($_POST['StreetTypeId'] == "11") echo "selected"; ?>>квартал</option>
                                    <option value="12"<? if ($_POST['StreetTypeId'] == "12") echo "selected"; ?>>мжк</option>
                                    <option value="13"<? if ($_POST['StreetTypeId'] == "13") echo "selected"; ?>>станция</option>
-                                 </select>&nbsp;<input type="text" size="18" name="Street" class="cat_tables_form" value="<? echo $_POST['Street'];?>"></td> 
+                                 </select>&nbsp;<input type="text" maxlength="25" size="18" name="Street" class="cat_tables_form" value="<? echo $_POST['Street'];?>"></td> 
                  <td width="40%"><font color="red"><? echo $_POST['Street_Error'];?></font></td>
                </tr> 
                <tr> 
                  <td width="30%"><font color="red">№&nbsp;дома</font></td> 
-                 <td width="30%"><input type="text" size="35" name="House" class="cat_tables_form" value="<? echo $_POST['House'];?>"></td> 
+                 <td width="30%"><input type="text" maxlength="5" size="35" name="House" class="cat_tables_form" value="<? echo $_POST['House'];?>"></td> 
                  <td width="40%"><font color="red"><? echo $_POST['House_Error'];?></font></td>
                </tr> 
                <tr> 
                  <td width="30%">Корпус</td> 
-                 <td width="30%"><input type="text" size="35" name="Corpus" class="cat_tables_form" value="<? echo $_POST['Corpus'];?>"></td> 
+                 <td width="30%"><input type="text" maxlength="3" size="35" name="Corpus" class="cat_tables_form" value="<? echo $_POST['Corpus'];?>"></td> 
                  <td width="40%"><font color="red"><? echo $_POST['Corpus_Error'];?></font></td>
                </tr> 
                <tr> 
                  <td width="30%"><font color="red">Квартира</font></td> 
-                 <td width="30%"><input type="text" size="35" name="Flat" class="cat_tables_form" value="<? echo $_POST['Flat'];?>"></td> 
+                 <td width="30%"><input type="text" maxlength="5" size="35" name="Flat" class="cat_tables_form" value="<? echo $_POST['Flat'];?>"></td> 
                  <td width="40%"><font color="red"><? echo $_POST['Flat_Error'];?></font></td>
                </tr> 
                <tr> 
                  <td width="30%"><font color="red">Индекс</font></td> 
-                 <td width="30%"><input type="text" size="35" name="PostIndex" class="cat_tables_form" value="<? echo $_POST['PostIndex'];?>"></td>
+                 <td width="30%"><input type="text" maxlength="6" size="35" name="PostIndex" class="cat_tables_form" value="<? echo $_POST['PostIndex'];?>"></td>
                  <td width="40%"><font color="red"><? echo $_POST['PostIndex_Error'];?></font></td>
                </tr> 
                <tr> 
@@ -111,27 +111,27 @@
                                    <option value="7"<? if ($_POST['CityTypeId'] == "7") echo "selected"; ?>>деревня</option>
                                    <option value="8"<? if ($_POST['CityTypeId'] == "8") echo "selected"; ?>>военная часть</option>
                                    <option value="9"<? if ($_POST['CityTypeId'] == "9") echo "selected"; ?>>военный городок</option>
-                                 </select> <input type="text" size="12" name="City" class="cat_tables_form" value="<? echo $_POST['City'];?>"></td> 
+                                 </select> <input type="text" maxlength="25" size="12" name="City" class="cat_tables_form" value="<? echo $_POST['City'];?>"></td> 
                  <td width="40%"><font color="red"><? echo $_POST['City_Error'];?></font></td>
                </tr> 
                <tr> 
                  <td width="30%">Район<font size="2">(обязательно укажите, если местожительство гп, поселок или деревня)</font></td> 
-                 <td width="30%"><input type="text" size="35" name="Area" value="" class="cat_tables_form" value="<? echo $_POST['Area'];?>"></td> 
+                 <td width="30%"><input type="text" maxlength="25" size="35" name="Area" value="" class="cat_tables_form" value="<? echo $_POST['Area'];?>"></td> 
                  <td width="40%"><font color="red"><? echo $_POST['Area_Error'];?></font></td>
                </tr> 
                <tr> 
                  <td width="30%">Область<font size="2">(обязательно укажите, если местожительство гп, поселок или деревня)</font></td> 
-                 <td width="30%"><input type="text" size="35" name="Region" value="" class="cat_tables_form" value="<? echo $_POST['Region'];?>"></td> 
+                 <td width="30%"><input type="text" maxlength="25" size="35" name="Region" value="" class="cat_tables_form" value="<? echo $_POST['Region'];?>"></td> 
                  <td width="40%"><font color="red"><? echo $_POST['Region_Error'];?></font></td>
                </tr> 
                <tr> 
                  <td width="30%"><font color="red">Контактный&nbsp;тел.</font><font size="2">(Домашн/Рабочий)</font></td> 
-                 <td width="30%"><input type="text" maxlength="28" size="35" name="Phone" class="cat_tables_form" value="<? echo $_POST['Phone'];?>"></td> 
+                 <td width="30%"><input type="text" maxlength="25" maxlength="28" size="35" name="Phone" class="cat_tables_form" value="<? echo $_POST['Phone'];?>"></td> 
                  <td width="40%"><font color="red"><? echo $_POST['Phone_Error'];?></font></td>
                </tr> 
                <tr> 
                  <td width="30%"><font color="red">Контактный&nbsp;тел.</font><font size="2">(Мобилъный тел.)</font></td> 
-                 <td width="30%"><input type="text" maxlength="28" size="35" name="MobPhone" class="cat_tables_form" value="<? echo $_POST['MobPhone'];?>"></td> 
+                 <td width="30%"><input type="text" maxlength="25" maxlength="28" size="35" name="MobPhone" class="cat_tables_form" value="<? echo $_POST['MobPhone'];?>"></td> 
                  <td width="40%"><font color="red"><? echo $_POST['MobPhone_Error'];?></font></td>
                </tr> 
                <tr> 
@@ -173,7 +173,7 @@
              <center>
                <input type="checkbox" onclick="if (this.checked){this.form.tr.disabled=0}else{this.form.tr.disabled=1}">
                <font color="red"><strong>С условиями оформления заявки<br>по интернету и с условиями получения международной посылки<br>с товаром по каталогам "Отто" ознакомилась / ознакомился.</strong></font><br/>
-               <input type="submit" class="button" value=" Создать новую заявку " name="tr" disabled="1">&nbsp;
+               <input type="submit" class="button" value=" Сохранить изменения " name="tr" disabled="1">&nbsp;
                <? if ($_POST['LastName'] <> '') {?>
                <input type="submit" class="button" value=" Сохранить изменения " name="save">&nbsp;
                <?}?>

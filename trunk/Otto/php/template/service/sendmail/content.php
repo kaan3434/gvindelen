@@ -1,3 +1,6 @@
+<?php 
+ $_POST["notes"] = delete_all($_POST["notes"], '<', '>');
+?>
 <div class="maincontent" id="ordercontent">
   <div id="headline_item">
     <div class="text">

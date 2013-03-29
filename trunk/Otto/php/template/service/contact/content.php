@@ -22,14 +22,14 @@
         <div class="pad">
           <form action="?path=service/sendmail" method="post">
             Ваше имя: <br>
-            <input type="text" size="35" name="visitor"><br>
+            <input type="text" maxlength="25" size="35" name="visitor"><br>
             <br>
             Ваш e-mail:<br>
-            <input type="text" size="35" name="visitormail"><br>
+            <input type="text" maxlength="25" size="35" name="visitormail"><br>
             <br>
             Ваше сообщение:
             <br>
-            <textarea cols="40" rows="4" name="notes"></textarea><br>
+            <textarea maxlength="100" cols="40" rows="4" name="notes"></textarea><br>
             <input type="submit" value="Отправить"><br>
           </form>
         </div>
