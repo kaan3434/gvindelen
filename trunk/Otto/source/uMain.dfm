@@ -75,6 +75,9 @@ object MainForm: TMainForm
         object btnParseInfoKomnr: TTBXItem
           Action = actProcessKomnR
         end
+        object btnInfoArt: TTBXItem
+          Action = actProcessArt
+        end
       end
       object subExportActions: TTBXSubmenuItem
         Caption = #1048#1089#1093#1086#1076#1103#1097#1080#1077
@@ -476,6 +479,11 @@ object MainForm: TMainForm
       Category = 'Import'
       Caption = 'Info_XXXXXXXX_komnr_YYY.txt'
       OnExecute = actProcessKomnRExecute
+    end
+    object actProcessArt: TAction
+      Category = 'Import'
+      Caption = 'info_XXXXXXXX_art_YYY.txt'
+      OnExecute = actProcessArtExecute
     end
   end
   object imgListMainMenu: TPngImageList

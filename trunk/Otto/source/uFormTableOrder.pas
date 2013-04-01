@@ -70,6 +70,8 @@ type
     dsNotes: TDataSource;
     actSetServTax: TAction;
     btn1: TTBXItem;
+    actSetBarCode: TAction;
+    btnSetBarCode: TTBXItem;
     procedure actFilterApprovedExecute(Sender: TObject);
     procedure actFilterAcceptRequestExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -95,6 +97,8 @@ type
       var CanHide: Boolean);
     procedure actRest2OrderUpdate(Sender: TObject);
     procedure actRest2OrderExecute(Sender: TObject);
+    procedure actSetBarCodeUpdate(Sender: TObject);
+    procedure actSetBarCodeExecute(Sender: TObject);
   private
     procedure ApplyFilter(aStatusSign: string);
     { Private declarations }
@@ -515,6 +519,54 @@ begin
   finally
     qryMain.Locate('ORDER_ID', OrderId, []);
     qryMain.EnableControls;
+  end;
+end;
+
+procedure TFormTableOrders.actSetBarCodeUpdate(Sender: TObject);
+begin
+  actSetBarCode.Enabled:= qryMain['Manual_Bar_Code_Able'] = 1;
+end;
+
+procedure TFormTableOrders.actSetBarCodeExecute(Sender: TObject);
+var
+  Xml: TNativeXml;
+  ndProduct, ndOrder: TXmlNode;
+  BarCode: String;
+  OrderId: Integer;
+begin
+  OrderId:= qryMain['ORDER_ID'];
+  qryMain.DisableControls;
+  xml:= TNativeXml.CreateName('PRODUCT');
+  ndProduct:= Xml.Root;
+  ndOrder:= ndProduct.NodeNew('ORDER');
+  try
+    dmOtto.ObjectGet(ndOrder, qryMain['Order_id'], trnRead);
+    dmOtto.ObjectGet(ndProduct, qryMain['Product_id'], trnRead);
+    BarCode:= InputBox('Редактирование заявки', 'Введите код посылки', GetXmlAttr(ndProduct, 'BARCODE_SIGN'));
+
+    if Length(Trim(BarCode)) = 13 then
+    begin
+      trnWrite.StartTransaction;
+      try
+        SetXmlAttr(ndOrder, 'BAR_CODE', BarCode);
+        dmOtto.ActionExecute(trnWrite, ndOrder);
+        trnWrite.Commit;
+        ShowMessage(Format('Код посылки %s установлен на заявку', [BarCode]));
+      except
+        on E: Exception do
+        begin
+          trnWrite.RollBack;
+          ShowMessage(e.Message);
+        end;
+      end;
+    end
+    else
+      ShowMessage('Неправильный код посылки '+BarCode);
+    qryMain.CloseOpen(false);
+  finally
+    qryMain.Locate('ORDER_ID', OrderId, []);
+    qryMain.EnableControls;
+    Xml.Free;
   end;
 end;
 

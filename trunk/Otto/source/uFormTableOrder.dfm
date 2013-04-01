@@ -1,6 +1,6 @@
 inherited FormTableOrders: TFormTableOrders
-  Left = 254
-  Top = 141
+  Left = 92
+  Top = 62
   Caption = #1047#1072#1103#1074#1082#1080
   OnCreate = FormCreate
   PixelsPerInch = 96
@@ -33,6 +33,9 @@ inherited FormTableOrders: TFormTableOrders
       end
       object btn1: TTBXItem
         Action = actSetServTax
+      end
+      object btnSetBarCode: TTBXItem
+        Action = actSetBarCode
       end
     end
     object barUserBar: TTBXToolbar
@@ -816,7 +819,8 @@ inherited FormTableOrders: TFormTableOrders
       '    orders.source,'
       '    orders.byr2eur,'
       '    accounts.rest_eur,'
-      '    orders.packlist_no'
+      '    orders.packlist_no,'
+      '    products.manual_bar_code_able'
       'FROM ORDERS '
       
         '  inner join v_clients_fio on (v_clients_fio.client_id = orders.' +
@@ -824,6 +828,9 @@ inherited FormTableOrders: TFormTableOrders
       '  inner join statuses on (statuses.status_id = orders.status_id)'
       
         '  inner join accounts on (accounts.account_id = orders.account_i' +
+        'd)'
+      
+        '  inner join products on (products.product_id = orders.product_i' +
         'd)'
       'where '
       '/*FILTER*/ 1=1'
@@ -880,6 +887,11 @@ inherited FormTableOrders: TFormTableOrders
     end
     object actSetServTax: TAction
       Caption = #1048#1079#1084#1077#1085#1080#1090#1100' '#1057'/'#1057
+    end
+    object actSetBarCode: TAction
+      Caption = #1055#1086#1095#1090#1086#1074#1099#1081' '#1082#1086#1076
+      OnExecute = actSetBarCodeExecute
+      OnUpdate = actSetBarCodeUpdate
     end
   end
   inherited imgListMain: TPngImageList

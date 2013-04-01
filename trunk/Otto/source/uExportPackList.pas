@@ -9,7 +9,7 @@ procedure ExportPackList(aTransaction: TpFIBTransaction);
 implementation
 uses
   SysUtils, GvNativeXml, udmOtto, GvStr, Dbf, GvFile, uMain, Dialogs, GvVariant,
-  frxClass, frxExportXLS;
+  frxClass, frxExportXLS, GvMath, GvVars, Variants;
 
 function GetPlace(ndPlace: TXmlNode): string;
 begin
@@ -51,10 +51,10 @@ begin
 end;
 
 procedure ExportOrderItem(aTransaction: TpFIBTransaction;
-  ndProduct, ndOrder, ndOrderItems, ndOrderTaxs: TXmlNode;
+  ndProduct, ndOrder, ndOrderItems, ndOrderTaxs, ndClient, ndAdress, ndPlace: TXmlNode;
   tblCons, tblConsPi3: TDataSet; aOrderItemId: variant);
 var
-  ndOrderItem, ndClient, ndTaxSSbor, ndAdress, ndPlace: TXmlNode;
+  ndOrderItem, ndTaxSSbor: TXmlNode;
   ShortClientName: string;
   St: string;
 begin
@@ -66,15 +66,8 @@ begin
       ShowMessage(GetXmlAttr(ndOrder, 'ORDER_CODE', 'Отсутствует сервисный сбор на заявке '));
     end;
 
-    ndClient:= ndOrder.NodeFindOrCreate('CLIENT');
-    dmOtto.ObjectGet(ndClient, GetXmlAttrValue(ndOrder, 'CLIENT_ID'), aTransaction);
-    ndAdress:= ndOrder.NodeFindOrCreate('ADRESS');
-    dmOtto.ObjectGet(ndAdress, GetXmlAttrValue(ndOrder, 'ADRESS_ID'), aTransaction);
-    ndPlace:= ndAdress.NodeFindOrCreate('PLACE');
-    dmOtto.ObjectGet(ndPlace, GetXmlAttrValue(ndAdress, 'PLACE_ID'), aTransaction);
-
-    ndProduct.Document.XmlFormat:= xfReadable;
-    ndProduct.Document.SaveToFile('order.xml');
+//    ndProduct.Document.XmlFormat:= xfReadable;
+//    ndProduct.Document.SaveToFile('order.xml');
     tblCons.Append;
     BatchMoveFields2(tblCons, ndProduct, 'KTPART=PARTNER_NUMBER');
     BatchMoveFields2(tblCons, ndOrder,
@@ -119,7 +112,7 @@ begin
       'select round(cast(:cost_eur as money_eur) * cast(:byr2eur as value_integer), -1) from rdb$database',
       0, [GetXmlAttrValue(ndTaxSSbor, 'COST_EUR'), GetXmlAttrValue(ndOrder, 'BYR2EUR')], aTransaction);
 
-    if GetXmlAttrValue(ndProduct, 'PRODUCT_CODE') = 2 then // Наложенный платеж
+    if GetXmlAttrValue(ndProduct, 'PAYTYPE_SIGN') = 'POSTPAY' then // Наложенный платеж
     begin
       BatchMoveFields2(tblCons, ndOrder,
         'VIDPLAT="1";INFOP=PACKLIST_NO;INFOPDATE=INVOICE_DT_0;COSTALLN=INVOICE_BYR_0');
@@ -145,33 +138,66 @@ begin
 end;
 
 procedure ExportOrder(aTransaction: TpFIBTransaction;
-  ndProduct, ndOrders: TXmlNode; tblCons, tblConsPi3: TDataSet; aOrderId: integer);
+  ndProduct, ndOrders: TXmlNode; tblCons, tblConsPi3: TDataSet;
+  aOrderId: integer; var BelPostLine: string);
 var
-  ndOrder, ndOrderItems, ndOrderItem, ndOrderTaxs: TXmlNode;
+  ndOrder, ndOrderItems, ndOrderItem, ndOrderTaxs, ndClient, ndAdress, ndPlace: TXmlNode;
   OrderItemList: string;
   OrderItemId: Variant;
   i: integer;
+  sl: TStringList;
 begin
-  ndOrder:= ndOrders.NodeNew('ORDER');
-  dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
-  ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
-  dmOtto.OrderItemsGet(ndOrderItems, aOrderId, aTransaction);
-  ndOrderTaxs:= ndOrder.NodeFindOrCreate('ORDERTAXS');
-  dmOtto.OrderTaxsGet(ndOrderTaxs, aOrderId, aTransaction);
-  SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'DELIVERING');
-  dmOtto.ActionExecute(aTransaction, ndOrder);
+  sl:= TStringList.Create;
+  try
+    ndOrder:= ndOrders.NodeNew('ORDER');
+    ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
+    ndOrderTaxs:= ndOrder.NodeFindOrCreate('ORDERTAXS');
+    ndClient:= ndOrder.NodeFindOrCreate('CLIENT');
+    ndAdress:= ndOrder.NodeFindOrCreate('ADRESS');
+    ndPlace:= ndAdress.NodeFindOrCreate('PLACE');
 
-  OrderItemList:= aTransaction.DefaultDatabase.QueryValue(
-    'select list(oi.orderitem_id) '+
-    'from orderitems oi '+
-    'inner join statuses s on (s.status_id = oi.status_id and s.status_sign in (''PACKED'', ''DELIVERING'')) '+
-    'where oi.order_id = :order_id',
-    0, [aOrderId], aTransaction);
-  while OrderItemList <> '' do
-  begin
-    OrderItemId:= TakeFront5(OrderItemList, ',');
-    ExportOrderItem(aTransaction, ndProduct, ndOrder, ndOrderItems, ndOrderTaxs,
-      tblCons, tblConsPi3, OrderItemId);
+    dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
+    dmOtto.OrderItemsGet(ndOrderItems, aOrderId, aTransaction);
+    dmOtto.OrderTaxsGet(ndOrderTaxs, aOrderId, aTransaction);
+    dmOtto.ObjectGet(ndClient, GetXmlAttrValue(ndOrder, 'CLIENT_ID'), aTransaction);
+    dmOtto.AdressRead(ndAdress, GetXmlAttrValue(ndOrder, 'ADRESS_ID'), aTransaction);
+
+    SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'DELIVERING');
+    dmOtto.ActionExecute(aTransaction, ndOrder);
+
+    OrderItemList:= aTransaction.DefaultDatabase.QueryValue(
+      'select list(oi.orderitem_id) '+
+      'from orderitems oi '+
+      'inner join statuses s on (s.status_id = oi.status_id and s.status_sign in (''PACKED'', ''DELIVERING'')) '+
+      'where oi.order_id = :order_id',
+      0, [aOrderId], aTransaction);
+    while OrderItemList <> '' do
+    begin
+      OrderItemId:= TakeFront5(OrderItemList, ',');
+      ExportOrderItem(aTransaction, ndProduct, ndOrder, ndOrderItems, ndOrderTaxs, ndClient, ndAdress, ndPlace,
+        tblCons, tblConsPi3, OrderItemId);
+    end;
+    BelPostLine:= '[BAR_CODE];[COST_BYR];[EXPN];[ITEMSCOST_EUR];[WEIGHT];'+
+      '[CLIENT_FIO];[AREA_NAME];[REGION_NAME];[PLACE_NAME];[STREETTYPE_SIGN] [STREET_NAME];[HOUSE];[BUILD];[FLAT];[POSTINDEX];'+
+      '[NUMDEP];[MOBILE_PHONE];[REMK];0';
+
+    if GetXmlAttrValue(ndOrder, 'WEIGHT') <> null then
+      BelPostLine:= FillPattern(BelPostLine,
+        Value2Vars(GetXmlAttrValue(ndOrder, 'WEIGHT')/1000, 'WEIGHT'
+        ), false);
+    if GetXmlAttrValue(ndProduct, 'PAYTYPE_SIGN') <> 'POSTPAY' then
+      BelPostLine:= FillPattern(BelPostLine,
+        Value2Vars('0', 'COST_BYR'), false);
+
+    BelPostLine:= FillPattern(BelPostLine,
+      XmlAttrs2Vars(ndOrder, 'BAR_CODE;ITEMSCOST_EUR;CLIENT_FIO;COST_BYR',
+      XmlAttrs2Vars(ndClient, 'MOBILE_PHONE',
+      XmlAttrs2Vars(ndPlace, 'AREA_NAME;REGION_NAME;PLACE_NAME',
+      XmlAttrs2Vars(ndAdress, 'STREET_NAME;STREETTYPE_SIGN;HOUSE;BUILD;FLAT;POSTINDEX'
+      )))), true);
+
+  finally
+    sl.Free;
   end;
 end;
 
@@ -186,7 +212,7 @@ begin
     frxExportXLS.ShowDialog:= False;
     frxExportXLS.ShowProgress:= True;
     frxExportXLS.ExportPageBreaks:= True;
-    
+
     frxReport.LoadFromFile(Path['FastReport'] + 'packlistpi3.fr3');
     frxReport.Variables.Variables['PackList_No']:= Format('''%u''', [aPacklistNo]);
     frxReport.PrepareReport(true);
@@ -201,9 +227,10 @@ const
   HeaderText = 'Формирование паклиста';
 var
   ConsName, ConsPi3Name: string;
-  OrderList: string;
+  OrderList, BelPostLine: string;
   OrderId: variant;
   dbfCons, dbfConsPi3: TDbf;
+  BelPostLines: TStringList;
 begin
   SetXmlAttr(ndOrders, 'PACKLIST_NO', aPackListNo);
   dbfCons:= TDbf.Create(nil);
@@ -217,11 +244,12 @@ begin
   copyFile(Path['Stru']+'tconspi3.dbf', Path['DbfPackLists'] + ConsPi3Name+'.dbf');
 
   MakeXls(aPacklistNo, ConsPi3Name+'.xls');
-  
+
   dbfCons.FilePath:= Path['DbfPackLists'];
   dbfCons.TableName:= ConsName;
   dbfConsPi3.FilePath:= Path['DbfPackLists'];
   dbfConsPi3.TableName:= ConsPi3Name+'.dbf';
+  BelPostLines:= TStringList.Create;
   try
     dbfCons.Open;
     dbfConsPi3.Open;
@@ -236,9 +264,15 @@ begin
       while OrderList <> '' do
       begin
         OrderId:= TakeFront5(OrderList, ',');
-        ExportOrder(aTransaction, ndProduct, ndOrders, dbfCons, dbfConsPi3, OrderId);
+        ExportOrder(aTransaction, ndProduct, ndOrders, dbfCons, dbfConsPi3, OrderId, BelPostLine);
+        BelPostLines.Add(BelPostLine);
         dmOtto.StepProgress;
       end;
+      BelPostLines.SaveToFile(Format(
+        '%sBaltPost_%s_%u.txt',
+        [Path['DbfPackLists'],
+         GetXmlAttr(ndProduct, 'PARTNER_NUMBER'),
+         aPacklistNo]));
     finally
       dmOtto.InitProgress;
       dbfCons.Close;
@@ -247,6 +281,7 @@ begin
   finally
     dbfConsPi3.Free;
     dbfCons.Free;
+    BelPostLines.Free;
   end;
   dmOtto.CreateAlert(HeaderText, Format('Сформирован паклист %u', [aPacklistNo]), mtInformation);
 end;

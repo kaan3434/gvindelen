@@ -161,6 +161,8 @@ type
     btnUnclaimed: TTBXItem;
     actProcessKomnR: TAction;
     btnParseInfoKomnr: TTBXItem;
+    actProcessArt: TAction;
+    btnInfoArt: TTBXItem;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -208,6 +210,7 @@ type
     procedure actPacklistByPeriodExecute(Sender: TObject);
     procedure btnUnclaimedClick(Sender: TObject);
     procedure actProcessKomnRExecute(Sender: TObject);
+    procedure actProcessArtExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -231,7 +234,7 @@ uses
   uExportCancellation, uExportOrder, uExportInvoices, uExportPackList,
   uParseArtN, uParseCancellation, uFormWizardReturn, uParseInfo2Pay,
   uExportToSite, uExportPrePackList, uMoneyBack, uReportReturnedOrderItems, 
-  uExportReturns, uParseInfoKomnr;
+  uExportReturns, uParseInfoKomnr, uParseArt;
 
 procedure TMainForm.actParseOrderXmlExecute(Sender: TObject);
 var
@@ -914,6 +917,20 @@ begin
     if vMessageId > 0 then
     begin
       ProcessInfoKomnr(vMessageId, trnWrite);
+      Application.ProcessMessages;
+    end;
+  until vMessageId = 0;
+end;
+
+procedure TMainForm.actProcessArtExecute(Sender: TObject);
+var
+  vMessageId: Integer;
+begin
+  repeat
+    vMessageId := dmOtto.MessageBusy(15);
+    if vMessageId > 0 then
+    begin
+      ProcessInfoArt(vMessageId, trnWrite);
       Application.ProcessMessages;
     end;
   until vMessageId = 0;

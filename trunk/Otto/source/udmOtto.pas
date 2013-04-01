@@ -635,7 +635,7 @@ procedure TdmOtto.AdressRead(ndAdress: TXmlNode; aAdressId: Integer;
 begin
   ObjectGet(ndAdress, aAdressId, aTransaction);
   if ndAdress.ReadAttributeInteger('PLACE_ID', 0) <> 0 then
-    PlaceRead(ndAdress.NodeByName('PLACE'), GetXmlAttrValue(ndAdress, 'PLACE_ID'), aTransaction);
+    PlaceRead(ndAdress.NodeFindOrCreate('PLACE'), GetXmlAttrValue(ndAdress, 'PLACE_ID'), aTransaction);
 end;
 
 procedure TdmOtto.AdressReadByClient(ndAdress: TXmlNode; aClientId: Integer;

@@ -35,7 +35,7 @@ uses
   uParseProtocol in 'uParseProtocol.pas',
   uExportInvoices in 'uExportInvoices.pas',
   uExportPackList in 'uExportPackList.pas',
-  uParseArtN in 'uParseArtN.pas',
+  uParseArt in 'uParseArt.pas',
   uParseInfo2Pay in 'uParseInfo2Pay.pas',
   GvVariant in '..\..\4Delphi\Gvindln\Source\GvVariant.pas',
   uDlgPayment in 'uDlgPayment.pas' {DlgManualPayment},
