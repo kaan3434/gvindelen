@@ -2345,13 +2345,13 @@ var
 begin
   Len:= Length(St);
   Result:= '';
-  Result:= LowerCase(St);
+  Result:= AnsiLowerCase(St);
   StartWord:= true;
   for i:= 1 to Len do
   begin
     if StartWord then
     begin
-      Result[i]:= UpCase(St[i]);
+      Result[i]:= AnsiUpperCase(Copy(St, i, 1))[1];
       StartWord:= false;
     end
     else

@@ -80,6 +80,11 @@ function IsInteger(Value: String): Boolean;
 function IsFloat(Value: String): Boolean;
 function VarNameLevel(VarName: String):integer;
 
+function FillPattern(aPattern: string; aValues: TVarList;
+  aClearUnknown: Boolean = true): String; overload;
+function FillPattern(aPattern, aValues: string;
+  aClearUnknown: Boolean = true): String; overload;
+
 implementation
 
 uses
@@ -770,6 +775,32 @@ begin
     UnpackArea(VarName, St);
   end;
   sl.Free;
+end;
+
+function FillPattern(aPattern: string; aValues: TVarList;
+  aClearUnknown: Boolean = true): String; overload;
+var
+  i: Integer;
+begin
+  Result:= aPattern;
+  for i:= 0 to aValues.Count-1 do
+    Result:= ReplaceAll(Result, '['+aValues.Names[i]+']', aValues.ValueFromIndex[i]);
+  if aClearUnknown then
+    Result:= DeleteAllBE(Result, '[', ']');
+end;
+
+function FillPattern(aPattern, aValues: string;
+  aClearUnknown: Boolean = true): String; overload;
+var
+  vl: TVarList;
+begin
+  vl:= TVarList.Create;
+  try
+    vl.Text:= aValues;
+    Result:= FillPattern(aPattern, vl, aClearUnknown);
+  finally
+    vl.Free;
+  end;
 end;
 
 end.
