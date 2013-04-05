@@ -111,7 +111,7 @@ begin
       BatchMoveFields2(ndOrder, ndOrders, 'PACKLIST_NO;PACKLIST_DT;PALETTE_NO');
       SetXmlAttr(ndOrder, 'PACKET_NO', sl[1]);
       SetXmlAttr(ndOrder, 'BAR_CODE', aTransaction.DefaultDatabase.QueryValue(
-        'select o_barcode from barcode_get(:order_id)',
+        'select o_barcode from barcode_gen(:order_id)',
         0, [GetXmlAttrValue(ndOrder, 'ID')], aTransaction));
 
       try

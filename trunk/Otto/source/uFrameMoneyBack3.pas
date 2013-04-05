@@ -27,8 +27,8 @@ type
     actMoneyBack: TAction;
     chkPayByFirm: TCheckBox;
     procedure actMoneyBackExecute(Sender: TObject);
-  private
     procedure rgMoneyBackKindClick(Sender: TObject);
+  private
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     { Private declarations }
@@ -67,11 +67,6 @@ begin
   edPersonalNum.Text:= GetXmlAttr(ndClient, 'PERSONAL_NUM');
 end;
 
-
-procedure TFrameMoneyBack3.rgMoneyBackKindClick(Sender: TObject);
-begin
-  grpBankMovement.Enabled:= rgMoneyBackKind.ItemIndex = 1;
-end;
 
 procedure TFrameMoneyBack3.Write;
 var
@@ -179,6 +174,12 @@ begin
   except
     trnWrite.Rollback;
   end;
+end;
+
+procedure TFrameMoneyBack3.rgMoneyBackKindClick(Sender: TObject);
+begin
+  inherited;
+  grpBankMovement.Enabled:= rgMoneyBackKind.ItemIndex = 1;
 end;
 
 end.

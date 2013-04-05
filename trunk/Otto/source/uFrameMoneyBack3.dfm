@@ -86,6 +86,7 @@ inherited FrameMoneyBack3: TFrameMoneyBack3
       #1055#1086#1095#1090#1086#1074#1099#1084' '#1087#1077#1088#1077#1074#1086#1076#1086#1084
       #1041#1072#1085#1082#1086#1074#1089#1082#1080#1084' '#1087#1077#1088#1077#1074#1086#1076#1086#1084' '#1085#1072' '#1089#1095#1077#1090)
     TabOrder = 2
+    OnClick = rgMoneyBackKindClick
   end
   object grpBankMovement: TJvGroupBox [4]
     Left = 0
