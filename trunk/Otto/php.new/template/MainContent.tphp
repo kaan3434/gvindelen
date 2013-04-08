@@ -1,0 +1,271 @@
+<div style="width: 980px; padding: 0px;" id="MainContent">
+      <div style="height:965px;position:relative;margin-bottom:15px">
+  <div class="boxWrapper">
+    <div style="position:absolute;top:0px;left:0px;width:965px;height:573px;" class="ga_teaser">
+          
+  
+  <script type="text/javascript" src="/assets/staticContent/24_otto-ru/129018_OutfitDerWoche_KW14_Multi_URL/js/jquery.cycle.all.js"></script>
+  <script type="text/javascript" src="/assets/staticContent/24_otto-ru/129018_OutfitDerWoche_KW14_Multi_URL/js/jquery.flowchart.js"></script>
+  <link media="all" href="/assets/staticContent/24_otto-ru/129018_OutfitDerWoche_KW14_Multi_URL/css/jquery.flowchart.css" type="text/css" rel="stylesheet">
+  
+  <script type="text/javascript">
+    $(document).ready(function() {
+      var data =  [
+              {
+                image: '/assets/staticContent/24_otto-ru/129018_OutfitDerWoche_KW14_Multi_URL/images/OT1396_1_1_965x573.jpg',
+                links: [
+                      {  
+                        url: 'http://www.otto.ru/productdetail/?st=651466249+&amp;sartnr=1&amp;itemId=10011011062&amp;opt=article ',
+                        text: 'Кардиган, Laura Scott',
+                        coords: '27,146,228,157'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/productdetail/?st=651466249+&amp;sartnr=1&amp;itemId=10011011062&amp;opt=article ',
+                        text: 'Кардиган, Laura Scott',
+                        coords: '130,367,134,325,134,287,145,248,163,242,196,241,209,242,235,244,238,257,225,277,223,288,226,306,216,339,211,348,218,360,222,361,229,363,220,378,186,383,156,386'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/productdetail/?st=419372249&amp;sartnr=1&amp;itemId=10008392937&amp;opt=article',
+                        text: 'Куртка Vero Moda, 2299 руб',
+                        coords: '26,131,214,142'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/productdetail/?st=419372249&amp;sartnr=1&amp;itemId=10008392937&amp;opt=article',
+                        text: 'Куртка Vero Moda, 2299 руб',
+                        coords: '34,352,19,299,35,256,38,230,64,212,87,212,114,229,127,253,127,280,131,293,130,354,101,327,68,328'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/product/10017302488/?shop=%D0%A2%D1%83%D1%84%D0%BB%D0%B8%2C+Bullboxer%2C+162003&amp;c=shoes-women-shoes-pumps&amp;itemId=10012870949',
+                        text: 'Туфли Buffalo Girl, 2799 руб',
+                        coords: '25,187,203,199'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/product/10017302488/?shop=%D0%A2%D1%83%D1%84%D0%BB%D0%B8%2C+Bullboxer%2C+162003&amp;c=shoes-women-shoes-pumps&amp;itemId=10012870949',
+                        text: 'Туфли Buffalo Girl, 2799 руб',
+                        coords: '168,393,165,451,275,456,274,380'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/productdetail/?st=792415249&amp;sartnr=1&amp;itemId=10014377709&amp;opt=article',
+                        text: 'Сумка Laura Scott, 7399 руб',
+                        coords: '26,161,214,171'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/productdetail/?st=792415249&amp;sartnr=1&amp;itemId=10014377709&amp;opt=article',
+                        text: 'Сумка Laura Scott, 7399 руб',
+                        coords: '228,300,253,256,275,261,294,285,318,292,316,367,258,368,228,360,219,346'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/productdetail/?st=793415249&amp;sartnr=1&amp;itemId=10014487132&amp;opt=article',
+                        text: 'Колье и Браслеты',
+                        coords: '27,176,149,184'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/productdetail/?st=793415249&amp;sartnr=1&amp;itemId=10014487132&amp;opt=article',
+                        text: 'Колье и Браслеты',
+                        coords: '35,355,23,394,25,454,157,453,161,399,112,363,88,333,67,336'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/productdetail/?st=143855449&amp;sartnr=1&amp;itemId=10019000366&amp;opt=article',
+                        text: 'Куртка Next, 3999 руб',
+                        coords: '676,131,827,143'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/productdetail/?st=143855449&amp;sartnr=1&amp;itemId=10019000366&amp;opt=article',
+                        text: 'Куртка Next, 3999 руб',
+                        coords: '668,396,676,230,720,210,756,216,774,236,778,287,778,334,777,369,752,364,744,343,716,339,703,339'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/productdetail/?st=025611249&amp;sartnr=1&amp;articleId=025611249&amp;opt=article',
+                        text: 'Сандалеты, 7699 руб',
+                        coords: '673,173,822,186'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/productdetail/?st=025611249&amp;sartnr=1&amp;articleId=025611249&amp;opt=article',
+                        text: 'Сандалеты, 7699 руб',
+                        coords: '708,366,662,425,670,454,706,466,772,468,764,377,730,369'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/productdetail/?st=%E2%84%96%3A+785655249&amp;sartnr=1&amp;itemId=10014145098&amp;opt=article',
+                        text: 'Сумка, 1799 руб',
+                        coords: '674,159,792,171'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/productdetail/?st=%E2%84%96%3A+785655249&amp;sartnr=1&amp;itemId=10014145098&amp;opt=article',
+                        text: 'Сумка, 1799 руб',
+                        coords: '841,222,838,278,874,301,915,294,953,272,943,226'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/productdetail/?st=255795249&amp;sartnr=1&amp;articleId=255795249&amp;opt=article',
+                        text: 'Часы Buffalo, 2799 руб',
+                        coords: '676,146,828,156'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/productdetail/?st=255795249&amp;sartnr=1&amp;articleId=255795249&amp;opt=article',
+                        text: 'Часы Buffalo, 2799 руб',
+                        coords: '780,222,784,339,832,337,837,263,836,218'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/productdetail/?st=786502249&amp;sartnr=1&amp;itemId=10014154202&amp;opt=article',
+                        text: 'Браслет и Кольцо',
+                        coords: '673,191,799,201'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/productdetail/?st=786502249&amp;sartnr=1&amp;itemId=10014154202&amp;opt=article',
+                        text: 'Браслет и Кольцо',
+                        coords: '852,311,835,366,775,388,775,432,815,445,948,421,958,334,948,289,909,304'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/product/10017504071/?shop=%D0%92%D1%8F%D0%B7%D0%B0%D0%BD%D0%BE%D0%B5+%D0%BF%D0%BB%D0%B0%D1%82%D1%8C%D0%B5%2C+Laura+Scott&amp;q=%D0%BF%D0%BB%D0%B0%D1%82%D1%8C%D0%B5%2C+Laura+Scott&amp;oq=%D0%BF%D0%BB%D0%B0%D1%82%D1%8C%D0%B5%2C+Laura+Scott&amp;ms=1&amp;itemId=10010671622',
+                        text: 'платье, Laura Scott',
+                        coords: '348,98,338,530,626,540,634,101'
+                      },
+                      {  
+                        url: 'http://www.otto.ru/dresses/categories-a-z/women-clothing/',
+                        text: 'на все платья',
+                        coords: '435,61,532,87'
+                      } 
+                    ]
+              },
+              {
+                image: '/assets/staticContent/24_otto-ru/129018_OutfitDerWoche_KW14_Multi_URL/images/OT1396_2_1_965x573.jpg',
+                links: [
+                      {
+                        url: 'http://www.otto.ru/funny-shirts/trends/women-clothing/',
+                        text: 'перейти к магазину Новогоднего декора',
+                        coords: '1,1,964,572'
+                      }
+                    ]
+              },
+              {
+                image: '/assets/staticContent/24_otto-ru/129018_OutfitDerWoche_KW14_Multi_URL/images/OT1396_3_1_965x573.jpg',
+                links: [
+                      {
+                        url: 'http://www.otto.ru/cardigans/categories-a-z/women-clothing/?filter.price=-1800.0&amp;ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Cardigans',
+                        text: 'перейти к магазину Новогоднего декора',
+                        coords: '1,1,964,572'
+                      }
+                    ]
+              },
+              {
+                image: '/assets/staticContent/24_otto-ru/129018_OutfitDerWoche_KW14_Multi_URL/images/OT1396_4_1_965x573.jpg',
+                links: [
+                      {
+                        url: 'http://www.otto.ru/occasions/women-clothing/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Glamorous',
+                        text: 'Женская мода',
+                        coords: '64,123,220,99'
+                      },
+                      {
+                        url: 'http://www.otto.ru/dresses/occasions/evening-wear/women-clothing/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Glamorous',
+                        text: 'Платья',
+                        coords: '63,177,158,155'
+                      },
+                      {
+                        url: 'http://www.otto.ru/shirts/occasions/evening-wear/women-clothing/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Glamorous',
+                        text: 'Кофты и футболки',
+                        coords: '64,217,244,193'
+                      },
+                      {
+                        url: 'http://www.otto.ru/shoes/occasions/evening-wear/women-clothing/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Glamorous',
+                        text: 'Туфли',
+                        coords: '63,258,155,234'
+                      },
+                      {
+                        url: 'http://www.otto.ru/occasions/men-clothing/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Glamorous',
+                        text: 'Мужская мода',
+                        coords: '63,325,225,302'
+                      },
+                      {
+                        url: 'http://www.otto.ru/suits-and-jackets/categories-a-z/men-clothing/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Glamorous',
+                        text: 'Костюмы и пиджаки',
+                        coords: '63,382,268,356'
+                      },
+                      {
+                        url: 'http://www.otto.ru/shirts/categories-a-z/men-clothing/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Glamorous',
+                        text: 'Рубашки',
+                        coords: '64,421,173,397'
+                      },
+                      {
+                        url: 'http://www.otto.ru/blazer/categories-a-z/men-clothing/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Glamorous',
+                        text: 'Пиджаки',
+                        coords: '64,461,179,437'
+                      }
+                    ]
+              }
+            ];
+      $('div#ottoruflow').flowchart(data);
+    });
+  </script>
+  
+  <div class="flowchart" id="ottoruflow"><div id="Flowchart_ottoruflow" style="position: relative; width: 965px; height: 573px;"><div class="imageflow" style="position: absolute; top: 0px; left: 0px; display: none; z-index: 4; opacity: 0; width: 965px; height: 573px;"><img width="965" height="573" border="0" style="display:block;" usemap="#Flowchart_ottoruflow_0" src="/assets/staticContent/24_otto-ru/129018_OutfitDerWoche_KW14_Multi_URL/images/OT1396_1_1_965x573.jpg"><map id="Flowchart_ottoruflow_0" name="Flowchart_ottoruflow_0"><area title="Кардиган, Laura Scott" alt="Кардиган, Laura Scott" href="http://www.otto.ru/productdetail/?st=651466249+&amp;sartnr=1&amp;itemId=10011011062&amp;opt=article " coords="27,146,228,157" shape="rect"><area title="Кардиган, Laura Scott" alt="Кардиган, Laura Scott" href="http://www.otto.ru/productdetail/?st=651466249+&amp;sartnr=1&amp;itemId=10011011062&amp;opt=article " coords="130,367,134,325,134,287,145,248,163,242,196,241,209,242,235,244,238,257,225,277,223,288,226,306,216,339,211,348,218,360,222,361,229,363,220,378,186,383,156,386" shape="poly"><area title="Куртка Vero Moda, 2299 руб" alt="Куртка Vero Moda, 2299 руб" href="http://www.otto.ru/productdetail/?st=419372249&amp;sartnr=1&amp;itemId=10008392937&amp;opt=article" coords="26,131,214,142" shape="rect"><area title="Куртка Vero Moda, 2299 руб" alt="Куртка Vero Moda, 2299 руб" href="http://www.otto.ru/productdetail/?st=419372249&amp;sartnr=1&amp;itemId=10008392937&amp;opt=article" coords="34,352,19,299,35,256,38,230,64,212,87,212,114,229,127,253,127,280,131,293,130,354,101,327,68,328" shape="poly"><area title="Туфли Buffalo Girl, 2799 руб" alt="Туфли Buffalo Girl, 2799 руб" href="http://www.otto.ru/product/10017302488/?shop=%D0%A2%D1%83%D1%84%D0%BB%D0%B8%2C+Bullboxer%2C+162003&amp;c=shoes-women-shoes-pumps&amp;itemId=10012870949" coords="25,187,203,199" shape="rect"><area title="Туфли Buffalo Girl, 2799 руб" alt="Туфли Buffalo Girl, 2799 руб" href="http://www.otto.ru/product/10017302488/?shop=%D0%A2%D1%83%D1%84%D0%BB%D0%B8%2C+Bullboxer%2C+162003&amp;c=shoes-women-shoes-pumps&amp;itemId=10012870949" coords="168,393,165,451,275,456,274,380" shape="poly"><area title="Сумка Laura Scott, 7399 руб" alt="Сумка Laura Scott, 7399 руб" href="http://www.otto.ru/productdetail/?st=792415249&amp;sartnr=1&amp;itemId=10014377709&amp;opt=article" coords="26,161,214,171" shape="rect"><area title="Сумка Laura Scott, 7399 руб" alt="Сумка Laura Scott, 7399 руб" href="http://www.otto.ru/productdetail/?st=792415249&amp;sartnr=1&amp;itemId=10014377709&amp;opt=article" coords="228,300,253,256,275,261,294,285,318,292,316,367,258,368,228,360,219,346" shape="poly"><area title="Колье и Браслеты" alt="Колье и Браслеты" href="http://www.otto.ru/productdetail/?st=793415249&amp;sartnr=1&amp;itemId=10014487132&amp;opt=article" coords="27,176,149,184" shape="rect"><area title="Колье и Браслеты" alt="Колье и Браслеты" href="http://www.otto.ru/productdetail/?st=793415249&amp;sartnr=1&amp;itemId=10014487132&amp;opt=article" coords="35,355,23,394,25,454,157,453,161,399,112,363,88,333,67,336" shape="poly"><area title="Куртка Next, 3999 руб" alt="Куртка Next, 3999 руб" href="http://www.otto.ru/productdetail/?st=143855449&amp;sartnr=1&amp;itemId=10019000366&amp;opt=article" coords="676,131,827,143" shape="rect"><area title="Куртка Next, 3999 руб" alt="Куртка Next, 3999 руб" href="http://www.otto.ru/productdetail/?st=143855449&amp;sartnr=1&amp;itemId=10019000366&amp;opt=article" coords="668,396,676,230,720,210,756,216,774,236,778,287,778,334,777,369,752,364,744,343,716,339,703,339" shape="poly"><area title="Сандалеты, 7699 руб" alt="Сандалеты, 7699 руб" href="http://www.otto.ru/productdetail/?st=025611249&amp;sartnr=1&amp;articleId=025611249&amp;opt=article" coords="673,173,822,186" shape="rect"><area title="Сандалеты, 7699 руб" alt="Сандалеты, 7699 руб" href="http://www.otto.ru/productdetail/?st=025611249&amp;sartnr=1&amp;articleId=025611249&amp;opt=article" coords="708,366,662,425,670,454,706,466,772,468,764,377,730,369" shape="poly"><area title="Сумка, 1799 руб" alt="Сумка, 1799 руб" href="http://www.otto.ru/productdetail/?st=%E2%84%96%3A+785655249&amp;sartnr=1&amp;itemId=10014145098&amp;opt=article" coords="674,159,792,171" shape="rect"><area title="Сумка, 1799 руб" alt="Сумка, 1799 руб" href="http://www.otto.ru/productdetail/?st=%E2%84%96%3A+785655249&amp;sartnr=1&amp;itemId=10014145098&amp;opt=article" coords="841,222,838,278,874,301,915,294,953,272,943,226" shape="poly"><area title="Часы Buffalo, 2799 руб" alt="Часы Buffalo, 2799 руб" href="http://www.otto.ru/productdetail/?st=255795249&amp;sartnr=1&amp;articleId=255795249&amp;opt=article" coords="676,146,828,156" shape="rect"><area title="Часы Buffalo, 2799 руб" alt="Часы Buffalo, 2799 руб" href="http://www.otto.ru/productdetail/?st=255795249&amp;sartnr=1&amp;articleId=255795249&amp;opt=article" coords="780,222,784,339,832,337,837,263,836,218" shape="poly"><area title="Браслет и Кольцо" alt="Браслет и Кольцо" href="http://www.otto.ru/productdetail/?st=786502249&amp;sartnr=1&amp;itemId=10014154202&amp;opt=article" coords="673,191,799,201" shape="rect"><area title="Браслет и Кольцо" alt="Браслет и Кольцо" href="http://www.otto.ru/productdetail/?st=786502249&amp;sartnr=1&amp;itemId=10014154202&amp;opt=article" coords="852,311,835,366,775,388,775,432,815,445,948,421,958,334,948,289,909,304" shape="poly"><area title="платье, Laura Scott" alt="платье, Laura Scott" href="http://www.otto.ru/product/10017504071/?shop=%D0%92%D1%8F%D0%B7%D0%B0%D0%BD%D0%BE%D0%B5+%D0%BF%D0%BB%D0%B0%D1%82%D1%8C%D0%B5%2C+Laura+Scott&amp;q=%D0%BF%D0%BB%D0%B0%D1%82%D1%8C%D0%B5%2C+Laura+Scott&amp;oq=%D0%BF%D0%BB%D0%B0%D1%82%D1%8C%D0%B5%2C+Laura+Scott&amp;ms=1&amp;itemId=10010671622" coords="348,98,338,530,626,540,634,101" shape="poly"><area title="на все платья" alt="на все платья" href="http://www.otto.ru/dresses/categories-a-z/women-clothing/" coords="435,61,532,87" shape="rect"></map></div><div class="imageflow" style="position: absolute; top: 0px; left: 0px; display: none; z-index: 4; opacity: 0; width: 965px; height: 573px;"><img width="965" height="573" border="0" style="display:block;" usemap="#Flowchart_ottoruflow_1" src="/assets/staticContent/24_otto-ru/129018_OutfitDerWoche_KW14_Multi_URL/images/OT1396_2_1_965x573.jpg"><map id="Flowchart_ottoruflow_1" name="Flowchart_ottoruflow_1"><area title="перейти к магазину Новогоднего декора" alt="перейти к магазину Новогоднего декора" href="http://www.otto.ru/funny-shirts/trends/women-clothing/" coords="1,1,964,572" shape="rect"></map></div><div class="imageflow" style="position: absolute; top: 0px; left: 0px; display: none; z-index: 4; opacity: 0; width: 965px; height: 573px;"><img width="965" height="573" border="0" style="display:block;" usemap="#Flowchart_ottoruflow_2" src="/assets/staticContent/24_otto-ru/129018_OutfitDerWoche_KW14_Multi_URL/images/OT1396_3_1_965x573.jpg"><map id="Flowchart_ottoruflow_2" name="Flowchart_ottoruflow_2"><area title="перейти к магазину Новогоднего декора" alt="перейти к магазину Новогоднего декора" href="http://www.otto.ru/cardigans/categories-a-z/women-clothing/?filter.price=-1800.0&amp;ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Cardigans" coords="1,1,964,572" shape="rect"></map></div><div class="imageflow" style="position: absolute; top: 0px; left: 0px; display: block; z-index: 5; opacity: 1; width: 965px; height: 573px;"><img width="965" height="573" border="0" style="display:block;" usemap="#Flowchart_ottoruflow_3" src="/assets/staticContent/24_otto-ru/129018_OutfitDerWoche_KW14_Multi_URL/images/OT1396_4_1_965x573.jpg"><map id="Flowchart_ottoruflow_3" name="Flowchart_ottoruflow_3"><area title="Женская мода" alt="Женская мода" href="http://www.otto.ru/occasions/women-clothing/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Glamorous" coords="64,123,220,99" shape="rect"><area title="Платья" alt="Платья" href="http://www.otto.ru/dresses/occasions/evening-wear/women-clothing/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Glamorous" coords="63,177,158,155" shape="rect"><area title="Кофты и футболки" alt="Кофты и футболки" href="http://www.otto.ru/shirts/occasions/evening-wear/women-clothing/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Glamorous" coords="64,217,244,193" shape="rect"><area title="Туфли" alt="Туфли" href="http://www.otto.ru/shoes/occasions/evening-wear/women-clothing/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Glamorous" coords="63,258,155,234" shape="rect"><area title="Мужская мода" alt="Мужская мода" href="http://www.otto.ru/occasions/men-clothing/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Glamorous" coords="63,325,225,302" shape="rect"><area title="Костюмы и пиджаки" alt="Костюмы и пиджаки" href="http://www.otto.ru/suits-and-jackets/categories-a-z/men-clothing/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Glamorous" coords="63,382,268,356" shape="rect"><area title="Рубашки" alt="Рубашки" href="http://www.otto.ru/shirts/categories-a-z/men-clothing/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Glamorous" coords="64,421,173,397" shape="rect"><area title="Пиджаки" alt="Пиджаки" href="http://www.otto.ru/blazer/categories-a-z/men-clothing/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Glamorous" coords="64,461,179,437" shape="rect"></map></div></div>
+    <div class="flowchart_controls" id="Flowchart_controls_ottoruflow" style="width: 120px;"><div class="flow_play" style="display: none;"></div><div class="flow_pause" style="display: block;"></div><div class="stop_me"></div><ul><li class=""><a href="#">1</a></li><li class=""><a href="#">2</a></li><li class=""><a href="#">3</a></li><li class="activeSlide"><a href="#">4</a></li></ul></div>
+    <div class="FlowchartButton FlowchartButtonLeft" style="display: none;"><img alt="" src="/assets/staticContent/24_otto-ru/129018_OutfitDerWoche_KW14_Multi_URL/images/arrow_left.gif"></div>
+    <div class="FlowchartButton FlowchartButtonRight" style="display: none;"><img alt="" src="/assets/staticContent/24_otto-ru/129018_OutfitDerWoche_KW14_Multi_URL/images/arrow_right.gif"></div>
+  </div>
+  
+</div>
+    <div style="position:absolute;top:588px;left:0px;width:965px;height:83px;" class="ga_teaser">
+          <map name="imagemap_qualitaet">
+<area shape="rect" coords="2,0,159,81" href="http://www.otto.ru/melrose/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Markenleiste_Melrose" alt="Melrose" title="Melrose">
+<area shape="rect" coords="157,0,317,79" href="http://www.otto.ru/next/fashion/brands/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Markenleiste_Next" alt="Next" title="Next">
+<area shape="rect" coords="322,1,505,80" href="http://www.otto.ru/tamaris/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Markenleiste_Tamaris" alt="Tamaris" title="Tamaris">
+<area shape="rect" coords="512,2,653,80" href="http://www.otto.ru/laura-scott/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Markenleiste_LauraScott" alt="Laura Scott" title="Laura Scott">
+<area shape="rect" coords="647,0,776,76" href="http://www.otto.ru/buffalo/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Markenleiste_Buffalo" alt="Buffalo" title="Buffalo">
+<area shape="rect" coords="795,4,946,81" href="http://www.otto.ru/heine/?ns_source=shop_ru.page&amp;ns_mchannel=internal_banner&amp;ns_campaign=internal&amp;ns_fee=0&amp;ns_linkname=HP_A_Markenleiste_Heine" alt="Heine" title="Heine">
+
+</map>
+<img src="/assets/staticContent/24_otto-ru/128913_Markenleiste_KW11_HP_A_Tracking/Markenleiste_grau.jpg" alt="" usemap="#imagemap_qualitaet">
+</div>
+    <div style="position:absolute;top:686px;left:0px;width:965px;height:279px;" class="ga_teaser">
+          
+
+
+
+
+<style type="text/css">&lt;!--
+.class42 A:link {text-decoration: none; font-size:6; color: #333333;}
+.class42 A:visited {text-decoration: none; font-size:6; color: #333333;}
+.class42 A:active {text-decoration: none; font-size:6; color: #333333;}
+.class42 A:hover {text-decoration: underline; font-size:6; color: black;}
+--&gt;</style>
+<table border="0" style="width: 965px; height: 377px;">
+<tbody>
+<tr>
+<td width="177" class="class42">
+<p><a href="http://www.otto.ru/women-clothing/"><img width="177" height="177" class="special" src="/assets/staticContent/24_otto-ru/129002_Quadratteaser_KW14/images/women_quadrat.jpg"><br> </a><a href="http://www.otto.ru/women-clothing/"><span><strong>&nbsp;Женская мода »</strong></span></a><br> <a href="http://www.otto.ru/jeans/categories-a-z/women-clothing/"><span>&nbsp;Джинсы »</span></a><br> <a href="http://www.otto.ru/waistcoats/categories-a-z/women-clothing/"><span>&nbsp;Жилеты »</span></a><br> <a href="http://www.otto.ru/blazer/categories-a-z/women-clothing/"><span>&nbsp;Блейзеры »</span></a></p>
+</td>
+<td width="10">&nbsp;</td>
+<td width="177" class="class42">
+<p><a href="http://www.otto.ru/swimwear/swimwear/"><img width="177" height="177" class="special" src="/assets/staticContent/24_otto-ru/129002_Quadratteaser_KW14/images/Bikini_Square.jpg"><br> </a><a href="http://www.otto.ru/swimwear/swimwear/"><span><strong>&nbsp;Пляжная мода »</strong></span></a><br> <a href="http://www.otto.ru/bikinis/swimwear/swimwear/"><span>&nbsp;Бикини »</span><br> </a><a href="http://www.otto.ru/beachwear/swimwear/swimwear/"><span>&nbsp;Пляжная одежда »</span><br> </a><a href="http://www.otto.ru/swimsuits/swimwear/swimwear/"><span>&nbsp;Купальники »</span><br> </a></p>
+</td>
+<td width="10">&nbsp;</td>
+<td width="177" class="class42">
+<p><a href="http://www.otto.ru/pumps/women-shoes/shoes/"><img width="177" height="177" class="special" src="/assets/staticContent/24_otto-ru/129002_Quadratteaser_KW14/images/Schuhe_181x181.jpg"><br> </a><a href="http://www.otto.ru/pumps/women-shoes/shoes/"><span><strong>&nbsp;Tуфли на каблуке »</strong></span></a><br> <a href="http://www.otto.ru/sandals-toe-post-sandals/women-shoes/shoes/"><span>&nbsp;Сандалии и сандалеты »</span><br> </a><a href="http://www.otto.ru/ballerina/women-shoes/shoes/"><span>&nbsp;Туфли-балетки »</span><br> </a><a href="http://www.otto.ru/melrose/top-brands/shoes/"><span>&nbsp;Melrose »</span><br> </a></p>
+</td>
+<td width="10">&nbsp;</td>
+<td width="177" class="class42">
+<p><a href="http://www.otto.ru/brands/"><img width="177" height="177" class="special" src="/assets/staticContent/24_otto-ru/129002_Quadratteaser_KW14/images/Marken_square.jpg"><br> </a><a href="http://www.otto.ru/laura-scott/"><span><strong>&nbsp;Laura Scott »</strong></span></a><br> <a href="http://www.otto.ru/melrose/"><span>&nbsp;Melrose »</span><br> </a><a href="http://www.otto.ru/next/fashion/brands/"><span>&nbsp;Next »</span><br> </a><a href="http://www.otto.ru/chillytime/"><span>&nbsp;Chillytime »</span><br> </a></p>
+</td>
+<td width="10">&nbsp;</td>
+<td width="177" class="class42">
+<p><a href="http://www.otto.ru/men-clothing/"><img width="177" height="177" class="special" src="/assets/staticContent/24_otto-ru/129002_Quadratteaser_KW14/images/men_Square.jpg"><br> </a><a href="http://www.otto.ru/men-clothing/"><span><strong>&nbsp;Мужская мода »</strong></span></a><br> <a href="http://www.otto.ru/jackets-and-coats/categories-a-z/men-clothing/"><span>&nbsp;куртки »</span><br> </a><a href="http://www.otto.ru/t-shirts/categories-a-z/men-clothing/"><span>&nbsp;футболки »</span><br> </a></p>
+</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+    </div>
+</div>
+<div class="FootNotes ">
+ 
+  <p class="Claim">
+            <span>
+              </span></p><h2>Модная одежда</h2>
+            
+          <p></p>
+        <p>
+            </p><h3 style="margin:0 0 14px 0;"><b>Мода и стиль</b></h3>
+          <p></p>
+        <p style="margin:0">Интернет-магазин OTTO предлагает Вам не только моду, но и стиль жизни: все самые современные тенденции - просто, удобно и надёжно!Благодаря сервису ОТТО можно обновить свой гардероб не выходя из дома и купить практически все необходимое, начиная от соблазнительного нижнего белья и заканчивая обувью и модными аксессуарами. Все, что касается моды, Вы можете найти в разделах женской, мужской и детской одежды. Широкий выбор брендов, таких как Esprit, S. Oliver, GEOX или Adidas не оставит Вас равнодушными. Более того, всем клиентам, которые заинтересованы в моде и последних тенденциях, мы предлагаем специальные акции и скидки на отдельные товары. Добро пожаловать в ОТТО!</p>
+        </div>
+</div>

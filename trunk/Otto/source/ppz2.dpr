@@ -48,7 +48,8 @@ uses
   uFrameMoneyBack3 in 'uFrameMoneyBack3.pas' {FrameMoneyBack3},
   uFormWizardMoneyBack3 in 'uFormWizardMoneyBack3.pas' {FormWizardBase1},
   uParseInfoKomnr in 'uParseInfoKomnr.pas',
-  uMain in 'uMain.pas' {MainForm};
+  uMain in 'uMain.pas' {MainForm},
+  uParsePaymentsBP in 'uParsePaymentsBP.pas';
 
 {$R *.res}
 

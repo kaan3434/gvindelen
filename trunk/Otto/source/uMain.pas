@@ -163,6 +163,8 @@ type
     btnParseInfoKomnr: TTBXItem;
     actProcessArt: TAction;
     btnInfoArt: TTBXItem;
+    actProcessPaymentBaltPost: TAction;
+    btnProcessPaymentBaltPost: TTBXItem;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actImportArticlesExecute(Sender: TObject);
@@ -211,6 +213,7 @@ type
     procedure btnUnclaimedClick(Sender: TObject);
     procedure actProcessKomnRExecute(Sender: TObject);
     procedure actProcessArtExecute(Sender: TObject);
+    procedure actProcessPaymentBaltPostExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -234,7 +237,7 @@ uses
   uExportCancellation, uExportOrder, uExportInvoices, uExportPackList,
   uParseArtN, uParseCancellation, uFormWizardReturn, uParseInfo2Pay,
   uExportToSite, uExportPrePackList, uMoneyBack, uReportReturnedOrderItems, 
-  uExportReturns, uParseInfoKomnr, uParseArt;
+  uExportReturns, uParseInfoKomnr, uParseArt, uParsePaymentsBP;
 
 procedure TMainForm.actParseOrderXmlExecute(Sender: TObject);
 var
@@ -931,6 +934,20 @@ begin
     if vMessageId > 0 then
     begin
       ProcessInfoArt(vMessageId, trnWrite);
+      Application.ProcessMessages;
+    end;
+  until vMessageId = 0;
+end;
+
+procedure TMainForm.actProcessPaymentBaltPostExecute(Sender: TObject);
+var
+  vMessageId: Integer;
+begin
+  repeat
+    vMessageId := dmOtto.MessageBusy(16);
+    if vMessageId > 0 then
+    begin
+      ProcessPaymentBaltPost(vMessageId, trnWrite);
       Application.ProcessMessages;
     end;
   until vMessageId = 0;

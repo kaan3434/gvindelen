@@ -1,11 +1,11 @@
-unit uParsePayments;
+unit uParsePaymentsBP;
 
 interface
 
 uses
   NativeXml, FIBDatabase, pFIBDatabase;
 
-procedure ProcessPayment(aMessageId: Integer; aTransaction: TpFIBTransaction);
+procedure ProcessPaymentBaltPost(aMessageId: Integer; aTransaction: TpFIBTransaction);
 
 implementation
 
@@ -18,9 +18,10 @@ procedure ParsePaymentLine(aMessageId, LineNo: Integer; aLine: string;
 var
   sl: TStringList;
   PayDate: TDateTime;
-  PaymentId, OrderId, CostByr, CostEur: Variant;
+  PaymentId, OrderId, OrderMoneyId: Variant;
   Xml: TNativeXml;
   ndOrder, ndAccount, ndOrderMoneys, ndOrderMoney: TXmlNode;
+
 begin
   ndOrder:= ndOrders.NodeNew('ORDER');
   ndAccount:= ndOrder.NodeNew('ACCOUNT');
@@ -31,60 +32,57 @@ begin
     sl.DelimitedText:= '"'+ReplaceAll(aLine, ';', '";"')+'"';
 
     OrderId:= aTransaction.DefaultDatabase.QueryValue(
-      'select order_id from orders where order_code like :order_code',
-      0, [sl[3]], aTransaction);
+      'select order_id from orders where bar_code like :bar_code',
+      0, [sl[7]], aTransaction);
     if OrderId <> null then
     begin
       dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
       dmOtto.ObjectGet(ndAccount, GetXmlAttrValue(ndOrder, 'ACCOUNT_ID'), aTransaction);
       dmOtto.OrderMoneysGet(ndOrderMoneys, OrderId, aTransaction);
 
-      PayDate:= DateTimeStrEval('DD.MM.YYYY', sl[0]);
+      sl[5]:= FilterString(sl[5], '0123456789');
+      sl[6]:= FilterString(sl[6], '0123456789,.');
+      SetXmlAttrAsMoney(ndAccount, 'AMOUNT_BYR', sl[5]);
+      SetXmlAttrAsMoney(ndAccount, 'AMOUNT_EUR', sl[6]);
 
-      CostByr:= aTransaction.DefaultDatabase.QueryValue(
-        'select cost_byr '+
-        'from v_order_summary os '+
-        'where os.order_id = :order_id',
-        0, [OrderId], aTransaction);
-      CostEur:= aTransaction.DefaultDatabase.QueryValue(
-        'select cost_eur '+
-        'from v_order_summary os '+
-        'where os.order_id = :order_id',
-        0, [OrderId], aTransaction);
-
-      SetXmlAttrAsMoney(ndOrder, 'COST_BYR', CostByr);
-      SetXmlAttrAsMoney(ndOrder, 'COST_EUR', CostEur);
-      SetXmlAttrAsMoney(ndAccount, 'AMOUNT_BYR', sl[1]);
-
-      ndOrderMoney:= ndOrderMoneys.NodeByAttributeValue('ORDERMONEY', 'AMOUNT_BYR', sl[1], false);
-      if ndOrderMoney <> nil then
-      begin
+      // получаем OrderMoney_Id зачисления без движения по счету
+      try
+        OrderMoneyId:= aTransaction.DefaultDatabase.QueryValue(
+          'select om.ordermoney_id from ordermoneys om '+
+          '  left join accopers ao on (ao.ordermoney_id = om.ordermoney_id) '+
+          'where om.order_id = :order_id '+
+          '  and om.amount_eur > 0 '+
+          '  and ao.accoper_id is null',
+          0, [OrderId], aTransaction);
+        if OrderMoneyId <> null then
+        begin
+          ndOrderMoney:= ndOrderMoneys.NodeByAttributeValue('ORDERMONEY', 'ID', OrderMoneyId, false);
+          aTransaction.ExecSQLImmediate(Format(
+            'delete from ordermoneys om where om.ordermoney_id = %u', [Integer(OrderMoneyId)]));
+          dmOtto.Notify(aMessageId,
+            '[LINE_NO]. Заявка [ORDER_CODE] [BAR_CODE]. Удалено фиктивное зачисление на [AMOUNT_BYR] BYR [AMOUNT_EUR] EUR',
+            'I',
+            XmlAttrs2Vars(ndOrder, 'ORDER_CODE;BAR_CODE',
+            XmlAttrs2Vars(ndOrderMoney, 'AMOUNT_EUR;AMOUNT_BYR',
+            Value2Vars(LineNo, 'LINE_NO'))));
+        end;
+      except
         dmOtto.Notify(aMessageId,
-          '[LINE_NO]. Повторное зачисление суммы [AMOUNT_BYR] BYR на заявку [ORDER_CODE] c задолженностью [COST_BYR]. Сумма не зачислена.',
+          '[LINE_NO]. Заявка [ORDER_CODE] [BAR_CODE]. Не могу идентифицировать фиктивное зачисление. Сумма не зачислена',
           'E',
-          XmlAttrs2Vars(ndOrder, 'ORDER_CODE;COST_BYR',
-          XmlAttrs2Vars(ndAccount, 'AMOUNT_BYR',
-          Value2Vars(LineNo, 'LINE_NO'))));
+          XmlAttrs2Vars(ndOrder, 'ORDER_CODE;BAR_CODE',
+          Value2Vars(LineNo, 'LINE_NO')));
         Exit;
       end;
 
-      if not FlagPresent('PAYINABLE', ndOrder, 'STATUS_FLAG_LIST') then
+      ndOrderMoney:= ndOrderMoneys.NodeByAttributeValue('ORDERMONEY', 'AMOUNT_BYR', sl[5], false);
+      if ndOrderMoney <> nil then
       begin
         dmOtto.Notify(aMessageId,
-          '[LINE_NO]. Попытка зачисления суммы [AMOUNT_BYR] BYR на заявку [ORDER_CODE] в статусе [STATUS_NAME]',
-          'W',
-          XmlAttrs2Vars(ndOrder, 'ORDER_CODE;STATUS_NAME',
-          XmlAttrs2Vars(ndAccount, 'AMOUNT_BYR',
-          Value2Vars(LineNo, 'LINE_NO'))));
-      end;
-
-      if GetXmlAttrAsMoney(ndOrder, 'COST_BYR') <> GetXmlAttrAsMoney(ndAccount, 'AMOUNT_BYR') then
-      begin
-        dmOtto.Notify(aMessageId,
-          '[LINE_NO]. Попытка зачисления суммы [AMOUNT_BYR] BYR на заявку [ORDER_CODE] c задолженностью [COST_BYR]. Сумма не зачислена',
+          '[LINE_NO]. Повторное зачисление суммы [AMOUNT_BYR] BYR [AMOUNT_EUR] EUR на заявку [ORDER_CODE] [BAR_CODE] c задолженностью [COST_BYR] BYR [COST_EUR] EUR. Сумма не зачислена',
           'E',
-          XmlAttrs2Vars(ndOrder, 'ORDER_CODE;COST_BYR',
-          XmlAttrs2Vars(ndAccount, 'AMOUNT_BYR',
+          XmlAttrs2Vars(ndOrder, 'ORDER_CODE;COST_BYR;COST_EUR;BAR_CODE',
+          XmlAttrs2Vars(ndAccount, 'AMOUNT_BYR;AMOUNT_EUR',
           Value2Vars(LineNo, 'LINE_NO'))));
         Exit;
       end;
@@ -96,27 +94,27 @@ begin
         dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
 
         dmOtto.Notify(aMessageId,
-          '[LINE_NO]. Сумма [AMOUNT_BYR] BYR зачислена на заявку [ORDER_CODE]. Статус заявки - [STATUS_NAME]',
+          '[LINE_NO]. Сумма [AMOUNT_BYR] BYR [AMOUNT_EUR] EUR зачислена на заявку [ORDER_CODE] [BAR_CODE]. Статус заявки - [STATUS_NAME]',
           'I',
-          XmlAttrs2Vars(ndOrder, 'ORDER_CODE;STATUS_NAME',
-          Strings2Vars(sl, 'AMOUNT_BYR=1',
+          XmlAttrs2Vars(ndOrder, 'ORDER_CODE;STATUS_NAME;BAR_CODE',
+          Strings2Vars(sl, 'AMOUNT_BYR=5;AMOUNT_EUR=6',
           Value2Vars(LineNo, 'LINE_NO'))));
       except
         on E: Exception do
           dmOtto.Notify(aMessageId,
-            '[LINE_NO]. Сумма [AMOUNT_BYR] BYR. Заявка [ORDER_CODE]. [ERROR_TEXT]',
+            '[LINE_NO]. Сумма [AMOUNT_BYR] BYR [AMOUNT_EUR] EUR. Заявка [ORDER_CODE] [BAR_CODE]. [ERROR_TEXT]',
             'E',
-            XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
-            XmlAttrs2Vars(ndAccount, 'AMOUNT_BYR',
+            XmlAttrs2Vars(ndOrder, 'ORDER_CODE;BAR_CODE',
+            XmlAttrs2Vars(ndAccount, 'AMOUNT_BYR;AMOUNT_EUR',
             Value2Vars(LineNo, 'LINE_NO',
             Value2Vars(DeleteChars(e.Message, #10#13), 'ERROR_TEXT')))));
       end;
     end
     else
       dmOtto.Notify(aMessageId,
-        '[LINE_NO]. Сумма [AMOUNT_BYR] BYR. Неизвестная заявка [ORDER_CODE]',
+        '[LINE_NO]. Сумма [AMOUNT_BYR] BYR, [AMOUNT_EUR] EUR. Неизвестная заявка [BAR_CODE]',
         'E',
-        Strings2Vars(sl, 'ORDER_CODE=3;AMOUNT_BYR=1',
+        Strings2Vars(sl, 'BAR_CODE=7;AMOUNT_BYR=5;AMOUNT_EUR=6',
         Value2Vars(LineNo, 'LINE_NO')));
   finally
     sl.Free;
@@ -147,7 +145,7 @@ begin
       try
         Lines.LoadFromFile(Path['Messages.In']+MessageFileName);
         dmOtto.InitProgress(Lines.Count, Format('Обработка файла %s ...', [MessageFileName]));
-        For LineNo:= 0 to Lines.Count - 1 do
+        For LineNo:= 1 to Lines.Count - 1 do
         begin
           ParsePaymentLine(aMessageId, LineNo+1, Lines[LineNo], ndOrders, aTransaction);
           dmOtto.StepProgress;
@@ -172,7 +170,7 @@ begin
   end
 end;
 
-procedure ProcessPayment(aMessageId: Integer; aTransaction: TpFIBTransaction);
+procedure ProcessPaymentBaltPost(aMessageId: Integer; aTransaction: TpFIBTransaction);
 var
   aXml: TNativeXml;
 begin

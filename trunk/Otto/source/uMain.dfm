@@ -78,6 +78,9 @@ object MainForm: TMainForm
         object btnInfoArt: TTBXItem
           Action = actProcessArt
         end
+        object btnProcessPaymentBaltPost: TTBXItem
+          Action = actProcessPaymentBaltPost
+        end
       end
       object subExportActions: TTBXSubmenuItem
         Caption = #1048#1089#1093#1086#1076#1103#1097#1080#1077
@@ -484,6 +487,11 @@ object MainForm: TMainForm
       Category = 'Import'
       Caption = 'info_XXXXXXXX_art_YYY.txt'
       OnExecute = actProcessArtExecute
+    end
+    object actProcessPaymentBaltPost: TAction
+      Category = 'Import'
+      Caption = #1053#1072#1083#1086#1078#1077#1085#1085#1099#1077' '#1087#1083#1072#1090#1077#1078#1080
+      OnExecute = actProcessPaymentBaltPostExecute
     end
   end
   object imgListMainMenu: TPngImageList
