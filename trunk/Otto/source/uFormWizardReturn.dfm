@@ -1,6 +1,6 @@
 inherited FormWizardReturn: TFormWizardReturn
-  Left = 174
-  Top = 61
+  Left = 280
+  Top = 264
   ActiveControl = wzWPage
   Caption = 'FormWizardReturn'
   OnCreate = FormCreate

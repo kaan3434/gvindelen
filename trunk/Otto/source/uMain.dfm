@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 341
-  Top = 135
+  Left = 197
+  Top = 265
   Width = 845
   Height = 512
   Caption = 'PPZ'
@@ -24,8 +24,8 @@ object MainForm: TMainForm
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 829
-    Height = 69
+    Width = 837
+    Height = 65
     object tbrMain: TTBXToolbar
       Left = 0
       Top = 0
@@ -238,7 +238,7 @@ object MainForm: TMainForm
     end
     object barInfo: TTBXToolbar
       Left = 0
-      Top = 49
+      Top = 47
       Caption = 'barInfo'
       TabOrder = 1
       object lblBYR2EUR: TTBXLabelItem
@@ -247,16 +247,16 @@ object MainForm: TMainForm
   end
   object sbMain: TTBXStatusBar
     Left = 0
-    Top = 432
-    Width = 829
+    Top = 436
+    Width = 837
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
   end
   object pbMain: TProgressBar
     Left = 0
-    Top = 415
-    Width = 829
+    Top = 419
+    Width = 837
     Height = 17
     Align = alBottom
     TabOrder = 1

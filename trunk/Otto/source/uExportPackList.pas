@@ -104,7 +104,7 @@ begin
     tblCons['REGION']:= Translit(GetXmlAttr(ndPlace, 'AREA_NAME', '', ' р-н., ')+
                            GetXmlAttr(ndPlace, 'REGION_NAME', '', ' обл.'));
 
-    tblCons['TEL']:= ReplaceAll(replaceAll(GetXmlAttr(ndClient, 'MOBILE_PHONE', '+375'), '+3750', '+375'), '+', '');
+    tblCons['TEL']:= GetMobilePhone(GetXmlAttr(ndClient, 'MOBILE_PHONE', '+375'));
     tblCons['COSTBYR']:= aTransaction.DefaultDatabase.QueryValue(
       'select round(cast(:cost_eur as money_eur) * cast(:byr2eur as value_integer), -1) from rdb$database',
       0, [GetXmlAttrValue(ndOrderItem, 'COST_EUR'), GetXmlAttrValue(ndOrder, 'BYR2EUR')], aTransaction);
