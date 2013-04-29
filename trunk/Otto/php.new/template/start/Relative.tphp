@@ -1,0 +1,30 @@
+<div style="z-index: 150;" class="Relative">
+
+    <script type="text/javascript">
+$(document).ready(function () {
+  $(".BClayWrap").each(function(){
+    if(this.id != '') {
+      shopAction.simpleAjaxRequest('/ajax/breadCrumbNavigationContent/?catId='+ this.id, this.id, false);
+    }
+  });
+});
+</script>
+<!--#MainContent#-->
+
+    <br class="ClearBoth">
+    <br class="ClearBoth">
+    <div class="lineSep"></div>
+    <!--#Footer1#--> 
+    
+    <!--#MNL2/10#-->
+    <!--#MNL2/4#-->
+    <!--#MNL2/7#-->
+    <!--#MNL2/11#-->
+    <!--#MNL2/6#-->
+    <!--#MNL2/1#-->
+    <!--#MNL2/3#-->
+    <!--#MNL2/2#-->
+    <!--#MNL2/5#-->
+    <!--#MNL2/8#-->
+    <!--#MNL2/9#-->
+</div>

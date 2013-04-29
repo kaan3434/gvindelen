@@ -1,0 +1,129 @@
+/* nmStyles - custom styles for RU*/
+
+
+/* START - myOtto Leftnav Last Visited Items*/
+.NavigationBox {
+  margin:0;
+}
+
+.NavigationBox div.Wrapper {
+  overflow:hidden;
+  padding:15px 0;
+}
+
+.NavigationBox div.Wrapper h2{
+  margin:0 0 15px;
+}
+
+.NavigationBox div.Wrapper h2 a{
+  font-size:22px;
+  font-weight:normal;
+  line-height:23px;
+  text-decoration:none;
+  color:#E43524;
+}
+
+.NavigationBox div.Wrapper span.NavigationBoxItems{
+  display:block;
+  font-size:13px;
+  margin:0 0 4px;
+}
+
+.NavigationBox div.Wrapper span.NavigationBoxItems a {
+  color:#000000;
+}
+/* END - myOtto Leftnav Last Visited Items*/
+
+/* START - myOtto Last Visited Items Layer*/
+
+#content div.ModalBoxContent {
+  width:745px;
+  height:300px;
+  overflow-y:scroll;
+  overflow-x:hidden;
+}
+
+#content div.ModalBoxContent div.Wrapper {
+  margin:20px;
+}
+
+#content div.ModalBoxContent div.Wrapper div.detailHeadline {
+  background:none repeat scroll 0 0 #C7E2F7;
+  color:#3797D1;
+  font-size:16px;
+  width:450px;
+  height:25px;
+  margin:0;
+  padding-left:30px;
+  padding-top:5px;
+}
+
+#content div.ModalBoxContent div.Wrapper div.Indent{
+  margin:0 0 20px 30px;
+}
+
+#content div.ModalBoxContent div.Wrapper div.Indent div.pictureBigLeft {
+  float:left;
+  margin-right:15px;
+  overflow:hidden;
+  width:90px;
+}
+
+#content div.ModalBoxContent td.Price {
+  color:#0089C0;
+  font-weight:700;
+  padding-right:20px;
+  text-align:right;
+  vertical-align:top;
+}
+
+#layer div.headline  {
+  font-size:24px;
+  height:24px;
+  margin-left:15px;
+}
+
+.ErrorBorder, #recommend .ErrorBorder {
+	border: 1px solid red;	
+}
+
+.ErrorInfo, #recommend .ErrorInfo {
+	margin: .5em;
+	padding: .5em;
+	border: solid 2px red;
+	}
+
+/* END - myOtto Last Visited Items Layer*/
+
+#competition #content #basket .stock {
+  color: #198504;
+  font-weight: bold;
+}
+
+#competition #content #basket .not_in_stock {
+  color: red;
+  font-weight: bold;
+}
+
+#competition #content #basket .temp_not_in_stock {
+  color: #FBB100;
+  font-weight: bold;
+}
+
+#pdaDetail .pdaContent .contentRight .stockamount .not_in_stock {
+  color: red;
+  font-weight: bold;
+}
+
+.categoryteaser #textcontainer .text_info .oldPrice {
+  font-size: 14px;
+  text-decoration: line-through;
+}
+
+.categoryteaser #textcontainer .text_info .newPrice span {
+  background-color: #FFFFFF;
+  color: #E22F19;
+  font-size: 13px;
+}
+
+

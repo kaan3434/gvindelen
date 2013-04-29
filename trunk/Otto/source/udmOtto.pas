@@ -692,19 +692,6 @@ begin
     0, [aObjectSign, aStatusSign]);
 end;
 
-//function TdmOtto.GetStatusByFlag(aNode: TXmlNode; aFlagSign: string): Variant;
-//var
-//  ObjectSign: string;
-//  StatusId: Variant;
-//begin
-//  ObjectSign:= aNode.Name;
-//  StatusId:= qryStatuses.Lookup('OBJECT_SIGN;FLAG_SIGN', VarArrayOf([ObjectSign, aFlagSign]), 'STATUS_ID');
-//  if VarIsNull(StatusId) then
-//    Result:= GetXmlAttrValue(aNode, 'STATUS_ID')
-//  else
-//    Result:= StatusId;
-//end;
-
 function TdmOtto.SettingGet(aTransaction: TpFIBTransaction; aSettingSign: string): variant;
 begin
   result:= dbOtto.QueryValue('select o_value from setting_get(:setting_sign)',

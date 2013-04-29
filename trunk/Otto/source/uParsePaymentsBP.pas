@@ -59,12 +59,19 @@ begin
           ndOrderMoney:= ndOrderMoneys.NodeByAttributeValue('ORDERMONEY', 'ID', OrderMoneyId, false);
           aTransaction.ExecSQLImmediate(Format(
             'delete from ordermoneys om where om.ordermoney_id = %u', [Integer(OrderMoneyId)]));
+          aTransaction.ExecSQLImmediate(Format(
+            'update orders o '+
+            'set o.cost_byr = (select o_money_byr from money_eur2byr(o.cost_eur, o.byr2eur)) '+
+            'where o.order_id = %s', [OrderId]));
           dmOtto.Notify(aMessageId,
             '[LINE_NO]. Заявка [ORDER_CODE] [BAR_CODE]. Удалено фиктивное зачисление на [AMOUNT_BYR] BYR [AMOUNT_EUR] EUR',
             'I',
             XmlAttrs2Vars(ndOrder, 'ORDER_CODE;BAR_CODE',
             XmlAttrs2Vars(ndOrderMoney, 'AMOUNT_EUR;AMOUNT_BYR',
             Value2Vars(LineNo, 'LINE_NO'))));
+          dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
+          ndOrderMoneys.Clear;
+          dmOtto.OrderMoneysGet(ndOrderMoneys, OrderId, aTransaction);
         end;
       except
         dmOtto.Notify(aMessageId,
@@ -147,7 +154,8 @@ begin
         dmOtto.InitProgress(Lines.Count, Format('Обработка файла %s ...', [MessageFileName]));
         For LineNo:= 1 to Lines.Count - 1 do
         begin
-          ParsePaymentLine(aMessageId, LineNo+1, Lines[LineNo], ndOrders, aTransaction);
+          if CopyFront4(Lines[LineNo][1], ';') <> '' then
+            ParsePaymentLine(aMessageId, LineNo+1, Lines[LineNo], ndOrders, aTransaction);
           dmOtto.StepProgress;
         end;
       finally

@@ -421,6 +421,7 @@ begin
       Application.ProcessMessages;
     end;
   until vMessageId = 0;
+  dmOtto.MessageRelease(7);
 end;
 
 procedure TMainForm.actProcessArtNExecute(Sender: TObject);
@@ -435,6 +436,7 @@ begin
       Application.ProcessMessages;
     end;
   until vMessageId = 0;
+  dmOtto.MessageRelease(9);
 end;
 
 procedure TMainForm.actProcessCancellationExecute(Sender: TObject);
@@ -449,6 +451,7 @@ begin
       Application.ProcessMessages;
     end;
   until vMessageId = 0;
+  dmOtto.MessageRelease(8);
 end;
 
 procedure TMainForm.actProcessInfo2PayExecute(Sender: TObject);
@@ -463,6 +466,7 @@ begin
       Application.ProcessMessages;
     end;
   until vMessageId = 0;
+  dmOtto.MessageRelease(10);
 end;
 
 
@@ -490,7 +494,7 @@ begin
       begin
         // провер€ем зарегистрирован ли файл
         MessageId:= trnTimer.DefaultDatabase.QueryValue(
-          'select m.message_id from messages m where m.file_name = :file_name',
+          'select m.message_id from messages m where lower(m.file_name) = lower(:file_name)',
           0, [ExtractFileName(sl[i])], trnTimer);
         // ≈сли зарегистрирован, провер€ем статус обработки
         if MessageId <> null then

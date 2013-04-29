@@ -1,0 +1,17 @@
+	<link href="/assets/js/SkitterSlideShow/css/styles.css" type="text/css" media="all" rel="stylesheet" />
+
+	<!-- Skitter Styles -->
+	<link href="/assets/js/SkitterSlideShow/css/skitter.styles.css" type="text/css" media="all" rel="stylesheet" />
+	
+	<!-- Skitter JS -->
+	<script type="text/javascript" language="javascript" src="/assets/js/SkitterSlideShow/js/jquery-1.6.3.min.js"></script>
+	<script type="text/javascript" language="javascript" src="/assets/js/SkitterSlideShow/js/jquery.easing.1.3.js"></script>
+	<script type="text/javascript" language="javascript" src="/assets/js/SkitterSlideShow/js/jquery.animate-colors-min.js"></script>/
+	<script type="text/javascript" language="javascript" src="/assets/js/SkitterSlideShow/js/jquery.skitter.min.js"></script>
+	
+	<!-- Init Skitter -->
+  <script type="text/javascript" language="javascript">
+    $(document).ready(function() {
+      $(".box_skitter_large").skitter({ interval: 15000 });
+    });
+  </script>

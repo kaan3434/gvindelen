@@ -13,12 +13,15 @@ uses
   Classes, SysUtils, GvStr, udmOtto, Variants, GvNativeXml,
   Dialogs, Controls, GvDtTm;
 
+var
+  PayInDeltaByr : Integer;
+
 procedure ParsePaymentLine(aMessageId, LineNo: Integer; aLine: string;
   ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
   sl: TStringList;
   PayDate: TDateTime;
-  PaymentId, OrderId, CostByr, CostEur: Variant;
+  PaymentId, OrderId: Variant;
   Xml: TNativeXml;
   ndOrder, ndAccount, ndOrderMoneys, ndOrderMoney: TXmlNode;
 begin
@@ -41,19 +44,6 @@ begin
 
       PayDate:= DateTimeStrEval('DD.MM.YYYY', sl[0]);
 
-      CostByr:= aTransaction.DefaultDatabase.QueryValue(
-        'select cost_byr '+
-        'from v_order_summary os '+
-        'where os.order_id = :order_id',
-        0, [OrderId], aTransaction);
-      CostEur:= aTransaction.DefaultDatabase.QueryValue(
-        'select cost_eur '+
-        'from v_order_summary os '+
-        'where os.order_id = :order_id',
-        0, [OrderId], aTransaction);
-
-      SetXmlAttrAsMoney(ndOrder, 'COST_BYR', CostByr);
-      SetXmlAttrAsMoney(ndOrder, 'COST_EUR', CostEur);
       SetXmlAttrAsMoney(ndAccount, 'AMOUNT_BYR', sl[1]);
 
       ndOrderMoney:= ndOrderMoneys.NodeByAttributeValue('ORDERMONEY', 'AMOUNT_BYR', sl[1], false);
@@ -78,7 +68,8 @@ begin
           Value2Vars(LineNo, 'LINE_NO'))));
       end;
 
-      if GetXmlAttrAsMoney(ndOrder, 'COST_BYR') <> GetXmlAttrAsMoney(ndAccount, 'AMOUNT_BYR') then
+
+      if Abs(GetXmlAttrValue(ndOrder, 'COST_BYR', 0)-GetXmlAttrValue(ndAccount, 'AMOUNT_BYR', 0)) > PayInDeltaByr then
       begin
         dmOtto.Notify(aMessageId,
           '[LINE_NO]. Попытка зачисления суммы [AMOUNT_BYR] BYR на заявку [ORDER_CODE] c задолженностью [COST_BYR]. Сумма не зачислена',
@@ -176,6 +167,7 @@ procedure ProcessPayment(aMessageId: Integer; aTransaction: TpFIBTransaction);
 var
   aXml: TNativeXml;
 begin
+  PayInDeltaByr:= dmOtto.SettingGet(aTransaction, 'PAYIN_DELTA_BYR');
   aXml:= TNativeXml.CreateName('MESSAGE');
   try
     ParsePayment(aMessageId, aXml.Root, aTransaction);

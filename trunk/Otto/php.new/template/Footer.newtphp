@@ -1,0 +1,127 @@
+<div class="Footer">
+  <div class="l_1 listWrap">
+      <ul class="l_1_1">
+        <li class="head">Подписка</li>
+        <li>
+          <form method="post" name="subscribeNewsletter" action="/myOtto/newsletterSubscribe/">
+  <div class="nl_wrap">
+    <input type="text" title="Ваш e-mail" class="Text" name="emailSubscribe" value="" style="color: rgb(153, 153, 153);">
+    <input type="image" name="submit" class="submit Image" src="/assets/general/images/arrow/dbl_arrow_right_glossy.png">
+  </div>
+  <input type="checkbox" name="acceptPrivacyTerms" value="1" class="Checkbox">
+  <span class="small">
+    Да, я хочу получать информационную рассылку от ОТТО <a href="javascript:shopAction.openPanel('/privacyComplete/', 'Защита данных','807','425');">защита персональных данных</a>.</span>
+</form>
+</li>
+      </ul>
+      <ul class="l_1_2">
+        <li class="head">Наши каталоги</li>
+        <li><a href="/catalogorder/" rel="nofollow">Заказать каталог бесплатно</a></li>
+        <li><a href="/directorder/" rel="nofollow">быстрый заказ</a></li>
+      </ul>
+  </div>
+  
+  <div class="l_2 listWrap">
+    <ul class="l_2_1">
+      <li class="head">Помощь</li>
+      <li><a href="/service/delivery/" rel="nofollow">Доставка</a></li>
+      <li><a href="/service/payment/" rel="nofollow">Оплата</a></li>
+      <li><a href="/service/bodyindex/" rel="nofollow">Личный стилист</a></li>
+      <li><a href="/service/faq/" rel="nofollow">FAQ</a></li>
+    </ul>
+  </div>
+  
+  <div class="l_3 listWrap">
+      <ul class="l_3_1">
+        <li class="head">Контакты</li>
+        <li>Телефонная служба:</li>
+        <li>(495) 755-95-81</li>
+      </ul>
+      <ul class="l_3_2">
+        <li class="head"></li>
+        <li><a href="/service/contact/" rel="nofollow">Отправить сообщение</a></li>
+        <li><a href="/service/contact/" rel="nofollow">Почтовый адрес</a></li>
+      </ul>
+  </div>
+  
+  <div class="l_4 listWrap">
+    <ul class="l_4_1">
+      <li class="head">ОТТО и я</li>
+      <li><a href="https://www.otto.ru/myOtto/overview/" rel="nofollow">Мой ОТТО</a></li>
+      <li><a href="https://www.otto.ru/notepad/" rel="nofollow">отложено</a></li>
+      <li><a href="/service/member-get-member/" rel="nofollow">Магнит для друзей</a></li>
+      <li>
+        <a href="/service/member-get-member/">
+          <img width="100" style="border: none; margin-left: -7px;" src="/assets/otto-ru/images/home/Icon_MGB.jpg">
+        </a>
+      </li>
+    </ul>    
+  </div>
+  
+  <div class="l_5 listWrap">
+    <ul class="l_5_1">
+      <li class="head">Юридическая информация</li>
+      <li><a href="/service/about_us/terms/" rel="nofollow">Общие условия оферты</a></li>
+      <li><a href="/service/imprint/" rel="nofollow">Юридическая информация</a></li>
+      <li><a href="/service/about_us/privacy/" rel="nofollow">Защита данных</a></li>
+    </ul>
+  </div>
+  
+  <div class="l_6 listWrap">
+  <ul class="l_6_1">
+      <li class="head"><a style="font-weight: 700;" href="/service/payment/" rel="nofollow">Варианты оплаты</a></li>
+      <li><a href="/service/payment/" rel="nofollow">Оплата при получении</a></li>
+      <li><a href="/service/payment/" rel="nofollow">Предоплата</a></li>
+      <li><a href="/service/payment/" rel="nofollow">Кредитная карта</a></li>
+        <li>
+        <a title="Visa" href="/service/payment/" rel="nofollow"><img alt="Visa" src="/assets/iShop/images/otto-ru/Visa.jpg"></a>
+        <a title="MasterCard" href="/service/payment/" rel="nofollow"><img alt="MasterCard" src="/assets/iShop/images/otto-ru/MasterCard.jpg"></a>          
+      </li>
+    </ul>
+  </div>
+  
+  <div class="l_7 listWrap">
+    <ul class="l_7_1">
+      <li class="head"><a style="font-weight: 700;" href="https://www.otto.ru/service/about_us/" rel="nofollow">О нас</a></li>
+      <li><a href="/service/about_us/about_otto/" rel="nofollow">О компании OTTO</a></li>      
+    </ul>
+    <ul style="height: 33px;" class="l_7_2">
+      <li class="head">
+        <a target="_blank" href="http://vk.com/otto_russia" style="float:left;"><img src="/assets/otto-ru/images/home/vkontakte_icon.jpg"></a>
+        <a target="_blank" href="http://www.facebook.com/ottorus" style="float:left; margin-left: 10px;"><img src="/assets/otto-ru/images/home/facebook_icon.jpg"></a>
+      </li>
+      <br style="clear: left;">
+    </ul>
+    <ul style="margin-bottom: 10px;" class="l_7_3">
+      <li class="head">Партнеры ОТТО</li>
+    </ul>
+    <ul class="l_7_4">
+      <li>
+        <a style="float: left;" href="/service/mnogoru/">
+          <img height="35" alt="" src="/assets/otto-ru/images/home/mnogo/logo-site.jpg" style="border: none;!important;">
+        </a>
+        <a style="float: left; margin-left: 10px;" href="/service/svyaznoyclub/">
+          <img height="35" src="/assets/otto-ru/images/Service/logo_new_2012.png" style="border: none;!important;">
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+  <br class="ClearBoth">
+  
+  <div class="serviceBar">
+    <a style="cursor:text"><img src="/assets/otto-ru/images/serviceLink_1.jpg"></a>
+    <a style="cursor:text"><img src="/assets/otto-ru/images/serviceLink_2.jpg"></a>
+    <a style="cursor:text"><img src="/assets/otto-ru/images/serviceLink_3.jpg"></a>
+    <a style="cursor:text"><img src="/assets/otto-ru/images/serviceLink_4.jpg"></a>
+    <br class="ClearBoth">
+  </div>
+  
+  <div class="FootNotes">
+    <img src="/assets/otto-ru/images/OttoFindIchGut.jpg">
+<p>
+  </p>
+
+</div>
+
+</div>

@@ -1,0 +1,728 @@
+
+/* ################# kategorienavigation NEU #################### */
+ul#categorynav {
+  list-style-type:none;
+  margin:20px 0px;
+  padding:0px;
+}
+
+ul#categorynav ul {
+  margin:0px;
+  padding:0px;
+}
+
+ul#categorynav li {
+  font-size:14px;
+  font-weight:bold;
+  list-style-image:none;
+  list-style-position:outside;
+  list-style-type:none;
+  margin-top:2px;
+  padding-top:2px;
+}
+ul#categorynav li ul li {
+  font-size:12px;
+  font-weight:normal;
+}
+
+ul#categorynav li a {
+  display:block;
+  padding-left:10px;
+  text-decoration:none;
+}
+
+/* 1.Ebene hat einen Abstand nach unten */
+ul#categorynav li.open {
+  margin-bottom:12px;
+}
+/* 2.-n. Ebene ohne Abstand nach unten  */
+ul#categorynav li.open ul li {
+  margin-bottom:0px;
+  min-height:15px;
+  height:auto !important;
+  height:15px;
+}
+
+/* Fettschrift wenn direkt offene Liste oder Untermenu mit class = active  */
+/*ul#categorynav li.open,
+ul#categorynav li.active,
+ul#categorynav li.open li.active,
+ul#categorynav li.open li.open,
+ul#categorynav li.open li.open li.active
+*/
+ul#categorynav li.open,
+ul#categorynav li.open li.open,
+ul#categorynav li.open li.open li.open
+{
+  font-weight:bold;
+}
+
+/* Standard-Schrift sicherstellen */
+ul#categorynav li.open li,
+ul#categorynav li.open li.open li,
+ul#categorynav li.open li.open li.open li {
+  font-weight:normal;
+}
+
+/* Abstände Ebene 2 + 3 + 4  */
+#categorynav li li a {
+  margin-left:2px;
+}
+#categorynav li li li a {
+  margin-left:17px;
+}
+#categorynav li li li li a {
+  margin-left:26px;
+}
+
+
+/***** Default und COLORSCHEME1 *****/
+/* DEFAULT COLOR GREY */
+ul#categorynav li a,
+ul#categorynav li.open li a,
+ul#categorynav li.open li.open li a,
+ul#categorynav li.open li.open li.open li a {
+  color:#565656;
+}
+
+/* DOT ACTIVE */
+ul#categorynav li a,
+ul#categorynav li.open li a {
+  background:transparent url(../images/categorynavigation/dot_inactive.gif) no-repeat scroll 2px 8px;
+}
+
+/* ARROW CLOSED */
+ul#categorynav li.children a,
+ul#categorynav li.open li.children a,
+ul#categorynav li.open li.open li.children a,
+ul#categorynav li.open li.open li.open li.children a {
+  background:transparent url(../images/categorynavigation/arrow_closed_inactive.gif) no-repeat scroll 2px 5px;
+}
+
+ul#categorynav li.open li.active,
+ul#categorynav li.open li.open li.active,
+ul#categorynav li.open li.open li.open li.active {
+  font-weight:bold;
+}
+
+ul#categorynav li li.active,
+ul#categorynav li li.activemo {
+  background-color:#F4BCC1;
+}
+
+ul#categorynav li.active ul,
+ul#categorynav li.activemo ul {
+  background-color:#FFFFFF !important;
+}
+
+/* DOT ACTIVE */
+ul#categorynav.active li a,
+ul#categorynav li.open li.open li.active a,
+ul#categorynav li.open li.open li.open li.active a,
+ul#categorynav li.open.hlsub li a,
+ul#categorynav li.open li.open.hlsub li a,
+ul#categorynav li.open li.open li.open.hlsub li a,
+/* mouseover */
+ul#categorynav li.open li.activemo a,
+ul#categorynav li.open li.open li.activemo a,
+ul#categorynav li.open li.open li.open li.activemo a {
+  color:#DA2031;
+  background:transparent url(../images/colorscheme1/dot_active.gif) no-repeat scroll 2px 8px;
+}
+
+/* DOT INACTIVE */
+ul#categorynav li.open li a,
+ul#categorynav li.open li.open li a,
+ul#categorynav li.open li.open li.open li a {
+  background:transparent url(../images/categorynavigation/dot_inactive.gif) no-repeat scroll 2px 8px;
+}
+
+/* ARROW CLOSED */
+ul#categorynav.active li.children a,
+ul#categorynav li.open.hlsub li.children a,
+ul#categorynav li.open li.open.hlsub li.children a,
+ul#categorynav li.open li.open li.open.hlsub li.children a,
+/* mouseover */
+ul#categorynav li.open li.children.activemo a,
+ul#categorynav li.open li.open li.children.activemo a,
+ul#categorynav li.open li.open li.open li.children.activemo a {
+    color:#DA2031;
+  background:transparent url(../images/colorscheme1/arrow_closed_active.gif) no-repeat scroll 2px 5px;
+}
+
+/* ARROW OPEN */
+ul#categorynav li.open a,
+ul#categorynav li.open li.open a,
+ul#categorynav li.open li.open li.open a {
+  color:#DA2031;
+  background:transparent url(../images/colorscheme1/arrow_opened_active.gif) no-repeat scroll 0px 5px;
+}
+
+
+
+
+
+/***** COLORSCHEME2 *****/
+/* DEFAULT COLOR GREY */
+.colorscheme2 ul#categorynav li a,
+.colorscheme2 ul#categorynav li.open li a,
+.colorscheme2 ul#categorynav li.open li.open li a,
+.colorscheme2 ul#categorynav li.open li.open li.open li a {
+  color:#565656;
+}
+
+/* DOT ACTIVE */
+.colorscheme2 ul#categorynav li a,
+.colorscheme2 ul#categorynav li.open li a {
+  background:transparent url(../images/categorynavigation/dot_inactive.gif) no-repeat scroll 2px 8px;
+}
+
+/* ARROW CLOSED */
+.colorscheme2 ul#categorynav li.children a,
+.colorscheme2 ul#categorynav li.open li.children a,
+.colorscheme2 ul#categorynav li.open li.open li.children a,
+.colorscheme2 ul#categorynav li.open li.open li.open li.children a {
+  background:transparent url(../images/categorynavigation/arrow_closed_inactive.gif) no-repeat scroll 2px center;
+}
+
+.colorscheme2 ul#categorynav li.active,
+.colorscheme2 ul#categorynav li.activemo {
+  background-color:#B2DBEC;
+}
+
+.colorscheme2 ul#categorynav li.active ul,
+.colorscheme2 ul#categorynav li.activemo ul {
+  background-color:#FFFFFF !important;
+}
+
+/* DOT ACTIVE */
+.colorscheme2 ul#categorynav.active li a,
+.colorscheme2 ul#categorynav li.open li.open li.active a,
+.colorscheme2 ul#categorynav li.open li.open li.open li.active a,
+.colorscheme2 ul#categorynav li.open.hlsub li a,
+.colorscheme2 ul#categorynav li.open li.open.hlsub li a,
+.colorscheme2 ul#categorynav li.open li.open li.open.hlsub li a,
+/* mouseover */
+.colorscheme2 ul#categorynav li.open li.activemo a,
+.colorscheme2 ul#categorynav li.open li.open li.activemo a,
+.colorscheme2 ul#categorynav li.open li.open li.open li.activemo a {
+  color:#0089C0;
+  background:transparent url(../images/colorscheme2/dot_active.gif) no-repeat scroll 2px 8px;
+}
+
+/* DOT INACTIVE */
+.colorscheme2 ul#categorynav li.open li a,
+.colorscheme2 ul#categorynav li.open li.open li a,
+.colorscheme2 ul#categorynav li.open li.open li.open li a {
+  background:transparent url(../images/categorynavigation/dot_inactive.gif) no-repeat scroll 2px 8px;
+}
+
+/* ARROW CLOSED */
+.colorscheme2 ul#categorynav.active li.children a,
+.colorscheme2 ul#categorynav li.open.hlsub li.children a,
+.colorscheme2 ul#categorynav li.open li.open.hlsub li.children a,
+.colorscheme2 ul#categorynav li.open li.open li.open.hlsub li.children a,
+/* mouseover */
+.colorscheme2 ul#categorynav li.open li.children.activemo a,
+.colorscheme2 ul#categorynav li.open li.open li.children.activemo a,
+.colorscheme2 ul#categorynav li.open li.open li.open li.children.activemo a {
+    color:#0089C0;
+  background:transparent url(../images/colorscheme2/arrow_closed_active.gif) no-repeat scroll 2px center;
+}
+
+/* ARROW OPEN */
+.colorscheme2 ul#categorynav li.open a,
+.colorscheme2 ul#categorynav li.open li.open a,
+.colorscheme2 ul#categorynav li.open li.open li.open a {
+  color:#0089C0;
+  background:transparent url(../images/colorscheme2/arrow_opened_active.gif) no-repeat scroll 2px center;
+}
+
+
+/***** COLORSCHEME3 *****/
+/* DEFAULT COLOR GREY */
+.colorscheme3 ul#categorynav li a,
+.colorscheme3 ul#categorynav li.open li a,
+.colorscheme3 ul#categorynav li.open li.open li a,
+.colorscheme3 ul#categorynav li.open li.open li.open li a {
+  color:#565656;
+}
+
+/* DOT ACTIVE */
+.colorscheme3 ul#categorynav li a,
+.colorscheme3 ul#categorynav li.open li a {
+  background:transparent url(../images/categorynavigation/dot_inactive.gif) no-repeat scroll 2px 8px;
+}
+
+/* ARROW CLOSED */
+.colorscheme3 ul#categorynav li.children a,
+.colorscheme3 ul#categorynav li.open li.children a,
+.colorscheme3 ul#categorynav li.open li.open li.children a,
+.colorscheme3 ul#categorynav li.open li.open li.open li.children a {
+  background:transparent url(../images/categorynavigation/arrow_closed_inactive.gif) no-repeat scroll 2px center;
+}
+
+.colorscheme3 ul#categorynav li.active,
+.colorscheme3 ul#categorynav li.activemo {
+  background-color:#FDD9B2;
+}
+
+.colorscheme3 ul#categorynav li.active ul,
+.colorscheme3 ul#categorynav li.activemo ul {
+  background-color:#FFFFFF !important;
+}
+
+/* DOT ACTIVE */
+.colorscheme3 ul#categorynav.active li a,
+.colorscheme3 ul#categorynav li.open li.open li.active a,
+.colorscheme3 ul#categorynav li.open li.open li.open li.active a,
+.colorscheme3 ul#categorynav li.open.hlsub li a,
+.colorscheme3 ul#categorynav li.open li.open.hlsub li a,
+.colorscheme3 ul#categorynav li.open li.open li.open.hlsub li a,
+/* mouseover */
+.colorscheme3 ul#categorynav li.open li.activemo a,
+.colorscheme3 ul#categorynav li.open li.open li.activemo a,
+.colorscheme3 ul#categorynav li.open li.open li.open li.activemo a {
+  color:#F88000;
+  background:transparent url(../images/colorscheme3/dot_active.gif) no-repeat scroll 2px 8px;
+}
+
+/* DOT INACTIVE */
+.colorscheme3 ul#categorynav li.open li a,
+.colorscheme3 ul#categorynav li.open li.open li a,
+.colorscheme3 ul#categorynav li.open li.open li.open li a {
+  background:transparent url(../images/categorynavigation/dot_inactive.gif) no-repeat scroll 2px 8px;
+}
+
+/* ARROW CLOSED */
+.colorscheme3 ul#categorynav.active li.children a,
+.colorscheme3 ul#categorynav li.open.hlsub li.children a,
+.colorscheme3 ul#categorynav li.open li.open.hlsub li.children a,
+.colorscheme3 ul#categorynav li.open li.open li.open.hlsub li.children a,
+/* mouseover */
+.colorscheme3 ul#categorynav li.open li.children.activemo a,
+.colorscheme3 ul#categorynav li.open li.open li.children.activemo a,
+.colorscheme3 ul#categorynav li.open li.open li.open li.children.activemo a {
+    color:#F88000;
+  background:transparent url(../images/colorscheme3/arrow_closed_active.gif) no-repeat scroll 2px center;
+}
+
+/* ARROW OPEN */
+.colorscheme3 ul#categorynav li.open a,
+.colorscheme3 ul#categorynav li.open li.open a,
+.colorscheme3 ul#categorynav li.open li.open li.open a {
+  color:#F88000;
+  background:transparent url(../images/colorscheme3/arrow_opened_active.gif) no-repeat scroll 2px center;
+}
+
+
+/***** COLORSCHEME4 *****/
+/* DEFAULT COLOR GREY */
+.colorscheme4 ul#categorynav li a,
+.colorscheme4 ul#categorynav li.open li a,
+.colorscheme4 ul#categorynav li.open li.open li a,
+.colorscheme4 ul#categorynav li.open li.open li.open li a {
+  color:#565656;
+}
+
+/* DOT ACTIVE */
+.colorscheme4 ul#categorynav li a,
+.colorscheme4 ul#categorynav li.open li a {
+  background:transparent url(../images/categorynavigation/dot_inactive.gif) no-repeat scroll 2px 8px;
+}
+
+/* ARROW CLOSED */
+.colorscheme4 ul#categorynav li.children a,
+.colorscheme4 ul#categorynav li.open li.children a,
+.colorscheme4 ul#categorynav li.open li.open li.children a,
+.colorscheme4 ul#categorynav li.open li.open li.open li.children a {
+  background:transparent url(../images/categorynavigation/arrow_closed_inactive.gif) no-repeat scroll 2px center;
+}
+
+.colorscheme4 ul#categorynav li.active,
+.colorscheme4 ul#categorynav li.activemo {
+  background-color:#ECC0D8;
+}
+
+.colorscheme4 ul#categorynav li.active ul,
+.colorscheme4 ul#categorynav li.activemo ul {
+  background-color:#FFFFFF !important;
+}
+
+/* DOT ACTIVE */
+.colorscheme4 ul#categorynav.active li a,
+.colorscheme4 ul#categorynav li.open li.open li.active a,
+.colorscheme4 ul#categorynav li.open li.open li.open li.active a,
+.colorscheme4 ul#categorynav li.open.hlsub li a,
+.colorscheme4 ul#categorynav li.open li.open.hlsub li a,
+.colorscheme4 ul#categorynav li.open li.open li.open.hlsub li a,
+/* mouseover */
+.colorscheme4 ul#categorynav li.open li.activemo a,
+.colorscheme4 ul#categorynav li.open li.open li.activemo a,
+.colorscheme4 ul#categorynav li.open li.open li.open li.activemo a {
+  color:#BF2F7F;
+  background:transparent url(../images/colorscheme4/dot_active.gif) no-repeat scroll 2px 8px;
+}
+
+/* DOT INACTIVE */
+.colorscheme4 ul#categorynav li.open li a,
+.colorscheme4 ul#categorynav li.open li.open li a,
+.colorscheme4 ul#categorynav li.open li.open li.open li a {
+  background:transparent url(../images/categorynavigation/dot_inactive.gif) no-repeat scroll 2px 8px;
+}
+
+/* ARROW CLOSED */
+.colorscheme4 ul#categorynav.active li.children a,
+.colorscheme4 ul#categorynav li.open.hlsub li.children a,
+.colorscheme4 ul#categorynav li.open li.open.hlsub li.children a,
+.colorscheme4 ul#categorynav li.open li.open li.open.hlsub li.children a,
+/* mouseover */
+.colorscheme4 ul#categorynav li.open li.children.activemo a,
+.colorscheme4 ul#categorynav li.open li.open li.children.activemo a,
+.colorscheme4 ul#categorynav li.open li.open li.open li.children.activemo a {
+    color:#BF2F7F;
+  background:transparent url(../images/colorscheme4/arrow_closed_active.gif) no-repeat scroll 2px center;
+}
+
+/* ARROW OPEN */
+.colorscheme4 ul#categorynav li.open a,
+.colorscheme4 ul#categorynav li.open li.open a,
+.colorscheme4 ul#categorynav li.open li.open li.open a {
+  color:#BF2F7F;
+  background:transparent url(../images/colorscheme4/arrow_opened_active.gif) no-repeat scroll 2px center;
+}
+
+
+/***** COLORSCHEME5 *****/
+/* DEFAULT COLOR GREY */
+.colorscheme5 ul#categorynav li a,
+.colorscheme5 ul#categorynav li.open li a,
+.colorscheme5 ul#categorynav li.open li.open li a,
+.colorscheme5 ul#categorynav li.open li.open li.open li a {
+  color:#565656;
+}
+
+/* DOT ACTIVE */
+.colorscheme5 ul#categorynav li a,
+.colorscheme5 ul#categorynav li.open li a {
+  background:transparent url(../images/categorynavigation/dot_inactive.gif) no-repeat scroll 2px 8px;
+}
+
+/* ARROW CLOSED */
+.colorscheme5 ul#categorynav li.children a,
+.colorscheme5 ul#categorynav li.open li.children a,
+.colorscheme5 ul#categorynav li.open li.open li.children a,
+.colorscheme5 ul#categorynav li.open li.open li.open li.children a {
+  background:transparent url(../images/categorynavigation/arrow_closed_inactive.gif) no-repeat scroll 2px center;
+}
+
+.colorscheme5 ul#categorynav li.active,
+.colorscheme5 ul#categorynav li.activemo {
+  background-color:#B7E3E3;
+}
+
+.colorscheme5 ul#categorynav li.active ul,
+.colorscheme5 ul#categorynav li.activemo ul {
+  background-color:#FFFFFF !important;
+}
+
+/* DOT ACTIVE */
+.colorscheme5 ul#categorynav.active li a,
+.colorscheme5 ul#categorynav li.open li.open li.active a,
+.colorscheme5 ul#categorynav li.open li.open li.open li.active a,
+.colorscheme5 ul#categorynav li.open.hlsub li a,
+.colorscheme5 ul#categorynav li.open li.open.hlsub li a,
+.colorscheme5 ul#categorynav li.open li.open li.open.hlsub li a,
+/* mouseover */
+.colorscheme5 ul#categorynav li.open li.activemo a,
+.colorscheme5 ul#categorynav li.open li.open li.activemo a,
+.colorscheme5 ul#categorynav li.open li.open li.open li.activemo a {
+  color:#11A3A1;
+  background:transparent url(../images/colorscheme5/dot_active.gif) no-repeat scroll 2px 8px;
+}
+
+/* DOT INACTIVE */
+.colorscheme5 ul#categorynav li.open li a,
+.colorscheme5 ul#categorynav li.open li.open li a,
+.colorscheme5 ul#categorynav li.open li.open li.open li a {
+  background:transparent url(../images/categorynavigation/dot_inactive.gif) no-repeat scroll 2px 8px;
+}
+
+/* ARROW CLOSED */
+.colorscheme5 ul#categorynav.active li.children a,
+.colorscheme5 ul#categorynav li.open.hlsub li.children a,
+.colorscheme5 ul#categorynav li.open li.open.hlsub li.children a,
+.colorscheme5 ul#categorynav li.open li.open li.open.hlsub li.children a,
+/* mouseover */
+.colorscheme5 ul#categorynav li.open li.children.activemo a,
+.colorscheme5 ul#categorynav li.open li.open li.children.activemo a,
+.colorscheme5 ul#categorynav li.open li.open li.open li.children.activemo a {
+    color:#11A3A1;
+  background:transparent url(../images/colorscheme5/arrow_closed_active.gif) no-repeat scroll 2px center;
+}
+
+/* ARROW OPEN */
+.colorscheme5 ul#categorynav li.open a,
+.colorscheme5 ul#categorynav li.open li.open a,
+.colorscheme5 ul#categorynav li.open li.open li.open a {
+  color:#11A3A1;
+  background:transparent url(../images/colorscheme5/arrow_opened_active.gif) no-repeat scroll 2px center;
+}
+
+
+
+/***** COLORSCHEME6 *****/
+/* DEFAULT COLOR GREY */
+.colorscheme6 ul#categorynav li a,
+.colorscheme6 ul#categorynav li.open li a,
+.colorscheme6 ul#categorynav li.open li.open li a,
+.colorscheme6 ul#categorynav li.open li.open li.open li a {
+  color:#565656;
+}
+
+/* DOT ACTIVE */
+.colorscheme6 ul#categorynav li a,
+.colorscheme6 ul#categorynav li.open li a {
+  background:transparent url(../images/categorynavigation/dot_inactive.gif) no-repeat scroll 2px 8px;
+}
+
+/* ARROW CLOSED */
+.colorscheme6 ul#categorynav li.children a,
+.colorscheme6 ul#categorynav li.open li.children a,
+.colorscheme6 ul#categorynav li.open li.open li.children a,
+.colorscheme6 ul#categorynav li.open li.open li.open li.children a {
+  background:transparent url(../images/categorynavigation/arrow_closed_inactive.gif) no-repeat scroll 2px center;
+}
+
+.colorscheme6 ul#categorynav li.active,
+.colorscheme6 ul#categorynav li.activemo {
+  background-color:#FFBED7;
+}
+
+.colorscheme6 ul#categorynav li.active ul,
+.colorscheme6 ul#categorynav li.activemo ul {
+  background-color:#FFFFFF !important;
+}
+
+/* DOT ACTIVE */
+.colorscheme6 ul#categorynav.active li a,
+.colorscheme6 ul#categorynav li.open li.open li.active a,
+.colorscheme6 ul#categorynav li.open li.open li.open li.active a,
+.colorscheme6 ul#categorynav li.open.hlsub li a,
+.colorscheme6 ul#categorynav li.open li.open.hlsub li a,
+.colorscheme6 ul#categorynav li.open li.open li.open.hlsub li a,
+/* mouseover */
+.colorscheme6 ul#categorynav li.open li.activemo a,
+.colorscheme6 ul#categorynav li.open li.open li.activemo a,
+.colorscheme6 ul#categorynav li.open li.open li.open li.activemo a {
+  color:#FE297A;
+  background:transparent url(../images/colorscheme6/dot_active.gif) no-repeat scroll 2px 8px;
+}
+
+/* DOT INACTIVE */
+.colorscheme6 ul#categorynav li.open li a,
+.colorscheme6 ul#categorynav li.open li.open li a,
+.colorscheme6 ul#categorynav li.open li.open li.open li a {
+  background:transparent url(../images/categorynavigation/dot_inactive.gif) no-repeat scroll 2px 8px;
+}
+
+/* ARROW CLOSED */
+.colorscheme6 ul#categorynav.active li.children a,
+.colorscheme6 ul#categorynav li.open.hlsub li.children a,
+.colorscheme6 ul#categorynav li.open li.open.hlsub li.children a,
+.colorscheme6 ul#categorynav li.open li.open li.open.hlsub li.children a,
+/* mouseover */
+.colorscheme6 ul#categorynav li.open li.children.activemo a,
+.colorscheme6 ul#categorynav li.open li.open li.children.activemo a,
+.colorscheme6 ul#categorynav li.open li.open li.open li.children.activemo a {
+    color:#FE297A;
+  background:transparent url(../images/colorscheme6/arrow_closed_active.gif) no-repeat scroll 2px center;
+}
+
+/* ARROW OPEN */
+.colorscheme6 ul#categorynav li.open a,
+.colorscheme6 ul#categorynav li.open li.open a,
+.colorscheme6 ul#categorynav li.open li.open li.open a {
+  color:#FE297A;
+  background:transparent url(../images/colorscheme6/arrow_opened_active.gif) no-repeat scroll 2px center;
+}
+
+
+/***** COLORSCHEME7 *****/
+/* DEFAULT COLOR GREY */
+.colorscheme7 ul#categorynav li a,
+.colorscheme7 ul#categorynav li.open li a,
+.colorscheme7 ul#categorynav li.open li.open li a,
+.colorscheme7 ul#categorynav li.open li.open li.open li a {
+  color:#565656;
+}
+
+/* DOT ACTIVE */
+.colorscheme7 ul#categorynav li a,
+.colorscheme7 ul#categorynav li.open li a {
+  background:transparent url(../images/categorynavigation/dot_inactive.gif) no-repeat scroll 2px 8px;
+}
+
+/* ARROW CLOSED */
+.colorscheme7 ul#categorynav li.children a,
+.colorscheme7 ul#categorynav li.open li.children a,
+.colorscheme7 ul#categorynav li.open li.open li.children a,
+.colorscheme7 ul#categorynav li.open li.open li.open li.children a {
+  background:transparent url(../images/categorynavigation/arrow_closed_inactive.gif) no-repeat scroll 2px center;
+}
+
+.colorscheme7 ul#categorynav li.active,
+.colorscheme7 ul#categorynav li.activemo {
+  background-color:#C7E1F7;
+}
+
+.colorscheme7 ul#categorynav li.active ul,
+.colorscheme7 ul#categorynav li.activemo ul {
+  background-color:#FFFFFF !important;
+}
+
+/* DOT ACTIVE */
+.colorscheme7 ul#categorynav.active li a,
+.colorscheme7 ul#categorynav li.open li.open li.active a,
+.colorscheme7 ul#categorynav li.open li.open li.open li.active a,
+.colorscheme7 ul#categorynav li.open.hlsub li a,
+.colorscheme7 ul#categorynav li.open li.open.hlsub li a,
+.colorscheme7 ul#categorynav li.open li.open li.open.hlsub li a,
+/* mouseover */
+.colorscheme7 ul#categorynav li.open li.activemo a,
+.colorscheme7 ul#categorynav li.open li.open li.activemo a,
+.colorscheme7 ul#categorynav li.open li.open li.open li.activemo a {
+  color:#3A98D4;
+  background:transparent url(../images/colorscheme7/dot_active.gif) no-repeat scroll 2px 8px;
+}
+
+/* DOT INACTIVE */
+.colorscheme7 ul#categorynav li.open li a,
+.colorscheme7 ul#categorynav li.open li.open li a,
+.colorscheme7 ul#categorynav li.open li.open li.open li a {
+  background:transparent url(../images/categorynavigation/dot_inactive.gif) no-repeat scroll 2px 8px;
+}
+
+/* ARROW CLOSED */
+.colorscheme7 ul#categorynav.active li.children a,
+.colorscheme7 ul#categorynav li.open.hlsub li.children a,
+.colorscheme7 ul#categorynav li.open li.open.hlsub li.children a,
+.colorscheme7 ul#categorynav li.open li.open li.open.hlsub li.children a,
+/* mouseover */
+.colorscheme7 ul#categorynav li.open li.children.activemo a,
+.colorscheme7 ul#categorynav li.open li.open li.children.activemo a,
+.colorscheme7 ul#categorynav li.open li.open li.open li.children.activemo a {
+    color:#3A98D4;
+  background:transparent url(../images/colorscheme7/arrow_closed_active.gif) no-repeat scroll 2px center;
+}
+
+/* ARROW OPEN */
+.colorscheme7 ul#categorynav li.open a,
+.colorscheme7 ul#categorynav li.open li.open a,
+.colorscheme7 ul#categorynav li.open li.open li.open a {
+  color:#3A98D4;
+  background:transparent url(../images/colorscheme7/arrow_opened_active.gif) no-repeat scroll 2px center;
+}
+
+
+/***** COLORSCHEME9 *****/
+/* DEFAULT COLOR GREY */
+.colorscheme9 ul#categorynav li a,
+.colorscheme9 ul#categorynav li.open li a,
+.colorscheme9 ul#categorynav li.open li.open li a,
+.colorscheme9 ul#categorynav li.open li.open li.open li a {
+  color:#565656;
+}
+
+/* DOT ACTIVE */
+.colorscheme9 ul#categorynav li a,
+.colorscheme9 ul#categorynav li.open li a {
+  background:transparent url(../images/categorynavigation/dot_inactive.gif) no-repeat scroll 2px 8px;
+}
+
+/* ARROW CLOSED */
+.colorscheme9 ul#categorynav li.children a,
+.colorscheme9 ul#categorynav li.open li.children a,
+.colorscheme9 ul#categorynav li.open li.open li.children a,
+.colorscheme9 ul#categorynav li.open li.open li.open li.children a {
+  background:transparent url(../images/categorynavigation/arrow_closed_inactive.gif) no-repeat scroll 2px center;
+}
+
+.colorscheme9 ul#categorynav li.active,
+.colorscheme9 ul#categorynav li.activemo {
+  background-color:#D8E1B2;
+}
+
+.colorscheme9 ul#categorynav li.active ul,
+.colorscheme9 ul#categorynav li.activemo ul {
+  background-color:#FFFFFF !important;
+}
+
+/* DOT ACTIVE */
+.colorscheme9 ul#categorynav.active li a,
+.colorscheme9 ul#categorynav li.open li.open li.active a,
+.colorscheme9 ul#categorynav li.open li.open li.open li.active a,
+.colorscheme9 ul#categorynav li.open.hlsub li a,
+.colorscheme9 ul#categorynav li.open li.open.hlsub li a,
+.colorscheme9 ul#categorynav li.open li.open li.open.hlsub li a,
+/* mouseover */
+.colorscheme9 ul#categorynav li.open li.activemo a,
+.colorscheme9 ul#categorynav li.open li.open li.activemo a,
+.colorscheme9 ul#categorynav li.open li.open li.open li.activemo a {
+  color:#7F9A01;
+  background:transparent url(../images/colorscheme9/dot_active.gif) no-repeat scroll 2px 8px;
+}
+
+/* DOT INACTIVE */
+.colorscheme9 ul#categorynav li.open li a,
+.colorscheme9 ul#categorynav li.open li.open li a,
+.colorscheme9 ul#categorynav li.open li.open li.open li a {
+  background:transparent url(../images/categorynavigation/dot_inactive.gif) no-repeat scroll 2px 8px;
+}
+
+/* ARROW CLOSED */
+.colorscheme9 ul#categorynav.active li.children a,
+.colorscheme9 ul#categorynav li.open.hlsub li.children a,
+.colorscheme9 ul#categorynav li.open li.open.hlsub li.children a,
+.colorscheme9 ul#categorynav li.open li.open li.open.hlsub li.children a,
+/* mouseover */
+.colorscheme9 ul#categorynav li.open li.children.activemo a,
+.colorscheme9 ul#categorynav li.open li.open li.children.activemo a,
+.colorscheme9 ul#categorynav li.open li.open li.open li.children.activemo a {
+    color:#7F9A01;
+  background:transparent url(../images/colorscheme9/arrow_closed_active.gif) no-repeat scroll 2px center;
+}
+
+/* ARROW OPEN */
+.colorscheme9 ul#categorynav li.open a,
+.colorscheme9 ul#categorynav li.open li.open a,
+.colorscheme9 ul#categorynav li.open li.open li.open a {
+  color:#7F9A01;
+  background:transparent url(../images/colorscheme9/arrow_opened_active.gif) no-repeat scroll 2px center;
+}
+
+#seoCatDesc .box img.left {
+  float:left;
+  margin-right:9px;
+}
+
+#seoCatDesc .box img.right {
+  float:right;
+  margin-left:9px;
+}
+
+#catHeadImage {
+  margin: 17px 15px 15px 15px;
+  height: 181px;
+  overflow:hidden;
+  width:769px;
+}
+
+#catHeadImage div {
+   margin: 7px 0 0 390px;
+}
+
+#catHeadImage div h2{
+   line-height; 23px; margin-bottom: 7px;
+   font-size: 24px;
+}

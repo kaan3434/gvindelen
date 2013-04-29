@@ -1,0 +1,488 @@
+@charset "UTF-8";
+
+/* ################# order / Navigation #################### */
+ul#ordernav {
+  list-style-type:none;
+  margin:45px 0px 20px 0px;
+  padding:0px;
+}
+
+ul#ordernav ul {
+  margin:0px;
+  padding: 1px 0px 0px 0px;
+}
+
+ul#ordernav li {
+  font-size:12px;
+  list-style-image:none;
+  list-style-position:outside;
+  list-style-type:none;
+  margin-top:2px;
+  padding-top:2px;
+}
+
+ul#ordernav li a {
+  display:inline;
+  padding-left:10px;
+}
+
+ul#ordernav li a {
+  color:#565656;
+  text-decoration:none;
+  background:transparent url(../images/order/navigation/dot_inactive.gif) no-repeat scroll 2px 8px;
+}
+
+ul#ordernav li.children a {
+  text-decoration:none;
+  background:transparent url(../images/order/navigation/arrow_closed_inactive.gif) no-repeat scroll 2px center;
+}
+
+ul#ordernav.active li a {
+  color:#D88400;
+}
+ul#ordernav.active li a {
+  text-decoration:none;
+  background:transparent url(../images/order/navigation/dot_active.gif) no-repeat scroll 2px 8px;
+}
+ul#ordernav.active li.children a,
+ul#ordernav li.children.activemo a {
+  text-decoration:none;
+  background:transparent url(../images/order/navigation/arrow_closed_active.gif) no-repeat scroll 2px center;
+}
+
+ul#ordernav li.active,
+ul#ordernav li.activemo {
+  background-color:#FEE7B2;
+}
+ul#ordernav li.active ul,
+ul#ordernav li.activemo ul {
+  background-color:#FFFFFF;
+}
+
+ul#ordernav li.active a,
+ul#ordernav li.activemo a {
+  color:#D88400;
+  background:transparent url(../images/order/navigation/dot_active.gif) no-repeat scroll 2px 8px;
+}
+
+ul#ordernav li.open a,
+ul#ordernav li.open li.open a,
+ul#ordernav li.open li.open.active a,
+ul#ordernav li.open li.open.activemo a {
+  color:#D88400;
+  background:transparent url(../images/order/navigation/arrow_opened_active.gif) no-repeat scroll 2px center;
+}
+
+ul#ordernav li.open li a {
+  color:#565656;
+  background:transparent url(../images/order/navigation/dot_inactive.gif) no-repeat scroll 2px 8px;
+}
+ul#ordernav li.open.active li a,
+ul#ordernav li.open li.active a,
+ul#ordernav li.open li.activemo a,
+ul#ordernav li.open li.open li a,
+ul#ordernav li.open li.open.active li a,
+ul#ordernav li.open li.open.activemo li a {
+  color:#D88400;
+  background:transparent url(../images/order/navigation/dot_active.gif) no-repeat scroll 2px 8px;
+}
+
+ul#categorynav li.children a,
+ul#ordernav li.open li.children a {
+  background:transparent url(../images/order/navigation/arrow_closed_inactive.gif) no-repeat scroll 2px center;
+}
+ul#ordernav li.open.active li.children a {
+  background:transparent url(../images/order/navigation/arrow_closed_active.gif) no-repeat scroll 2px center;
+}
+
+/* Fettschrift wenn direkt offene Liste oder Untermenu mit class = active  */
+ul#ordernav li.open,
+ul#ordernav li.active,
+ul#ordernav li.open li.active,
+ul#ordernav li.open li.open,
+ul#ordernav li.open li.open li.active {
+  font-weight:bold;
+}
+
+/* Standard-Schrift sicherstellen */
+ul#ordernav li.open li,
+ul#ordernav li.open li.open li {
+  font-weight:normal;
+}
+
+/* Abstände Ebene 2 + 3 */
+#ordernav li li a {
+  margin-left:17px;
+}
+#ordernav li li li a {
+  margin-left:26px;
+}
+
+
+/* ################# order #################### */
+#ordercontent .ordercolor { color:#D88400; }
+
+#ordercontent {}
+/* Allgemeiner Abstand unter der headline */
+#ordercontent .content {margin:17px 0px 0px 15px;}
+
+
+/* Algemeiner Kopfbereich */
+#ordercontent #head {padding-bottom: 15px}
+#ordercontent #head .row-left {float:left; clear:left; }
+#ordercontent #head .row-right {
+  margin-left:395px;
+  height:181px;
+  background:#ffffff url(../images/order/sitemap/line.gif) repeat-x top left;
+}
+#ordercontent #head .row-right h2 {
+  color:#D88400;
+  font-size:24px;
+  line-height:26px;
+  margin-bottom:10px;
+  padding-top:15px;
+}
+#ordercontent #head .row-right p {line-height:17px; }
+#ordercontent #head .row-right .categories {padding-top:10px}
+#ordercontent #head .row-right .categories a {
+  text-decoration:underline;
+  color:#000000;
+  font-size:12px;
+  line-height:21px
+}
+#ordercontent #head .row-right .categories .left {float:left }
+#ordercontent #head .row-right .categories .right {
+  float:left;
+  margin-left:30px
+}
+#ordercontent #head .row-right .categories .right a {
+  text-decoration:underline;
+  color:#000000;
+}
+
+
+/* Algemeiner Container zum Ein- und Ausblenden */
+#ordercontent .container {
+  clear:both;
+  position:relative;
+  padding-bottom:5px;
+}
+#ordercontent .container .head {
+  padding:6px 25px;
+  cursor:pointer;
+  color:#d88400;
+  font-size:17px;
+  line-height:21px;
+  font-weight:normal;
+}
+#ordercontent .container h3.head {
+  width:719px;
+  display:block;
+}
+#ordercontent .container .head-visible {
+  background:#fee7b2 url(../images/order/sitemap/head_visible.gif) no-repeat 5px center;
+}
+#ordercontent .container .head-hidden {
+  background:#fee7b2 url(../images/order/sitemap/head_hidden.gif) no-repeat 5px center;
+}
+
+#ordercontent .container .box {
+  display:none;
+  margin-top:2px;
+  margin-bottom:10px;
+  border:1px solid #ffeab2;
+  padding:0px;
+}
+
+#ordercontent .container .box a {
+  color:#D88400;
+  text-decoration:underline;
+}
+
+#ordercontent .container .box .pad {
+  padding: 15px 20px;
+}
+#ordercontent .container .box .pad .left {float:left;}
+#ordercontent .container .box .pad .right {
+  float:left;
+  margin-left:15px;
+  width:620px;
+}
+
+#ordercontent .container .box ul.ulstd {
+  margin:0px;
+  padding:0px;
+}
+#ordercontent .container .box ul.ulstd li {
+  padding-left:10px;
+  list-style-image:none;
+  list-style-position:outside;
+  list-style-type:none;
+  background:transparent url(../images/order/navigation/dot_inactive.gif) no-repeat scroll 2px 8px;
+}
+
+
+
+
+
+/* ################# order / Sitemap #################### */
+#ordercontent #sitemap {}
+#ordercontent #sitemap #content {margin-bottom:15px;}
+
+#ordercontent #sitemap a {
+  color:#d78603;
+  text-decoration:none;
+  line-height:21px;
+}
+
+#ordercontent #sitemap .background {
+  margin:12px 0px 12px 0px;
+  background:url(../images/order/sitemap/bg0.gif) repeat-y;
+  border-bottom:1px solid #ffffff;
+}
+#ordercontent #sitemap .box-style1 .background {
+  background:url(../images/order/sitemap/bg1.gif) repeat-y;
+}
+#ordercontent #sitemap .box-style2 .background {
+  background:url(../images/order/sitemap/bg2.gif) repeat-y;
+}
+
+/* LISTEN */
+#ordercontent #sitemap ul {
+  margin:0px 0px 0px 9px;
+  padding:0px;
+  list-style-type:none;
+}
+#ordercontent #sitemap ul ul {
+  display:none;
+  border:0px;
+  margin: 48px 0px 0px 0px;
+  position:absolute;
+  top:0px;
+  left:270px;
+}
+#ordercontent #sitemap ul ul ul {
+  margin-top:0px;
+  position:absolute;
+  top:0px;
+  left:261px;
+}
+
+#ordercontent #sitemap li {
+  margin:0px;
+  padding:0px;
+  padding-left:20px;
+}
+#ordercontent #sitemap li a {
+  display:block;
+  width:230px;
+}
+#ordercontent #sitemap ul ul ul li a {
+  width:208px;
+}
+
+#ordercontent #sitemap ul li {
+  width:230px;
+  background:url(../images/order/sitemap/arrow_activated_closed.gif)
+  no-repeat 10px 7px #ffffff;
+}
+#ordercontent #sitemap ul li.activ {
+  background:url(../images/order/sitemap/arrow_activated_closed_white.gif)
+  no-repeat 10px 7px #D88400;
+}
+
+#ordercontent #sitemap ul li.activ a,
+#ordercontent #sitemap ul li.activ ul li.activ a {
+  color:#FFFFFF;
+}
+#ordercontent #sitemap ul li.activ ul li a,
+#ordercontent #sitemap ul li.activ ul li.activ ul li a {
+  color:#D78603;
+}
+
+#ordercontent #sitemap ul li.over {
+  background-color:#FEE7B3;
+}
+
+#ordercontent #sitemap ul ul li {
+  width:230px;
+}
+#ordercontent #sitemap ul ul ul li {
+  width:208px;
+}
+
+#ordercontent #sitemap ul ul ul li {
+  background:url(../images/order/sitemap/dot_activated.gif) no-repeat 10px 9px;
+}
+
+
+/* ################# order / Delivery #################### */
+#delivery {
+  width:769px;
+  float:left;
+  margin-left:15px;
+  padding-bottom:15px;
+  font-family:arial;
+  font-size:13px;
+  color:#212121;
+  line-height:18px;
+}
+
+#delivery .couriertbl {}
+#delivery .couriertbl td.td1 {
+  width:150px;
+}
+#delivery .couriertbl td.td2 {
+  width:280px;
+}
+#delivery .couriertbl td.td3 {
+  width:144px;
+}
+#delivery .couriertbl td {
+  background-color:#fff5da;
+  border-style:solid;
+  border-width:1px 0px 0px 0px;
+  border-color:#FFFFFF;
+  padding: 2px 7px;
+}
+#delivery .couriertbl tr.trhead td {
+  background-color:#ffe399;
+}
+
+
+/* ################# order / Payment #################### */
+#paymentcontent {}
+
+
+/* ################# order / About Us #################### */
+#aboutus {}
+
+
+#ordercontent ul.ulist a {
+  text-decoration:none;
+}
+#ordercontent ul.ulist a:hover {
+  text-decoration:underline;
+}
+#ordercontent ul.ulist {
+  margin:0px;
+  padding:0px;
+  list-style-type:none;
+}
+#ordercontent ul.ulist li {
+  border:1px solid #D88400;
+  width:375px;
+  height:179px;
+  overflow:hidden;
+  float:left;
+  margin: 0px 0px 15px 15px;
+}
+#ordercontent ul.ulist li .picture {
+  border-right:1px solid #D88400;
+  float:left;
+}
+#ordercontent ul.ulist li .txt {
+  float:left;
+  width:164px;
+  padding:15px 15px 0px 15px;
+}
+#ordercontent ul.ulist li .txt .hl {
+  margin-bottom:15px;
+}
+#ordercontent ul.ulist li .txt .hl a {
+  color:#D88400;
+  font-size:24px;
+}
+
+/* ################# order / Order Catalog #################### */
+#ordercatalog {}
+
+
+/* ################# order / Contact #################### */
+#contact {}
+
+
+/* ################# order / Internet Technology #################### */
+#intertech {}
+
+
+/* ################# order / should_know #################### */
+#shouldknow {}
+
+
+/* ################# order / About Otto #################### */
+#aboutotto {}
+#ordercontent #aboutotto .container .box {
+  display:block;
+}
+#ordercontent #aboutotto .container .box .pad .right {
+  width:520px;
+}
+
+/* ################# order Overview #################### */
+#overview {}
+
+#ordercontent #overview .container .box {
+  display:block;
+}
+#ordercontent #overview .background {
+  margin:12px 0px 12px 0px;
+  background:url(../images/order/bg_3col.gif) repeat-y;
+  border-bottom:1px solid #ffffff;
+}
+#ordercontent #overview .background .pad {
+  padding:0px 20px;
+}
+
+#overview ul {
+  margin:0px;
+  padding:0px;
+  list-style-type:none;
+}
+
+#overview ul.columns li.col {
+  width:215px;
+  float:left;
+  margin-right:41px;
+}
+#overview ul.columns li.collast {
+  width:215px;
+  float:left;
+}
+
+#overview ul.rows {}
+#overview ul.rows li {
+  margin-bottom:20px;
+}
+/* Unterlisten haben kein margin */
+#overview ul.rows li ul li {
+  margin-bottom:0px;
+}
+#ordercontent #overview ul.rows li a {
+  color:#000000;
+  text-decoration:none;
+  font-weight:bold;
+}
+#ordercontent #overview ul.rows li a:hover {
+  text-decoration:underline;
+}
+
+/* ################# order / Privacy #################### */
+#privacy {}
+
+
+/* ################# Impressum #################### */
+#imprint a {color:#000000; text-decoration:none;}
+#imprint a:hover {color:#000000; text-decoration:underline;}
+#imprint .hl {margin-bottom:20px;}
+#imprint .col1 {float:left;width:375px;margin-bottom:30px;}
+#imprint .col2 {float:left;margin-left:15px;width:375px;}
+
+.cat_tables_form {
+    background-color: #FFFFFF;
+    border: 1px solid #4C88A5;
+    color: #4C88A5;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-size: 11px;
+    font-weight: normal;
+}

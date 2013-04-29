@@ -1,0 +1,20 @@
+<div class="box_skitter box_skitter_large" style="width: 965px; height: 573px;">
+  <ul>
+    <li>
+      <a href="#random"><img src="/assets/otto-by/images/skitter/OT1396_1_1_965x573.jpg" class="random" /></a>
+      <!--div class="label_text"><p>cut</p></div-->
+    </li>
+    <li>
+      <a href="#random"><img src="/assets/otto-by/images/skitter/OT1396_2_1_965x573.jpg" class="random" /></a>
+      <!--div class="label_text"><p>swapBlocks</p></div-->
+    </li>
+    <li>
+      <a href="#random"><img src="/assets/otto-by/images/skitter/OT1396_3_1_965x573.jpg" class="random" /></a>
+      <!--div class="label_text"><p>swapBarsBack</p></div-->
+    </li>
+    <li>
+      <a href="#random"><img src="/assets/otto-by/images/skitter/OT1396_4_1_965x573.jpg" class="random" /></a>
+      <!--div class="label_text"><p>swapBarsBack</p></div-->
+    </li>
+  </ul>
+</div>

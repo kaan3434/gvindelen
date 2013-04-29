@@ -109,7 +109,7 @@ function extract_searches($template_path, $path) {
     $templates = extract_all_tags($html, '<!--#', '#-->');
   };
   
-  $fname = 'cache/'.session_id().'.tphp';
+  $fname = 'cache/'.session_id().'.php';
   file_put_contents($fname, $html);
   include $fname;
 //  unlink($fname);

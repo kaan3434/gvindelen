@@ -1,0 +1,404 @@
+/* Sidenav*/
+
+/* ################# Service / Navigation #################### */
+ul#accountnav {
+  list-style-type:none;
+  margin:45px 0px 20px 0px;
+  padding:0px;
+}
+
+ul#accountnav ul {
+  margin:0px;
+  padding:0px;
+}
+
+ul#accountnav li {
+  font-size:12px;
+  list-style-image:none;
+  list-style-position:outside;
+  list-style-type:none;
+  margin-top:2px;
+  padding-top:2px;
+
+  min-height:15px;
+  height:auto !important;
+  height:15px;
+}
+
+ul#accountnav li a {
+  display:block;
+  padding-left:10px;
+  color:#DA2031;
+}
+
+ul#accountnav li a {
+  color:#DA2031;
+  text-decoration:none;
+  background: transparent url(../images/colorscheme1/dot_active.gif) no-repeat scroll 2px 8px
+}
+
+ul#accountnav li.active,
+ul#accountnav li.activemo {
+  background-color:#F4BCC1;
+}
+
+ul#accountnav li.active a,
+ul#accountnav li.activemo a {
+  color:#DA2031;
+  font-weight:bold;
+  background:transparent url(../images/colorscheme1/dot_active.gif) no-repeat scroll 2px 8px;
+}
+
+/* Start */
+
+#customer_center_start{
+  float: left;
+  padding-bottom: 15px;
+  font-family: arial;
+  color: #212121;
+}
+
+#customer_center_start ul{
+  list-style-type:none;
+  margin:0px;
+  padding:0px;
+}
+
+#customer_center_start li{
+  float:left;
+  width:377px;
+  margin-bottom:15px;
+}
+
+#customer_center_start li{
+  width:375px;
+}
+
+#customer_center_start #smallcontainer{
+  line-height:0px;
+  font-size:0px;
+  border:1px solid #f7c2bd;
+  background-color:#ffffff;
+}
+
+#customer_center_start .picturecontainer{
+  float:left;
+  border-right:1px solid #f7c2bd;
+}
+
+#customer_center_start .picturecontainer a{
+  font-size:0px;
+  line-height:0px;
+}
+
+#customer_center_start #textcontainer .headliner{
+  margin-top:15px;
+  margin-left:195px;
+  margin-bottom:10px;
+  width:150px;
+  min-height:45px;
+  height:auto !important;
+  height:45px;
+}
+
+#customer_center_start #textcontainer .headliner a{
+  text-decoration: none;
+  color:#e33423;
+}
+
+#customer_center_start #textcontainer .headliner h3{
+  font-size:24px;
+  line-height:24px;
+  color:#e33423;
+}
+
+#customer_center_start #textcontainer .headliner a:hover{
+  text-decoration:underline;
+}
+
+#customer_center_start #textcontainer .text{
+  margin-left:195px;
+  margin-right:15px;
+  font-size:13px;
+  line-height:17px;
+  color:#000000;
+  text-decoration:none;
+  padding-right:0px;
+}
+
+#customer_center_start #textcontainer .text_info{
+  font-size:16px;
+  line-height:17px;
+}
+
+
+/* Newsletter */
+#newsletter_unsubscribe div,#newsletter_unsubscribe span,#newsletter_unsubscribe h1,#newsletter_unsubscribe h2,#newsletter_unsubscribe h3,#newsletter_unsubscribe h4,#newsletter_unsubscribe h5,#newsletter_unsubscribe h6,#newsletter_unsubscribe p,#newsletter_unsubscribe a,#newsletter_unsubscribe img,#newsletter_unsubscribe ul,#newsletter_unsubscribe ol,#newsletter_unsubscribe li
+	{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+}
+
+#newsletter_unsubscribe a,a:link {
+	color: #3a98d4;
+	text-decoration: underline;
+}
+
+#newsletter_unsubscribe a:hover {
+	color: #3a98d4;
+	text-decoration: underline;
+}
+
+#newsletter_unsubscribe a:visited {
+	color: #3a98d4;
+	text-decoration: underline;
+}
+
+#newsletter_unsubscribe a:active {
+	color: #3a98d4;
+	text-decoration: underline;
+}
+
+#newsletter_unsubscribe .link {
+	color: #3a98d4;
+}
+
+#newsletter_unsubscribe .clear {
+	clear: both;
+}
+
+#newsletter_unsubscribe {
+	width: 769px;
+	padding-bottom: 15px;
+	font-family: arial;
+	font-size: 13px;
+	color: #212121;
+	line-height: 18px;
+}
+
+* html #newsletter_unsubscribe {
+	width: 772px;
+}
+
+#newsletter_unsubscribe h1 {
+	font-size: 36px;
+	line-height: 33px;
+	font-family: "Century Gothic", Arial, sans-serif;
+	color: #e33423;
+	margin-bottom: 20px;
+}
+
+#newsletter_unsubscribe h2 {
+	font-size: 24px;
+	line-height: 17px;
+	color: #e33423;
+	margin-bottom: 15px;
+}
+
+#newsletter_unsubscribe h3 {
+	font .size: 13px;
+	margin-bottom: 15px;
+	font-weight: bold;
+}
+
+#newsletter_unsubscribe ul {
+	list-style: square;
+	margin-left: 15px;
+}
+
+#newsletter_unsubscribe ul li {
+	line-height: 19px;
+}
+
+#newsletter_unsubscribe .formfield {
+	margin-bottom: 9px;
+}
+
+#newsletter_unsubscribe .formfield label {
+	cursor: pointer;
+	width: 130px;
+	display: block;
+	float: left;
+	xclear: left;
+}
+
+#newsletter_unsubscribe .formfield label.label-long {
+	cursor: pointer;
+	width: 340px;
+	display: block;
+	float: none;
+	clear: none;
+	margin-left: 25px;
+	margin-top: 4px;
+}
+
+#newsletter_unsubscribe .formfield input.input-text-short {
+	width: 35px;
+}
+
+#newsletter_unsubscribe .formfield input.input-text-middle {
+	width: 60px;
+}
+
+#newsletter_unsubscribe .formfield input.input-text-long1 {
+	width: 140px;
+}
+
+#newsletter_unsubscribe .formfield input.input-text-long2 {
+	margin-top: 7px;
+	width: 180px;
+}
+
+#newsletter_unsubscribe .formfield input.error {
+	border: 2px solid #E43524;
+}
+
+#newsletter_unsubscribe .formfield label.error {
+	color: #E43524;
+	font-weight: bold;
+}
+
+#newsletter_unsubscribe .formfield input.input-radio {
+	float: left;
+	clear: left;
+}
+
+#newsletter_unsubscribe .row-left {
+	width: 382px;
+	height: 395px;
+	float: left;
+	background:
+		url(../images/spacer/dotline_horizontal.gif)
+		repeat-x top left;
+	padding: 20px 0;
+}
+
+#newsletter_unsubscribe .row-left-body {
+	margin: 20px 0;
+}
+
+#newsletter_unsubscribe .row-right {
+	width: 377px;
+	margin-left: 392px;
+}
+
+#newsletter_unsubscribe .row-right-body {
+	height: 214px;
+	border: 1px solid #f7c2bd;
+	border-top: 0;
+}
+
+#newsletter_unsubscribe .row-right-body-content {
+	padding: 15px;
+}
+
+#newsletter_unsubscribe .reset {
+	font-size: 0;
+	line-height: 0;
+	padding: 0;
+	margin: 0;
+}
+
+#newsletter_unsubscribebase.css.reset {
+	font-size: 0;
+	line-height: 0;
+	padding: 0;
+	margin: 0;
+}
+
+
+/* ################# Password reset #################### */
+#accountpwdreset {}
+#accountpwdreset .content {
+	margin:16px 0px 0px 15px;
+	padding: 20px 0px 15px 0px;
+	background: url(../images/spacer/dotline_horizontal.gif) repeat-x scroll left top;
+}
+#accountpwdreset .content .btnlogin {
+	width:575px;
+	text-align:right;
+	padding-top:15px;
+}
+
+/* ################# Kundendaten ######################## */
+#account {
+  float: left;
+  display: inline;
+  width: 769px;
+}
+#account .box {
+  border: 1px solid #a1cdf2;
+  padding: 18px;
+  margin-bottom: 30px;
+}
+
+#account .box .row {
+  margin-top: 15px;
+  padding-bottom: 5px;
+  background:transparent url(../images/spacer/dotline_horizontal.gif) repeat-x scroll center bottom;
+}
+
+#account .box .row.first{
+  margin-top: 0px;
+}
+
+#account .box .row.last{
+  margin-bottom: 100px;
+}
+
+#account .box .row td {
+  padding-bottom: 15px;
+}
+
+#account .box .row td.section {
+  width: 200px;
+  color:#3A98D4;
+  font-size:16px;
+  line-height:23px;
+  font-weight:bold;
+  padding-right: 15px;
+}
+
+#account .box .row td.subsection {
+  width: 200px;
+  color:#3A98D4;
+  font-size:16px;
+  line-height:23px;
+  padding-right: 15px;
+}
+
+#account .box .buttons {
+  width: 580px;
+  margin: 20px 0 5px 0;
+}
+
+#account .formdescription {
+  color:#999999;
+  margin-bottom:15px;
+}
+
+#account .error_box {
+  width:600px;
+  border:1px solid #E43524;
+  padding:15px;
+  margin-bottom:15px;
+  color:#E43524;
+}
+
+#account .formfield                           { margin-bottom:9px; width:400px; clear:left;}
+#account .formfield label                     { cursor:pointer; width:130px; float:left;}
+#account .formfield label.label-long          { cursor:pointer; margin-left: 4px; width:360px; float:left; display: block;}
+#account .formfield input.input-text-short    { width:35px; }
+#account .formfield input.input-text-middle { width:60px; }
+#account .formfield input.input-text-long1    { width:140px; }
+#account .formfield input.input-text-long2    { width:180px; }
+#account .formfield input.error               { border:2px solid #E43524; }
+#account .formfield label.error               { color:#E43524; font-weight:bold; }
+#account .formfield input.input-checkbox      { float:left;}
+#account .formfield span.error                { color:#E43524; font-weight:bold; }
+
+#account .ajax_loading {
+  height: 200px;
+}

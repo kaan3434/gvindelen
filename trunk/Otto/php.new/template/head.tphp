@@ -22,13 +22,10 @@
   
   <link rel="stylesheet" type="text/css" href="assets/general/css/1_main_styles.css" />
   <link rel="stylesheet" type="text/css" href="assets/general/css/two-global.css" />
-  <link rel="stylesheet" type="text/css" href="assets/otto-ru/css/colorsettings1-ru.css" />
-  <link rel="stylesheet" type="text/css" href="assets/otto-ru/css/colorsettings2-ru.css" />
+  <link rel="stylesheet" type="text/css" href="assets/otto-ru/gen/colorsettings1-ru.css" />
+  <link rel="stylesheet" type="text/css" href="assets/otto-ru/gen/colorsettings2-ru.css" />
 
   <!--#JQuery#-->
-
-  <script type="text/javascript" src="/assets/general/js/closepacked-JS.js"></script>
-  
   <script type="text/javascript">
     var bild = "Фото";
     var von = "из";
@@ -38,5 +35,12 @@
     var ProductCinemaObjects = new Array();
     var PictureSlidesSet = [];
   </script>
+  
+  <!--#Skitter.Init#-->
+  <!--#ShadowBox.Init#-->
 
+  <script type="text/javascript" src="/assets/general/js/closepacked-JS.js"></script>
+
+  <!--#isa_navigation.init#-->
+  <!--#head_menu#-->  
 </head>

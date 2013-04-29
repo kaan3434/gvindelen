@@ -4,7 +4,7 @@
       <li>|</li>
       <li><a href="/staticView/?view=help" title="Помощь" rel="shadowbox;height=500;width=665;nofollow">Помощь</a></li>
       <li>|</li>
-      <li><a href="/service/" rel="nofollow">Сервис</a></li>
+      <li><a href="?path=service" rel="nofollow">Сервис</a></li>
       <li>|</li>
       <li><a href="/myOtto/newsletter/subscribe/" rel="nofollow">Рассылка</a></li>
       <li><a href="/myOtto/newsletter/subscribe/" rel="nofollow"><img title="Newsletter" alt="Newsletter" src="assets/general/images/Icons/newsletter.gif" ilo-full-src="/assets/general/images/Icons/newsletter.gif"></a></li>
