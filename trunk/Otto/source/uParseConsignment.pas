@@ -98,6 +98,7 @@ procedure ParseConsignmentLine300(aMessageId, LineNo: Integer; sl: TStringList;
 var
   OrderId: Variant;
   ndOrder: TXmlNode;
+  BarCode: String;
 begin
   OrderId:= dmOtto.DetectOrderId(ndProduct, sl[2], aTransaction);
   if OrderId<>null then
@@ -110,9 +111,10 @@ begin
       SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'PACKED');
       BatchMoveFields2(ndOrder, ndOrders, 'PACKLIST_NO;PACKLIST_DT;PALETTE_NO');
       SetXmlAttr(ndOrder, 'PACKET_NO', sl[1]);
-      SetXmlAttr(ndOrder, 'BAR_CODE', aTransaction.DefaultDatabase.QueryValue(
-        'select o_barcode from barcode_gen(:order_id)',
-        0, [GetXmlAttrValue(ndOrder, 'ID')], aTransaction));
+      BarCode:= aTransaction.DefaultDatabase.QueryValue(
+        'select o_barcode from barcode_gen(:order_id, :packlist_no)',
+        0, [OrderId, GetXmlAttrValue(ndOrder, 'PACKLIST_NO')], aTransaction);
+      SetXmlAttr(ndOrder, 'BAR_CODE', BarCode);
 
       try
         dmOtto.ActionExecute(aTransaction, ndOrder);

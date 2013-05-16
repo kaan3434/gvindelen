@@ -48,8 +48,17 @@ var
   OrderId, OrderItemId: Variant;
   ndOrder, ndOrderItems, ndOrderItem: TXmlNode;
   StatusSign, StateSign, StateId, StatusName: variant;
-  DeliveryMessageRus, Dimension: string;
+  MsgType, DeliveryMessageRus, Dimension: string;
 begin
+  if sl[0] = '-1' then
+  begin
+    sl.DelimitedText:= CopyBetween(sl.DelimitedText, '[', ']');
+    sl.Insert(1, sl[1]);
+    sl[3]:= '';
+    sl[4]:= '';
+    sl[9]:= '9';
+  end;
+
   OrderId:= dmOtto.DetectOrderId(ndProduct, sl[1], aTransaction);
   if OrderId <> null then
   begin
@@ -78,9 +87,14 @@ begin
       SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', sl[8]);
       if GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') <> GetXmlAttrAsMoney(ndOrderItem, 'COST_EUR') then
       begin
+        if (GetXmlAttrValue(ndOrderItem, 'MAGAZINE_ID') = 1) or
+           (GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') < GetXmlAttrAsMoney(ndOrderItem, 'COST_EUR')) then
+          MsgType := 'W'
+        else
+          MsgType := 'E';
         dmOtto.Notify(aMessageId,
           '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Измнена цена [COST_EUR] => [PRICE_EUR].',
-          IfThen(GetXmlAttrValue(ndOrderItem, 'MAGAZINE_ID') = 1, 'W', 'E'),
+          MsgType,
           XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR',
           XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
           Value2Vars(LineNo, 'LINE_NO'))));

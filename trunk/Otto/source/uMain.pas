@@ -509,25 +509,21 @@ begin
         end
         else
         begin
-          try
-            trnTimer.SetSavePoint('CreateMessage');
-            FileName := AnsiToUtf8(Copy(sl[i], Length(Path['Messages.In']) + 1,
-              Length(sl[i])));
-            ParamByName('I_FILE_NAME').Value:= AnsiLowerCaseFileName(FileName);
-            ParamByName('I_FILE_SIZE').Value:= GetFileSize(sl[i]);
-            ParamByName('I_FILE_DTM').AsDateTime:= FileDateToDateTime(fileAge(sl[i]));
-            ExecProc;
-            if VarIsNull(ParamValue('O_MESSAGE_ID')) then
-            begin
-              trnTimer.RollBackToSavePoint('CreateMessage');
-            end
-            else
-              Inc(MessageCount);
-          except
+          trnTimer.SetSavePoint('CreateMessage');
+          FileName := AnsiToUtf8(Copy(sl[i], Length(Path['Messages.In']) + 1,
+            Length(sl[i])));
+          ParamByName('I_FILE_NAME').Value:= AnsiLowerCaseFileName(FileName);
+          ParamByName('I_FILE_SIZE').Value:= GetFileSize(sl[i]);
+          ParamByName('I_FILE_DTM').AsDateTime:= FileDateToDateTime(fileAge(sl[i]));
+          ExecProc;
+          if VarIsNull(ParamValue('O_MESSAGE_ID')) then
+          begin
             trnTimer.RollBackToSavePoint('CreateMessage');
             ForceDirectories(Path['Messages.Unknown']);
             GvFile.MoveFile(sl[i], Path['Messages.Unknown']);
-          end;
+          end
+          else
+            Inc(MessageCount);
         end;
       end;
     end;

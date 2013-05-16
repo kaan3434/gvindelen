@@ -59,6 +59,7 @@ ALTER TABLE ORDERMONEYS ADD CONSTRAINT PK_ORDERMONEYS PRIMARY KEY (ORDERMONEY_ID
 ALTER TABLE ORDERS ADD CONSTRAINT PK_ORDERS PRIMARY KEY (ORDER_ID);
 ALTER TABLE ORDERTAXS ADD CONSTRAINT PK_ORDERTAXS PRIMARY KEY (ORDERTAX_ID);
 ALTER TABLE ORDER_ATTRS ADD CONSTRAINT PK_ORDER_ATTRS PRIMARY KEY (OBJECT_ID, ATTR_ID);
+ALTER TABLE PACKLISTS ADD CONSTRAINT PK_PACKLISTS PRIMARY KEY (PACKLIST_NO);
 ALTER TABLE PARAMACTIONS ADD CONSTRAINT PK_PARAMACTIONS PRIMARY KEY (PARAM_KIND, PARAM_ACTION);
 ALTER TABLE PARAMHEADS ADD CONSTRAINT PK_PARAMHEADS PRIMARY KEY (PARAM_ID);
 ALTER TABLE PARAMKINDS ADD CONSTRAINT PK_PARAMKINDS PRIMARY KEY (PARAM_KIND);
@@ -292,10 +293,6 @@ CREATE OR ALTER TRIGGER ACCOPERS_BI FOR ACCOPERS
 ACTIVE BEFORE INSERT POSITION 0
 as
 declare variable v_accrest_id id_accrest;
-declare variable v_rest_byr money_byr;
-declare variable v_delta_byr money_byr;
-declare variable v_delta_eur money_eur;
-declare variable v_amount_byr money_byr;
 declare variable v_amount_eur money_eur;
 begin
   if (new.accoper_id is null) then
@@ -308,7 +305,7 @@ begin
       into new.byr2eur;
 
   if (new.amount_byr is null) then
-    new.amount_byr = round(new.amount_eur * new.byr2eur, -1);
+    select o_money_byr from money_eur2byr(new.amount_eur, new.byr2eur) into new.amount_byr;
 
   if (new.amount_eur is null) then
     new.amount_eur = (0.00 + new.amount_byr) / new.byr2eur;
@@ -341,7 +338,7 @@ CREATE OR ALTER TRIGGER ACCOPERS_BU0 FOR ACCOPERS
 ACTIVE BEFORE UPDATE POSITION 0
 AS
 begin
-  new.amount_byr = round(new.amount_eur*new.byr2eur, -1);
+  select o_money_byr from money_eur2byr(new.amount_eur, new.byr2eur) into new.amount_byr;
 end
 ^
 
@@ -387,7 +384,7 @@ begin
   if (new.rest_eur is null and new.rest_byr is not null) then
     new.rest_eur = cast(new.rest_byr as numeric(12,2)) / new.byr2eur;
 
-  new.rest_byr = round(new.rest_eur * new.byr2eur, -1);
+  select o_money_byr from money_eur2byr(new.rest_eur, new.byr2eur) into new.rest_byr;
 
 end
 ^
@@ -399,7 +396,7 @@ AS
 begin
   new.rest_dtm = current_timestamp;
 
-  new.rest_byr = round(new.rest_eur * new.byr2eur, -1);
+  select o_money_byr from money_eur2byr(new.rest_eur, new.byr2eur) into new.rest_byr;
 end
 ^
 
@@ -792,8 +789,9 @@ end
 /* Trigger: ORDERITEMS_BU0 */
 CREATE OR ALTER TRIGGER ORDERITEMS_BU0 FOR ORDERITEMS
 ACTIVE BEFORE UPDATE POSITION 0
-AS
+as
 declare variable v_flaglist list_signs;
+declare variable v_byr2eur money_byr;
 begin
   new.article_code = upper(new.article_code);
   new.dimension = upper(new.dimension);
@@ -837,7 +835,8 @@ begin
       where o.order_id = new.order_id
       into new.byr2eur;
   if (new.amount_byr is null) then
-    new.amount_byr = round(new.amount_eur * new.byr2eur, -1);
+    select o_money_byr from money_eur2byr(new.amount_eur, new.byr2eur) into new.amount_byr;
+
   new.status_dtm = current_timestamp;
   new.created_dtm = current_timestamp;
 end
@@ -848,7 +847,7 @@ CREATE OR ALTER TRIGGER ORDERMONEYS_BU0 FOR ORDERMONEYS
 ACTIVE BEFORE UPDATE POSITION 0
 AS
 begin
-  new.amount_byr = round(new.amount_eur * new.byr2eur, -1);
+  select o_money_byr from money_eur2byr(new.amount_eur, new.byr2eur) into new.amount_byr;
 end
 ^
 
@@ -1328,7 +1327,7 @@ begin
       v_delta_eur = v_rest_eur;
 
     v_amount_eur = v_amount_eur - v_delta_eur;
-    v_delta_byr = round(v_acc_byr2eur * v_delta_eur, -1);
+    select o_money_byr from money_eur2byr(:v_delta_eur, :v_acc_byr2eur) into :v_delta_byr;
 
     select o_value from param_get(:i_param_id, 'NOTES') into :v_notes;
     select o_pattern from param_fill(:v_notes, 'AMOUNT_BYR', :v_delta_byr) into v_notes;
@@ -1411,8 +1410,8 @@ end^
 
 
 CREATE OR ALTER PROCEDURE ACT_ACCOUNT_DEBITORDER (
-    I_PARAM_ID TYPE OF ID_PARAM,
-    I_OBJECT_ID TYPE OF ID_OBJECT,
+    I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
+    I_OBJECT_ID TYPE OF ID_OBJECT NOT NULL,
     I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ACCOUNT')
 AS
 declare variable V_AMOUNT_EUR type of MONEY_EUR;
@@ -1423,6 +1422,7 @@ declare variable V_ACC_BYR2EUR type of MONEY_BYR;
 declare variable V_DELTA_EUR type of MONEY_EUR;
 declare variable V_AMOUNT_BYR type of MONEY_BYR;
 declare variable V_DELTA_BYR type of MONEY_BYR;
+declare variable V_ORDERMONEY_ID type of ID_ORDERITEM;
 begin
   update paramheads set object_id = :i_object_id where param_id = :i_param_id;
 
@@ -1449,7 +1449,7 @@ begin
       v_delta_eur = v_amount_eur;
     else
       v_delta_eur = v_acc_amount_eur;
-    v_delta_byr = round(v_amount_eur * :v_acc_byr2eur, -1);
+    select o_money_byr from money_eur2byr(:v_delta_eur, :v_acc_byr2eur) into :v_delta_byr;
 
     v_amount_eur = v_amount_eur - v_delta_eur;
     v_amount_byr = v_amount_byr + v_delta_byr;
@@ -1457,10 +1457,12 @@ begin
     select o_value from param_get(:i_param_id, 'NOTES') into :v_notes;
     select o_pattern from param_fillpattern(:i_param_id, :v_notes) into :v_notes;
 
-    insert into accopers (account_id, amount_eur, byr2eur, order_id, notes, amount_byr)
-      values(:i_object_id, :v_delta_eur, :v_acc_byr2eur, :v_order_id, :v_notes, :v_delta_byr);
     insert into ordermoneys (account_id, amount_eur, byr2eur, order_id, amount_byr)
-      values(:i_object_id, -:v_delta_eur, :v_acc_byr2eur, :v_order_id, -:v_delta_byr);
+      values(:i_object_id, -:v_delta_eur, :v_acc_byr2eur, :v_order_id, -:v_delta_byr)
+      returning ordermoney_id
+      into :v_ordermoney_id;
+    insert into accopers (account_id, amount_eur, byr2eur, order_id, notes, amount_byr, ordermoney_id)
+      values(:i_object_id, :v_delta_eur, :v_acc_byr2eur, :v_order_id, :v_notes, :v_delta_byr, :v_ordermoney_id);
   end
 
   execute procedure param_set(:i_param_id, 'AMOUNT_BYR', :v_amount_byr);
@@ -2020,6 +2022,49 @@ end^
 
 
 CREATE OR ALTER PROCEDURE ACT_ORDER_DEBIT (
+    I_PARAM_ID TYPE OF ID_PARAM,
+    I_OBJECT_ID TYPE OF ID_OBJECT,
+    I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ORDER')
+AS
+declare variable V_PARAM_ID type of ID_PARAM;
+declare variable V_ACTION_SIGN type of SIGN_ACTION;
+declare variable V_OBJECT_ID type of ID_OBJECT;
+declare variable V_NEW_STATUS_SIGN type of SIGN_ATTR;
+declare variable V_ACTION_ID type of ID_ACTION;
+declare variable V_ACTIONTREEITEM_ID type of ID_ACTIONTREEITEM;
+declare variable V_NEW_FLAG_SIGN type of SIGN_OBJECT;
+begin
+  select o_value from param_get(:i_param_id, 'NEW.STATUS_SIGN') into :v_new_status_sign;
+  select o_value from param_get(:v_param_id, 'NEW.FLAG_SIGN') into :v_new_flag_sign;
+  select o_value from param_get(:i_param_id, 'ACTIONTREEITEM_ID') into :v_actiontreeitem_id;
+
+  for select oi.orderitem_id
+        from orderitems oi
+        where oi.order_id = :i_object_id
+        into :v_object_id do
+  begin
+    select o_param_id from param_create(:i_object_sign, :v_object_id) into :v_param_id;
+    insert into params(param_id, param_name, param_value)
+      select :v_param_id, p.param_name, p.param_value
+        from params p
+          inner join actiontree_params atp on (atp.param_name = p.param_name)
+        where p.param_id = :i_param_id
+          and atp.actiontreeitem_id = :v_actiontreeitem_id;
+
+    select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign, :v_new_flag_sign, 0)
+      into :v_action_sign;
+
+    if (:v_action_sign is null) then
+      select o_value from param_get(:i_param_id, 'ACTION_SIGN') into :v_action_sign;
+
+    if (v_action_sign is not null) then
+      execute procedure action_run(:i_object_sign, :v_action_sign, :v_param_id, :v_object_id)
+        returning_values :v_action_id;
+  end
+end^
+
+
+CREATE OR ALTER PROCEDURE ACT_ORDER_DELETE (
     I_PARAM_ID TYPE OF ID_PARAM,
     I_OBJECT_ID TYPE OF ID_OBJECT,
     I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ORDER')
@@ -3172,6 +3217,25 @@ begin
 end^
 
 
+CREATE OR ALTER PROCEDURE ADRESS_READ (
+    I_OBJECT_ID TYPE OF ID_OBJECT)
+RETURNS (
+    O_PARAM_NAME TYPE OF SIGN_OBJECT,
+    O_PARAM_VALUE TYPE OF VALUE_ATTR)
+AS
+begin
+  select st.streettype_sign
+    from adresses a
+      inner join streettypes st on (st.streettype_code=a.streettype_code)
+    where a.adress_id = :i_object_id
+    into :o_param_value;
+
+  o_param_name = 'STREETTYPE_SIGN';
+  suspend;
+
+end^
+
+
 CREATE OR ALTER PROCEDURE ARTICLE_GOC (
     I_MAGAZINE_ID TYPE OF ID_MAGAZINE,
     I_ARTICLE_CODE TYPE OF SIGN_ARTICLE,
@@ -3369,6 +3433,58 @@ begin
     execute statement (:v_sql) (object_id := :i_object_id, attr_id := :v_attr_id, attr_value := :i_attr_value);
   end
 end^
+
+
+CREATE OR ALTER PROCEDURE BARCODE_GEN (
+    I_ORDER_ID TYPE OF ID_ORDER NOT NULL,
+    I_PACKLIST_NO TYPE OF VALUE_INTEGER)
+RETURNS (
+    O_BARCODE TYPE OF SIGN_OBJECT)
+AS
+declare variable V_PREFIX type of VALUE_SHORT;
+declare variable V_ORDER_CODE type of CODE_ORDER;
+declare variable V_CN integer;
+begin
+  /* Procedure Text */
+  select substring(pa2.attr_value from 8 for 1)||
+         lpad(coalesce(pl.packlist_code, '0'), 2, '0')||
+         substring(o.order_code from 2), pa1.attr_value
+    from orders o
+      left join packlists pl on (pl.packlist_no = coalesce(o.packlist_no, :i_packlist_no))
+      inner join v_product_attrs pa1 on (pa1.object_id = o.product_id
+                                     and pa1.attr_sign = 'BARCODE_SIGN')
+      inner join v_product_attrs pa2 on (pa2.object_id = o.product_id
+                                     and pa2.attr_sign = 'PARTNER_NUMBER')
+    where o.order_id = :i_order_id
+    into :o_barcode, :v_prefix;
+
+  v_cn = 11 - mod(8*cast(substring(o_barcode from 1 for 1) as smallint) +
+                  6*cast(substring(o_barcode from 2 for 1) as smallint) +
+                  4*cast(substring(o_barcode from 3 for 1) as smallint) +
+                  2*cast(substring(o_barcode from 4 for 1) as smallint) +
+                  3*cast(substring(o_barcode from 5 for 1) as smallint) +
+                  5*cast(substring(o_barcode from 6 for 1) as smallint) +
+                  9*cast(substring(o_barcode from 7 for 1) as smallint) +
+                  7*cast(substring(o_barcode from 8 for 1) as smallint), 11);
+  if (v_cn = 10) then
+    v_cn = 0;
+  else if (v_cn = 11) then
+    v_cn = 5;
+  else
+    v_cn = substring(v_cn from 1 for 1);
+
+  o_barcode = v_prefix||o_barcode||v_cn||'LT';
+  suspend;
+end^
+
+
+CREATE OR ALTER PROCEDURE BARCODE_REGEN (
+    I_PRODUCT_ID INTEGER,
+    I_PACKLIST_NO INTEGER,
+    I_PACKLIST_NUM INTEGER,
+    I_PACKET_NO VARCHAR(4000))
+AS
+ BEGIN EXIT; END^
 
 
 CREATE OR ALTER PROCEDURE BONUS_MAKE (
@@ -3700,12 +3816,15 @@ begin
       where :v_file_name similar to t.filename_mask
       into :v_template_id;
 
-    execute procedure param_set(:v_param_id, 'TEMPLATE_ID', :v_template_id);
+    if (v_template_id is not null) then
+    begin
+      execute procedure param_set(:v_param_id, 'TEMPLATE_ID', :v_template_id);
 
-    select o_action_id from action_run(:v_object_sign, 'MESSAGE_CREATE', :v_param_id, null)
-      into :v_action_id;
-    select a.object_id from actions a where a.action_id = :v_action_id
-      into :o_message_id;
+      select o_action_id from action_run(:v_object_sign, 'MESSAGE_CREATE', :v_param_id, null)
+        into :v_action_id;
+      select a.object_id from actions a where a.action_id = :v_action_id
+        into :o_message_id;
+    end
   end
   suspend;
 end^
@@ -3742,14 +3861,14 @@ end^
 
 
 CREATE OR ALTER PROCEDURE MONEY_EUR2BYR (
-    I_AMOUNT_EUR TYPE OF MONEY_EUR NOT NULL,
+    I_AMOUNT_EUR TYPE OF MONEY_EUR,
     I_BYR2EUR TYPE OF MONEY_BYR NOT NULL)
 RETURNS (
     O_MONEY_BYR TYPE OF MONEY_BYR)
 AS
 declare variable V_PRECISION_BYR type of MONEY_BYR = 50;
 begin
-  o_money_byr = round_precision(:i_amount_eur * :i_byr2eur, :v_precision_byr);
+  o_money_byr = round_precision(coalesce(:i_amount_eur, 0) * :i_byr2eur, :v_precision_byr);
   suspend;
 end^
 
@@ -4418,6 +4537,17 @@ begin
   o_param_value = v_status_name;
   suspend;
 
+end^
+
+
+CREATE OR ALTER PROCEDURE PACKLIST_UPSERT (
+    I_PACKLIST_NO TYPE OF VALUE_INTEGER NOT NULL,
+    I_PACKLIST_CODE TYPE OF VALUE_INTEGER NOT NULL)
+AS
+begin
+  update or insert into packlists (packlist_no, packlist_code)
+    values (:i_packlist_no, :i_packlist_code)
+    matching (packlist_no);
 end^
 
 
