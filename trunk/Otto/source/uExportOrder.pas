@@ -94,7 +94,7 @@ begin
     Line.Add('200');
     Line.Add(CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5));
     Line.Add(GetXmlAttr(ndOrderItem, 'ARTICLE_CODE'));
-    Line.Add(dmOtto.Recode('ARTICLE', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION')));
+    Line.Add(dmOtto.Recode('ORDERITEM', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION')));
     Line.Add('1');
     Line.Add(GetXmlAttr(ndOrderItem, 'COST_EUR'));
     Line.Add('');
@@ -169,9 +169,9 @@ begin
   end;
 
   ForceDirectories(Path['OrderRequests']);
-  FileName:= GetNextFileName(Format('%sa%s_%%.2u.%.3d', [
+  FileName:= GetNextFileName(Format('%sa%s_%.1u%%.1u.%.3d', [
     Path['OrderRequests'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
-    DayOfTheYear(Date)]));
+    dmOtto.DealerId, DayOfTheYear(Date)]));
   SaveStringAsFile(ClientText+OrderItemText, FileName);
   dmOtto.CreateAlert('Отправка заявок', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
 end;

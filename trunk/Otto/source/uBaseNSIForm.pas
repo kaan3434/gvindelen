@@ -8,7 +8,7 @@ uses
   DBGridEh, StdCtrls, JvExStdCtrls, JvGroupBox, ExtCtrls, JvExExtCtrls,
   JvExtComponent, JvPanel, TB2Dock, TB2Toolbar, TBX, ComCtrls, ActnList,
   ImgList, PngImageList, TB2Item, FIBDatabase, pFIBDatabase,
-  DBGridEhGrouping;
+  DBGridEhGrouping, ToolCtrlsEh, DBGridEhToolCtrls, DBAxisGridsEh;
 
 type
   TBaseNSIForm = class(TForm)

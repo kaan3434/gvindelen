@@ -70,10 +70,10 @@ function extract_searches($template_path, $path) {
   return $searches;
 }
   $path = $_GET['path'];      
-  if (!$path and $_SERVER['QUERY_STRING']) {
-    echo 'page_not_found';
-    exit; 
-  }
+//  if (!$path and $_SERVER['QUERY_STRING']) {
+//    echo 'page_not_found';
+//    exit; 
+//  }
 
   // проверяем перенаправление страницы
   $event_fname = $template_path . $path .'/'.'on_redirect_path' . '.php';

@@ -183,9 +183,8 @@ object dmOtto: TdmOtto
         object TAG: TMTNumericDataFieldEh
           FieldName = 'TAG'
           NumericDataType = fdtIntegerEh
+          AutoIncrement = False
           Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
           currency = False
           Precision = 0
@@ -193,18 +192,11 @@ object dmOtto: TdmOtto
         object KEYLANG: TMTStringDataFieldEh
           FieldName = 'KEYLANG'
           StringDataType = fdtStringEh
-          Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
           Size = 3
-          Transliterate = False
         end
         object CAPS: TMTBooleanDataFieldEh
           FieldName = 'CAPS'
-          Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
         end
       end
@@ -343,7 +335,7 @@ object dmOtto: TdmOtto
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 41339.585063750000000000
+    ReportOptions.LastChange = 41487.065397638900000000
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
     Left = 280

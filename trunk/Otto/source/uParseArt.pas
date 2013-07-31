@@ -52,7 +52,7 @@ begin
       else
         ndOrderItems:= ndOrder.NodeByName('ORDERITEMS');
 
-      Dimension:= dmOtto.Recode('ARTICLE', 'DIMENSION', sl[11]);
+      Dimension:= dmOtto.Recode('ORDERITEM', 'DIMENSION', sl[11]);
 
       ndOrderItem:= ChildByAttributes(ndOrderItems, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
         [sl[7], sl[8], sl[9], VarArrayOf([Dimension, sl[11]])]);
@@ -68,14 +68,41 @@ begin
             XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
             Value2Vars(LineNo, 'LINE_NO'))));
         end;
+        //
+        StateSign := dmOtto.Recode('ORDERITEM', 'ART_STATE', sl[1]+sl[2]);
+        if StateSign <> sl[1]+sl[2] then
+          SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', StateSign);
+        StateSign := dmOtto.Recode('ORDERITEM', 'ART_STATUS', sl[1]+sl[2]);
+        if StateSign = sl[1]+sl[2] then
+        begin
+          dmOtto.Notify(aMessageId,
+            '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID], Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестная комбинация ART_STATUS = [ART_STATUS],[ART_STATE].',
+            'E',
+            XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
+            XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION;STATUS_SIGN',
+            Strings2Vars(sl, 'ART_STATUS=1;ART_STATE=2',
+            Value2Vars(LineNo, 'LINE_NO')))));
+          Exit;
+        end;
+
+        if Not XmlAttrIn(ndOrderItem, 'STATUS_SIGN', StateSign) then
+          dmOtto.Notify(aMessageId,
+            '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID], Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Расходжение статусов [STATUS_SIGN]<>[ART_STATE_SIGN].',
+            'W',
+            XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
+            XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION;STATUS_SIGN',
+            Value2Vars(StateSign, 'ART_STATE_SIGN',
+            Value2Vars(LineNo, 'LINE_NO')))));
+
         if GetXmlAttrValue(ndOrderItem, 'NREGWG') = null then
           SetXmlAttr(ndOrderItem, 'NREGWG', ToNumber(sl[19]));
         if GetXmlAttrValue(ndOrderItem, 'NRRETCODE') = null then
           SetXmlAttr(ndOrderItem, 'NRRETCODE', ToNumber(sl[17]));
         if GetXmlAttrValue(ndOrderItem, 'DESCRIPTION') = null then
           SetXmlAttr(ndOrderItem, 'DESCRIPTION', Trim(sl[10]));
+        if ndOrderItem.ValueAsBoolDef(false) then
         try
-//          dmOtto.ActionExecute(aTransaction, ndOrderItem);
+          dmOtto.ActionExecute(aTransaction, ndOrderItem);
           dmOtto.Notify(aMessageId,
             '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID], Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Ok.',
             'I',

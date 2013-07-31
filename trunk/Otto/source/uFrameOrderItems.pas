@@ -16,8 +16,6 @@ type
     mtblOrderItems: TMemTableEh;
     fldOrderItems_ORDERITEM_ID: TIntegerField;
     fldOrderItems_MAGAZINE_ID: TIntegerField;
-    fldOrderItems_MAGAZINE_NAME: TStringField;
-    fldOrderItems_ARTICLE_ID: TIntegerField;
     fldOrderItems_ARTICLE_CODE: TStringField;
     fldOrderItems_DIMENSION: TStringField;
     fldOrderItems_PRICE_EUR: TFloatField;
@@ -31,18 +29,13 @@ type
     fldOrderItems_STATE_ID: TIntegerField;
     fldOrderItems_STATE_NAME: TStringField;
     dsOrderItems: TDataSource;
-    dsArticles: TDataSource;
-    qryArticles: TpFIBDataSet;
-    qryMagazines: TpFIBDataSet;
     qryStatuses: TpFIBDataSet;
     ProgressCheckAvail: TJvProgressComponent;
     actCheckAvailable: TAction;
     btnCheckAvailable: TTBXItem;
     fldOrderItems_ORDER_ID: TIntegerField;
-    fldOrderItems_ARTICLE_SIGN: TStringField;
     grBoxOrderItems: TJvGroupBox;
     grdOrderItems: TDBGridEh;
-    grdArticles: TDBGridEh;
     actCancelRequest: TAction;
     actReturnRequest: TAction;
     btn1: TTBXItem;
@@ -64,13 +57,6 @@ type
     procedure ProgressCheckAvailShow(Sender: TObject);
     procedure actCheckAvailableExecute(Sender: TObject);
     procedure grdOrderItemsColEnter(Sender: TObject);
-    procedure grdArticlesDblClick(Sender: TObject);
-    procedure grdOrderItemsRowDetailPanelShow(Sender: TCustomDBGridEh;
-      var CanShow: Boolean);
-    procedure grdArticlesKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure grdOrderItemsRowDetailPanelHide(Sender: TCustomDBGridEh;
-      var CanHide: Boolean);
     procedure mtblOrderItemsSetFieldValue(MemTable: TCustomMemTableEh;
       Field: TField; var Value: Variant);
     procedure mtblOrderItemsBeforeEdit(DataSet: TDataSet);
@@ -98,7 +84,6 @@ type
     { Private declarations }
     FQryStatuses: Pointer;
     function GetOrderId: Integer;
-    procedure qryArticles2OrderItems;
   public
     { Public declarations }
     ndOrder: TXmlNode;
@@ -156,9 +141,9 @@ begin
       OrderItemId:= GetXmlAttrValue(ndOrderItem, 'ID');
       mtblOrderItems.Locate('ORDERITEM_ID', OrderItemId, []);
       BatchMoveFields2(ndOrderItem, mtblOrderItems,
-        'ARTICLE_ID;KIND_RUS;STATE_ID;WEIGHT;STATUS_FLAG_LIST=FLAG_SIGN_LIST', false);
+        'KIND_RUS;STATE_ID;WEIGHT;STATUS_FLAG_LIST=FLAG_SIGN_LIST;MAGAZINE_ID', false);
       BatchMoveFields2(ndOrderItem, mtblOrderItems,
-        'MAGAZINE_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR;NAME_RUS;STATUS_ID', true);
+        'ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR;NAME_RUS;STATUS_ID', true);
       dmOtto.ActionExecute(trnWrite, ndOrderItem);
       dmOtto.ObjectGet(ndOrderItem, OrderItemId, trnWrite);
     end;
@@ -173,7 +158,7 @@ begin
   mtblOrderItems.Tag:= 1;
   try
     BatchMoveXMLNodes2Dataset(mtblOrderItems, ndOrderItems,
-      'ORDERITEM_ID=ID;ORDER_ID;MAGAZINE_ID;ARTICLE_ID;ARTICLE_CODE;DIMENSION;'+
+      'ORDERITEM_ID=ID;ORDER_ID;MAGAZINE_ID;ARTICLE_CODE;DIMENSION;'+
       'PRICE_EUR;WEIGHT;NAME_RUS;KIND_RUS;STATUS_ID;STATE_ID;FLAG_SIGN_LIST=STATUS_FLAG_LIST;'+
       'AMOUNT;COST_EUR;ORDERITEM_INDEX',
       cmReplace);
@@ -193,13 +178,9 @@ var
   handle: THandle;
   XmlText: UTF8String;
   WXml: WideString;
-  xmlAvail, xmlArticle: TNativeXml;
-  i, j: Integer;
-  nl: TXmlNodeList;
-  ArticleId: variant;
-  aWeight, aMagazineId, aPriceEur, aArticleCode,aImageLink: variant;
-  nArticleSign, aArticleSign: string;
-  aDimension, nDimension, aColor, aDescription: string;
+  xmlAvail: TNativeXml;
+  i: Integer;
+  nDimension: string;
   OrderItemId: Integer;
 begin
   ProgressCheckAvail.ProgressMax:= ndOrderItems.NodeCount;
@@ -214,8 +195,6 @@ begin
     if FlagPresent('DELETEABLE', ndOrderItem, 'STATUS_FLAG_LIST') then
     begin
       nDimension:= GetXmlAttrValue(ndOrderItem, 'DIMENSION');
-      nArticleSign:= dmOtto.GetArticleSign(GetXmlAttrValue(ndOrderItem, 'ARTICLE_CODE'),
-                           GetXmlAttrValue(ndOrderItem, 'MAGAZINE_ID'));
       ProgressCheckAvail.ProgressStepIt;
 
       PluginName:= 'otto_check_available';
@@ -250,99 +229,12 @@ begin
              21: SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'DELAY3WEEK');
             end;
           end;
-          xmlAvail.XmlFormat:= xfReadable;
-          ForceDirectories(Path['Articles']);
-          xmlAvail.SaveToFile(GetXmlAttr(ndOrderItem, 'ARTICLE_CODE', Path['Articles'], '_avail.xml'));
         finally
           xmlAvail.Free;
         end;
       except
       end;
 
-      if GetXmlAttrValue(ndOrderItem, 'MAGAZINE_ID') = 1 then
-      begin
-        PluginName:= 'otto_get_article';
-        Url:= dmOtto.dbOtto.QueryValue('select o_value from plugin_value(:plugin_sign, :param_sign)',
-           0, [PluginName, 'URL']);
-        handle := LoadLibrary('request_xml.plg');
-        xmlArticle:= TNativeXml.Create;
-        try
-          try
-            if handle > 0 then
-            try
-              @PluginExec := GetProcAddress(handle,'Execute');
-              XmlText:= ndOrderItem.WriteToString;
-              WXml:= XmlText;
-              PluginExec(url, 'ArticleSign', WXml);
-              if WXml <> '' then
-              begin
-                xmlArticle.ReadFromString(WXml);
-                xmlArticle.XmlFormat:= xfReadable;
-                ForceDirectories(Path['Articles']);
-                xmlArticle.SaveToFile(GetXmlAttr(ndOrderItem, 'ARTICLE_CODE', Path['Articles'], '.xml'));
-              end;
-            finally
-              FreeLibrary(handle);
-            end;
-            nl:= TXmlNodeList.Create;
-            try
-              xmlArticle.Root.FindNodes('Article', nl);
-              For j:= 0 to nl.Count-1 do
-              begin
-                aArticleSign:= dmOtto.GetArticleSign(GetXmlAttrValue(nl[j], 'article_code'),
-                  GetXmlAttrValue(ndOrderItem, 'MAGAZINE_ID'));
-                aDimension:= CopyFront4(GetXmlAttrValue(nl[j], 'dimension', '0'), '(');
-                aWeight:= trnRead.DefaultDatabase.QueryValue(
-                  'select max(weight) from v_articles where article_sign = :article_sign and dimension = :dimension',
-                  0, [aArticleSign, aDimension]);
-                aColor:= dmOtto.Recode('ARTICLECODE', 'DIMENSION', GetXmlAttrValue(nl[j].Parent, 'DIMENSION'));
-                aDescription:= dmOtto.Recode('ARTICLECODE', 'NAME', GetXmlAttrValue(nl[j].Parent, 'name'));
-                aMagazineId:= GetXmlAttrValue(ndOrderItem, 'MAGAZINE_ID');
-                aArticleCode:= GetXmlAttrValue(nl[j], 'article_code');
-                aPriceEur:= GetXmlAttrValue(nl[j], 'price_eur');
-                aImageLink:= GetXmlAttrValue(nl[j].Parent, 'image_link');
-                trnWrite.SetSavePoint('ArticleGOC');
-                try
-                  ArticleId:= trnWrite.DefaultDatabase.QueryValue(
-                    'select o_article_id from article_goc(:magazine_id,:article_code, :color, :dimension, :price_eur, :weight, :description, :image)',
-                    0, [aMagazineId,
-                        aArticleCode,
-                        aColor,
-                        aDimension,
-                        aPriceEur,
-                        aWeight,
-                        aDescription,
-                        aImageLink]);
-                  trnWrite.DefaultDatabase.QueryValue(
-                    'update articlecodes set color = :color where article_sign = :article_sign',
-                    0, [aColor, aArticleSign], trnWrite);
-                  if (aArticleSign = nArticleSign) and (aDimension = nDimension) then
-                    SetXmlAttr(ndOrderItem, 'ARTICLE_ID', ArticleId);
-                except
-                  trnWrite.RollBackToSavePoint('ArticleGOC');
-                end;
-
-                if (aArticleSign = nArticleSign) and (aDimension = nDimension) then
-                begin
-                  if GetXmlAttrAsMoney(nl[j], 'price_eur') <> GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') then
-                    SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', GetXmlAttrAsMoney(nl[j], 'price_eur'));
-                end;
-              end;
-            finally
-              nl.Free;
-            end;
-          finally
-            xmlArticle.Free;
-          end;
-        except
-        end;
-      end;
-
-      aWeight:= trnWrite.DefaultDatabase.QueryValue(
-        'select max(a.weight) from v_articles a where a.article_sign = :article_sign and a.dimension = :dimension',
-        0, [nArticleSign, nDimension], trnWrite);
-      if aWeight <> null then
-        SetXmlAttr(ndOrderItem, 'WEIGHT', aWeight);
       dmOtto.ActionExecute(trnWrite, ndOrderItem);
       dmOtto.ObjectGet(ndOrderItem, OrderItemId, trnWrite);
     end
@@ -354,7 +246,6 @@ begin
   Write;
   ProgressCheckAvail.Execute;
   Read;
-  qryArticles.CloseOpen(true);
 end;
 
 procedure TFrameOrderItems.grdOrderItemsColEnter(Sender: TObject);
@@ -364,57 +255,6 @@ begin
   Column:= grdOrderItems.Columns[grdOrderItems.col-1];
   dmOtto.SetKeyLayout(Column.Tag);
 end;
-
-procedure TFrameOrderItems.qryArticles2OrderItems;
-begin
-  if Pos(',DRAFT,', mtblOrderItems['FLAG_SIGN_LIST']) > 0 then
-  begin
-    if not qryArticles.Eof then
-    begin
-      if mtblOrderItems.State = dsBrowse then
-        mtblOrderItems.Edit;
-      BatchMoveFields2(mtblOrderItems, qryArticles,
-        'MAGAZINE_ID;MAGAZINE_NAME;ARTICLE_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;WEIGHT');
-      if mtblOrderItems['NAME_RUS'] = null then
-        mtblOrderItems['NAME_RUS']:= qryArticles['DESCRIPTION'];
-      mtblOrderItems['STATE_ID']:= null;
-    end;
-  end;
-end;
-
-procedure TFrameOrderItems.grdArticlesDblClick(Sender: TObject);
-begin
-  qryArticles2OrderItems;
-  grdOrderItems.SetFocus;
-  grdOrderItems.RowDetailPanel.Visible:= False;
-end;
-
-
-procedure TFrameOrderItems.grdOrderItemsRowDetailPanelShow(
-  Sender: TCustomDBGridEh; var CanShow: Boolean);
-begin
-  CanShow:= Trim(mtblOrderItems.FieldByName('ARTICLE_CODE').AsString) <> '';
-  if CanShow then
-  begin
-    if mtblOrderItems['ARTICLE_SIGN'] <> null then
-      qryArticles.Open;
-  end;
-end;
-
-procedure TFrameOrderItems.grdArticlesKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
-begin
-  if Key = vk_Return then
-    grdArticlesDblClick(Self);
-end;
-
-procedure TFrameOrderItems.grdOrderItemsRowDetailPanelHide(
-  Sender: TCustomDBGridEh; var CanHide: Boolean);
-begin
-  CanHide:= True;
-  qryArticles.Close;
-end;
-
 
 procedure TFrameOrderItems.mtblOrderItemsBeforeEdit(DataSet: TDataSet);
 begin
@@ -434,13 +274,10 @@ procedure TFrameOrderItems.OpenTables;
 begin
   inherited;
   mtblOrderItems.Open;
-  qryMagazines.Open;
   qryNextStatus.open;
 end;
 
 procedure TFrameOrderItems.mtblOrderItemsBeforePost(DataSet: TDataSet);
-var
-  Weight: variant;
 begin
   if DataSet['ARTICLE_CODE']=null then
     abort;
@@ -450,10 +287,10 @@ begin
   begin
     ndOrderItem:= ndOrderItems.NodeNew('ORDERITEM');
     BatchMoveFields2(ndOrderItem, DataSet,
-      'ID=ORDERITEM_ID;MAGAZINE_ID;ARTICLE_CODE;DIMENSION;'+
+      'ID=ORDERITEM_ID;MAGAZINE_ID="1";ARTICLE_CODE;DIMENSION;'+
       'PRICE_EUR;COST_EUR;NAME_RUS;STATUS_ID', true);
     BatchMoveFields2(ndOrderItem, DataSet,
-      'ARTICLE_ID;STATUS_SIGN;KIND_RUS;STATE_ID;WEIGHT', false);
+      'STATUS_SIGN;KIND_RUS;STATE_ID;WEIGHT', false);
   end;
   SetXmlAttr(ndOrderItem, 'ORDER_ID', OrderId);
 
@@ -570,8 +407,6 @@ end;
 
 
 procedure TFrameOrderItems.actReturnRequestUpdate(Sender: TObject);
-var
-  StatusSign: String;
 begin
   ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM', 'ID', mtblOrderItems['OrderItem_Id']);
   if Assigned(ndOrderItem) then
@@ -586,8 +421,6 @@ begin
 end;
 
 procedure TFrameOrderItems.grdOrderItemsEnter(Sender: TObject);
-var
-  Column: TColumnEh;
 begin
   inherited;
   grdOrderItems.Col:= 0;
@@ -599,11 +432,11 @@ begin
   SetXmlAttr(ndOrderItem, 'ID', dmOtto.GetNewObjectId('ORDERITEM'));
   BatchMoveFields2(ndOrderItem, mtblOrderItems,
     'ORDER_ID;MAGAZINE_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR;NAME_RUS;'+
-    'ARTICLE_ID;STATUS_SIGN;KIND_RUS;WEIGHT');
+    'STATUS_SIGN;KIND_RUS;WEIGHT');
   mtblOrderItems.Append;
   BatchMoveFields2(mtblOrderItems, ndOrderItem,
     'ORDERITEM_ID=ID;ORDER_ID;MAGAZINE_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR;NAME_RUS;'+
-    'ARTICLE_ID;STATUS_SIGN;KIND_RUS;WEIGHT');
+    'STATUS_SIGN;KIND_RUS;WEIGHT');
   mtblOrderItems.Post;
   Write;
   Read;
@@ -701,48 +534,12 @@ end;
 
 procedure TFrameOrderItems.mtblOrderItemsSetFieldValue(
   MemTable: TCustomMemTableEh; Field: TField; var Value: Variant);
-var
-  FlagSignList: Variant;
 begin
   if MemTable.Tag = 1 then Exit;
-  if (Field.FieldName = 'DIMENSION') and IsNotNull(Value) then
-  begin
-    if IsNotNull(MemTable['ARTICLE_SIGN']) and
-       (MemTable['PRICE_EUR'] <> Value)  then
-    begin
-      MemTable['PRICE_EUR']:= dmOtto.GetMinPrice(MemTable['ARTICLE_SIGN'], Value, trnWrite);
-      MemTable['WEIGHT']:= dmOtto.GetWeight(MemTable['ARTICLE_SIGN'], Value, trnWrite);
-    end;
-  end
-  else
   if (Field.FieldName = 'PRICE_EUR') and IsNotNull(Value) then
   begin
     MemTable['COST_EUR']:= MemTable['AMOUNT']*Value;
   end
-  else
-  if Field.FieldName = 'AMOUNT' then
-  begin
-    if (Value = 1) and IsNotNull(MemTable['ARTICLE_SIGN']) and IsNotNull(MemTable['DIMENSION']) then
-      MemTable['WEIGHT']:= dmOtto.GetWeight(MemTable['ARTICLE_SIGN'], MemTable['DIMENSION'], trnWrite)
-    else
-      MemTable['WEIGHT']:= null;
-    if (Value = 1) and IsNotNull(MemTable['PRICE_EUR']) then
-      MemTable['COST_EUR']:= MemTable['PRICE_EUR']*Value
-    else
-      MemTable['COST_EUR']:= null;
-  end
-  else
-  if Field.FieldName = 'ARTICLE_CODE' then
-  begin
-    MemTable['ARTICLE_SIGN']:= dmOtto.GetArticleSign(Value, nvl(MemTable['MAGAZINE_ID'], 1));
-  end
-  else
-  if Field.FieldName = 'ARTICLE_SIGN' then
-  begin
-    MemTable['NAME_RUS']:= trnWrite.DefaultDatabase.QueryValue(
-      'select first 1 ac.description from articlecodes ac where ac.article_sign = :article_sign',
-      0, [Value], trnWrite);
-  end;
 end;
 
 procedure TFrameOrderItems.mtblOrderItemsAfterInsert(DataSet: TDataSet);

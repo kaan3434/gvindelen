@@ -15,30 +15,20 @@ function ExportOrder(aTransaction: TpFIBTransaction;
 var
   ndOrder: TXmlNode;
   Line: TStringList;
-  Byr2Eur, CostByr, CostEur: Variant;
+  CostByr: Variant;
 begin
   Result:= '';
   ndOrder:= ndOrders.NodeFindOrCreate('ORDER');
   Line:= TStringList.Create;
   try
     dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
-    CostByr:= aTransaction.DefaultDatabase.QueryValue(
-      'select cost_byr '+
-      'from v_order_summary os '+
-      'where os.order_id = :order_id',
-      0, [aOrderId], aTransaction);
-    CostEur:= aTransaction.DefaultDatabase.QueryValue(
-      'select cost_eur '+
-      'from v_order_summary os '+
-      'where os.order_id = :order_id',
-      0, [aOrderId], aTransaction);
-
+    CostByr:= GetXmlAttr(ndOrder, 'COST_BYR');
     Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
     Line.Add(GetXmlAttr(ndOrder, 'PACKLIST_NO'));
     Line.Add(CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5));
     Line.Add(string(CostByr)+'.00');
     SetXmlAttr(ndOrder, 'INVOICE_BYR_0', CostByr);
-    SetXmlAttr(ndOrder, 'INVOICE_EUR_0', CostEur);
+    SetXmlAttr(ndOrder, 'INVOICE_EUR_0', GetXmlAttr(ndOrder, 'COST_EUR'));
     SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'PREPACKSENT');
     Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
     Result:= ReplaceAll(Result, ';'#13#10, #13#10);

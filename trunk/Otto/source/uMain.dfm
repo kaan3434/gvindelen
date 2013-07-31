@@ -1,11 +1,11 @@
 object MainForm: TMainForm
-  Left = 52
-  Top = 177
+  Left = 221
+  Top = 218
   Width = 845
   Height = 512
   Caption = 'PPZ'
   Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
+  Font.Charset = RUSSIAN_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
@@ -32,8 +32,14 @@ object MainForm: TMainForm
       Align = alLeft
       Caption = 'tbrMain'
       DockPos = 0
+      Font.Charset = RUSSIAN_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
       FullSize = True
       Images = imgListMainMenu
+      ParentFont = False
       TabOrder = 0
       object btnOrderCreate: TTBXItem
         Action = actOrderCreate
@@ -50,33 +56,33 @@ object MainForm: TMainForm
         object btn6: TTBXItem
           Action = actProcessProtocol
         end
+        object btnInfoArt: TTBXItem
+          Action = actProcessArt
+        end
         object btn2: TTBXItem
           Action = actProcessArtN
+        end
+        object btnCancellation: TTBXItem
+          Action = actProcessCancellation
         end
         object btn5: TTBXItem
           Action = actProcessLiefer
         end
-        object btnCancellation: TTBXItem
-          Action = actProcessCancellation
+        object btnParseInfoKomnr: TTBXItem
+          Action = actProcessKomnR
+        end
+        object btnImportInfo2Pay: TTBXItem
+          Action = actProcessInfo2Pay
+        end
+        object btn8: TTBXItem
+          Action = actImportPayments
         end
         object btn4: TTBXItem
           Action = actProcessPackList
           Visible = False
         end
-        object btn8: TTBXItem
-          Action = actImportPayments
-        end
         object btn7: TTBXItem
           Action = actProcessConsignment
-        end
-        object btnImportInfo2Pay: TTBXItem
-          Action = actProcessInfo2Pay
-        end
-        object btnParseInfoKomnr: TTBXItem
-          Action = actProcessKomnR
-        end
-        object btnInfoArt: TTBXItem
-          Action = actProcessArt
         end
         object btnProcessPaymentBaltPost: TTBXItem
           Action = actProcessPaymentBaltPost
@@ -122,6 +128,9 @@ object MainForm: TMainForm
         object btnExportReturns: TTBXItem
           Action = actExportReturn
         end
+        object btnExportDealerData: TTBXItem
+          Action = actExportDealerData
+        end
       end
       object btnParseOrder: TTBXItem
         Action = actParseOrder
@@ -133,13 +142,6 @@ object MainForm: TMainForm
         Action = actParseOrderXml
         Caption = #1048#1079' '#1080#1085#1090#1077#1088#1085#1077#1090#1072
         DisplayMode = nbdmImageAndText
-        Layout = tbxlGlyphTop
-      end
-      object btnImportMagazine: TTBXItem
-        Action = actImportArticles
-        Caption = #1050#1072#1090#1072#1083#1086#1075#1080
-        DisplayMode = nbdmImageAndText
-        GroupIndex = 1
         Layout = tbxlGlyphTop
       end
       object btn3: TTBXItem
@@ -234,6 +236,9 @@ object MainForm: TMainForm
         object btnUnclaimed: TTBXItem
           Action = actUnclaimed
         end
+        object btnAdressList: TTBXItem
+          Action = actAdressList
+        end
       end
     end
     object barInfo: TTBXToolbar
@@ -295,11 +300,6 @@ object MainForm: TMainForm
       Caption = #1047#1072#1103#1074#1082#1080' '#1080#1079' '#1048#1085#1090#1077#1088#1085#1077#1090#1072
       ImageIndex = 7
       OnExecute = actParseOrderXmlExecute
-    end
-    object actImportArticles: TAction
-      Caption = #1048#1084#1087#1086#1088#1090' '#1082#1072#1090#1072#1083#1086#1075#1072
-      ImageIndex = 7
-      OnExecute = actImportArticlesExecute
     end
     object actNSICatalogs: TAction
       Category = 'NSI'
@@ -492,6 +492,16 @@ object MainForm: TMainForm
       Category = 'Import'
       Caption = #1053#1072#1083#1086#1078#1077#1085#1085#1099#1077' '#1087#1083#1072#1090#1077#1078#1080
       OnExecute = actProcessPaymentBaltPostExecute
+    end
+    object actExportDealerData: TAction
+      Category = 'Export'
+      Caption = #1042#1099#1075#1088#1091#1079#1080#1090#1100' '#1076#1072#1085#1085#1099#1077' '#1076#1083#1103' '#1076#1080#1083#1077#1088#1072
+      OnExecute = actExportDealerDataExecute
+    end
+    object actAdressList: TAction
+      Category = 'Reports'
+      Caption = #1040#1076#1088#1077#1089#1072' '#1076#1083#1103' '#1088#1072#1089#1089#1099#1083#1082#1080
+      OnExecute = actAdressListExecute
     end
   end
   object imgListMainMenu: TPngImageList

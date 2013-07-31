@@ -4,8 +4,6 @@
 /***                           Unique Constraints                           ***/
 /******************************************************************************/
 
-ALTER TABLE ARTICLECODES ADD CONSTRAINT UNQ1_ARTICLECODES UNIQUE (MAGAZINE_ID, ARTICLE_CODE);
-ALTER TABLE ARTICLES ADD CONSTRAINT UNQ1_ARTICLES UNIQUE (ARTICLECODE_ID, DIMENSION);
 ALTER TABLE MESSAGES ADD CONSTRAINT UNQ1_MESSAGES UNIQUE (FILE_NAME);
 
 
@@ -25,21 +23,19 @@ ALTER TABLE ACTIONTREE_CRITERIAS ADD CONSTRAINT PK_ACTIONTREE_CRITERIAS PRIMARY 
 ALTER TABLE ACTIONTREE_PARAMS ADD CONSTRAINT PK_ACTIONTREE_PARAMS PRIMARY KEY (ACTIONTREEITEM_ID, PARAM_NAME, PARAM_KIND);
 ALTER TABLE ACTION_ATTRS ADD CONSTRAINT PK_ACTION_ATTRS PRIMARY KEY (OBJECT_ID, ATTR_ID);
 ALTER TABLE ADRESSES ADD CONSTRAINT PK_ADRESSES PRIMARY KEY (ADRESS_ID);
-ALTER TABLE ARTICLECODES ADD CONSTRAINT PK_ARTICLECODES PRIMARY KEY (ARTICLECODE_ID);
-ALTER TABLE ARTICLECODE_ATTRS ADD CONSTRAINT PK_ARTICLECODE_ATTRS PRIMARY KEY (OBJECT_ID, ATTR_ID);
-ALTER TABLE ARTICLEMASKS ADD CONSTRAINT PK_ARTICLEMASKS PRIMARY KEY (CATALOG_ID, ARTICLE_CODE_MASK);
-ALTER TABLE ARTICLES ADD CONSTRAINT PK_ARTICLES PRIMARY KEY (ARTICLE_ID);
-ALTER TABLE ARTICLESIGNS ADD CONSTRAINT PK_ARTICLESIGNS PRIMARY KEY (ARTICLESIGN_ID);
-ALTER TABLE ARTICLE_ATTRS ADD CONSTRAINT PK_ARTICLE_ATTRS PRIMARY KEY (OBJECT_ID, ATTR_ID);
 ALTER TABLE ATTRS ADD CONSTRAINT PK_ATTRS PRIMARY KEY (ATTR_ID);
 ALTER TABLE BONUSES ADD CONSTRAINT PK_BONUSES PRIMARY KEY (BONUS_ID);
 ALTER TABLE BUILDS ADD CONSTRAINT PK_BUILDS PRIMARY KEY (BUILD);
 ALTER TABLE CALCPOINTS ADD CONSTRAINT PK_CALCPOINTS PRIMARY KEY (CALCPOINT_ID);
 ALTER TABLE CATALOG2PLUGIN ADD CONSTRAINT PK_CATALOG2PLUGIN PRIMARY KEY (CATALOG_ID, PLUGIN_ID);
 ALTER TABLE CATALOGS ADD CONSTRAINT PK_CATALOGS PRIMARY KEY (CATALOG_ID);
+ALTER TABLE CLIENTNOTIFIES ADD CONSTRAINT PK_CLIENTNOTIFIES PRIMARY KEY (CLIENTNOTIFY_ID);
 ALTER TABLE CLIENTS ADD CONSTRAINT PK_CLIENTS PRIMARY KEY (CLIENT_ID);
 ALTER TABLE CLIENT_ATTRS ADD CONSTRAINT PK_CLIENT_ATTRS PRIMARY KEY (OBJECT_ID, ATTR_ID);
 ALTER TABLE COUNTERS ADD CONSTRAINT PK_COUNTERS PRIMARY KEY (OBJECT_SIGN, ATTR_SIGN, OBJECT_ID);
+ALTER TABLE DEALERNOTIFIES ADD CONSTRAINT PK_DEALERNOTIFIES PRIMARY KEY (DEALERNOTIFY_ID);
+ALTER TABLE DEALERORDERS ADD CONSTRAINT PK_DEALERORDERS PRIMARY KEY (PRODUCT_ID, DEALER_ID);
+ALTER TABLE DEALERS ADD CONSTRAINT PK_DEALERS PRIMARY KEY (DEALER_ID);
 ALTER TABLE DETECTOR ADD CONSTRAINT PK_DETECTOR PRIMARY KEY (OBJECT_SIGN, OBJECT_ID, PARAM_SIGN);
 ALTER TABLE EVENTCODES ADD CONSTRAINT PK_EVENTCODES PRIMARY KEY (EVENT_SIGN);
 ALTER TABLE EVENTS ADD CONSTRAINT PK_EVENTS PRIMARY KEY (EVENT_ID);
@@ -74,6 +70,7 @@ ALTER TABLE PRODUCT2TAXPLAN ADD CONSTRAINT PK_PRODUCT2TAXPLAN PRIMARY KEY (PRODU
 ALTER TABLE PRODUCTS ADD CONSTRAINT PK_PRODUCTS PRIMARY KEY (PRODUCT_ID);
 ALTER TABLE PRODUCT_ATTRS ADD CONSTRAINT PK_PRODUCT_ATTRS PRIMARY KEY (OBJECT_ID, ATTR_ID);
 ALTER TABLE RECODES ADD CONSTRAINT PK_RECODES PRIMARY KEY (OBJECT_SIGN, ATTR_SIGN, ORIGINAL_VALUE);
+ALTER TABLE RECODE_MASKS ADD CONSTRAINT PK_RECODE_MASKS PRIMARY KEY (OBJECT_SIGN, ATTR_SIGN, SEARCH_MASK);
 ALTER TABLE SESSIONS ADD CONSTRAINT PK_SESSIONS PRIMARY KEY (SESSION_ID);
 ALTER TABLE SETTINGS ADD CONSTRAINT PK_SETTINGS PRIMARY KEY (SETTING_ID);
 ALTER TABLE SETTINGSIGNS ADD CONSTRAINT PK_SETTINGSIGNS PRIMARY KEY (SETTING_SIGN);
@@ -118,17 +115,6 @@ ALTER TABLE ADRESSES ADD CONSTRAINT FK_ADRESSES_CLIENT FOREIGN KEY (CLIENT_ID) R
 ALTER TABLE ADRESSES ADD CONSTRAINT FK_ADRESSES_PLACE FOREIGN KEY (PLACE_ID) REFERENCES PLACES (PLACE_ID) ON UPDATE CASCADE;
 ALTER TABLE ADRESSES ADD CONSTRAINT FK_ADRESSES_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE ADRESSES ADD CONSTRAINT FK_ADRESSES_STREETTYPE FOREIGN KEY (STREETTYPE_CODE) REFERENCES STREETTYPES (STREETTYPE_CODE) ON UPDATE CASCADE;
-ALTER TABLE ARTICLECODES ADD CONSTRAINT FK_ARTICLECODES_ARTICLESIGN FOREIGN KEY (ARTICLESIGN_ID) REFERENCES ARTICLESIGNS (ARTICLESIGN_ID) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE ARTICLECODES ADD CONSTRAINT FK_ARTICLECODES_MAGAZINE FOREIGN KEY (MAGAZINE_ID) REFERENCES MAGAZINES (MAGAZINE_ID) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE ARTICLECODES ADD CONSTRAINT FK_ARTICLECODES_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
-ALTER TABLE ARTICLECODE_ATTRS ADD CONSTRAINT FK_ARTCODE_ATTRS_ARTICLECODE FOREIGN KEY (OBJECT_ID) REFERENCES ARTICLECODES (ARTICLECODE_ID) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE ARTICLECODE_ATTRS ADD CONSTRAINT FK_ARTICLECODE_ATTRS_ATTR FOREIGN KEY (ATTR_ID) REFERENCES ATTRS (ATTR_ID) ON UPDATE CASCADE;
-ALTER TABLE ARTICLEMASKS ADD CONSTRAINT FK_ARTICLEMASKS_CATALOG FOREIGN KEY (CATALOG_ID) REFERENCES CATALOGS (CATALOG_ID) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE ARTICLES ADD CONSTRAINT FK_ARTICLES_ARTICLECODE FOREIGN KEY (ARTICLECODE_ID) REFERENCES ARTICLECODES (ARTICLECODE_ID) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE ARTICLES ADD CONSTRAINT FK_ARTICLES_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
-ALTER TABLE ARTICLESIGNS ADD CONSTRAINT FK_ARTICLESIGNS_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
-ALTER TABLE ARTICLE_ATTRS ADD CONSTRAINT FK_ARTICLE_ATTRS_ARTICLE FOREIGN KEY (OBJECT_ID) REFERENCES ARTICLES (ARTICLE_ID) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE ARTICLE_ATTRS ADD CONSTRAINT FK_ARTICLE_ATTRS_ATTR FOREIGN KEY (ATTR_ID) REFERENCES ATTRS (ATTR_ID) ON UPDATE CASCADE;
 ALTER TABLE ATTRS ADD CONSTRAINT FK_ATTRS_OBJECT FOREIGN KEY (OBJECT_SIGN) REFERENCES OBJECTS (OBJECT_SIGN) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE BONUSES ADD CONSTRAINT FK_BONUSES_CLIENT_ID FOREIGN KEY (CLIENT_ID) REFERENCES CLIENTS (CLIENT_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE BONUSES ADD CONSTRAINT FK_BONUSES_ORDERTAX_ID FOREIGN KEY (ORDERTAX_ID) REFERENCES ORDERTAXS (ORDERTAX_ID) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -140,11 +126,19 @@ ALTER TABLE CATALOG2PLUGIN ADD CONSTRAINT FK_CATALOG2PLUGIN_CATALOG FOREIGN KEY 
 ALTER TABLE CATALOG2PLUGIN ADD CONSTRAINT FK_CATALOG2PLUGIN_PLUGIN FOREIGN KEY (PLUGIN_ID) REFERENCES PLUGINS (PLUGIN_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE CATALOGS ADD CONSTRAINT FK_CATALOGS_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE CATALOGS ADD CONSTRAINT FK_CATALOGS_VENDOR FOREIGN KEY (VENDOR_ID) REFERENCES VENDORS (VENDOR_ID) ON UPDATE CASCADE;
+ALTER TABLE CLIENTNOTIFIES ADD CONSTRAINT FK_CLIENTNOTIFIES_CLIENT FOREIGN KEY (CLIENT_ID) REFERENCES CLIENTS (CLIENT_ID) ON DELETE CASCADE ON UPDATE CASCADE
+  USING INDEX FK_CLIENTNOTIFIES_CLIENT_ID;
+ALTER TABLE CLIENTNOTIFIES ADD CONSTRAINT FK_CLIENTNOTIFIES_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE SET DEFAULT;
 ALTER TABLE CLIENTS ADD CONSTRAINT FK_CLIENTS_ACCOUNT FOREIGN KEY (ACCOUNT_ID) REFERENCES ACCOUNTS (ACCOUNT_ID) ON UPDATE CASCADE;
 ALTER TABLE CLIENTS ADD CONSTRAINT FK_CLIENTS_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
 ALTER TABLE CLIENT_ATTRS ADD CONSTRAINT FK_CLIENT_ATTRS_ATTR FOREIGN KEY (ATTR_ID) REFERENCES ATTRS (ATTR_ID) ON UPDATE CASCADE;
 ALTER TABLE CLIENT_ATTRS ADD CONSTRAINT FK_CLIENT_ATTRS_OBJECT FOREIGN KEY (OBJECT_ID) REFERENCES CLIENTS (CLIENT_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE COUNTERS ADD CONSTRAINT FK_COUNTERS_OBJECT FOREIGN KEY (OBJECT_SIGN) REFERENCES OBJECTS (OBJECT_SIGN) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE DEALERNOTIFIES ADD CONSTRAINT FK_DEALERNOTIFIES_DEALER FOREIGN KEY (DEALER_ID) REFERENCES DEALERS (DEALER_ID) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE DEALERNOTIFIES ADD CONSTRAINT FK_DEALERNOTIFIES_MESSAGE FOREIGN KEY (MESSAGE_ID) REFERENCES MESSAGES (MESSAGE_ID) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE DEALERNOTIFIES ADD CONSTRAINT FK_DEALERNOTIFIES_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
+ALTER TABLE DEALERORDERS ADD CONSTRAINT FK_DEALERORDERS_DEALER FOREIGN KEY (DEALER_ID) REFERENCES DEALERS (DEALER_ID) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE DEALERORDERS ADD CONSTRAINT FK_DEALERORDERS_PRODUCT FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCTS (PRODUCT_ID) ON UPDATE CASCADE;
 ALTER TABLE EVENTCODES ADD CONSTRAINT FK_EVENTCODES_OBJECT FOREIGN KEY (OBJECT_SIGN) REFERENCES OBJECTS (OBJECT_SIGN) ON UPDATE CASCADE;
 ALTER TABLE EVENTS ADD CONSTRAINT FK_EVENTS_EVENT FOREIGN KEY (EVENT_SIGN) REFERENCES EVENTCODES (EVENT_SIGN) ON UPDATE CASCADE;
 ALTER TABLE EVENTS ADD CONSTRAINT FK_EVENTS_STATUS FOREIGN KEY (STATUS_ID) REFERENCES STATUSES (STATUS_ID) ON UPDATE CASCADE;
@@ -203,6 +197,7 @@ ALTER TABLE PRODUCTS ADD CONSTRAINT FK_PRODUCTS_VENDOR FOREIGN KEY (VENDOR_ID) R
 ALTER TABLE PRODUCT_ATTRS ADD CONSTRAINT FK_PRODUCT_ATTRS_ATTR FOREIGN KEY (ATTR_ID) REFERENCES ATTRS (ATTR_ID) ON UPDATE CASCADE;
 ALTER TABLE PRODUCT_ATTRS ADD CONSTRAINT FK_PRODUCT_ATTRS_PRODUCT FOREIGN KEY (OBJECT_ID) REFERENCES PRODUCTS (PRODUCT_ID) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE RECODES ADD CONSTRAINT FK_RECODES_OBJECT FOREIGN KEY (OBJECT_SIGN) REFERENCES OBJECTS (OBJECT_SIGN) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE RECODE_MASKS ADD CONSTRAINT FK_RECODE_MASKS_OBJECT FOREIGN KEY (OBJECT_SIGN) REFERENCES OBJECTS (OBJECT_SIGN) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE SETTINGS ADD CONSTRAINT FK_SETTINGS_SETTINGSIGN FOREIGN KEY (SETTING_SIGN) REFERENCES SETTINGSIGNS (SETTING_SIGN) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE STATUSES ADD CONSTRAINT FK_STATUSES_ACTION FOREIGN KEY (ACTION_SIGN) REFERENCES ACTIONCODES (ACTION_SIGN) ON UPDATE CASCADE;
 ALTER TABLE STATUSES ADD CONSTRAINT FK_STATUSES_OBJECT FOREIGN KEY (OBJECT_SIGN) REFERENCES OBJECTS (OBJECT_SIGN) ON UPDATE CASCADE;
@@ -226,7 +221,6 @@ ALTER TABLE WAYS ADD CONSTRAINT FK_WAYS_STATUS FOREIGN KEY (STATUS_ID) REFERENCE
 /***                                Indices                                 ***/
 /******************************************************************************/
 
-CREATE INDEX ARTICLECODES_IDX1 ON ARTICLECODES (ARTICLE_SIGN);
 CREATE DESCENDING INDEX IK_ORDERS_CREATE_DTM ON ORDERS (CREATE_DTM);
 CREATE INDEX SEARCHES_IDX1 ON SEARCHES (SEARCH_ID, OBJECT_ID);
 CREATE INDEX IDX_TMP_SEARCHES_1 ON TMP_SEARCHES (SEARCH_ID, OBJECT_ID);
@@ -476,66 +470,6 @@ begin
 end
 ^
 
-/* Trigger: ARTICLECODES_BI0 */
-CREATE OR ALTER TRIGGER ARTICLECODES_BI0 FOR ARTICLECODES
-ACTIVE BEFORE INSERT POSITION 0
-AS
-begin
-  if (new.articlecode_id is null) then
-    new.articlecode_id = gen_id(seq_articlecode_id, 1);
-  if (new.status_id is null) then
-    select o_status_id from status_get_default('ARTICLECODE') into new.status_id;
-  if (new.status_id is null) then
-    exception ex_default_status_undefined 'Undefined default status for ARTICLECODE';
-
-  if (new.article_sign is null) then
-    select recode(new.article_code, am.article_sign_mask)
-      from articlemasks am
-        inner join magazines m on (m.catalog_id = am.catalog_id and m.magazine_id = new.magazine_id)
-      where new.article_code similar to am.article_code_mask
-      into new.article_sign;
-end
-^
-
-/* Trigger: ARTICLESIGNS_BI0 */
-CREATE OR ALTER TRIGGER ARTICLESIGNS_BI0 FOR ARTICLESIGNS
-ACTIVE BEFORE INSERT POSITION 0
-AS
-begin
-  if (new.articlesign_id is null) then
-    new.articlesign_id = gen_id(seq_articlesign_id, 1);
-  if (new.status_id is null) then
-  begin
-    select o_status_id from status_get_default('ARTICLESIGN') into new.status_id;
-    if (new.status_id is null) then
-      exception ex_default_status_undefined 'Undefined default status for ARTICLESIGN';
-  end
-end
-^
-
-/* Trigger: ARTICLES_BI0 */
-CREATE OR ALTER TRIGGER ARTICLES_BI0 FOR ARTICLES
-ACTIVE BEFORE INSERT POSITION 0
-AS
-begin
-  new.article_id = gen_id(seq_article_id, 1);
-  select o_status_id from status_get_default('ARTICLE') into new.status_id;
-  if (new.status_id is null) then
-    exception ex_default_status_undefined 'Undefined default status for ARTICLE';
-  new.status_dtm = current_timestamp;
-end
-^
-
-/* Trigger: ARTICLES_BU0 */
-CREATE OR ALTER TRIGGER ARTICLES_BU0 FOR ARTICLES
-ACTIVE BEFORE UPDATE POSITION 0
-AS
-begin
-  if (old.status_id <> new.status_id) then
-    new.status_dtm = current_timestamp;
-end
-^
-
 /* Trigger: ATTRS_BIU0 */
 CREATE OR ALTER TRIGGER ATTRS_BIU0 FOR ATTRS
 ACTIVE BEFORE INSERT OR UPDATE POSITION 0
@@ -601,6 +535,18 @@ begin
 end
 ^
 
+/* Trigger: CLIENTNOTIFIES_BI0 */
+CREATE OR ALTER TRIGGER CLIENTNOTIFIES_BI0 FOR CLIENTNOTIFIES
+ACTIVE BEFORE INSERT POSITION 0
+AS
+begin
+  if (new.clientnotify_id is null) then
+    new.clientnotify_id = gen_id(seq_clientnotify_id, 1);
+  if (new.status_id is null) then
+    select o_status_id from status_get_default('CLIENTNOTIFY') into new.status_id;
+end
+^
+
 /* Trigger: CLIENTS_BI0 */
 CREATE OR ALTER TRIGGER CLIENTS_BI0 FOR CLIENTS
 ACTIVE BEFORE INSERT POSITION 0
@@ -621,6 +567,20 @@ begin
   new.curr_value = old.curr_value + 1;
   if (new.curr_value not between new.min_value and new.max_value) then
     new.curr_value = new.min_value;
+end
+^
+
+/* Trigger: DEALERNOTIFIES_BI0 */
+CREATE OR ALTER TRIGGER DEALERNOTIFIES_BI0 FOR DEALERNOTIFIES
+ACTIVE BEFORE INSERT POSITION 0
+AS
+begin
+  if (new.dealernotify_id is null) then
+    new.dealernotify_id= gen_id(seq_dealernotify_id, 1);
+  if (new.status_id is null) then
+    select o_status_id from status_get_default('DEALERNOTIFY') into new.status_id;
+  new.status_dtm = current_timestamp;
+  new.create_dtm = current_timestamp;
 end
 ^
 
@@ -878,7 +838,7 @@ begin
     new.state_id = null;
   end
 
-  if (old.cost_eur <> new.cost_eur) then
+  if ((old.cost_eur <> new.cost_eur) or (old.byr2eur <> new.byr2eur)) then
     select o_money_byr from money_eur2byr(new.cost_eur, new.byr2eur) into new.cost_byr;
 end
 ^
@@ -1139,11 +1099,6 @@ begin
   begin
     delete from magazines where magazine_id > 1;
     v_object_id = gen_id(seq_magazine_id, -(gen_id(seq_magazine_id, 0))+1);
-
-    delete from articlecodes;
-    v_object_id = gen_id(seq_article_id, -(gen_id(seq_article_id, 0)));
-    v_object_id = gen_id(seq_articlecode_id, -(gen_id(seq_articlecode_id, 0)));
-    v_object_id = gen_id(seq_articlesign_id, -(gen_id(seq_articlesign_id, 0)));
   end
 
 end^
@@ -1780,6 +1735,104 @@ begin
 end^
 
 
+CREATE OR ALTER PROCEDURE ACT_CLIENTNOTIFY_STORE (
+    I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
+    I_OBJECT_ID TYPE OF ID_OBJECT,
+    I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'CLIENTNOTIFY')
+AS
+declare variable V_NOW_STATUS_ID type of ID_STATUS;
+declare variable V_NEW_STATUS_ID type of ID_STATUS;
+declare variable V_UPDATEABLE type of VALUE_BOOLEAN;
+declare variable V_CLIENT_ID type of ID_CLIENT;
+declare variable V_DELIVERYTYPE_SIGN type of SIGN_OBJECT;
+declare variable V_DELIVERY_ADDRESS type of ADDRESS_DELIVERY;
+declare variable V_NOTIFY_TEXT type of VALUE_ATTR;
+begin
+  if (coalesce(i_object_id, 0) = 0) then i_object_id = gen_id(seq_clientnotify_id, 1);
+
+  update paramheads set object_id = :i_object_id where param_id = :i_param_id;
+
+  execute procedure param_set(:i_param_id, 'ID', :i_object_id);
+
+  select status_id from clientnotifies where clientnotify_id = :i_object_id into :v_now_status_id;
+
+  if (:v_now_status_id is null) then
+  begin
+    select o_value from param_get(:i_param_id, 'CLIENT_ID') into :v_client_id;
+    select o_value from param_get(:i_param_id, 'DELIVERYTYPE_SIGN') into :v_deliverytype_sign;
+    select o_value from param_get(:i_param_id, 'DELIVERY_ADDRESS') into :v_delivery_address;
+    select o_value from param_get(:i_param_id, 'NOTIFY_TEXT') into :v_notify_text;
+    select o_pattern from param_fillpattern(:i_param_id, :v_notify_text) into :v_notify_text;
+
+    insert into clientnotifies (clientnotify_id, client_id, deliverytype_sign, delivery_address, notify_text, create_dtm)
+      values(:i_object_id, :v_client_id, :v_deliverytype_sign, :v_delivery_address, :v_notify_text, current_timestamp)
+      returning status_id
+      into :v_new_status_id;
+    v_updateable = 1;
+  end
+  else
+  begin
+    select o_updateable, o_new_status_id
+      from object_updateable(:i_param_id, :v_now_status_id, :i_object_sign)
+      into :v_updateable, :v_new_status_id;
+  end
+
+  if (v_updateable = 1) then
+  begin
+    execute procedure param_set(:i_param_id, 'STATUS_ID', :v_new_status_id);
+    execute procedure object_put(:i_param_id);
+  end
+end^
+
+
+CREATE OR ALTER PROCEDURE ACT_DEALERNOTIFY_STORE (
+    I_PARAM_ID TYPE OF ID_PARAM NOT NULL,
+    I_OBJECT_ID TYPE OF ID_OBJECT,
+    I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'DEALERNOTIFY')
+AS
+declare variable V_NOW_STATUS_ID type of ID_STATUS;
+declare variable V_NEW_STATUS_ID type of ID_STATUS;
+declare variable V_UPDATEABLE type of VALUE_BOOLEAN;
+declare variable V_NOTIFY_TEXT type of VALUE_ATTR;
+declare variable V_DEALER_ID type of ID_DEALER;
+declare variable V_MESSAGE_ID type of ID_MESSAGE;
+begin
+  if (coalesce(i_object_id, 0) = 0) then i_object_id = gen_id(seq_dealernotify_id, 1);
+
+  update paramheads set object_id = :i_object_id where param_id = :i_param_id;
+
+  execute procedure param_set(:i_param_id, 'ID', :i_object_id);
+
+  select status_id from dealernotifies where dealernotify_id = :i_object_id into :v_now_status_id;
+
+  if (:v_now_status_id is null) then
+  begin
+    select o_value from param_get(:i_param_id, 'DEALER_ID') into :v_dealer_id;
+    select o_value from param_get(:i_param_id, 'MESSAGE_ID') into :v_message_id;
+    select o_value from param_get(:i_param_id, 'NOTIFY_TEXT') into :v_notify_text;
+    select o_pattern from param_fillpattern(:i_param_id, :v_notify_text) into :v_notify_text;
+
+    insert into dealernotifies (dealernotify_id, dealer_id, message_id, notify_text)
+      values(:i_object_id, :v_dealer_id, :v_message_id, :v_notify_text)
+      returning status_id
+      into :v_new_status_id;
+    v_updateable = 1;
+  end
+  else
+  begin
+    select o_updateable, o_new_status_id
+      from object_updateable(:i_param_id, :v_now_status_id, :i_object_sign)
+      into :v_updateable, :v_new_status_id;
+  end
+
+  if (v_updateable = 1) then
+  begin
+    execute procedure param_set(:i_param_id, 'STATUS_ID', :v_new_status_id);
+    execute procedure object_put(:i_param_id);
+  end
+end^
+
+
 CREATE OR ALTER PROCEDURE ACT_EVENT_STORE (
     I_PARAM_ID TYPE OF ID_PARAM,
     I_OBJECT_ID TYPE OF ID_OBJECT,
@@ -2017,6 +2070,100 @@ begin
   begin
     execute procedure param_set(:i_param_id, 'STATUS_ID', :v_new_status_id);
     execute procedure object_put(:i_param_id);
+  end
+end^
+
+
+CREATE OR ALTER PROCEDURE ACT_ORDER_4_ORDERITEM_INSTATUS (
+    I_PARAM_ID TYPE OF ID_PARAM,
+    I_OBJECT_ID TYPE OF ID_OBJECT,
+    I_OBJECT_SIGN TYPE OF SIGN_OBJECT = 'ORDERITEM')
+AS
+declare variable V_PARAM_ID type of ID_PARAM;
+declare variable V_ACTION_SIGN type of SIGN_ACTION;
+declare variable V_OBJECT_ID type of ID_OBJECT;
+declare variable V_NEW_STATUS_SIGN type of SIGN_ATTR;
+declare variable V_ACTION_ID type of ID_ACTION;
+declare variable V_ACTIONTREEITEM_ID type of ID_ACTIONTREEITEM;
+declare variable V_NEW_FLAG_SIGN type of SIGN_OBJECT;
+declare variable V_STATUS_SIGN_LIST type of LIST_SIGNS;
+begin
+  select o_value from param_get(:i_param_id, 'STATUS_SIGN_LIST') into :v_status_sign_list;
+  select o_value from param_get(:i_param_id, 'NEW.STATUS_SIGN') into :v_new_status_sign;
+  select o_value from param_get(:i_param_id, 'NEW.FLAG_SIGN') into :v_new_flag_sign;
+  select o_value from param_get(:i_param_id, 'ACTIONTREEITEM_ID') into :v_actiontreeitem_id;
+
+  for select oi.orderitem_id
+        from orderitems oi
+          inner join statuses s on (s.status_id = oi.status_id)
+        where oi.order_id = :i_object_id
+          and ','||:v_status_sign_list||',' like '%,'||s.status_sign||',%'
+        into :v_object_id do
+  begin
+    select o_param_id from param_create(:i_object_sign, :v_object_id) into :v_param_id;
+    insert into params(param_id, param_name, param_value)
+      select :v_param_id, p.param_name, p.param_value
+        from params p
+          inner join actiontree_params atp on (atp.param_name = p.param_name)
+        where p.param_id = :i_param_id
+          and atp.actiontreeitem_id = :v_actiontreeitem_id;
+
+    select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign, :v_new_flag_sign, 0)
+      into :v_action_sign;
+
+    if (:v_action_sign is null) then
+      select o_value from param_get(:i_param_id, 'ACTION_SIGN') into :v_action_sign;
+
+    if (v_action_sign is not null) then
+      execute procedure action_run(:i_object_sign, :v_action_sign, :v_param_id, :v_object_id)
+        returning_values :v_action_id;
+  end
+end^
+
+
+CREATE OR ALTER PROCEDURE ACT_ORDER_4_ORDERITEM_NINSTATUS (
+    I_PARAM_ID TYPE OF ID_PARAM,
+    I_OBJECT_ID TYPE OF ID_OBJECT,
+    I_OBJECT_SIGN TYPE OF SIGN_OBJECT DEFAULT 'ORDERITEM')
+AS
+declare variable V_PARAM_ID type of ID_PARAM;
+declare variable V_ACTION_SIGN type of SIGN_ACTION;
+declare variable V_OBJECT_ID type of ID_OBJECT;
+declare variable V_NEW_STATUS_SIGN type of SIGN_ATTR;
+declare variable V_ACTION_ID type of ID_ACTION;
+declare variable V_ACTIONTREEITEM_ID type of ID_ACTIONTREEITEM;
+declare variable V_NEW_FLAG_SIGN type of SIGN_OBJECT;
+declare variable V_STATUS_SIGN_LIST type of LIST_SIGNS;
+begin
+  select o_value from param_get(:i_param_id, 'STATUS_SIGN_LIST') into :v_status_sign_list;
+  select o_value from param_get(:i_param_id, 'NEW.STATUS_SIGN') into :v_new_status_sign;
+  select o_value from param_get(:i_param_id, 'NEW.FLAG_SIGN') into :v_new_flag_sign;
+  select o_value from param_get(:i_param_id, 'ACTIONTREEITEM_ID') into :v_actiontreeitem_id;
+
+  for select oi.orderitem_id
+        from orderitems oi
+          inner join statuses s on (s.status_id = oi.status_id)
+        where oi.order_id = :i_object_id
+          and ','||:v_status_sign_list||',' like '%,'||s.status_sign||',%'
+        into :v_object_id do
+  begin
+    select o_param_id from param_create(:i_object_sign, :v_object_id) into :v_param_id;
+    insert into params(param_id, param_name, param_value)
+      select :v_param_id, p.param_name, p.param_value
+        from params p
+          inner join actiontree_params atp on (atp.param_name = p.param_name)
+        where p.param_id = :i_param_id
+          and atp.actiontreeitem_id = :v_actiontreeitem_id;
+
+    select o_action_sign from action_detect(:i_object_sign, :v_object_id, :v_new_status_sign, :v_new_flag_sign, 0)
+      into :v_action_sign;
+
+    if (:v_action_sign is null) then
+      select o_value from param_get(:i_param_id, 'ACTION_SIGN') into :v_action_sign;
+
+    if (v_action_sign is not null) then
+      execute procedure action_run(:i_object_sign, :v_action_sign, :v_param_id, :v_object_id)
+        returning_values :v_action_id;
   end
 end^
 
@@ -2426,10 +2573,9 @@ begin
        into :v_new_status_id;
 
     select o_value from param_get(:i_param_id, 'ORDER_ID') into :v_order_id;
-    select o_value from param_get(:i_param_id, 'ARTICLE_ID') into :v_article_id;
 
-    insert into orderitems(orderitem_id, order_id, article_id, status_id)
-      values(:i_object_id, :v_order_id, :v_article_id, :v_new_status_id)
+    insert into orderitems(orderitem_id, order_id, status_id)
+      values(:i_object_id, :v_order_id, :v_new_status_id)
       returning status_id
       into :v_new_status_id;
     v_updateable = 1;
@@ -3060,6 +3206,9 @@ begin
 
   if (v_valid_criterias = 1) then
   begin
+    if (v_procedure_name = 'CLIENTNOTIFY_STORE') then
+      execute procedure act_clientnotify_store(:i_param_id, :i_object_id);
+    else
     if (v_procedure_name = 'MONEYBACK_CREATE') then
       execute procedure act_moneyback_create(:i_param_id, :i_object_id);
     else
@@ -3233,161 +3382,6 @@ begin
   o_param_name = 'STREETTYPE_SIGN';
   suspend;
 
-end^
-
-
-CREATE OR ALTER PROCEDURE ARTICLE_GOC (
-    I_MAGAZINE_ID TYPE OF ID_MAGAZINE,
-    I_ARTICLE_CODE TYPE OF SIGN_ARTICLE,
-    I_COLOR TYPE OF VALUE_SHORT,
-    I_DIMENSION TYPE OF NAME_SHORT,
-    I_PRICE_EUR TYPE OF MONEY_EUR,
-    I_WEIGHT TYPE OF VALUE_INTEGER,
-    I_DESCRIPTION TYPE OF VALUE_SHORT,
-    I_IMAGE_URL TYPE OF URL = null)
-RETURNS (
-    O_ARTICLE_ID TYPE OF ID_ARTICLE)
-AS
-declare variable V_ARTICLECODE_ID type of ID_ARTICLE;
-declare variable V_ARTICLE_SIGN type of SIGN_ARTICLE;
-declare variable V_ARTTICLESIGN_ID type of ID_ARTICLE;
-begin
-  select ac.o_articlecode_id
-    from articlecode_goc(:i_article_code, null, :i_magazine_id, :i_color, :i_description, :i_image_url) ac
-    into :v_articlecode_id;
-
-  select article_id
-    from articles a
-    where a.articlecode_id = :v_articlecode_id
-      and a.dimension = :i_dimension
-    into :o_article_id;
-
-  if (o_article_id is null) then
-  begin
-    insert into articles(articlecode_id, dimension, price_eur, weight)
-      values(:v_articlecode_id, :i_dimension, :i_price_eur, :i_weight)
-      returning article_id
-      into :o_article_id;
-  end
-  suspend;
-end^
-
-
-CREATE OR ALTER PROCEDURE ARTICLECODE_GOC (
-    I_ARTICLE_CODE TYPE OF CODE_ARTICLE,
-    I_ARTICLE_SIGN TYPE OF SIGN_ARTICLE,
-    I_MAGAZINE_ID TYPE OF ID_MAGAZINE,
-    I_COLOR TYPE OF VALUE_SHORT,
-    I_DESCRIPTION TYPE OF VALUE_SHORT,
-    I_IMAGE_URL TYPE OF URL = null)
-RETURNS (
-    O_ARTICLECODE_ID TYPE OF ID_ARTICLE)
-AS
-declare variable V_ARTICLE_SIGN type of SIGN_ARTICLE;
-begin
-  select ac.articlecode_id
-    from articlecodes ac
-    where ac.article_code = :i_article_code
-      and ac.magazine_id = :i_magazine_id
-    into :o_articlecode_id;
-
-  if (o_articlecode_id is null) then
-    insert into articlecodes (article_code, article_sign, magazine_id, color, description, image_url)
-      values(:i_article_code, :i_article_sign, :i_magazine_id, :i_color, :i_description, :i_image_url)
-      returning articlecode_id, article_sign
-      into :o_articlecode_id, :v_article_sign;
-
-  if (:i_image_url is not null) then
-    update articlecodes ac
-      set ac.image_url = :i_image_url
-      where ac.image_url is null
-        and ac.article_sign = :v_article_sign;
-  suspend;
-end^
-
-
-CREATE OR ALTER PROCEDURE ARTICLES_PUMP
-AS
-declare variable V_STATUS_ID type of ID_STATUS;
-declare variable V_ORIGINAL_VALUE type of VALUE_SHORT;
-declare variable V_RECODED_VALUE type of VALUE_SHORT;
-begin
-  for select r.original_value, r.recoded_value
-        from recodes r
-        where r.object_sign = 'ARTICLE'
-          and r.attr_sign = 'DIMENSION'
-        into :v_original_value, :v_recoded_value do
-  begin
-    update tmp_otto_article oa
-      set oa.dimension = :v_recoded_value
-      where oa.dimension = :v_original_value;
-  end
-
-  select s.status_id
-    from statuses s
-    where s.object_sign = 'ARTICLECODE'
-      and s.status_sign = 'LOADED'
-    into :v_status_id;
-
-  merge into articlecodes ac
-    using (select distinct magazine_id, article_code, description
-      from tmp_otto_article) tmp
-    on ac.magazine_id = tmp.magazine_id and ac.article_code = tmp.article_code
-    when matched then
-      update set ac.description = tmp.description,
-                 ac.status_id = :v_status_id
-    when not matched then
-      insert (magazine_id, article_code, description, status_id)
-      values (tmp.magazine_id, tmp.article_code, tmp.description, :v_status_id);
-
-  select s.status_id
-    from statuses s
-    where s.object_sign = 'ARTICLE'
-      and s.status_sign = 'LOADED'
-    into :v_status_id;
-
-  merge into articles a
-    using (select ac.articlecode_id, t.dimension, t.price_eur, t.weight
-      from tmp_otto_article t
-        inner join articlecodes ac on (ac.article_code = t.article_code and ac.magazine_id = t.magazine_id)) tmp
-    on a.articlecode_id = tmp.articlecode_id and a.dimension = tmp.dimension
-    when matched then
-      update set a.weight = tmp.weight,
-             a.status_id = :v_status_id
-    when not matched then
-      insert (articlecode_id, dimension, price_eur, weight, status_id)
-      values (tmp.articlecode_id, tmp.dimension, tmp.price_eur, tmp.weight, :v_status_id);
-end^
-
-
-CREATE OR ALTER PROCEDURE ARTICLESIGN_DETECT (
-    I_ARTICLE_CODE TYPE OF CODE_ARTICLE NOT NULL,
-    I_MAGAZINE_ID TYPE OF ID_MAGAZINE)
-RETURNS (
-    O_ARTICLE_SIGN TYPE OF SIGN_ARTICLE)
-AS
-declare variable V_ARTRICLE_SIGN type of SIGN_ARTICLE;
-declare variable V_CATALOG_ID type of ID_CATALOG;
-declare variable V_ARTICLE_SIGN_MASK type of MASK_ARTICLECODE;
-begin
-  if (i_magazine_id is null) then
-    select catalog_id
-      from catalogs c
-      where upper(c.catalog_name) = 'INTERNET'
-      into :v_catalog_id;
-  else
-    select catalog_id
-      from magazines m
-      where m.magazine_id = :i_magazine_id
-      into :v_catalog_id;
-
-  select am.article_sign_mask
-    from articlemasks am
-    where am.catalog_id = :v_catalog_id
-      and :i_article_code similar to am.article_code_mask
-    into :v_article_sign_mask;
-  o_article_sign = recode(:i_article_code, :v_article_sign_mask);
-  suspend;
 end^
 
 
@@ -3575,6 +3569,27 @@ begin
   delete from clients c
     where c.client_id = :i_from_client_id;
 
+end^
+
+
+CREATE OR ALTER PROCEDURE CLIENT_NORMALIZE_MOBIL
+AS
+declare variable V_CLIENT_ID type of ID_CLIENT;
+declare variable V_RECODE_MASK type of MASK_ARTICLECODE;
+declare variable V_VALUE type of VALUE_ATTR;
+begin
+  for select c.client_id, recode(c.mobile_phone, rm.replace_mask)
+  from clients c
+    inner join recode_masks rm on (rm.object_sign = 'CLIENT'
+                               and rm.attr_sign = 'MOBILE_PHONE'
+                               and c.mobile_phone similar to rm.search_mask escape '\')
+  where c.mobile_phone not like '0_________'
+  into :v_client_id, :v_value do
+  begin
+    update clients c
+      set c.mobile_phone = :v_value
+      where c.client_id = :v_client_id;
+  end
 end^
 
 
@@ -4021,13 +4036,14 @@ begin
     select o_param_id from param_create('NOTIFY', :i_message_id) into :v_param_id;
     execute procedure param_unparse(:v_param_id, :i_params);
     select o_pattern from param_fillpattern(:v_param_id, :i_notify_text) into :i_notify_text;
+    delete from paramheads ph where ph.param_id = :v_param_id;
   end
-
 
   insert into notifies(message_id, notify_text, notify_class)
     values(:i_message_id, :i_notify_text, upper(:i_state))
     returning notify_id
     into :o_notify_id;
+
   suspend;
 end^
 
@@ -4325,6 +4341,20 @@ begin
 end^
 
 
+CREATE OR ALTER PROCEDURE ORDER_UNDO_DELIVERING (
+    I_ORDER_ID TYPE OF ID_ORDER)
+AS
+begin
+  update orders o
+    set o.status_id = (select s.status_id from statuses s where s.object_sign = 'ORDER' and s.status_sign = 'PACKED')
+    where o.order_id = :i_order_id;
+  update orderitems oi
+    set oi.status_id = (select s.status_id from statuses s where s.object_sign = 'ORDERITEM' and s.status_sign = 'PACKED')
+    where oi.order_id = :i_order_id
+      and oi.status_id = (select s.status_id from statuses s where s.object_sign = 'ORDERITEM' and s.status_sign = 'DELIVERING');
+end^
+
+
 CREATE OR ALTER PROCEDURE ORDER_UPDATECOST (
     I_ORDER_ID TYPE OF ID_ORDER NOT NULL)
 AS
@@ -4515,14 +4545,19 @@ declare variable V_TAXSERV_ID type of ID_TAX;
 declare variable V_TAXSERV_NAME type of NAME_REF;
 declare variable V_STATUS_SIGN type of SIGN_OBJECT;
 declare variable V_STATUS_NAME type of NAME_OBJECT;
+declare variable V_COST_EUR type of MONEY_EUR;
+declare variable V_BYR2EUR type of MONEY_BYR;
 begin
-  select ts.taxserv_id, ts.taxserv_name, s.status_sign, s.status_name
+  select ts.taxserv_id, ts.taxserv_name, s.status_sign, s.status_name,
+         ot.cost_eur, o.byr2eur
     from ordertaxs ot
       inner join taxrates tr on (tr.taxrate_id = ot.taxrate_id)
       inner join taxservs ts on (ts.taxserv_id = tr.taxserv_id)
       inner join statuses s on (s.status_id = ot.status_id)
+      inner join orders o on (o.order_id = ot.order_id)
     where ot.ordertax_id = :i_object_id
-    into :v_taxserv_id, :v_taxserv_name, :v_status_sign, :v_status_name;
+    into :v_taxserv_id, :v_taxserv_name, :v_status_sign, :v_status_name,
+         :v_cost_eur, :v_byr2eur;
 
   o_param_name = 'TAXSERV_ID';
   o_param_value = :v_taxserv_id;
@@ -4536,7 +4571,9 @@ begin
   o_param_name = 'STATUS_NAME';
   o_param_value = v_status_name;
   suspend;
-
+  o_param_name = 'COST_BYR';
+  select o_money_byr from money_eur2byr(:v_cost_eur, :v_byr2eur) into o_param_value;
+  suspend;
 end^
 
 

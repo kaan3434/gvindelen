@@ -40,6 +40,7 @@ begin
           Value2Vars(DeleteChars(E.Message, #10#13), 'ERROR_TEXT',
           Value2Vars(LineNo, 'LINE_NO'))));
     end;
+    dmOtto.AllDealersNotify(aMessageId, aLine, aTransaction);
   finally
     sl.Free;
   end;

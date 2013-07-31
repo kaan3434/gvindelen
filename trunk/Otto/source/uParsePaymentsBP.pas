@@ -100,6 +100,12 @@ begin
           XmlAttrs2Vars(ndOrder, 'ORDER_ID=ID')));
         dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
 
+        if GetXmlAttr(ndOrder, 'STATUS_SIGN') = 'DELIVERING' then
+        begin
+          dmOtto.ActionExecute(aTransaction, 'ORDER', 'ORDER_DELIVERED', '', OrderId);
+          dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
+        end;
+
         dmOtto.Notify(aMessageId,
           '[LINE_NO]. Сумма [AMOUNT_BYR] BYR [AMOUNT_EUR] EUR зачислена на заявку [ORDER_CODE] [BAR_CODE]. Статус заявки - [STATUS_NAME]',
           'I',

@@ -4,87 +4,77 @@ interface
 uses
   Classes, NativeXml, FIBDatabase, pFIBDatabase;
 
-procedure ExportSMSRejected(aTransaction: TpFIBTransaction);
+procedure ExportSMS(aTransaction: TpFIBTransaction);
 
 implementation
 uses
   GvNativeXml, udmOtto, GvStr, SysUtils, GvFile, Dialogs;
 
-function ExportOrderItem(aTransaction: TpFIBTransaction;
-  ndOrderItems: TXmlNode; OrderItemId: Integer): string;
+function ExportNotify(aTransaction: TpFIBTransaction;
+  ndClient: TXmlNode; ClientNotifyId: Integer): string;
 var
-  ndOrderItem: TXmlNode;
+  ndNotify: TXmlNode;
 begin
-  ndOrderItem:= ndOrderItems.NodeNew('ORDERITEM');
-  dmOtto.ObjectGet(ndOrderItem, OrderItemId, aTransaction);
-  Result:= GetXmlAttr(ndOrderItem, 'ARTICLE_CODE', ' артикул ') +
-           GetXmlAttr(ndOrderItem, 'NAME_RUS', ' ') +
-           GetXmlAttr(ndOrderItem, 'KIND_RUS', ' ') +
-           GetXmlAttr(ndOrderItem, 'PRICE_EUR', ' (', ' EUR);');
-  SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'SMSREJECTSENT');
-  dmOtto.ActionExecute(aTransaction, ndOrderItem);
+  ndNotify:= ndClient.NodeNew('CLIENTNOTIFY');
+  dmOtto.ObjectGet(ndNotify, ClientNotifyId, aTransaction);
+  Result:= GetXmlAttr(ndNotify, 'NOTIFY_TEXT');
+  SetXmlAttr(ndNotify, 'NEW.STATUS_SIGN', 'SENT');
+  dmOtto.ActionExecute(aTransaction, 'CLIENTNOTIFY_SEND', ndNotify);
 end;
 
-function ExportOrder(aTransaction: TpFIBTransaction;
-  ndOrders: TXmlNode; OrderId: Integer): string;
+function ExportClient(aTransaction: TpFIBTransaction;
+  ndClients: TXmlNode; ClientId: Integer): string;
 var
-  ndOrder, ndOrderItems, ndClient: TXmlNode;
-  OrderItemList, Mobile: String;
-  OrderItemId: Variant;
+  ndClient: TXmlNode;
+  NotifiesList: String;
+  ClientNotifyId: Variant;
 begin
   Result:= '';
-  ndOrder:= ndOrders.NodeNew('ORDER');
-  ndClient:= ndOrder.NodeNew('CLIENT');
-  ndOrderItems:= ndOrder.NodeNew('ORDERITEMS');
+  ndClient:= ndClients.NodeNew('CLIENT');
+  dmOtto.ObjectGet(ndClient, ClientId, aTransaction);
+  Result:= GetXmlAttr(ndClient, 'MOBILE_PHONE');
 
-  dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
-  dmOtto.ObjectGet(ndClient, GetXmlAttrValue(ndOrder, 'CLIENT_ID'), aTransaction);
-  Mobile:= replaceAll(GetXmlAttr(ndClient, 'MOBILE_PHONE', '+375'), '+3750', '+375');
-  Result:= FilterString(Mobile, '0123456789') + GetXmlAttr(ndOrder, 'ORDER_CODE', ' Отказ по заявке ', ':');
-
-  OrderItemList:= aTransaction.DefaultDatabase.QueryValue(
-    'select list(distinct oi.orderitem_id) '+
-    'from orderitems oi '+
-    'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''REJECTED'') '+
-    'left join statuses s2 on (s2.status_id = oi.state_id) '+
-    'where coalesce(s2.status_sign, '''')  <> ''SMSREJECTSENT'' '+
-    '  and oi.order_id = :order_id',
-    0, [OrderId], aTransaction);
-  if OrderItemList <> '' then
+  NotifiesList:= aTransaction.DefaultDatabase.QueryValue(
+    'select list(distinct cn.clientnotify_id) '+
+    'from clientnotifies cn '+
+    ' inner join statuses s on (s.status_id = cn.status_id and s.status_sign = ''NEW'') '+
+    'where cn.deliverytype_sign = ''SMS'' '+
+    '  and cn.client_id = :client_id',
+    0, [ClientId], aTransaction);
+  while NotifiesList <> '' do
   begin
-    OrderItemId:= TakeFront5(OrderItemList, ',');
-    Result:= Result + ExportOrderItem(aTransaction, ndOrderItems, OrderItemId);
+    ClientNotifyId:= TakeFront5(NotifiesList, ',');
+    Result:= Result + ';' + ExportNotify(aTransaction, ndClient, ClientNotifyId);
   end;
   Result:= Translit(Result)+#13#10;
 end;
 
-procedure ExportSMSRejected(aTransaction: TpFIBTransaction);
+procedure ExportSMS(aTransaction: TpFIBTransaction);
 var
-  ndOrders: TXmlNode;
-  OrderList, FileName: string;
-  OrderId: variant;
+  ndClients: TXmlNode;
+  ClientList, FileName: string;
+  ClientId: variant;
   SmsText: string;
   Xml: TNativeXml;
 begin
   SmsText:= '';
   aTransaction.StartTransaction;
   try
-    xml:= TNativeXml.CreateName('ORDERS');
+    xml:= TNativeXml.CreateName('CLIENTTS');
     try
-      ndOrders:= Xml.Root;
-      OrderList:= aTransaction.DefaultDatabase.QueryValue(
-        'select list(distinct oi.order_id) '+
-        'from orderitems oi '+
-        'inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign = ''REJECTED'') '+
-        'left join statuses s2 on (s2.status_id = oi.state_id) '+
-        'where coalesce(s2.status_sign, '''')  <> ''SMSREJECTSENT''',
+      ndClients:= Xml.Root;
+      ClientList:= aTransaction.DefaultDatabase.QueryValue(
+        'select list(distinct cn.client_id) '+
+        'from clientnotifies cn '+
+        ' inner join statuses s on (s.status_id = cn.status_id and s.status_sign = ''NEW'') '+
+        'where cn.deliverytype_sign = ''SMS''',
         0, aTransaction);
-      while OrderList <> '' do
+      while ClientList <> '' do
       begin
-        OrderId := TakeFront5(OrderList, ',');
-        SmsText:= SmsText + ExportOrder(aTransaction, ndOrders, OrderId);
+        ClientId := TakeFront5(ClientList, ',');
+        SmsText:= SmsText + ExportClient(aTransaction, ndClients, ClientId);
       end;
-      if ndOrders.NodeCount > 0 then
+      if ndClients.NodeCount > 0 then
       begin
         ForceDirectories(Path['SMSReject']);
         FileName:= GetNextFileName(Format('%sSMSReject_%s_%%u.txt',
@@ -92,7 +82,7 @@ begin
         SaveStringAsFile(SmsText, FileName);
         dmOtto.CreateAlert('Отправка SMS', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
       end;
-      dmOtto.ExportCommitRequest(ndOrders, aTransaction);
+      dmOtto.ExportCommitRequest(ndClients, aTransaction);
     finally
       Xml.Free;
     end;

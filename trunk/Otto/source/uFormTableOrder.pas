@@ -9,7 +9,8 @@ uses
   DBGridEh, StdCtrls, JvExStdCtrls, JvGroupBox, ExtCtrls, JvExExtCtrls,
   JvExtComponent, JvPanel, TB2Item, TBX, TB2Dock, TB2Toolbar, ComCtrls,
   NativeXml, GvNativeXml, EhLibFIB, DBGridEhGrouping, frxClass,
-  frxFIBComponents, frxExportPDF, frxExportMail, DBCtrls;
+  frxFIBComponents, frxExportPDF, frxExportMail, DBCtrls, ToolCtrlsEh,
+  DBGridEhToolCtrls, DBAxisGridsEh;
 
 type
   TFormTableOrders = class(TBaseNSIForm)

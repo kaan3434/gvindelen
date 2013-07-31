@@ -63,6 +63,7 @@ type
   public
     { Public declarations }
     Build: Variant;
+    SilentMode: Boolean;
     procedure BackupDatabase(aFileName: string);
     procedure RestoreDatabase(aFileName: string);
     procedure ActionExecute(aTransaction: TpFIBTransaction;
@@ -89,7 +90,6 @@ type
     procedure MessageError(aTransaction: TpFIBTransaction; aMessageId: Integer);
     function  MagazineDetect(aCatalogName: string): Integer;
     function  CatalogSearch(aCatalogName: string): Integer;
-    function GetOrCreateArticleId(aCatalogName, aArticleCode, aDimension: String; aPrice: Single): integer;
     procedure ObjectGet(aNode: TXmlNode; aObjectId: Integer; aTransaction: TpFIBTransaction);
     procedure OrderItemsGet(ndOrderItems: TXmlNode; aOrderId: Integer;
       aTransaction: TpFIBTransaction);
@@ -113,9 +113,6 @@ type
     function SettingGet(aTransaction: TpFIBTransaction; aSettingSign: string): variant; overload;
     function SettingGet(aTransaction: TpFIBTransaction; aSettingSign: string;
       aOnDate: TDateTime): variant; overload;
-    function ArticleGoC(aMagazineId: integer; aArticleCode, aDimension: String;
-      aPriceEUR: Single; aWeight: Variant; aDescription, aBrand : string;
-      aTransaction: TpFIBTransaction): integer;
     procedure SetKeyLayout(aTag: Integer);
     function Recode(aObjectSign, aAttrSign, aValue: String): Variant;
     function GetNextCounterValue(aObjectSign, aCounterSign: string;
@@ -139,9 +136,16 @@ type
     function DetectOrderCode(ndProduct: TXmlNode; aPostFix: string): WideString;
     function DetectOrderId(ndProduct: TXmlNode; aPostFix: string;
       aTransaction: TpFIBTransaction): Variant;
+    function DealerId: variant;
+    function IsDealerOrder(ndProduct: TXmlNode; aPostFix: string;
+      aTransaction: TpFIBTransaction): Variant;
     procedure ExportCommitRequest(aNode: TXmlNode; aTransaction: TpFIBTransaction);
     procedure SendEmail(aReceiver, aSubject, aMessage: String);
     procedure MoveToZip(aFileName, aZipName: String);
+    procedure DealerNotify(aMessageId, aDealerId: Integer;
+      aText: string; aTransaction: TpFIBTransaction);
+    procedure AllDealersNotify(aMessageId: integer; aText: string;
+      aTransaction: TpFIBTransaction);
   end;
 
 var
@@ -182,9 +186,9 @@ begin
   except
     on E:Exception do
     begin
-      SaveStringAsFile(aParams, 'Params.txt');
       aTransaction.RollBackToSavePoint('OnExecuteAction');
-      ShowMessage(E.Message);
+      if not SilentMode then
+        ShowMessage(E.Message);
       raise;
     end;
   end;
@@ -487,14 +491,6 @@ begin
     0, [aObjectSign]);
 end;
 
-function TdmOtto.GetOrCreateArticleId(aCatalogName, aArticleCode,
-  aDimension: String; aPrice: Single): integer;
-begin
-  result:= dbOtto.QueryValue('select o_article_id from article_goc(:catalog_name, :article_code, :dimension, :price)',
-                  0, [aCatalogName, aArticleCode, aDimension, aPrice]);
-
-end;
-
 procedure TdmOtto.MessagePostpone(aTransaction: TpFIBTransaction; aMessageId: Integer);
 begin
 
@@ -705,26 +701,6 @@ begin
     0, [aSettingSign, aOnDate], aTransaction);
 end;
 
-function TdmOtto.ArticleGoC(aMagazineId: integer; aArticleCode,
-  aDimension: String; aPriceEUR: single; aWeight: Variant; aDescription,
-  aBrand: string; aTransaction: TpFIBTransaction): integer;
-begin
-  if aWeight = '' then aWeight:= null;
-  with spArticleGoC do
-  begin
-    Transaction:= aTransaction;
-    ParamByName('I_MAGAZINE_ID').AsInteger:= aMagazineId; //I_
-    ParamByName('I_ARTICLE_CODE').AsString:= aArticleCode; //I_ARTICLE_CODE
-    ParamByName('I_COLOR').Value:= null;
-    ParamByName('I_DIMENSION').AsString:= aDimension; //I_DIMENSION
-    ParamByName('I_PRICE_EUR').AsFloat:= aPriceEUR; //I_PRICE_EUR
-    ParamByName('I_WEIGHT').Value:= aWeight; //I_WEIGHT
-    ParamByName('I_DESCRIPTION').AsString:= aDescription; //I_DESCRIPTION
-    ExecQuery;
-    Result:= ParamValue('O_ARTICLE_ID');
-  end;
-end;
-
 procedure TdmOtto.MagazineRead(ndMagazine: TxmlNode; aMagazineId: Integer;
   aTransaction: TpFIBTransaction);
 begin
@@ -818,6 +794,9 @@ procedure TdmOtto.ClearNotify(aMessageId: integer);
 begin
   dbOtto.QueryValue(
     'delete from notifies where message_id = :message_id',
+    0, [aMessageId]);
+  dbOtto.QueryValue(
+    'delete from dealernotifies where message_id = :message_id',
     0, [aMessageId]);
 end;
 
@@ -1066,8 +1045,8 @@ begin
   Result:= ndProduct.ReadAttributeString('PRODUCT_CODE')+aPostFix;
 end;
 
-function TdmOtto.DetectOrderId(ndProduct: TXmlNode;
-  aPostFix: string; aTransaction: TpFIBTransaction): Variant;
+function TdmOtto.DetectOrderId(ndProduct: TXmlNode; aPostFix: string;
+  aTransaction: TpFIBTransaction): Variant;
 var
   OrderCode: WideString;
 begin
@@ -1076,6 +1055,20 @@ begin
     'select o.order_id from orders o where order_code = :order_code',
     0, [OrderCode], aTransaction);
 end;
+
+function TdmOtto.IsDealerOrder(ndProduct: TXmlNode; aPostFix: string;
+  aTransaction: TpFIBTransaction): Variant;
+var
+  OrderCode: WideString;
+begin
+  OrderCode:= dmOtto.DetectOrderCode(ndProduct, aPostFix);
+  Result:= aTransaction.DefaultDatabase.QueryValue(
+    'select o.dealer_id from dealerorders o '+
+    ' where o.product_id = :product_id '+
+    '   and :order_code between o.order_code_start and o.order_code_end',
+    0, [GetXmlAttrValue(ndProduct, 'ID'), OrderCode], aTransaction);
+end;
+
 
 procedure TdmOtto.ExportCommitRequest(aNode: TXmlNode;
   aTransaction: TpFIBTransaction);
@@ -1144,6 +1137,38 @@ begin
   svnZipBackup.Files.AddString(aFileName);
   svnZipBackup.Add;
   DeleteFiles(aFileName);
+end;
+
+procedure TdmOtto.DealerNotify(aMessageId, aDealerId: Integer;
+  aText: string; aTransaction: TpFIBTransaction);
+begin
+  ActionExecute(aTransaction, 'DEALERNOTIFY', 'DEALERNOTIFY_CREATE',
+    Value2Vars(aMessageId, 'MESSAGE_ID',
+    Value2Vars(aDealerId, 'DEALER_ID',
+    Value2Vars(aText, 'NOTIFY_TEXT'))));
+end;
+
+procedure TdmOtto.AllDealersNotify(aMessageId: Integer; aText: string;
+  aTransaction: TpFIBTransaction);
+var
+  DealerList: string;
+  DealerId: Variant;
+begin
+  DealerList:= dbOtto.QueryValueAsStr('select list(dealer_id) from dealers', 0);
+  while DealerList <> '' do
+  begin
+    DealerId:= TakeFront5(DealerList, ',');
+    DealerNotify(aMessageId, DealerId, aText, aTransaction);
+  end;
+end;
+
+function TdmOtto.DealerId: variant;
+begin
+  Result:= SettingGet(trnAutonomouse, 'DEALER_CODE');
+  if Result = null then
+  begin
+    Raise Exception.Create('Не установлен дилерский код');
+  end;
 end;
 
 initialization

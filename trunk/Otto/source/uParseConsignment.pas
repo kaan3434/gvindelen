@@ -14,20 +14,22 @@ uses
   Dialogs, Controls, DateUtils;
 
 procedure ParseConsignmentLine100(aMessageId, LineNo: Integer; sl: TStringList;
-  ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+  ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction; aLine: string);
+var
+  DealerId: variant;
 begin
   SetXmlAttr(ndOrders, 'PACKLIST_NO', sl[1]);
   SetXmlAttr(ndOrders, 'PALETTE_NO', sl[3]);
   SetXmlAttr(ndOrders, 'PACKLIST_DT', sl[4]);
-  ndOrders.Document.XmlFormat:= xfReadable;
-  ndOrders.Document.SaveToFile('order.xml');
+  // транслируем заголовок на всех дилеров
+  dmOtto.AllDealersNotify(aMessageId, aLine, aTransaction);
 end;
 
 procedure ParseConsignmentLine200(aMessageId, LineNo: Integer; sl: TStringList;
-  ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+  ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction; aLine: string);
 var
   ndOrder, ndOrderItems, ndOrderItem: TXmlNode;
-  OrderId, NewStatusSign, StatusId, StatusName, OrderItemId: variant;
+  OrderId, DealerId, NewStatusSign, StatusId, StatusName, OrderItemId: variant;
   NewDeliveryMessage: string;
   Dimension: string;
 begin
@@ -45,7 +47,7 @@ begin
     else
       ndOrderItems:= ndOrder.NodeByName('ORDERITEMS');
 
-    Dimension:= dmOtto.Recode('ARTICLE', 'DIMENSION', sl[5]);
+    Dimension:= dmOtto.Recode('ORDERITEM', 'DIMENSION', sl[5]);
 
     ndOrderItem:= ChildByAttributes(ndOrderItems, 'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
       [sl[4], VarArrayOf([Dimension, sl[5]]), VarArrayOf(['BUNDLING', 'ACCEPTREQUEST', 'ACCEPTED', 'PREPACKED'])]);
@@ -86,17 +88,32 @@ begin
              Value2Vars(LineNo, 'LINE_NO'))));
   end
   else
-    dmOtto.Notify(aMessageId,
-      '[LINE_NO]. Заявка [ORDER_CODE], Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестная заявка.',
-      'E',
-      Strings2Vars(sl, 'ARTICLE_CODE=4;DIMENSION=5;ORDER_CODE=3',
-      Value2Vars(LineNo, 'LINE_NO')));
+  begin
+    DealerId:= dmOtto.IsDealerOrder(ndProduct, sl[2], aTransaction);
+    if DealerId <> null then
+    begin
+      dmOtto.Notify(aMessageId,
+        '[LINE_NO]. Заявка [ORDER_CODE], Артикул [ARTICLE_CODE], Размер [DIMENSION]. Заявка дилера [DEALER_ID].',
+        'I',
+        Strings2Vars(sl, 'ARTICLE_CODE=4;DIMENSION=5;ORDER_CODE=3',
+        Value2Vars(LineNo, 'LINE_NO',
+        Value2Vars(DealerId, 'DEALER_ID',
+        Value2Vars(dmOtto.DetectOrderCode(ndProduct, sl[2]), 'ORDER_CODE')))));
+      dmOtto.DealerNotify(aMessageId, DealerId, aLine, aTransaction);
+    end
+    else
+      dmOtto.Notify(aMessageId,
+        '[LINE_NO]. Заявка [ORDER_CODE], Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестная заявка.',
+        'E',
+        Strings2Vars(sl, 'ARTICLE_CODE=4;DIMENSION=5;ORDER_CODE=3',
+        Value2Vars(LineNo, 'LINE_NO')));
+  end;
 end;
 
 procedure ParseConsignmentLine300(aMessageId, LineNo: Integer; sl: TStringList;
-  ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+  ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction; aLine: string);
 var
-  OrderId: Variant;
+  OrderId, DealerId: Variant;
   ndOrder: TXmlNode;
   BarCode: String;
 begin
@@ -134,16 +151,31 @@ begin
             Value2Vars(E.Message, 'ERROR_TEXT'))));
       end;
     end;
+  end
+  else
+  begin
+    DealerId:= dmOtto.IsDealerOrder(ndProduct, sl[2], aTransaction);
+    if DealerId <> null then
+    begin
+      dmOtto.Notify(aMessageId,
+        '[LINE_NO]. Заявка [ORDER_CODE]. Заявка дилера [DEALER_ID].',
+        'I',
+        Value2Vars(LineNo, 'LINE_NO',
+        Value2Vars(DealerId, 'DEALER_ID',
+        Value2Vars(dmOtto.DetectOrderCode(ndProduct, sl[2]), 'ORDER_CODE'))));
+      dmOtto.DealerNotify(aMessageId, DealerId, aLine, aTransaction);
+    end;
   end;
 end;
 
 procedure ParseConsignmentLine400(aMessageId, LineNo: Integer; sl: TStringList;
-  ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+  ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction; aLine: string);
 begin
    dmOtto.Notify(aMessageId,
      '[LINE_NO]',
      'I',
      Value2Vars(LineNo, 'LINE_NO'));
+   dmOtto.AllDealersNotify(aMessageId, aLine, aTransaction);
 end;
 
 procedure ParseConsignmentLine(aMessageId, LineNo: Integer; aLine: string;
@@ -156,16 +188,16 @@ begin
     sl.Delimiter:= ';';
     sl.DelimitedText:= '"'+ReplaceAll(aLine, ';', '";"')+'"';
     if sl[0] = '100' then
-      ParseConsignmentLine100(aMessageId, LineNo, sl, ndProduct, ndOrders, aTransaction)
+      ParseConsignmentLine100(aMessageId, LineNo, sl, ndProduct, ndOrders, aTransaction, aLine)
     else
     if sl[0] = '200' then
-      ParseConsignmentLine200(aMessageId, LineNo, sl, ndProduct, ndOrders, aTransaction)
+      ParseConsignmentLine200(aMessageId, LineNo, sl, ndProduct, ndOrders, aTransaction, aLine)
     else
     if sl[0] = '300' then
-      ParseConsignmentLine300(aMessageId, LineNo, sl, ndProduct, ndOrders, aTransaction)
+      ParseConsignmentLine300(aMessageId, LineNo, sl, ndProduct, ndOrders, aTransaction, aLine)
     else
     if sl[0] = '400' then
-      ParseConsignmentLine400(aMessageId, LineNo, sl, ndProduct, ndOrders, aTransaction);
+      ParseConsignmentLine400(aMessageId, LineNo, sl, ndProduct, ndOrders, aTransaction, aLine);
   finally
     sl.Free;
   end;

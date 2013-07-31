@@ -7,9 +7,7 @@ uses
   udmOtto in 'udmOtto.pas' {dmOtto: TDataModule},
   uParseCancellation in 'uParseCancellation.pas',
   uFormWizardBase in 'uFormWizardBase.pas' {FormWizardBase},
-  uOttoArticleUpdate in 'uOttoArticleUpdate.pas',
   GvNativeXml in 'GvNativeXml.pas',
-  uWzrdArticles in 'uWzrdArticles.pas' {WzArticlesOtto},
   uParseMagazine in 'uParseMagazine.pas',
   uBaseNSIForm in 'uBaseNSIForm.pas' {BaseNSIForm},
   uFormTableOrder in 'uFormTableOrder.pas' {FormTableOrders},
@@ -49,7 +47,8 @@ uses
   uFormWizardMoneyBack3 in 'uFormWizardMoneyBack3.pas' {FormWizardBase1},
   uParseInfoKomnr in 'uParseInfoKomnr.pas',
   uMain in 'uMain.pas' {MainForm},
-  uParsePaymentsBP in 'uParsePaymentsBP.pas';
+  uParsePaymentsBP in 'uParsePaymentsBP.pas',
+  uExportDealerData in 'uExportDealerData.pas';
 
 {$R *.res}
 

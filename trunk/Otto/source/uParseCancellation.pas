@@ -17,7 +17,7 @@ procedure ParseCancelLine(aMessageId, LineNo: Integer; aLine: string;
   ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
 var
   Dimension: string;
-  OrderId, OrderItemId: variant;
+  OrderId, OrderItemId, DealerId: variant;
   sl: TStringList;
   ndOrder, ndOrderItems, ndOrderItem: TXmlNode;
   NewStatusSign: variant;
@@ -47,7 +47,7 @@ begin
       sl[6]:= SkipLeadingZero(sl[6]);
       sl[4]:= SkipLeadingZero(sl[4]);
 
-      Dimension:= dmOtto.Recode('ARTICLE', 'DIMENSION', sl[6]);
+      Dimension:= dmOtto.Recode('ORDERITEM', 'DIMENSION', sl[6]);
 
       ndOrderItem:= ChildByAttributes(ndOrderItems, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
         [sl[3], sl[4], sl[5], VarArrayOf([Dimension, sl[6]])]);
@@ -75,7 +75,7 @@ begin
           dmOtto.ObjectGet(ndOrderItem, OrderItemId, aTransaction);
           dmOtto.Notify(aMessageId,
             '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [STATUS_NAME]',
-            IfThen(NewStatusSign='ANULLED', 'W', 'I'),
+            'I',
             XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION;STATUS_NAME',
             XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
             Value2Vars(LineNo, 'LINE_NO'))));
@@ -106,11 +106,26 @@ begin
           Value2Vars(LineNo, 'LINE_NO'))));
     end
     else
-      dmOtto.Notify(aMessageId,
-        '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестная заявка [ORDER_CODE].',
-        'E',
-        Strings2Vars(sl, 'ORDER_CODE=1;AUFTRAG_ID=3;ORDERITEM_INDEX=4;ARTICLE_CODE=5;DIMENSION=6',
-        Value2Vars(LineNo, 'LINE_NO')));
+    begin
+      DealerId:= dmOtto.IsDealerOrder(ndProduct, sl[1], aTransaction);
+      if DealerId <> null then
+      begin
+        dmOtto.Notify(aMessageId,
+          '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Заявка дилера [DEALER_ID].',
+          'I',
+          Strings2Vars(sl, 'AUFTRAG_ID=3;ORDERITEM_INDEX=4;ARTICLE_CODE=5;DIMENSION=6',
+          Value2Vars(LineNo, 'LINE_NO',
+          Value2Vars(DealerId, 'DEALER_ID',
+          Value2Vars(dmOtto.DetectOrderCode(ndProduct, sl[1]), 'ORDER_CODE')))));
+        dmOtto.DealerNotify(aMessageId, DealerId, aLine, aTransaction);
+      end
+      else
+        dmOtto.Notify(aMessageId,
+          '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестная заявка [ORDER_CODE].',
+          'E',
+          Strings2Vars(sl, 'ORDER_CODE=1;AUFTRAG_ID=3;ORDERITEM_INDEX=4;ARTICLE_CODE=5;DIMENSION=6',
+          Value2Vars(LineNo, 'LINE_NO')));
+    end;
   finally
     sl.Free;
   end;
@@ -158,7 +173,8 @@ begin
         Value2Vars(MessageFileName, 'FILE_NAME'));
       Lines.Free;
     end;
-    dmOtto.ShowProtocol(aTransaction, aMessageId);
+    dmOtto.ShowProtocol
+    (aTransaction, aMessageId);
     dmOtto.MessageCommit(aTransaction, aMessageId);
   except
     aTransaction.Rollback;
@@ -169,10 +185,12 @@ procedure ProcessCancellation(aMessageId: Integer; aTransaction: TpFIBTransactio
 var
   aXml: TNativeXml;
 begin
+  dmOtto.SilentMode:= true;
   aXml:= TNativeXml.CreateName('MESSAGE');
   try
     ParseCancellation(aMessageId, aXml.Root, aTransaction);
   finally
+    dmOtto.SilentMode:= false;
     aXml.Free;
   end;
 end;

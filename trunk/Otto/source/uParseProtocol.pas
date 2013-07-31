@@ -14,9 +14,10 @@ uses
   Dialogs, Controls, StrUtils;
 
 procedure ParseProtocolLine100(aMessageId, LineNo, DealId: Integer;
-  sl: TStringList; ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+  sl: TStringList; ndProduct, ndOrders: TXmlNode;
+  aTransaction: TpFIBTransaction; aLine: String);
 var
-  OrderId: variant;
+  OrderId, DealerId: variant;
   ndOrder, ndOrderItems: TXmlNode;
   StatusSign, StatusName: Variant;
 begin
@@ -35,20 +36,36 @@ begin
       Strings2Vars(sl, 'RESOLUTION=13'))));
   end
   else
-    dmOtto.Notify(aMessageId,
-      '[LINE_NO]. Заявка [ORDER_CODE] не найдена.',
-      'E',
-      Value2Vars(LineNo, 'LINE_NO',
-      Value2Vars(dmOtto.DetectOrderCode(ndProduct, sl[1]), 'ORDER_CODE')));
+  begin
+    DealerId:= dmOtto.IsDealerOrder(ndProduct, sl[1], aTransaction);
+    if DealerId <> null then
+    begin
+      dmOtto.Notify(aMessageId,
+        '[LINE_NO]. Заявка [ORDER_CODE]. Заявка дилера [DEALER_ID]',
+        'I',
+        Value2Vars(LineNo, 'LINE_NO',
+        Value2Vars(DealerId, 'DEALER_ID',
+        Value2Vars(dmOtto.DetectOrderCode(ndProduct, sl[1]), 'ORDER_CODE'))));
+      dmOtto.DealerNotify(aMessageId, DealerId, aLine, aTransaction);
+    end
+    else
+      dmOtto.Notify(aMessageId,
+        '[LINE_NO]. Заявка [ORDER_CODE] не найдена.',
+        'E',
+        Value2Vars(LineNo, 'LINE_NO',
+        Value2Vars(dmOtto.DetectOrderCode(ndProduct, sl[1]), 'ORDER_CODE')));
+  end;
 end;
 
 procedure ParseProtocolLine200(aMessageId, LineNo, DealId: Integer;
-  sl: TStringList; ndProduct, ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+  sl: TStringList; ndProduct, ndOrders: TXmlNode;
+  aTransaction: TpFIBTransaction; aLine: string);
 var
-  OrderId, OrderItemId: Variant;
+  OrderId, DealerId, OrderItemId: Variant;
   ndOrder, ndOrderItems, ndOrderItem: TXmlNode;
   StatusSign, StateSign, StateId, StatusName: variant;
   MsgType, DeliveryMessageRus, Dimension: string;
+  DeltaPriceEur: variant;
 begin
   if sl[0] = '-1' then
   begin
@@ -73,7 +90,7 @@ begin
     else
       ndOrderItems:= ndOrder.NodeByName('ORDERITEMS');
 
-    Dimension:= dmOtto.Recode('ARTICLE', 'DIMENSION', sl[6]);
+    Dimension:= dmOtto.Recode('ORDERITEM', 'DIMENSION', sl[6]);
 
     ndOrderItem:= ChildByAttributes(ndOrderItems, 'ARTICLE_CODE;DIMENSION;STATUS_SIGN',
       [sl[5], VarArrayOf([Dimension, sl[6]]), VarArrayOf(['ACCEPTREQUEST', 'APPROVED'])]);
@@ -84,23 +101,7 @@ begin
       SetXmlAttr(ndOrderItem, 'AUFTRAG_ID', sl[3]);
       SetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX', sl[4]);
 
-      SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', sl[8]);
-      if GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') <> GetXmlAttrAsMoney(ndOrderItem, 'COST_EUR') then
-      begin
-        if (GetXmlAttrValue(ndOrderItem, 'MAGAZINE_ID') = 1) or
-           (GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') < GetXmlAttrAsMoney(ndOrderItem, 'COST_EUR')) then
-          MsgType := 'W'
-        else
-          MsgType := 'E';
-        dmOtto.Notify(aMessageId,
-          '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Измнена цена [COST_EUR] => [PRICE_EUR].',
-          MsgType,
-          XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR',
-          XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
-          Value2Vars(LineNo, 'LINE_NO'))));
-        SetXmlAttrAsMoney(ndOrderItem, 'COST_EUR', GetXmlAttrValue(ndOrderItem, 'PRICE_EUR')*getXmlAttrValue(ndOrderItem, 'AMOUNT'));
-      end;
-
+      // получаем новое статус
       StateSign:= dmOtto.Recode('ORDERITEM', 'DELIVERY_CODE_TIME', sl[9]+sl[10]);
       if StateSign = sl[9]+sl[10] then
       begin
@@ -118,7 +119,29 @@ begin
       end;
 
       if IsWordPresent('AVAILABLE', dmOtto.GetFlagListBySign(StateSign),',') then
-        StatusSign:= 'ACCEPTED'
+      // позиция принята
+      begin
+        StatusSign:= 'ACCEPTED';
+
+        // сверяем цены
+        SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', sl[8]);
+        DeltaPriceEur:= GetXmlAttrValue(ndOrderItem, 'PRICE_EUR') - GetXmlAttrValue(ndOrderItem, 'COST_EUR');
+        SetXmlAttr(ndOrderItem, 'DELTA_PRICE_EUR', DeltaPriceEur);
+        if DeltaPriceEur <> 0 then
+        begin
+          if DeltaPriceEur < 0 then
+            MsgType := 'W'
+          else
+            MsgType := 'E';
+          dmOtto.Notify(aMessageId,
+            '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Измнена цена [COST_EUR] => [PRICE_EUR].',
+            MsgType,
+            XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR',
+            XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
+            Value2Vars(LineNo, 'LINE_NO'))));
+          SetXmlAttrAsMoney(ndOrderItem, 'COST_EUR', GetXmlAttrValue(ndOrderItem, 'PRICE_EUR')*getXmlAttrValue(ndOrderItem, 'AMOUNT'));
+        end;
+      end
       else
         StatusSign:= 'REJECTED';
 
@@ -153,11 +176,26 @@ begin
                Value2Vars(LineNo, 'LINE_NO'))));
   end
   else
-    dmOtto.Notify(aMessageId,
-      '[LINE_NO]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестная заявка [ORDER_CODE].',
-      'E',
-      Strings2Vars(sl, 'AUFTRAG_ID=3;ORDERITEM_INDEX=4;ARTICLE_CODE=5;DIMENSION=6;ORDER_CODE=1',
-      Value2Vars(LineNo, 'LINE_NO')));
+  begin
+    DealerId:= dmOtto.IsDealerOrder(ndProduct, sl[1], aTransaction);
+    if DealerId <> null then
+    begin
+      dmOtto.Notify(aMessageId,
+        '[LINE_NO]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Заявка [ORDER_CODE] дилера [DEALER_ID]',
+        'I',
+        Strings2Vars(sl, 'AUFTRAG_ID=3;ORDERITEM_INDEX=4;ARTICLE_CODE=5;DIMENSION=6',
+        Value2Vars(LineNo, 'LINE_NO',
+        Value2Vars(DealerId, 'DEALER_ID',
+        Value2Vars(dmOtto.DetectOrderCode(ndProduct, sl[1]), 'ORDER_CODE')))));
+      dmOtto.DealerNotify(aMessageId, DealerId, aLine, aTransaction);
+    end
+    else
+      dmOtto.Notify(aMessageId,
+        '[LINE_NO]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестная заявка [ORDER_CODE].',
+        'E',
+        Strings2Vars(sl, 'AUFTRAG_ID=3;ORDERITEM_INDEX=4;ARTICLE_CODE=5;DIMENSION=6;ORDER_CODE=1',
+        Value2Vars(LineNo, 'LINE_NO')));
+  end;
 end;
 
 procedure ParseProtocolLine(aMessageId, LineNo, DealId: Integer; aLine: string;
@@ -171,9 +209,9 @@ begin
       sl.Delimiter:= ';';
       sl.DelimitedText:= '"'+ReplaceAll(aLine, ';', '";"')+'"';
       if sl[2] = '100' then
-        ParseProtocolLine100(aMessageId, LineNo, DealId, sl, ndProduct, ndOrders, aTransaction)
+        ParseProtocolLine100(aMessageId, LineNo, DealId, sl, ndProduct, ndOrders, aTransaction, aLine)
       else
-        ParseProtocolLine200(aMessageId, LineNo, DealId, sl, ndProduct, ndOrders, aTransaction);
+        ParseProtocolLine200(aMessageId, LineNo, DealId, sl, ndProduct, ndOrders, aTransaction, aLine);
     except
       on E: Exception do
       dmOtto.Notify(aMessageId,
@@ -195,6 +233,7 @@ var
   OrderId: Integer;
   ndProduct, ndOrders, ndOrder, ndOrderItems: TXmlNode;
 begin
+  SetXmlAttr(ndMessage, 'ID', aMessageId);
   dmOtto.ClearNotify(aMessageId);
   aTransaction.StartTransaction;
   try

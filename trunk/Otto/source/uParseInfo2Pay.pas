@@ -16,7 +16,7 @@ uses
 procedure ParseInfo2PayLine(aMessageId, LineNo: Integer; aLine: string;
   ndProduct, ndOrders: TXmlNode; aOnDate: TDateTime; aTransaction: TpFIBTransaction);
 var
-  OrderId, OrderItemId: variant;
+  OrderId, OrderItemId, DealerId: variant;
   sl: TStringList;
   ndOrder, ndOrderItems, ndOrderItem: TXmlNode;
   NewStatusSign: variant;
@@ -49,7 +49,7 @@ begin
       else
         ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
 
-      Dimension:= dmOtto.Recode('ARTICLE', 'DIMENSION', sl[9]);
+      Dimension:= dmOtto.Recode('ORDERITEM', 'DIMENSION', sl[9]);
 
       ndOrderItem:= ChildByAttributes(ndOrderItems, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
                     [sl[6], sl[7], sl[8], VarArrayOf([Dimension, sl[9]])]);
@@ -103,11 +103,26 @@ begin
           Value2Vars(LineNo, 'LINE_NO')))));
     end
     else
-      dmOtto.Notify(aMessageId,
-        '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестная заявка [ORDER_CODE].',
-        'E',
-        Strings2Vars(sl, 'ORDER_CODE=2;AUFTRAG_ID=6;ORDERITEM_INDEX=7;ARTICLE_CODE=8;DIMENSION=9',
-        Value2Vars(LineNo, 'LINE_NO')));
+    begin
+      DealerId:= dmOtto.IsDealerOrder(ndProduct, sl[2], aTransaction);
+      if DealerId <> null then
+      begin
+        dmOtto.Notify(aMessageId,
+          '[LINE_NO]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Заявка дилера [DEALER_ID]',
+          'I',
+          Strings2Vars(sl, 'AUFTRAG_ID=6;ORDERITEM_INDEX=7;ARTICLE_CODE=8;DIMENSION=9',
+          Value2Vars(LineNo, 'LINE_NO',
+          Value2Vars(DealerId, 'DEALER_ID',
+          Value2Vars(dmOtto.DetectOrderCode(ndProduct, sl[2]), 'ORDER_CODE')))));
+        dmOtto.DealerNotify(aMessageId, DealerId, aLine, aTransaction);
+      end
+      else
+        dmOtto.Notify(aMessageId,
+          '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестная заявка [ORDER_CODE].',
+          'E',
+          Strings2Vars(sl, 'ORDER_CODE=2;AUFTRAG_ID=6;ORDERITEM_INDEX=7;ARTICLE_CODE=8;DIMENSION=9',
+          Value2Vars(LineNo, 'LINE_NO')));
+      end;
   finally
     sl.Free;
   end;
@@ -173,12 +188,15 @@ procedure ProcessInfo2Pay(aMessageId: Integer; aTransaction: TpFIBTransaction);
 var
   aXml: TNativeXml;
 begin
+  dmOtto.SilentMode:= true;
   aXml:= TNativeXml.CreateName('MESSAGE');
   try
     ParseInfo2Pay(aMessageId, aXml.Root, aTransaction);
   finally
     aXml.Free;
+    dmOtto.SilentMode:= false;
   end;
+
 end;
 
 

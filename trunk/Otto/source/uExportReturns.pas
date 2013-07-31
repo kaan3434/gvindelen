@@ -1,7 +1,7 @@
 unit uExportReturns;
 interface
 uses
-  Classes, SysUtils, FIBDatabase, pFIBDatabase, JvProgressComponent;
+  Classes, SysUtils, FIBDatabase, pFIBDatabase;
 
 procedure ExportReturns(aTransaction: TpFIBTransaction);
 
@@ -10,8 +10,8 @@ implementation
 uses
   NativeXml, GvNativeXml, udmOtto, GvStr, GvFile, GvDtTm, DateUtils, Dialogs;
 
-var
-  ProgressIndicator: TJvProgressComponent;
+//var
+//  ProgressIndicator: TJvProgressComponent;
 
 function ExportOrderItem(aTransaction: TpFIBTransaction;
   ndProduct, ndOrder, ndOrderItems: TXmlNode; aOrderItemId: integer): string;
@@ -29,7 +29,7 @@ begin
     Line.Add(GetXmlAttr(ndOrderItem, 'AUFTRAG_ID'));
     Line.Add(GetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX'));
     Line.Add(GetXmlAttr(ndOrderItem, 'ARTICLE_CODE'));
-    Line.Add(dmOtto.Recode('ARTICLE', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION')));
+    Line.Add(dmOtto.Recode('ORDERITEM', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION')));
     Line.Add('1');
     Line.Add(GetXmlAttr(ndOrderItem, 'NRRETCODE'));
     Line.Add(GetXmlAttr(ndOrderItem, 'NREGWG'));

@@ -124,8 +124,7 @@ var
   OrderItemId: Integer;
   ndOrderItem: TXmlNode;
   CatalogId, CatalogName, MagazineId: variant;
-  ArticleCode, ArticleCodeId, ArticleId: Variant;
-  ndMagazine: TXmlNode;
+  ArticleCode: Variant;
   StatusId: Integer;
 
 begin
@@ -156,76 +155,10 @@ begin
 
     // Validate OrderItem
 
-    if VarIsNull(CatalogId) then
-    begin
-      CatalogName:= sl[0];
-      // пытаемс€ определить группу каталогов по имени
-      CatalogId:= CatalogDetect(CatalogName, aTransaction);
-      if VarIsNull(CatalogId) then
-      begin
-        // пытаемс€ пропустить им€ группы каталогов через перекодировщик
-        CatalogName:= aTransaction.DefaultDatabase.QueryValue(
-          'select recoded_value from recodes '+
-          'where object_sign=:ObjectSign and attr_sign=:AttrSign and original_value=:OriginalValue',
-          0, ['CATALOG', 'NAME', CatalogName]);
-        if VarIsNull(CatalogName) then
-          CatalogId:= CatalogDetect('Internet', aTransaction)
-        else
-          CatalogId:= CatalogDetect(CatalogName, aTransaction);
-      end;
-    end;
+    CatalogId:= CatalogDetect('Internet', aTransaction);
     // »щем действующий каталог
     MagazineId:= MagazineDetect(CatalogId, aTransaction);
-    if VarIsNull(MagazineId) then
-    begin
-      MagazineId:= MagazineDetect(CatalogDetect('Internet',aTransaction), aTransaction);
-    end;
     SetXmlAttr(ndOrderItem, 'MAGAZINE_ID', MagazineId);
-    ndMagazine:= ndOrderItem.NodeFindOrCreate('MAGAZINE');
-    dmOtto.MagazineRead(ndMagazine, MagazineId, aTransaction);
-
-    // »щем артикул
-
-    ArticleCode:= GetXmlAttrValue(ndOrderItem, 'ARTICLE_CODE');
-    ArticleId:= null;
-    if GetXmlAttrValue(ndMagazine, 'STATUS_SIGN') = 'LOADED' then
-    begin
-      ArticleCodeId:= aTransaction.DefaultDatabase.QueryValue(
-        'select articlecode_id from articlecodes where article_code = :article_code',
-        0, [ArticleCode], aTransaction);
-      if ArticleCodeId = null then
-      begin
-        MagazineId:= MagazineDetect(CatalogDetect('Internet', aTransaction), aTransaction);
-        SetXmlAttr(ndOrderItem, 'MAGAZINE_ID', MagazineId);
-        ndMagazine.AttributesClear;
-        dmOtto.MagazineRead(ndMagazine, MagazineId, aTransaction);
-      end
-      else
-      begin
-        ArticleId:= aTransaction.DefaultDatabase.QueryValue(
-          'select article_id from articles '+
-          'where articlecode_id = :articlecode_id and dimension = :dimension',
-          0, [ArticleCodeId, GetXmlAttrValue(ndOrderItem, 'DIMENSION')],
-          aTransaction);
-      end;
-      if ArticleId = null then
-        SetXmlAttr(ndOrderItem, 'STATUS_ID', dmOtto.GetStatusBySign(ndOrderItem, 'ERROR'))
-      else
-      begin
-        SetXmlAttr(ndOrderItem, 'ARTICLE_ID', ArticleId);
-        SetXmlAttr(ndOrderItem, 'STATUS_ID', dmOtto.GetStatusBySign(ndOrderItem, 'NEW'));
-      end
-    end
-    else
-    begin
-      if ArticleId = null then
-        ArticleId:= dmOtto.ArticleGoC(MagazineId, ArticleCode,
-          GetXmlAttrValue(ndOrderItem, 'DIMENSION'),
-          GetXmlAttrValue(ndOrderItem, 'PRICE_EUR'), null,
-          GetXmlAttrValue(ndOrderItem, 'NAME_RUS'), '', aTransaction);
-      SetXmlAttr(ndOrderItem, 'ARTICLE_ID', ArticleId);
-      SetXmlAttr(ndOrderItem, 'STATUS_ID', dmOtto.GetStatusBySign(ndOrderItem, 'NEW'));
-    end;
   finally
     sl.Free;
   end;

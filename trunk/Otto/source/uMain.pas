@@ -30,8 +30,6 @@ type
     btnOrderCreate: TTBXItem;
     actParseOrderXml: TAction;
     btnParseOrderXml: TTBXItem;
-    actImportArticles: TAction;
-    btnImportMagazine: TTBXItem;
     actNSICatalogs: TAction;
     actNSISettings: TAction;
     tbSubMenuTables: TTBXSubmenuItem;
@@ -165,9 +163,12 @@ type
     btnInfoArt: TTBXItem;
     actProcessPaymentBaltPost: TAction;
     btnProcessPaymentBaltPost: TTBXItem;
+    actExportDealerData: TAction;
+    btnExportDealerData: TTBXItem;
+    btnAdressList: TTBXItem;
+    actAdressList: TAction;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
-    procedure actImportArticlesExecute(Sender: TObject);
     procedure actNSICatalogsExecute(Sender: TObject);
     procedure actNSISettingsExecute(Sender: TObject);
     procedure actTableOrdersExecute(Sender: TObject);
@@ -214,6 +215,8 @@ type
     procedure actProcessKomnRExecute(Sender: TObject);
     procedure actProcessArtExecute(Sender: TObject);
     procedure actProcessPaymentBaltPostExecute(Sender: TObject);
+    procedure actExportDealerDataExecute(Sender: TObject);
+    procedure actAdressListExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -230,14 +233,15 @@ implementation
 {$R *.dfm}
 uses
   GvFile, GvStr, udmOtto, FIBQuery, GvNativeXml,
-  uWzrdArticles, uBaseNSIForm,
+  uBaseNSIForm,
   uFormTableOrder, uFormTableClients, uParseProtocol, uParseLiefer,
   uParseConsignment, pFIBQuery, uParsePayments,
   uFormWizardOrder, uSetByr2Eur, uExportSMSReject,
   uExportCancellation, uExportOrder, uExportInvoices, uExportPackList,
   uParseArtN, uParseCancellation, uFormWizardReturn, uParseInfo2Pay,
   uExportToSite, uExportPrePackList, uMoneyBack, uReportReturnedOrderItems, 
-  uExportReturns, uParseInfoKomnr, uParseArt, uParsePaymentsBP;
+  uExportReturns, uParseInfoKomnr, uParseArt, uParsePaymentsBP, 
+  uExportDealerData;
 
 procedure TMainForm.actParseOrderXmlExecute(Sender: TObject);
 var
@@ -273,13 +277,6 @@ end;
 procedure TMainForm.actOrderCreateExecute(Sender: TObject);
 begin
   TFormWizardOrder.CreateBlank(Self).Show;
-end;
-
-procedure TMainForm.actImportArticlesExecute(Sender: TObject);
-
-begin
-  with TWzArticlesOtto.Create(self, 'MAGAZINE') do
-    Show;
 end;
 
 procedure TMainForm.actNSICatalogsExecute(Sender: TObject);
@@ -691,7 +688,7 @@ end;
 
 procedure TMainForm.actExportSMSRejectedExecute(Sender: TObject);
 begin
-  ExportSMSRejected(trnWrite);
+  ExportSMS(trnWrite);
 end;
 
 procedure TMainForm.actExportCancellationExecute(Sender: TObject);
@@ -951,6 +948,20 @@ begin
       Application.ProcessMessages;
     end;
   until vMessageId = 0;
+end;
+
+procedure TMainForm.actExportDealerDataExecute(Sender: TObject);
+begin
+  ExportDealerData(trnWrite);
+end;
+
+procedure TMainForm.actAdressListExecute(Sender: TObject);
+begin
+  with dmOtto do
+  begin
+    frxReport.LoadFromFile(Path['FastReport']+'Adresses.fr3');
+    frxReport.ShowReport;
+  end;
 end;
 
 end.

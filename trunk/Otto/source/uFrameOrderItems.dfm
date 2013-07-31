@@ -1,12 +1,12 @@
 inherited FrameOrderItems: TFrameOrderItems
-  Left = 268
-  Top = 152
+  Left = 90
+  Top = 157
   Width = 1125
   Height = 462
   PixelsPerInch = 96
   TextHeight = 13
   inherited dckTop: TTBXDock
-    Width = 1117
+    Width = 1109
     inherited tlBarTop: TTBXToolbar
       object btnCheckAvailable: TTBXItem
         Action = actCheckAvailable
@@ -44,22 +44,22 @@ inherited FrameOrderItems: TFrameOrderItems
     end
   end
   inherited sb: TTBXStatusBar
-    Top = 406
-    Width = 1117
+    Top = 402
+    Width = 1109
   end
   object grBoxOrderItems: TJvGroupBox [2]
     Left = 0
     Top = 26
-    Width = 1117
-    Height = 380
+    Width = 1109
+    Height = 376
     Align = alClient
     Caption = #1040#1088#1090#1080#1082#1091#1083#1099' '#1079#1072#1103#1074#1082#1080
     TabOrder = 1
     object grdOrderItems: TDBGridEh
       Left = 2
       Top = 15
-      Width = 1113
-      Height = 363
+      Width = 1105
+      Height = 359
       Align = alClient
       AllowedOperations = [alopInsertEh, alopUpdateEh, alopAppendEh]
       AutoFitColWidths = True
@@ -67,6 +67,11 @@ inherited FrameOrderItems: TFrameOrderItems
       DataGrouping.GroupLevels = <>
       DataSource = dsOrderItems
       Flat = True
+      Font.Charset = RUSSIAN_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
       FooterColor = clWindow
       FooterFont.Charset = DEFAULT_CHARSET
       FooterFont.Color = clWindowText
@@ -76,7 +81,7 @@ inherited FrameOrderItems: TFrameOrderItems
       FooterRowCount = 1
       Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
       OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghEnterAsTab, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
-      RowDetailPanel.Active = True
+      ParentFont = False
       RowDetailPanel.Height = 200
       RowDetailPanel.Color = clBtnFace
       STFilter.InstantApply = False
@@ -93,8 +98,6 @@ inherited FrameOrderItems: TFrameOrderItems
       OnEnter = grdOrderItemsEnter
       OnGetCellParams = grdOrderItemsGetCellParams
       OnKeyPress = grdOrderItemsKeyPress
-      OnRowDetailPanelHide = grdOrderItemsRowDetailPanelHide
-      OnRowDetailPanelShow = grdOrderItemsRowDetailPanelShow
       Columns = <
         item
           AutoFitColWidth = False
@@ -116,6 +119,7 @@ inherited FrameOrderItems: TFrameOrderItems
           Footers = <>
           Title.Alignment = taCenter
           Title.Caption = #1050#1072#1090#1072#1083#1086#1075
+          Visible = False
           Width = 270
         end
         item
@@ -149,6 +153,7 @@ inherited FrameOrderItems: TFrameOrderItems
           ReadOnly = True
           Title.Alignment = taCenter
           Title.Caption = #1042#1077#1089', '#1075
+          Visible = False
           Width = 50
         end
         item
@@ -220,122 +225,6 @@ inherited FrameOrderItems: TFrameOrderItems
           ReadOnly = True
         end>
       object RowDetailData: TRowDetailPanelControlEh
-        object grdArticles: TDBGridEh
-          Left = 0
-          Top = 0
-          Width = 1080
-          Height = 198
-          Align = alClient
-          AutoFitColWidths = True
-          DataGrouping.GroupLevels = <>
-          DataSource = dsArticles
-          Flat = True
-          FooterColor = clWindow
-          FooterFont.Charset = DEFAULT_CHARSET
-          FooterFont.Color = clWindowText
-          FooterFont.Height = -11
-          FooterFont.Name = 'MS Sans Serif'
-          FooterFont.Style = []
-          Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
-          OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghPreferIncSearch, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
-          ReadOnly = True
-          RowDetailPanel.Color = clBtnFace
-          SortLocal = True
-          STFilter.InstantApply = True
-          STFilter.Local = True
-          STFilter.Location = stflInTitleFilterEh
-          STFilter.Visible = True
-          TabOrder = 0
-          TitleFont.Charset = DEFAULT_CHARSET
-          TitleFont.Color = clWindowText
-          TitleFont.Height = -11
-          TitleFont.Name = 'MS Sans Serif'
-          TitleFont.Style = []
-          OnDblClick = grdArticlesDblClick
-          OnKeyDown = grdArticlesKeyDown
-          Columns = <
-            item
-              AutoFitColWidth = False
-              EditButtons = <>
-              FieldName = 'ARTICLE_CODE'
-              Footers = <>
-              Title.Alignment = taCenter
-              Title.Caption = #1040#1088#1090#1080#1082#1091#1083
-              Width = 70
-            end
-            item
-              AutoFitColWidth = False
-              EditButtons = <>
-              FieldName = 'MAGAZINE_NAME'
-              Footers = <>
-              Title.Alignment = taCenter
-              Title.Caption = #1050#1072#1090#1072#1083#1086#1075
-              Width = 270
-            end
-            item
-              AutoFitColWidth = False
-              EditButtons = <>
-              FieldName = 'DIMENSION'
-              Footers = <>
-              Title.Alignment = taCenter
-              Title.Caption = #1056#1072#1079#1084#1077#1088
-              Width = 50
-            end
-            item
-              AutoFitColWidth = False
-              EditButtons = <>
-              FieldName = 'PRICE_EUR'
-              Footers = <>
-              Title.Alignment = taCenter
-              Title.Caption = #1062#1077#1085#1072', EUR'
-            end
-            item
-              AutoFitColWidth = False
-              EditButtons = <>
-              FieldName = 'WEIGHT'
-              Footers = <>
-              Title.Alignment = taCenter
-              Title.Caption = #1042#1077#1089', '#1075
-              Width = 50
-            end
-            item
-              EditButtons = <>
-              FieldName = 'AVAILABILITY_TEXT'
-              Footers = <>
-              Title.Alignment = taCenter
-              Visible = False
-              Width = 150
-            end
-            item
-              EditButtons = <>
-              FieldName = 'COLOR'
-              Footers = <>
-              Width = 100
-            end
-            item
-              EditButtons = <>
-              FieldName = 'DESCRIPTION'
-              Footers = <>
-              Width = 200
-            end
-            item
-              EditButtons = <>
-              FieldName = 'STATUS_NAME'
-              Footers = <>
-              Title.Alignment = taCenter
-              Title.Caption = #1057#1086#1089#1090#1086#1103#1085#1080#1077
-              Width = 150
-            end
-            item
-              EditButtons = <>
-              FieldName = 'STATUS_DTM'
-              Footers = <>
-              Title.Alignment = taCenter
-              Title.Caption = #1054#1073#1085#1086#1074#1083#1077#1085
-            end>
-          object RowDetailData: TRowDetailPanelControlEh
-          end
-        end
       end
     end
   end
@@ -652,20 +541,6 @@ inherited FrameOrderItems: TFrameOrderItems
       DisplayWidth = 6
       FieldName = 'MAGAZINE_ID'
     end
-    object fldOrderItems_MAGAZINE_NAME: TStringField
-      FieldKind = fkLookup
-      FieldName = 'MAGAZINE_NAME'
-      LookupDataSet = qryMagazines
-      LookupKeyFields = 'MAGAZINE_ID'
-      LookupResultField = 'MAGAZINE_NAME'
-      KeyFields = 'MAGAZINE_ID'
-      Size = 50
-      Lookup = True
-    end
-    object fldOrderItems_ARTICLE_ID: TIntegerField
-      FieldName = 'ARTICLE_ID'
-      Visible = False
-    end
     object fldOrderItems_ARTICLE_CODE: TStringField
       DisplayLabel = #1040#1088#1090#1080#1082#1091#1083
       FieldName = 'ARTICLE_CODE'
@@ -738,10 +613,6 @@ inherited FrameOrderItems: TFrameOrderItems
     end
     object fldOrderItems_ORDER_ID: TIntegerField
       FieldName = 'ORDER_ID'
-    end
-    object fldOrderItems_ARTICLE_SIGN: TStringField
-      FieldName = 'ARTICLE_SIGN'
-      Size = 50
     end
     object fldOrderItems_ORDERITEM_INDEX: TIntegerField
       FieldName = 'ORDERITEM_INDEX'
@@ -937,45 +808,6 @@ inherited FrameOrderItems: TFrameOrderItems
     DataSet = mtblOrderItems
     Left = 33
     Top = 326
-  end
-  object dsArticles: TDataSource
-    AutoEdit = False
-    DataSet = qryArticles
-    Left = 73
-    Top = 328
-  end
-  object qryArticles: TpFIBDataSet
-    SelectSQL.Strings = (
-      'select * '
-      'from v_articles a'
-      'where a.article_sign like :article_sign||'#39'%'#39
-      'order by a.dimension, a.article_code')
-    CacheModelOptions.BufferChunks = 100
-    AutoCalcFields = False
-    Transaction = trnWrite
-    Database = dmOtto.dbOtto
-    RefreshTransactionKind = tkUpdateTransaction
-    DataSource = dsOrderItems
-    Left = 73
-    Top = 288
-    oRefreshAfterPost = False
-    oStartTransaction = False
-    oFetchAll = True
-  end
-  object qryMagazines: TpFIBDataSet
-    SelectSQL.Strings = (
-      'SELECT'
-      '    MAGAZINE_ID,'
-      '    CATALOG_ID,'
-      '    MAGAZINE_NAME,'
-      '    VALID_DATE,'
-      '    STATUS_ID'
-      'FROM'
-      '    MAGAZINES ')
-    Transaction = trnWrite
-    Database = dmOtto.dbOtto
-    Left = 137
-    Top = 288
   end
   object qryStatuses: TpFIBDataSet
     SelectSQL.Strings = (

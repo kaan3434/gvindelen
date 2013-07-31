@@ -8,7 +8,8 @@ uses
   ImgList, PngImageList, ActnList, DB, FIBDataSet, pFIBDataSet, GridsEh,
   DBGridEh, StdCtrls, JvExStdCtrls, JvGroupBox, ExtCtrls, JvExExtCtrls,
   JvExtComponent, JvPanel, TB2Item, TBX, TB2Dock, TB2Toolbar, ComCtrls,
-  DBGridEhGrouping, Menus, FIBQuery, pFIBQuery, pFIBStoredProc;
+  DBGridEhGrouping, Menus, FIBQuery, pFIBQuery, pFIBStoredProc,
+  ToolCtrlsEh, DBGridEhToolCtrls, DBAxisGridsEh;
 
 type
   TFormTableClients = class(TBaseNSIForm)

@@ -22,15 +22,10 @@ type
     lcbTaxPlan: TDBLookupComboboxEh;
     edtBYR2EUR: TJvValidateEdit;
     edtOrderWeight: TJvValidateEdit;
-    grBox1: TJvGroupBox;
-    split1: TJvNetscapeSplitter;
-    grd1: TDBGridEh;
     qryTaxPlans: TpFIBDataSet;
     dsTaxPlans: TDataSource;
     qryProducts: TpFIBDataSet;
     dsProducts: TDataSource;
-    qryOrderDates: TpFIBDataSet;
-    dsOrderDates: TDataSource;
   private
     { Private declarations }
     function GetOrderId: Integer;
@@ -124,7 +119,6 @@ begin
   inherited;
   qryProducts.Open;
   qryTaxPlans.Open;
-  qryOrderDates.OpenWP([OrderId]);
 end;
 
 procedure TFrameOrder.UpdateCaptions;

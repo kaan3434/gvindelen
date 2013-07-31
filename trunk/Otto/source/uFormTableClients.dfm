@@ -1,11 +1,18 @@
 inherited FormTableClients: TFormTableClients
-  Left = 250
-  Top = 133
+  Left = -8
+  Top = -8
+  Width = 1382
+  Height = 744
   Caption = 'FormTableClients'
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
+  inherited StatusBar: TStatusBar
+    Top = 687
+    Width = 1366
+  end
   inherited dckTop: TTBXDock
+    Width = 1366
     inherited tlBarNsiActions: TTBXToolbar
       Images = imgListMain
       object btnAccountUserCredit: TTBXItem
@@ -22,9 +29,15 @@ inherited FormTableClients: TFormTableClients
     end
   end
   inherited pnlMain: TJvPanel
+    Width = 1366
+    Height = 661
     inherited grBoxMain: TJvGroupBox
+      Width = 1356
+      Height = 651
       Caption = #1050#1083#1080#1077#1085#1090#1099
       inherited grdMain: TDBGridEh
+        Width = 1352
+        Height = 634
         OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghIncSearch, dghPreferIncSearch, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
         ReadOnly = True
         RowDetailPanel.Active = True
@@ -34,6 +47,7 @@ inherited FormTableClients: TFormTableClients
         OnRowDetailPanelShow = grdMainRowDetailPanelShow
         Columns = <
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'LAST_NAME'
             Footers = <>
@@ -42,6 +56,7 @@ inherited FormTableClients: TFormTableClients
             Width = 150
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'FIRST_NAME'
             Footers = <>
@@ -50,6 +65,7 @@ inherited FormTableClients: TFormTableClients
             Width = 150
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'MID_NAME'
             Footers = <>
@@ -58,6 +74,7 @@ inherited FormTableClients: TFormTableClients
             Width = 150
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'MOBILE_PHONE'
             Footers = <>
@@ -66,6 +83,7 @@ inherited FormTableClients: TFormTableClients
             Width = 100
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'ACCOUNT_ID'
             Footers = <>
@@ -75,6 +93,7 @@ inherited FormTableClients: TFormTableClients
           item
             AutoFitColWidth = False
             DisplayFormat = '# ##0.## EUR'
+            DynProps = <>
             EditButtons = <>
             FieldName = 'REST_EUR'
             Footers = <>
@@ -83,6 +102,7 @@ inherited FormTableClients: TFormTableClients
             Width = 80
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'TAXPLAN_ID'
             Footers = <>
@@ -90,6 +110,7 @@ inherited FormTableClients: TFormTableClients
             Visible = False
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'STATUS_ID'
             Footers = <>
@@ -97,6 +118,7 @@ inherited FormTableClients: TFormTableClients
             Visible = False
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'STATUS_NAME'
             Footers = <>
@@ -104,6 +126,7 @@ inherited FormTableClients: TFormTableClients
             Width = 150
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'CLIENT_ID'
             Footers = <>
@@ -128,24 +151,15 @@ inherited FormTableClients: TFormTableClients
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
-                DataGrouping.GroupLevels = <>
                 DataSource = dsAdresses
+                DynProps = <>
                 Flat = True
-                FooterColor = clWindow
-                FooterFont.Charset = DEFAULT_CHARSET
-                FooterFont.Color = clWindowText
-                FooterFont.Height = -11
-                FooterFont.Name = 'MS Sans Serif'
-                FooterFont.Style = []
-                RowDetailPanel.Color = clBtnFace
+                FooterParams.Color = clWindow
+                IndicatorOptions = [gioShowRowIndicatorEh]
                 TabOrder = 0
-                TitleFont.Charset = DEFAULT_CHARSET
-                TitleFont.Color = clWindowText
-                TitleFont.Height = -11
-                TitleFont.Name = 'MS Sans Serif'
-                TitleFont.Style = []
                 Columns = <
                   item
+                    DynProps = <>
                     EditButtons = <>
                     FieldName = 'PHONE_NUMBER'
                     Footers = <>
@@ -154,6 +168,7 @@ inherited FormTableClients: TFormTableClients
                     Width = 76
                   end
                   item
+                    DynProps = <>
                     EditButtons = <>
                     FieldName = 'MOBILE_PHONE'
                     Footers = <>
@@ -162,6 +177,7 @@ inherited FormTableClients: TFormTableClients
                     Width = 70
                   end
                   item
+                    DynProps = <>
                     EditButtons = <>
                     FieldName = 'PLACE_TEXT'
                     Footers = <>
@@ -170,6 +186,7 @@ inherited FormTableClients: TFormTableClients
                     Width = 200
                   end
                   item
+                    DynProps = <>
                     EditButtons = <>
                     FieldName = 'ADRESS_TEXT'
                     Footers = <>
@@ -178,6 +195,7 @@ inherited FormTableClients: TFormTableClients
                     Width = 300
                   end
                   item
+                    DynProps = <>
                     EditButtons = <>
                     FieldName = 'EMAIL'
                     Footers = <>
@@ -198,52 +216,48 @@ inherited FormTableClients: TFormTableClients
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
-                DataGrouping.GroupLevels = <>
                 DataSource = dsClientOrders
+                DynProps = <>
                 Flat = True
-                FooterColor = clWindow
-                FooterFont.Charset = DEFAULT_CHARSET
-                FooterFont.Color = clWindowText
-                FooterFont.Height = -11
-                FooterFont.Name = 'MS Sans Serif'
-                FooterFont.Style = []
-                RowDetailPanel.Color = clBtnFace
+                FooterParams.Color = clWindow
+                IndicatorOptions = [gioShowRowIndicatorEh]
                 TabOrder = 0
-                TitleFont.Charset = DEFAULT_CHARSET
-                TitleFont.Color = clWindowText
-                TitleFont.Height = -11
-                TitleFont.Name = 'MS Sans Serif'
-                TitleFont.Style = []
                 Columns = <
                   item
+                    DynProps = <>
                     EditButtons = <>
                     FieldName = 'ORDER_CODE'
                     Footers = <>
                   end
                   item
+                    DynProps = <>
                     EditButtons = <>
                     FieldName = 'CREATE_DTM'
                     Footers = <>
                   end
                   item
+                    DynProps = <>
                     EditButtons = <>
                     FieldName = 'PLACE_TEXT'
                     Footers = <>
                     Width = 200
                   end
                   item
+                    DynProps = <>
                     EditButtons = <>
                     FieldName = 'ADRESS_TEXT'
                     Footers = <>
                     Width = 200
                   end
                   item
+                    DynProps = <>
                     EditButtons = <>
                     FieldName = 'STATUS_NAME'
                     Footers = <>
                     Width = 100
                   end
                   item
+                    DynProps = <>
                     EditButtons = <>
                     FieldName = 'STATUS_DTM'
                     Footers = <>
@@ -263,30 +277,22 @@ inherited FormTableClients: TFormTableClients
                 Height = 170
                 Align = alClient
                 AutoFitColWidths = True
-                DataGrouping.GroupLevels = <>
                 DataSource = dsAccountMovements
+                DynProps = <>
                 Flat = True
-                FooterColor = clWindow
-                FooterFont.Charset = DEFAULT_CHARSET
-                FooterFont.Color = clWindowText
-                FooterFont.Height = -11
-                FooterFont.Name = 'MS Sans Serif'
-                FooterFont.Style = []
-                RowDetailPanel.Color = clBtnFace
+                FooterParams.Color = clWindow
+                IndicatorOptions = [gioShowRowIndicatorEh]
                 TabOrder = 0
-                TitleFont.Charset = DEFAULT_CHARSET
-                TitleFont.Color = clWindowText
-                TitleFont.Height = -11
-                TitleFont.Name = 'MS Sans Serif'
-                TitleFont.Style = []
                 Columns = <
                   item
+                    DynProps = <>
                     EditButtons = <>
                     FieldName = 'ACCOPER_ID'
                     Footers = <>
                   end
                   item
                     AutoFitColWidth = False
+                    DynProps = <>
                     EditButtons = <>
                     FieldName = 'ACCOPER_DTM'
                     Footers = <>
@@ -295,6 +301,7 @@ inherited FormTableClients: TFormTableClients
                   end
                   item
                     AutoFitColWidth = False
+                    DynProps = <>
                     EditButtons = <>
                     FieldName = 'AMOUNT_EUR'
                     Footers = <>
@@ -303,6 +310,7 @@ inherited FormTableClients: TFormTableClients
                     Width = 80
                   end
                   item
+                    DynProps = <>
                     EditButtons = <>
                     FieldName = 'AMOUNT_BYR'
                     Footers = <>
@@ -310,6 +318,7 @@ inherited FormTableClients: TFormTableClients
                   end
                   item
                     AutoFitColWidth = False
+                    DynProps = <>
                     EditButtons = <>
                     FieldName = 'BYR2EUR'
                     Footers = <>
@@ -319,6 +328,7 @@ inherited FormTableClients: TFormTableClients
                   end
                   item
                     AutoFitColWidth = False
+                    DynProps = <>
                     EditButtons = <>
                     FieldName = 'ORDER_CODE'
                     Footers = <>
@@ -326,6 +336,7 @@ inherited FormTableClients: TFormTableClients
                     Title.Caption = #1047#1072#1103#1074#1082#1072
                   end
                   item
+                    DynProps = <>
                     EditButtons = <>
                     FieldName = 'NOTES'
                     Footers = <>

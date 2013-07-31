@@ -44,7 +44,7 @@ begin
       else
         ndOrderItems:= ndOrder.NodeByName('ORDERITEMS');
 
-      Dimension:= dmOtto.Recode('ARTICLE', 'DIMENSION', sl[11]);
+      Dimension:= dmOtto.Recode('ORDERITEM', 'DIMENSION', sl[11]);
 
       ndOrderItem:= ChildByAttributes(ndOrderItems, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
         [sl[7], sl[8], sl[9], VarArrayOf([Dimension, sl[11]])]);

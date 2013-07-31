@@ -26,7 +26,7 @@ begin
     Line.Add(GetXmlAttr(ndOrderItem, 'AUFTRAG_ID'));
     Line.Add(GetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX'));
     Line.Add(GetXmlAttr(ndOrderItem, 'ARTICLE_CODE'));
-    Line.Add(dmOtto.Recode('ARTICLE', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION')));
+    Line.Add(dmOtto.Recode('ORDERITEM', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION')));
     Line.Add('1');
     Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
     SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'CANCELREQUESTSENT');

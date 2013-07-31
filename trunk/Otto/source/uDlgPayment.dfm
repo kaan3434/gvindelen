@@ -6,7 +6,11 @@ object DlgManualPayment: TDlgManualPayment
   ClientHeight = 186
   ClientWidth = 341
   Color = clBtnFace
-  ParentFont = True
+  Font.Charset = RUSSIAN_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
   OldCreateOrder = True
   Position = poScreenCenter
   DesignSize = (

@@ -20,15 +20,15 @@ object BaseNSIForm: TBaseNSIForm
   TextHeight = 13
   object StatusBar: TStatusBar
     Left = 0
-    Top = 502
-    Width = 1016
+    Top = 498
+    Width = 1008
     Height = 19
     Panels = <>
   end
   object dckTop: TTBXDock
     Left = 0
     Top = 0
-    Width = 1016
+    Width = 1008
     Height = 26
     object tlBarNsiActions: TTBXToolbar
       Left = 0
@@ -40,8 +40,8 @@ object BaseNSIForm: TBaseNSIForm
   object pnlMain: TJvPanel
     Left = 0
     Top = 26
-    Width = 1016
-    Height = 476
+    Width = 1008
+    Height = 472
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
@@ -53,36 +53,26 @@ object BaseNSIForm: TBaseNSIForm
     object grBoxMain: TJvGroupBox
       Left = 5
       Top = 5
-      Width = 1006
-      Height = 466
+      Width = 998
+      Height = 462
       Align = alClient
       Caption = 'grBoxMain'
       TabOrder = 0
       object grdMain: TDBGridEh
         Left = 2
         Top = 15
-        Width = 1002
-        Height = 449
+        Width = 994
+        Height = 445
         Align = alClient
         AutoFitColWidths = True
-        DataGrouping.GroupLevels = <>
         DataSource = dsMain
+        DynProps = <>
         EditActions = [geaCopyEh, geaPasteEh]
         Flat = True
-        FooterColor = clWindow
-        FooterFont.Charset = DEFAULT_CHARSET
-        FooterFont.Color = clWindowText
-        FooterFont.Height = -11
-        FooterFont.Name = 'MS Sans Serif'
-        FooterFont.Style = []
+        FooterParams.Color = clWindow
+        IndicatorOptions = [gioShowRowIndicatorEh]
         IndicatorTitle.TitleButton = True
-        RowDetailPanel.Color = clBtnFace
         TabOrder = 0
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -11
-        TitleFont.Name = 'MS Sans Serif'
-        TitleFont.Style = []
         object RowDetailData: TRowDetailPanelControlEh
         end
       end
@@ -116,7 +106,6 @@ object BaseNSIForm: TBaseNSIForm
       'read'
       'nowait'
       'concurrency')
-    MDTTransactionRole = mtrAutoDefine
     AfterStart = trnReadAfterStart
     BeforeEnd = trnReadBeforeEnd
     TPBMode = tpbDefault
@@ -131,7 +120,6 @@ object BaseNSIForm: TBaseNSIForm
       'nowait'
       'rec_version'
       'read_committed')
-    MDTTransactionRole = mtrAutoDefine
     TPBMode = tpbDefault
     Left = 637
     Top = 63

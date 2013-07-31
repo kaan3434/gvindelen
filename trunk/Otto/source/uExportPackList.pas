@@ -90,7 +90,7 @@ begin
       Copy(GetXmlAttr(ndClient, 'MID_NAME'), 1, 1) + ' ' +
       nvl(GetXmlAttrValue(ndOrder, 'LAST_NAME'), GetXmlAttrValue(ndClient, 'LAST_NAME')));
     tblCons['AUFEXT']:= CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5);
-    tblCons['GRART']:= dmOtto.Recode('ARTICLE', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION'));
+    tblCons['GRART']:= dmOtto.Recode('ORDERITEM', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION'));
     tblCons['NAMEZAK']:= GetXmlAttr(ndOrderItem, 'NAME_RUS') + GetXmlAttr(ndOrderItem, 'KIND_RUS', ' ');
     tblCons['FAMILY']:= nvl(GetXmlAttrValue(ndOrder, 'LAST_NAME'), GetXmlAttrValue(ndClient, 'LAST_NAME'))+
                         GetXmlAttr(ndClient, 'FIRST_NAME', ' ') +
@@ -105,12 +105,8 @@ begin
                            GetXmlAttr(ndPlace, 'REGION_NAME', '', ' обл.'));
 
     tblCons['TEL']:= GetMobilePhone(GetXmlAttr(ndClient, 'MOBILE_PHONE', '+375'));
-    tblCons['COSTBYR']:= aTransaction.DefaultDatabase.QueryValue(
-      'select round(cast(:cost_eur as money_eur) * cast(:byr2eur as value_integer), -1) from rdb$database',
-      0, [GetXmlAttrValue(ndOrderItem, 'COST_EUR'), GetXmlAttrValue(ndOrder, 'BYR2EUR')], aTransaction);
-    tblCons['SBORBYR']:= aTransaction.DefaultDatabase.QueryValue(
-      'select round(cast(:cost_eur as money_eur) * cast(:byr2eur as value_integer), -1) from rdb$database',
-      0, [GetXmlAttrValue(ndTaxSSbor, 'COST_EUR'), GetXmlAttrValue(ndOrder, 'BYR2EUR')], aTransaction);
+    tblCons['COSTBYR']:= GetXmlAttr(ndOrder, 'COST_BYR');
+    tblCons['SBORBYR']:= GetXmlAttrValue(ndTaxSSbor, 'COST_BYR');
 
     if GetXmlAttrValue(ndProduct, 'PAYTYPE_SIGN') = 'POSTPAY' then // Наложенный платеж
     begin
