@@ -274,7 +274,8 @@ class booker extends booker_xml {
     $html = numbering_tag($html, 'ul');
     $html = numbering_tag($html, 'li');
     $categories = extract_tag_from_tag($html, 'ul', 'li', 1);
-//    extract_all_tags($html, '<li', '</h2>', 'event-group-level1');
+    
+    extract_all_tags($html, '<li', '</h2>', 'event-group-level1');
     foreach($categories as $category) {
        file_put_contents('category.html', $category);
       $days = extract_tag_from_tag($category, 'ul', 'li', 1);
