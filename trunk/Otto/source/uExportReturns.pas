@@ -34,8 +34,7 @@ begin
     Line.Add(GetXmlAttr(ndOrderItem, 'NRRETCODE'));
     Line.Add(GetXmlAttr(ndOrderItem, 'NREGWG'));
     Line.Add(GetXmlAttr(ndOrder, 'PACKLIST_NO'));
-    Line.Add(GetXmlAttr(ndOrderItem, 'PRICE_EUR'));
-    Line.Add(GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR'));
+    Line.Add(ReplaceAll(GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR'),'.', ','));
     Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
     SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'RETURNSENT');
     dmOtto.ActionExecute(aTransaction, ndOrderItem);
@@ -124,7 +123,7 @@ begin
       ProductList:= aTransaction.DefaultDatabase.QueryValue(
         'select list(distinct o.product_id) '+
         'from orderitems oi '+
-        '  inner join statuses s1 on (s1.status_id = o.status_id and s1.status_sign in (''RETURNING'',''DISCARDED'')) '+
+        '  inner join statuses s1 on (s1.status_id = oi.status_id and s1.status_sign in (''RETURNING'',''DISCARDED'')) '+
         '  left join statuses s2 on (s2.status_id = oi.state_id) '+
         '  inner join orders o on (o.order_id = oi.order_id) ' +
         'where coalesce(s2.status_sign, '''')  <> ''RETURNSENT''',

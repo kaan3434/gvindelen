@@ -42,12 +42,12 @@ type
     errHandler: TpFibErrorHandler;
     frxProtocol: TfrxReport;
     frxFIBComponents1: TfrxFIBComponents;
-    frxPDFExport: TfrxPDFExport;
     smtpMain: TIdSMTP;
     frxReport: TfrxReport;
-    frxExportXLS: TfrxXMLExport;
     svnZipBackup: TSevenZip;
     frxdlgcntrls1: TfrxDialogControls;
+    frxExportXLS: TfrxXMLExport;
+    frxPDFExport: TfrxPDFExport;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
     procedure dbOttoAfterConnect(Sender: TObject);
@@ -1008,10 +1008,12 @@ begin
     'select file_name from messages where message_id = :message_id',
     0, [aMessageId]);
   frxPDFExport.FileName:= Path['Protocols']+vFileName+'.pdf';
+  frxPDFExport.ShowDialog:= False;
   frxProtocol.LoadFromFile(Path['FastReport']+'protocol.fr3');
   frxProtocol.Variables.Variables['MessageId']:= aMessageId;
   frxProtocol.PrepareReport;
   frxProtocol.Export(frxPDFExport);
+  frxPDFExport.ShowDialog:= True;
 end;
 
 procedure TdmOtto.CleanUp;

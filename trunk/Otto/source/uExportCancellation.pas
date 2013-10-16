@@ -93,9 +93,9 @@ begin
       Text:= Text + ExportOrder(aTransaction, ndProduct, ndOrders, OrderId);
     end;
     ForceDirectories(Path['CancelRequests']);
-    FileName:= GetNextFileName(Format('%ss%s_%%.2u.%.3d', [
+    FileName:= GetNextFileName(Format('%ss%s_%.1u%%.1u.%.3d', [
       Path['CancelRequests'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
-      DayOfTheYear(Date)]));
+      Integer(dmOtto.DealerId), DayOfTheYear(Date)]));
     SaveStringAsFile(Text, FileName);
     dmOtto.CreateAlert('Запрос на ануляцию', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
   except

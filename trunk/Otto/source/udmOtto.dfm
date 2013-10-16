@@ -4,8 +4,8 @@ object dmOtto: TdmOtto
   OnDestroy = DataModuleDestroy
   Left = 419
   Top = 137
-  Height = 444
-  Width = 589
+  Height = 522
+  Width = 782
   object dbOtto: TpFIBDatabase
     Connected = True
     DBName = 'localhost:D:\otto\Data\otto_ppz.fdb'
@@ -296,28 +296,6 @@ object dmOtto: TdmOtto
     Left = 432
     Top = 248
   end
-  object frxPDFExport: TfrxPDFExport
-    ShowDialog = False
-    UseFileCache = True
-    ShowProgress = False
-    OverwritePrompt = False
-    OpenAfterExport = True
-    PrintOptimized = False
-    Outline = False
-    Background = False
-    HTMLTags = True
-    Author = 'FastReport'
-    Subject = 'FastReport PDF export'
-    ProtectionFlags = [ePrint, eModify, eCopy, eAnnot]
-    HideToolbar = False
-    HideMenubar = False
-    HideWindowUI = False
-    FitWindow = False
-    CenterWindow = False
-    PrintScaling = False
-    Left = 352
-    Top = 312
-  end
   object smtpMain: TIdSMTP
     SASLMechanisms = <>
     Left = 24
@@ -335,25 +313,11 @@ object dmOtto: TdmOtto
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 40773.818275636600000000
-    ReportOptions.LastChange = 41487.065397638900000000
+    ReportOptions.LastChange = 41520.874119120400000000
     ScriptLanguage = 'PascalScript'
     StoreInDFM = False
-    Left = 280
-    Top = 312
-  end
-  object frxExportXLS: TfrxXMLExport
-    ShowDialog = False
-    UseFileCache = True
-    ShowProgress = True
-    OverwritePrompt = False
-    Background = True
-    Creator = 'FastReport'
-    EmptyLines = True
-    SuppressPageHeadersFooters = False
-    RowsCount = 0
-    Split = ssRPages
-    Left = 440
-    Top = 312
+    Left = 272
+    Top = 328
   end
   object svnZipBackup: TSevenZip
     SFXCreate = False
@@ -373,5 +337,39 @@ object dmOtto: TdmOtto
   object frxdlgcntrls1: TfrxDialogControls
     Left = 272
     Top = 264
+  end
+  object frxExportXLS: TfrxXMLExport
+    UseFileCache = True
+    ShowProgress = True
+    OverwritePrompt = False
+    Background = True
+    Creator = 'FastReport'
+    EmptyLines = True
+    SuppressPageHeadersFooters = False
+    RowsCount = 0
+    Split = ssRPages
+    Left = 328
+    Top = 320
+  end
+  object frxPDFExport: TfrxPDFExport
+    UseFileCache = True
+    ShowProgress = False
+    OverwritePrompt = False
+    OpenAfterExport = True
+    PrintOptimized = False
+    Outline = False
+    Background = False
+    HTMLTags = True
+    Author = 'FastReport'
+    Subject = 'FastReport PDF export'
+    ProtectionFlags = [ePrint, eModify, eCopy, eAnnot]
+    HideToolbar = False
+    HideMenubar = False
+    HideWindowUI = False
+    FitWindow = False
+    CenterWindow = False
+    PrintScaling = False
+    Left = 376
+    Top = 320
   end
 end

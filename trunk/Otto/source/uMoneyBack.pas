@@ -13,7 +13,7 @@ procedure ReportMoneyBackAccount(aTransaction: TpFIBTransaction);
 implementation
 
 uses
-  NativeXml, udmOtto, GvStr, GvNativeXml, GvFile, DateUtils;
+  NativeXml, udmOtto, GvStr, GvNativeXml, GvFile, DateUtils, uMain;
 
 procedure ReportMoneyBackBelpost(aTransaction: TpFIBTransaction);
 var
@@ -39,7 +39,7 @@ begin
         0, [], aTransaction);
       if MoneyBacks <> '' then
       begin
-        with dmOtto do
+        with dmOtto, MainForm do
         begin
           frxExportXLS.DefaultPath:= Path['Returns'];
           frxExportXLS.FileName:= FileName+'.xls';
@@ -110,12 +110,15 @@ begin
 
           frxPDFExport.DefaultPath:= Path['Returns'];
           frxPDFExport.FileName:= FileName+'.pdf';
+          frxPDFExport.ShowDialog:= False;
 
           frxReport.LoadFromFile(Path['FastReport'] + 'MoneyBackBank.fr3');
           frxReport.Variables['ReestrNum']:= ReestrNum;
           frxReport.PrepareReport(true);
           frxReport.Export(frxExportXLS);
           frxReport.Export(frxPDFExport);
+          frxExportXLS.ShowDialog:= true;
+          frxPDFExport.ShowDialog:= True;
         end;
         while MoneyBacks <> '' do
         begin

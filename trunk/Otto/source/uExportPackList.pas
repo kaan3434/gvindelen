@@ -199,10 +199,11 @@ end;
 
 procedure MakeXls(aPacklistNo: Integer; aFileName: string);
 begin
-  with dmOtto do
+  with dmOtto, MainForm do
   begin
     frxExportXLS.DefaultPath:= Path['DbfPackLists'];
     frxExportXLS.FileName:= aFileName;
+    frxExportXLS.ShowDialog := False;
     frxExportXLS.Background:= True;
     frxExportXLS.OverwritePrompt:= False;
     frxExportXLS.ShowDialog:= False;
@@ -213,6 +214,7 @@ begin
     frxReport.Variables.Variables['PackList_No']:= Format('''%u''', [aPacklistNo]);
     frxReport.PrepareReport(true);
     frxReport.Export(frxExportXLS);
+    frxExportXLS.ShowDialog := true;
   end;
 end;
 

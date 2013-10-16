@@ -9,7 +9,7 @@ procedure ReportReturnedOrderItems(aTransaction: TpFIBTransaction);
 implementation
 
 uses
-  udmOtto, GvStr, GvFile, SysUtils, GvNativeXml, DateUtils;
+  udmOtto, GvStr, GvFile, SysUtils, GvNativeXml, DateUtils, uMain;
 
 procedure ExportProduct(aTransaction: TpFIBTransaction; ndProducts: TXmlNode; aProductId: Integer);
 var
@@ -78,10 +78,11 @@ begin
 
     frxPDFExport.DefaultPath:= Path['Returns'];
     frxPDFExport.FileName:= FileName+'.pdf';
+    frxPDFExport.ShowDialog:= False;
 
     frxReport.LoadFromFile(Path['FastReport'] + 'OrderItemReturns.fr3');
     for i:= 0 to ndFastReport.AttributeCount-1 do
-      frxReport.Variables[ndFastReport.AttributeName[i]]:= ndFastReport.AttributeValue[i]; 
+      frxReport.Variables[ndFastReport.AttributeName[i]]:= ndFastReport.AttributeValue[i];
     frxReport.Variables['ProductId']:= aProductId;
     frxReport.PrepareReport(true);
     for i:= 0 to frxReport.Variables.Count-1 do
@@ -89,6 +90,8 @@ begin
 
     frxReport.Export(frxExportXLS);
     frxReport.Export(frxPDFExport);
+    frxExportXLS.ShowDialog:= true;
+    frxPDFExport.ShowDialog:= True;
   end;
 end;
 

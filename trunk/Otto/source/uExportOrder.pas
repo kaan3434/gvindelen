@@ -171,7 +171,7 @@ begin
   ForceDirectories(Path['OrderRequests']);
   FileName:= GetNextFileName(Format('%sa%s_%.1u%%.1u.%.3d', [
     Path['OrderRequests'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
-    dmOtto.DealerId, DayOfTheYear(Date)]));
+    Integer(dmOtto.DealerId), DayOfTheYear(Date)]));
   SaveStringAsFile(ClientText+OrderItemText, FileName);
   dmOtto.CreateAlert('Отправка заявок', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
 end;
