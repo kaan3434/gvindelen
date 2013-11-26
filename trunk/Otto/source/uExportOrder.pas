@@ -7,7 +7,8 @@ procedure ExportApprovedOrder(aTransaction: TpFIBTransaction);
 
 implementation
 uses
-  udmOtto, NativeXml, GvNativeXml, GvStr, GvMath, GvFile, DateUtils, Dialogs;
+  udmOtto, NativeXml, GvNativeXml, GvStr, GvMath, GvFile, DateUtils, Dialogs, 
+  uExportSuissen;
 
 function GetPlace(ndPlace: TXmlNode; MaxLen: integer): string;
 begin
@@ -142,46 +143,49 @@ begin
   end;
 end;
 
-procedure ExportProduct(aTransaction: TpFIBTransaction;
-  ndProducts: TXmlNode; aProductId: integer);
+procedure ExportProductOtto(aTransaction: TpFIBTransaction;
+  ndProduct: TXmlNode; aProductId: integer);
 var
-  ndProduct, ndOrders: TXmlNode;
+  ndOrders: TXmlNode;
   OrderList, FileName, ClientText, OrderItemText: string;
   OrderId: variant;
 begin
-  ndProduct:= ndProducts.NodeFindOrCreate('PRODUCT');
   ndOrders:= ndProduct.NodeNew('ORDERS');
-  dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
-  OrderList:= aTransaction.DefaultDatabase.QueryValue(
-    'select list(distinct order_id) from ( '+
-    'select o.order_id, o.order_code '+
-    'from orderitems oi '+
-    'inner join statuses s on (s.status_id = oi.status_id and s.status_sign = ''APPROVED'') '+
-    'inner join orders o on (o.order_id = oi.order_id) '+
-    'where o.product_id = :product_id '+
-    'order by o.order_code)',
-    0, [aProductId], aTransaction);
-  while OrderList <> '' do
-  begin
-    OrderId:= TakeFront5(OrderList, ',');
-    ClientText:= ClientText + ExportClient(aTransaction, ndProduct, ndOrders, OrderId);
-    OrderItemText:= OrderItemText + ExportOrder(aTransaction, ndProduct, ndOrders, OrderId);
-  end;
+  try
+    dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
+    OrderList:= aTransaction.DefaultDatabase.QueryValue(
+      'select list(distinct order_id) from ( '+
+      'select o.order_id, o.order_code '+
+      'from orderitems oi '+
+      'inner join statuses s on (s.status_id = oi.status_id and s.status_sign = ''APPROVED'') '+
+      'inner join orders o on (o.order_id = oi.order_id) '+
+      'where o.product_id = :product_id '+
+      'order by o.order_code)',
+      0, [aProductId], aTransaction);
+    while OrderList <> '' do
+    begin
+      OrderId:= TakeFront5(OrderList, ',');
+      ClientText:= ClientText + ExportClient(aTransaction, ndProduct, ndOrders, OrderId);
+      OrderItemText:= OrderItemText + ExportOrder(aTransaction, ndProduct, ndOrders, OrderId);
+    end;
 
-  ForceDirectories(Path['OrderRequests']);
-  FileName:= GetNextFileName(Format('%sa%s_%.1u%%.1u.%.3d', [
-    Path['OrderRequests'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
-    Integer(dmOtto.DealerId), DayOfTheYear(Date)]));
-  SaveStringAsFile(ClientText+OrderItemText, FileName);
-  dmOtto.CreateAlert('Отправка заявок', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
+    ForceDirectories(Path['OrderRequests']);
+    FileName:= GetNextFileName(Format('%sa%s_%.1u%%.1u.%.3d', [
+      Path['OrderRequests'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
+      Integer(dmOtto.DealerId), DayOfTheYear(Date)]));
+    SaveStringAsFile(ClientText+OrderItemText, FileName);
+    dmOtto.CreateAlert('Отправка заявок', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
+  finally
+    ndOrders.Free;
+  end;
 end;
 
 procedure ExportApprovedOrder(aTransaction: TpFIBTransaction);
 var
   Xml: TNativeXml;
-  ndProducts: TXmlNode;
+  ndProducts, ndProduct: TXmlNode;
   ProductId: Variant;
-  ProductList: string;
+  ArjName, ProductList: string;
 begin
   aTransaction.StartTransaction;
   try
@@ -197,7 +201,19 @@ begin
       while ProductList <> '' do
       begin
         ProductId:= TakeFront5(ProductList, ',');
-        ExportProduct(aTransaction, ndProducts, ProductId);
+        ndProduct:= ndProducts.NodeFindOrCreate('PRODUCT');
+        try
+          dmOtto.ObjectGet(ndProduct, ProductId, aTransaction);
+          if GetXmlAttr(ndProduct, 'VENDOR_NAME') = 'OTTO' then
+            ExportProductOtto(aTransaction, ndProduct, ProductId)
+          else
+          begin
+            ArjName:= 
+            ExportProductSuissen(aTransaction, ndProduct, ProductId, 'ACCEPT_REQUEST', ArjName);
+          end;
+        finally
+          ndProduct.Free;
+        end;
       end;
 
       dmOtto.ExportCommitRequest(ndProducts, aTransaction);

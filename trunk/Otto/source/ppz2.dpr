@@ -48,7 +48,8 @@ uses
   uParseInfoKomnr in 'uParseInfoKomnr.pas',
   uMain in 'uMain.pas' {MainForm},
   uParsePaymentsBP in 'uParsePaymentsBP.pas',
-  uExportDealerData in 'uExportDealerData.pas';
+  uExportDealerData in 'uExportDealerData.pas',
+  uExportSuissen in 'uExportSuissen.pas';
 
 {$R *.res}
 
