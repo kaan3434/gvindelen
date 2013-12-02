@@ -115,8 +115,6 @@ type
       aOnDate: TDateTime): variant; overload;
     procedure SetKeyLayout(aTag: Integer);
     function Recode(aObjectSign, aAttrSign, aValue: String): Variant;
-    function GetNextCounterValue(aObjectSign, aCounterSign: string;
-      aObjectId: Integer; aTransaction: TpFIBTransaction = nil): WideString;
     function GetArticleSign(aArticleCode: string; aMagazineId: Integer): string;
     procedure ClearNotify(aMessageId: integer);
     procedure Notify(aMessageId: integer; aNotifyText: string; aNotifyClass: string = 'I'; aParams: string = '');
@@ -146,6 +144,10 @@ type
       aText: string; aTransaction: TpFIBTransaction);
     procedure AllDealersNotify(aMessageId: integer; aText: string;
       aTransaction: TpFIBTransaction);
+    function GetNextCounterValue(aObjectSign, aCounterSign: string;
+      aObjectId: Integer; aTransaction: TpFIBTransaction = nil): WideString;
+    function GetPatternValue(aObjectSign, aPatternSign: string;
+      aObjectId: Integer; aTransaction: TpFIBTransaction = nil): WideString;
   end;
 
 var
@@ -750,19 +752,6 @@ begin
     Result:= NewValue;
 end;
 
-function TdmOtto.GetNextCounterValue(aObjectSign, aCounterSign: string;
-  aObjectId: Integer; aTransaction: TpFIBTransaction): WideString;
-begin
-  if aTransaction <> nil then
-    Result:= dbOtto.QueryValue(
-      'select o_nextval from counter_nextval(:object_sign, :counter_sign, :object_id, 1)',
-      0, [aObjectSign, aCounterSign, aObjectId], aTransaction)
-  else
-    Result:= dbOtto.QueryValue(
-      'select o_nextval from counter_nextval(:object_sign, :counter_sign, :object_id)',
-      0, [aObjectSign, aCounterSign, aObjectId]);
-end;
-
 function TdmOtto.GetArticleSign(aArticleCode: string;
   aMagazineId: Integer): string;
 begin
@@ -1171,6 +1160,27 @@ begin
   begin
     Raise Exception.Create('Не установлен дилерский код');
   end;
+end;
+
+function TdmOtto.GetNextCounterValue(aObjectSign, aCounterSign: string;
+  aObjectId: Integer; aTransaction: TpFIBTransaction): WideString;
+begin
+  if aTransaction <> nil then
+    Result:= dbOtto.QueryValue(
+      'select o_nextval from counter_nextval(:object_sign, :counter_sign, :object_id, 1)',
+      0, [aObjectSign, aCounterSign, aObjectId], aTransaction)
+  else
+    Result:= dbOtto.QueryValue(
+      'select o_nextval from counter_nextval(:object_sign, :counter_sign, :object_id)',
+      0, [aObjectSign, aCounterSign, aObjectId]);
+end;
+
+function TdmOtto.GetPatternValue(aObjectSign, aPatternSign: string;
+  aObjectId: Integer; aParams: string; aTransaction: TpFIBTransaction): WideString;
+begin
+  Result:= dbOtto.QueryValue(
+    'select o_pattern_value from pattern_valuecounter_nextval(:object_sign, :counter_sign, :object_id, 1)',
+    0, [aObjectSign, aCounterSign, aObjectId], aTransaction)
 end;
 
 initialization

@@ -25,6 +25,7 @@ function UnEscapeStringEx_UTF8(const CString, CAddChars: PAnsiChar): PAnsiChar; 
 
 function StrPos_UTF8(const CSubString, CString: PAnsiChar): Integer; cdecl; export;
 function ToFloat(const CString: PAnsiChar): Single; cdecl; export;
+function FormatValue_UTF8(const CString, CFormatter: PAnsiChar): PAnsiChar; cdecl; export;
 
 implementation
 
@@ -107,6 +108,22 @@ begin
   wEnd:= UTF8Decode(utf8string(CEnd));
   wResult:= CopyBetween(wString, wStart, '', '', '', wEnd, FromPos);
   uResult:= UTF8Encode(wResult);
+  lResult:= Length(uResult);
+  Result:= ib_util_malloc(lResult+1);
+  StrPCopy(Result, uResult);
+end;
+
+function FormatValue_UTF8(const CString, CFormatter: PAnsiChar): PAnsiChar; cdecl; export;
+var
+  uResult: Utf8string;
+  wFormatter, wResult, wFormatFunc, wFormatFuncParams: WideString;
+  aResult: string;
+  lResult: integer;
+begin
+  wResult:= UTF8Decode(utf8string(CString));
+  wFormatter:= UTF8Decode(utf8string(CFormatter));
+  aResult:= FormatterStr(string(wResult), string(wFormatter));
+  uResult:= AnsiToUtf8(aResult);
   lResult:= Length(uResult);
   Result:= ib_util_malloc(lResult+1);
   StrPCopy(Result, uResult);

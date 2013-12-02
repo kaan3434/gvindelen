@@ -1,6 +1,6 @@
 inherited FrameOrderItems: TFrameOrderItems
-  Left = 90
-  Top = 157
+  Left = 169
+  Top = 130
   Width = 1125
   Height = 462
   PixelsPerInch = 96
@@ -64,53 +64,35 @@ inherited FrameOrderItems: TFrameOrderItems
       AllowedOperations = [alopInsertEh, alopUpdateEh, alopAppendEh]
       AutoFitColWidths = True
       BorderStyle = bsNone
-      DataGrouping.GroupLevels = <>
       DataSource = dsOrderItems
+      DynProps = <>
       Flat = True
       Font.Charset = RUSSIAN_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
       Font.Name = 'MS Sans Serif'
       Font.Style = []
-      FooterColor = clWindow
-      FooterFont.Charset = DEFAULT_CHARSET
-      FooterFont.Color = clWindowText
-      FooterFont.Height = -11
-      FooterFont.Name = 'MS Sans Serif'
-      FooterFont.Style = []
       FooterRowCount = 1
+      FooterParams.Color = clWindow
+      IndicatorOptions = [gioShowRowIndicatorEh]
       Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
       OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghEnterAsTab, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
       ParentFont = False
       RowDetailPanel.Height = 200
-      RowDetailPanel.Color = clBtnFace
       STFilter.InstantApply = False
       SumList.Active = True
       SumList.ExternalRecalc = True
       SumList.VirtualRecords = True
       TabOrder = 0
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -11
-      TitleFont.Name = 'MS Sans Serif'
-      TitleFont.Style = []
       OnColEnter = grdOrderItemsColEnter
       OnEnter = grdOrderItemsEnter
       OnGetCellParams = grdOrderItemsGetCellParams
       OnKeyPress = grdOrderItemsKeyPress
       Columns = <
         item
-          AutoFitColWidth = False
-          EditButtons = <>
-          FieldName = 'ARTICLE_CODE'
-          Footers = <>
-          Tag = 1
-          Title.Alignment = taCenter
-          Width = 102
-        end
-        item
           AutoDropDown = True
           AutoFitColWidth = False
+          DynProps = <>
           EditButtons = <>
           FieldName = 'MAGAZINE_NAME'
           Footer.Alignment = taRightJustify
@@ -119,11 +101,21 @@ inherited FrameOrderItems: TFrameOrderItems
           Footers = <>
           Title.Alignment = taCenter
           Title.Caption = #1050#1072#1090#1072#1083#1086#1075
-          Visible = False
           Width = 270
         end
         item
           AutoFitColWidth = False
+          DynProps = <>
+          EditButtons = <>
+          FieldName = 'ARTICLE_CODE'
+          Footers = <>
+          Tag = 1
+          Title.Alignment = taCenter
+          Width = 102
+        end
+        item
+          AutoFitColWidth = False
+          DynProps = <>
           EditButtons = <>
           FieldName = 'DIMENSION'
           Footers = <>
@@ -134,6 +126,7 @@ inherited FrameOrderItems: TFrameOrderItems
         item
           AutoFitColWidth = False
           DisplayFormat = '### ##0.00'
+          DynProps = <>
           EditButtons = <>
           FieldName = 'PRICE_EUR'
           Footer.DisplayFormat = '#0 '#1096#1090'.'
@@ -144,6 +137,7 @@ inherited FrameOrderItems: TFrameOrderItems
         end
         item
           AutoFitColWidth = False
+          DynProps = <>
           EditButtons = <>
           FieldName = 'WEIGHT'
           Footer.DisplayFormat = '# ##0 '#1075
@@ -159,6 +153,7 @@ inherited FrameOrderItems: TFrameOrderItems
         item
           AutoFitColWidth = False
           DisplayFormat = '### ##0.00'
+          DynProps = <>
           EditButtons = <>
           FieldName = 'COST_EUR'
           Footer.DisplayFormat = '0.## EUR'
@@ -170,6 +165,7 @@ inherited FrameOrderItems: TFrameOrderItems
           Title.Caption = #1057#1090#1086#1080#1084#1086#1089#1090#1100
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'NAME_RUS'
           Footers = <>
@@ -177,6 +173,7 @@ inherited FrameOrderItems: TFrameOrderItems
           Title.Alignment = taCenter
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'KIND_RUS'
           Footers = <>
@@ -184,6 +181,7 @@ inherited FrameOrderItems: TFrameOrderItems
           Title.Alignment = taCenter
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'STATE_NAME'
           Footers = <>
@@ -194,6 +192,7 @@ inherited FrameOrderItems: TFrameOrderItems
         end
         item
           AutoDropDown = True
+          DynProps = <>
           EditButtons = <>
           FieldName = 'STATUS_NAME'
           Footers = <>
@@ -203,6 +202,7 @@ inherited FrameOrderItems: TFrameOrderItems
           Width = 100
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'STATUS_DTM'
           Footers = <>
@@ -212,6 +212,7 @@ inherited FrameOrderItems: TFrameOrderItems
         end
         item
           AutoFitColWidth = False
+          DynProps = <>
           EditButtons = <>
           FieldName = 'ORDERITEM_INDEX'
           Footers = <>
@@ -219,6 +220,7 @@ inherited FrameOrderItems: TFrameOrderItems
           Width = 30
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'ORDERITEM_ID'
           Footers = <>
@@ -632,9 +634,8 @@ inherited FrameOrderItems: TFrameOrderItems
         object ORDERITEM_ID: TMTNumericDataFieldEh
           FieldName = 'ORDERITEM_ID'
           NumericDataType = fdtIntegerEh
+          AutoIncrement = False
           Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
           currency = False
           Precision = 0
@@ -642,9 +643,8 @@ inherited FrameOrderItems: TFrameOrderItems
         object MAGAZINE_ID: TMTNumericDataFieldEh
           FieldName = 'MAGAZINE_ID'
           NumericDataType = fdtIntegerEh
+          AutoIncrement = False
           Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
           currency = False
           Precision = 0
@@ -652,9 +652,8 @@ inherited FrameOrderItems: TFrameOrderItems
         object ARTICLE_ID: TMTNumericDataFieldEh
           FieldName = 'ARTICLE_ID'
           NumericDataType = fdtIntegerEh
+          AutoIncrement = False
           Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
           currency = False
           Precision = 0
@@ -662,29 +661,20 @@ inherited FrameOrderItems: TFrameOrderItems
         object ARTICLE_CODE: TMTStringDataFieldEh
           FieldName = 'ARTICLE_CODE'
           StringDataType = fdtStringEh
-          Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
           Size = 30
-          Transliterate = False
         end
         object DIMENSION: TMTStringDataFieldEh
           FieldName = 'DIMENSION'
           StringDataType = fdtStringEh
-          Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
           Size = 10
-          Transliterate = False
         end
         object PRICE_EUR: TMTNumericDataFieldEh
           FieldName = 'PRICE_EUR'
           NumericDataType = fdtFloatEh
+          AutoIncrement = False
           Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
           currency = False
           Precision = 0
@@ -692,9 +682,8 @@ inherited FrameOrderItems: TFrameOrderItems
         object WEIGHT: TMTNumericDataFieldEh
           FieldName = 'WEIGHT'
           NumericDataType = fdtIntegerEh
+          AutoIncrement = False
           Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
           currency = False
           Precision = 0
@@ -702,29 +691,20 @@ inherited FrameOrderItems: TFrameOrderItems
         object NAME_RUS: TMTStringDataFieldEh
           FieldName = 'NAME_RUS'
           StringDataType = fdtStringEh
-          Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
           Size = 30
-          Transliterate = False
         end
         object KIND_RUS: TMTStringDataFieldEh
           FieldName = 'KIND_RUS'
           StringDataType = fdtStringEh
-          Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
           Size = 50
-          Transliterate = False
         end
         object STATUS_ID: TMTNumericDataFieldEh
           FieldName = 'STATUS_ID'
           NumericDataType = fdtIntegerEh
+          AutoIncrement = False
           Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
           currency = False
           Precision = 0
@@ -732,9 +712,8 @@ inherited FrameOrderItems: TFrameOrderItems
         object STATE_ID: TMTNumericDataFieldEh
           FieldName = 'STATE_ID'
           NumericDataType = fdtIntegerEh
+          AutoIncrement = False
           Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
           currency = False
           Precision = 0
@@ -742,9 +721,8 @@ inherited FrameOrderItems: TFrameOrderItems
         object ORDER_ID: TMTNumericDataFieldEh
           FieldName = 'ORDER_ID'
           NumericDataType = fdtIntegerEh
+          AutoIncrement = False
           Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
           currency = False
           Precision = 0
@@ -752,19 +730,14 @@ inherited FrameOrderItems: TFrameOrderItems
         object ARTICLE_SIGN: TMTStringDataFieldEh
           FieldName = 'ARTICLE_SIGN'
           StringDataType = fdtStringEh
-          Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
           Size = 50
-          Transliterate = False
         end
         object ORDERITEM_INDEX: TMTNumericDataFieldEh
           FieldName = 'ORDERITEM_INDEX'
           NumericDataType = fdtIntegerEh
+          AutoIncrement = False
           Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
           currency = False
           Precision = 0
@@ -772,19 +745,14 @@ inherited FrameOrderItems: TFrameOrderItems
         object FLAG_SIGN_LIST: TMTStringDataFieldEh
           FieldName = 'FLAG_SIGN_LIST'
           StringDataType = fdtStringEh
-          Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
           Size = 1000
-          Transliterate = False
         end
         object COST_EUR: TMTNumericDataFieldEh
           FieldName = 'COST_EUR'
           NumericDataType = fdtFloatEh
+          AutoIncrement = False
           Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
           currency = False
           Precision = 0
@@ -792,9 +760,8 @@ inherited FrameOrderItems: TFrameOrderItems
         object AMOUNT: TMTNumericDataFieldEh
           FieldName = 'AMOUNT'
           NumericDataType = fdtIntegerEh
+          AutoIncrement = False
           Alignment = taLeftJustify
-          DisplayWidth = 0
-          Required = False
           Visible = False
           currency = False
           Precision = 0
@@ -818,12 +785,6 @@ inherited FrameOrderItems: TFrameOrderItems
     Database = dmOtto.dbOtto
     Left = 200
     Top = 288
-  end
-  object ProgressCheckAvail: TJvProgressComponent
-    Caption = #1055#1088#1086#1074#1077#1088#1082#1072' '#1076#1086#1089#1090#1091#1087#1085#1086#1089#1090#1080
-    OnShow = ProgressCheckAvailShow
-    Left = 480
-    Top = 16
   end
   object qryNextStatus: TpFIBDataSet
     SelectSQL.Strings = (

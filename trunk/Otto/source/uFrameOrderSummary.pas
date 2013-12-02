@@ -10,7 +10,8 @@ uses
   DBGridEh, StdCtrls, JvExStdCtrls, JvCheckBox, JvGroupBox, DB, FIBDataSet,
   pFIBDataSet, NativeXml, TB2Item, DBGridEhGrouping, IdBaseComponent,
   IdComponent, IdTCPConnection, IdTCPClient, IdExplicitTLSClientServerBase,
-  IdMessageClient, IdSMTPBase, IdSMTP;
+  IdMessageClient, IdSMTPBase, IdSMTP, ToolCtrlsEh, DBGridEhToolCtrls,
+  DBAxisGridsEh;
 
 type
   TFrameOrderSummary = class(TFrameBase1)
@@ -171,7 +172,8 @@ begin
   SetXmlAttr(ndOrder, 'BYR2EUR', dmOtto.SettingGet(trnRead, 'BYR2EUR'));
   if not AttrExists(ndOrder, 'ORDER_CODE') then
   begin
-    OrderCode:= dmOtto.GetNextCounterValue('PRODUCT', 'ORDER_CODE', GetXmlAttrValue(ndOrder, 'PRODUCT_ID'));
+    OrderCode:= dmOtto.
+    dmOtto.GetNextCounterValue('PRODUCT', 'ORDER_CODE', GetXmlAttrValue(ndOrder, 'PRODUCT_ID'));
     SetXmlAttr(ndOrder, 'ORDER_CODE', OrderCode);
   end;
   Caption:= txtOrderCode.Caption;

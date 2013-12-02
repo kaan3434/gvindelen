@@ -9,7 +9,8 @@ uses
   MemTableDataEh, Db, FIBDataSet, pFIBDataSet, MemTableEh, ExtCtrls,
   JvExExtCtrls, JvImage, GridsEh, DBGridEh, NativeXml, JvComponentBase,
   JvProgressComponent, TB2Item, StdCtrls, JvExStdCtrls, JvGroupBox,
-  JvEmbeddedForms, JvFormAutoSize, uFrameBase1, DBGridEhGrouping;
+  JvEmbeddedForms, JvFormAutoSize, uFrameBase1, DBGridEhGrouping,
+  ToolCtrlsEh, DBGridEhToolCtrls, DBAxisGridsEh;
 
 type
   TFrameOrderItems = class(TFrameBase1)
@@ -30,7 +31,6 @@ type
     fldOrderItems_STATE_NAME: TStringField;
     dsOrderItems: TDataSource;
     qryStatuses: TpFIBDataSet;
-    ProgressCheckAvail: TJvProgressComponent;
     actCheckAvailable: TAction;
     btnCheckAvailable: TTBXItem;
     fldOrderItems_ORDER_ID: TIntegerField;

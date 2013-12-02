@@ -1,6 +1,6 @@
 inherited FrameOrderSummary: TFrameOrderSummary
-  Left = 234
-  Top = 165
+  Left = 289
+  Top = 228
   Width = 896
   Height = 495
   PixelsPerInch = 96
@@ -323,27 +323,18 @@ inherited FrameOrderSummary: TFrameOrderSummary
       Height = 262
       Align = alClient
       AutoFitColWidths = True
-      DataGrouping.GroupLevels = <>
       DataSource = dsOrderFullSpecifications
+      DynProps = <>
       Flat = True
-      FooterColor = clWindow
-      FooterFont.Charset = DEFAULT_CHARSET
-      FooterFont.Color = clWindowText
-      FooterFont.Height = -11
-      FooterFont.Name = 'MS Sans Serif'
-      FooterFont.Style = []
       FooterRowCount = 1
+      FooterParams.Color = clWindow
+      IndicatorOptions = [gioShowRowIndicatorEh]
       ReadOnly = True
-      RowDetailPanel.Color = clBtnFace
       SumList.Active = True
       TabOrder = 0
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -11
-      TitleFont.Name = 'MS Sans Serif'
-      TitleFont.Style = []
       Columns = <
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'ORDER_ID'
           Footers = <>
@@ -351,6 +342,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
           Visible = False
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'ORD'
           Footers = <>
@@ -358,6 +350,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
           Visible = False
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'SUBJECT_ID'
           Footers = <>
@@ -365,6 +358,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
           Visible = False
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'SUBJECT_NAME'
           Footer.Alignment = taRightJustify
@@ -376,6 +370,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
           Width = 200
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'DIMENSION'
           Footers = <>
@@ -383,6 +378,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
           Title.Caption = #1056#1072#1079#1084#1077#1088
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'WEIGHT'
           Footer.Alignment = taRightJustify
@@ -394,6 +390,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
           Title.Caption = #1042#1077#1089', '#1075
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'PRICE_EUR'
           Footers = <>
@@ -401,6 +398,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
           Title.Caption = #1062#1077#1085#1072', EUR'
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'AMOUNT'
           Footer.DisplayFormat = '0 '#1096#1090
@@ -411,6 +409,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
           Title.Caption = #1050#1086#1083'-'#1074#1086
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'COST_EUR'
           Footer.DisplayFormat = '##0.## EUR'
@@ -421,6 +420,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
           Title.Caption = #1057#1090#1086#1080#1084#1086#1089#1090#1100
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'NAME_RUS'
           Footer.Alignment = taRightJustify
@@ -433,6 +433,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
           Width = 150
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'KIND_RUS'
           Footer.Alignment = taRightJustify
@@ -442,6 +443,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
           Width = 150
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'STATUS_NAME'
           Footers = <>
@@ -450,6 +452,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
           Width = 100
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'STATE_NAME'
           Footers = <>
@@ -458,6 +461,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
           Width = 120
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'COUNT_WEIGHT'
           Footers = <>
@@ -465,6 +469,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
           Visible = False
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'COST_BYR'
           Footers = <>

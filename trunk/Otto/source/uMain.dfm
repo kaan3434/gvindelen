@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 306
-  Top = 158
+  Left = 411
+  Top = 167
   Width = 845
   Height = 512
   Caption = 'PPZ'
