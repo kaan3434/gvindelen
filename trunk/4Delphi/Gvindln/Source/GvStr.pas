@@ -19,7 +19,11 @@ function SkipBack(St: String; KeyChar: String = ' '): String; overload;
 function SkipBack(St: WideString; KeyChar: WideString = ' '): WideString; overload;
 
 function FillFront(St: String; Len: Integer; Ch: Char = #32): String; overload;
+function FillFront(St: WideString; Len: Integer; Ch: WideChar = ' '): WideString; overload;
+
 function FillBack(St: String; Len: Integer; Ch: Char = #32): String; overload;
+function FillBack(St: WideString; Len: Integer; Ch: WideChar = ' '): WideString; overload;
+
 function FillCenter(St: String; Len: Integer; Ch: Char = #32): String; overload;
 
 function LastChar(St:String): Char;
@@ -246,6 +250,8 @@ function FormatString(aStr, aFormat: string): String;
 
 function CoalesceStr(aStr1, aStr2: string): string;
 
+function FormatterStr(aStr, aFormatter: string): string;
+
 implementation
 uses
   windows, sysutils, Zlib, Math, StrUtils;
@@ -339,7 +345,25 @@ begin
     Result:= StringOfChar(Ch,Len-LS)+St;
 end;
 
+function FillFront(St: WideString;  Len: Integer; Ch: WideChar = ' '): WideString;
+var
+  LS: Integer;
+begin
+  LS:= Length(St);
+  if LS>=Len then
+    result:= St
+  else
+    while Length(Result) < Len do Result:= Ch+Result;
+end;
+
+
 function FillBack(St: String; Len: Integer; Ch: Char=#32): String;
+begin
+  result:= St;
+  While Length(Result) < Len do Result:= Result+Ch;
+end;
+
+function FillBack(St: WideString; Len: Integer; Ch: WideChar= ' '): WideString;
 begin
   result:= St;
   While Length(Result) < Len do Result:= Result+Ch;
@@ -2388,6 +2412,53 @@ begin
     Result:= aStr1
   else
     Result:= aStr2;
+end;
+
+function FormatterStr(aStr, aFormatter: string): string;
+var
+  FormatFunc, FormatParams: string;
+  Params: TStringList;
+begin
+  Params:= TStringList.Create;
+  try
+    Result:= aStr;
+    while aFormatter<>'' do
+    begin
+      FormatParams:= TakeFront5(aFormatter, '|');
+      FormatFunc:= TakeFront5(FormatParams, '=');
+      if FormatFunc = 'LPAD' then
+      begin
+        Params.CommaText:= FormatParams+'," "';
+        Result:= FillFront(Result, StrToInt(Params[0]), Params[1][1]);
+      end
+      else
+      if FormatFunc = 'RPAD' then
+      begin
+        Params.CommaText:= FormatParams+'," "';
+        Result:= FillBack(Result, StrToInt(Params[0]), Params[1][1]);
+      end
+      else
+      if FormatFunc = 'UPPER' then
+        Result:= AnsiUpperCase(Result)
+      else
+      if FormatFunc = 'LOWER' then
+        Result:= AnsiLowerCase(Result)
+      else
+      if FormatFunc = 'SUBSTR' then
+      begin
+        Params.CommaText:= FormatParams+','+IntToStr(Length(Result));
+        Result:= Copy(Result, StrToInt(Params[0]), StrToInt(Params[1]));
+      end
+      else
+      if FormatFunc = 'MASKQUOTE' then
+        Result:= ReplaceAll(Result, '''', '''''')
+      else
+      if FormatFunc = 'MASKDQUOTE' then
+        Result:= ReplaceAll(Result, '"', '""');
+    end;
+  finally
+    Params.Free;
+  end;
 end;
 
 end.
