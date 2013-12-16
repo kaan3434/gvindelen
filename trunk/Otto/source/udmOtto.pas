@@ -147,7 +147,7 @@ type
     function GetNextCounterValue(aObjectSign, aCounterSign: string;
       aObjectId: Integer; aTransaction: TpFIBTransaction = nil): WideString;
     function GetPatternValue(aObjectSign, aPatternSign: string;
-      aObjectId: Integer; aTransaction: TpFIBTransaction = nil): WideString;
+      aObjectId: Integer; aParams: string; aTransaction: TpFIBTransaction): WideString;
   end;
 
 var
@@ -1177,10 +1177,16 @@ end;
 
 function TdmOtto.GetPatternValue(aObjectSign, aPatternSign: string;
   aObjectId: Integer; aParams: string; aTransaction: TpFIBTransaction): WideString;
+var
+  PatternId : Integer;
 begin
+  PatternId:= dbOtto.QueryValue(
+    'select o_pattern_id from pattern_get_id(:object_sign, :object_id, :pattern_sign)',
+    0, [aObjectSign, aObjectId, aPatternSign], aTransaction);
+
   Result:= dbOtto.QueryValue(
-    'select o_pattern_value from pattern_valuecounter_nextval(:object_sign, :counter_sign, :object_id, 1)',
-    0, [aObjectSign, aCounterSign, aObjectId], aTransaction)
+    'select o_pattern_value from pattern_value(:pattern_id, null, :params)',
+    0, [PatternId, aParams], aTransaction);
 end;
 
 initialization

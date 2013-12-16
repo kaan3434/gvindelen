@@ -55,7 +55,6 @@ type
     actDiscard: TAction;
     btnDiscard: TTBXItem;
     procedure ProgressCheckAvailShow(Sender: TObject);
-    procedure actCheckAvailableExecute(Sender: TObject);
     procedure grdOrderItemsColEnter(Sender: TObject);
     procedure mtblOrderItemsSetFieldValue(MemTable: TCustomMemTableEh;
       Field: TField; var Value: Variant);
@@ -183,9 +182,6 @@ var
   nDimension: string;
   OrderItemId: Integer;
 begin
-  ProgressCheckAvail.ProgressMax:= ndOrderItems.NodeCount;
-  ProgressCheckAvail.ProgressPosition:= 0;
-
   ndOrder.Document.XmlFormat:= xfReadable;
   ndOrder.Document.SaveToFile('Order.xml');
   for i:= 0 to ndOrderItems.NodeCount - 1 do
@@ -195,7 +191,6 @@ begin
     if FlagPresent('DELETEABLE', ndOrderItem, 'STATUS_FLAG_LIST') then
     begin
       nDimension:= GetXmlAttrValue(ndOrderItem, 'DIMENSION');
-      ProgressCheckAvail.ProgressStepIt;
 
       PluginName:= 'otto_check_available';
       Url:= dmOtto.dbOtto.QueryValue('select o_value from plugin_value(:plugin_sign, :param_sign)',
@@ -239,13 +234,6 @@ begin
       dmOtto.ObjectGet(ndOrderItem, OrderItemId, trnWrite);
     end
   end;
-end;
-
-procedure TFrameOrderItems.actCheckAvailableExecute(Sender: TObject);
-begin
-  Write;
-  ProgressCheckAvail.Execute;
-  Read;
 end;
 
 procedure TFrameOrderItems.grdOrderItemsColEnter(Sender: TObject);

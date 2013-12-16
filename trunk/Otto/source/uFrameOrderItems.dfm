@@ -1,6 +1,6 @@
 inherited FrameOrderItems: TFrameOrderItems
-  Left = 169
-  Top = 130
+  Left = 139
+  Top = 96
   Width = 1125
   Height = 462
   PixelsPerInch = 96
@@ -235,7 +235,6 @@ inherited FrameOrderItems: TFrameOrderItems
     object actCheckAvailable: TAction
       Caption = 'actCheckAvailable'
       ImageIndex = 0
-      OnExecute = actCheckAvailableExecute
       OnUpdate = actCheckAvailableUpdate
     end
     object actDublicate: TAction

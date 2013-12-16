@@ -49,7 +49,10 @@ uses
   uMain in 'uMain.pas' {MainForm},
   uParsePaymentsBP in 'uParsePaymentsBP.pas',
   uExportDealerData in 'uExportDealerData.pas',
-  uExportSuissen in 'uExportSuissen.pas';
+  uExportSuissen in 'uExportSuissen.pas',
+  uFormActions in 'uFormActions.pas' {frmActionCodeSetup},
+  uFrameParams in 'uFrameParams.pas' {Frame2: TFrame},
+  uFrameCriterias in 'uFrameCriterias.pas' {Frame1: TFrame};
 
 {$R *.res}
 

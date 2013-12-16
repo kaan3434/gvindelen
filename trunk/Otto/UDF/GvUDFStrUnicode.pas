@@ -122,7 +122,7 @@ var
 begin
   wResult:= UTF8Decode(utf8string(CString));
   wFormatter:= UTF8Decode(utf8string(CFormatter));
-  aResult:= FormatterStr(string(wResult), string(wFormatter));
+  aResult:= FormatValue(string(wResult), string(wFormatter));
   uResult:= AnsiToUtf8(aResult);
   lResult:= Length(uResult);
   Result:= ib_util_malloc(lResult+1);

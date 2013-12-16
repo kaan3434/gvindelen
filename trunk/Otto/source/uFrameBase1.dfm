@@ -1,6 +1,6 @@
 object FrameBase1: TFrameBase1
-  Left = 654
-  Top = 214
+  Left = 533
+  Top = 158
   Width = 530
   Height = 413
   Align = alClient

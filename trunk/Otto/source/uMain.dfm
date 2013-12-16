@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 411
-  Top = 167
+  Left = 416
+  Top = 179
   Width = 845
   Height = 512
   Caption = 'PPZ'
@@ -502,6 +502,11 @@ object MainForm: TMainForm
       Category = 'Reports'
       Caption = #1040#1076#1088#1077#1089#1072' '#1076#1083#1103' '#1088#1072#1089#1089#1099#1083#1082#1080
       OnExecute = actAdressListExecute
+    end
+    object actActionCodes: TAction
+      Category = 'NSI'
+      Caption = 'actActionCodes'
+      OnExecute = actActionCodesExecute
     end
   end
   object imgListMainMenu: TPngImageList
@@ -1561,6 +1566,12 @@ object MainForm: TMainForm
       Hint = 'Help topics'
       object HelpAboutItem: TMenuItem
         Action = actHelpAbout1
+      end
+    end
+    object N2: TMenuItem
+      Caption = #1053#1057#1048
+      object N3: TMenuItem
+        Action = actActionCodes
       end
     end
   end

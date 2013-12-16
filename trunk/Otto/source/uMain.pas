@@ -167,6 +167,9 @@ type
     btnExportDealerData: TTBXItem;
     btnAdressList: TTBXItem;
     actAdressList: TAction;
+    actActionCodes: TAction;
+    N2: TMenuItem;
+    N3: TMenuItem;
     procedure actParseOrderXmlExecute(Sender: TObject);
     procedure actOrderCreateExecute(Sender: TObject);
     procedure actNSICatalogsExecute(Sender: TObject);
@@ -217,6 +220,7 @@ type
     procedure actProcessPaymentBaltPostExecute(Sender: TObject);
     procedure actExportDealerDataExecute(Sender: TObject);
     procedure actAdressListExecute(Sender: TObject);
+    procedure actActionCodesExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -241,7 +245,7 @@ uses
   uParseArtN, uParseCancellation, uFormWizardReturn, uParseInfo2Pay,
   uExportToSite, uExportPrePackList, uMoneyBack, uReportReturnedOrderItems, 
   uExportReturns, uParseInfoKomnr, uParseArt, uParsePaymentsBP, 
-  uExportDealerData;
+  uExportDealerData, uFormActions;
 
 procedure TMainForm.actParseOrderXmlExecute(Sender: TObject);
 var
@@ -961,6 +965,18 @@ begin
   begin
     frxReport.LoadFromFile(Path['FastReport']+'Adresses.fr3');
     frxReport.ShowReport;
+  end;
+end;
+
+procedure TMainForm.actActionCodesExecute(Sender: TObject);
+var
+  frmActionCodes : TfrmActionCodeSetup;
+begin
+  frmActionCodes:= TfrmActionCodeSetup.Create(Self);
+  try
+    frmActionCodes.ShowModal;
+  finally
+    frmActionCodes.Free;
   end;
 end;
 

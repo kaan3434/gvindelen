@@ -208,8 +208,8 @@ begin
             ExportProductOtto(aTransaction, ndProduct, ProductId)
           else
           begin
-            ArjName:= 
-            ExportProductSuissen(aTransaction, ndProduct, ProductId, 'ACCEPT_REQUEST', ArjName);
+//            ArjName:=
+//            ExportProductSuissen(aTransaction, ndProduct, ProductId, 'ACCEPT_REQUEST', ArjName);
           end;
         finally
           ndProduct.Free;
