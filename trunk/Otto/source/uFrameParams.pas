@@ -28,6 +28,7 @@ type
     btnClear: TTBXItem;
     tbsepseparator: TTBXSeparatorItem;
     dsParams: TDataSource;
+    procedure actNewExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -36,6 +37,20 @@ type
 
 implementation
 
+uses
+  uFormParamEdit;
+
 {$R *.dfm}
+
+procedure TFrame2.actNewExecute(Sender: TObject);
+begin
+  frmParamEdit.DataSet:= dsParams.DataSet;
+  dsParams.DataSet.Append;
+  frmParamEdit.ObjectId:= dsParams.DataSet.DataSource.DataSet.Tag;
+  if frmParamEdit.ShowModal = mrOk then
+    dsParams.DataSet.Post
+  else
+    dsParams.DataSet.Cancel;
+end;
 
 end.

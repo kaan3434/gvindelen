@@ -98,6 +98,7 @@ object Frame2: TFrame2
     Top = 64
     object actNew: TAction
       Caption = 'actNew'
+      OnExecute = actNewExecute
     end
     object actDelete: TAction
       Caption = 'actDelete'

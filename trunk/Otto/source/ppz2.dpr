@@ -52,7 +52,8 @@ uses
   uExportSuissen in 'uExportSuissen.pas',
   uFormActions in 'uFormActions.pas' {frmActionCodeSetup},
   uFrameParams in 'uFrameParams.pas' {Frame2: TFrame},
-  uFrameCriterias in 'uFrameCriterias.pas' {Frame1: TFrame};
+  uFrameCriterias in 'uFrameCriterias.pas' {Frame1: TFrame},
+  uFormParamEdit in 'uFormParamEdit.pas' {frmParamEdit};
 
 {$R *.res}
 

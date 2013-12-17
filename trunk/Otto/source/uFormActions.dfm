@@ -1,8 +1,8 @@
 object frmActionCodeSetup: TfrmActionCodeSetup
-  Left = 122
-  Top = 0
-  Width = 1166
-  Height = 680
+  Left = 186
+  Top = 119
+  Width = 1092
+  Height = 576
   Caption = 'frmActionCodeSetup'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -11,18 +11,22 @@ object frmActionCodeSetup: TfrmActionCodeSetup
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnDeactivate = FormDeactivate
   PixelsPerInch = 96
   TextHeight = 13
   object spl2: TSplitter
     Left = 550
     Top = 0
-    Height = 642
+    Height = 538
   end
   object pnl1: TPanel
     Left = 0
     Top = 0
     Width = 550
-    Height = 642
+    Height = 538
     Align = alLeft
     Caption = 'pnl1'
     TabOrder = 0
@@ -36,7 +40,7 @@ object frmActionCodeSetup: TfrmActionCodeSetup
     end
     object spl5: TSplitter
       Left = 1
-      Top = 488
+      Top = 384
       Width = 548
       Height = 3
       Cursor = crVSplit
@@ -81,12 +85,13 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       Left = 1
       Top = 254
       Width = 548
-      Height = 234
+      Height = 130
       Align = alClient
       TabOrder = 1
       inherited grdParams: TDBGridEh
         Width = 548
-        Height = 209
+        Height = 105
+        ReadOnly = False
       end
       inherited dckParams: TTBXDock
         Width = 548
@@ -97,7 +102,7 @@ object frmActionCodeSetup: TfrmActionCodeSetup
     end
     inline frmCritActionCode: TFrame1
       Left = 1
-      Top = 491
+      Top = 387
       Width = 548
       Height = 150
       Align = alBottom
@@ -117,23 +122,23 @@ object frmActionCodeSetup: TfrmActionCodeSetup
   object pnl4: TPanel
     Left = 553
     Top = 0
-    Width = 597
-    Height = 642
+    Width = 523
+    Height = 538
     Align = alClient
     Caption = 'pnl4'
     TabOrder = 1
     object spl3: TSplitter
       Left = 1
       Top = 251
-      Width = 595
+      Width = 521
       Height = 3
       Cursor = crVSplit
       Align = alTop
     end
     object spl4: TSplitter
       Left = 1
-      Top = 488
-      Width = 595
+      Top = 384
+      Width = 521
       Height = 3
       Cursor = crVSplit
       Align = alBottom
@@ -141,7 +146,7 @@ object frmActionCodeSetup: TfrmActionCodeSetup
     object pnl5: TPanel
       Left = 1
       Top = 1
-      Width = 595
+      Width = 521
       Height = 250
       Align = alTop
       Caption = 'pnl5'
@@ -149,7 +154,7 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       object grdActionTree: TDBGridEh
         Left = 1
         Top = 27
-        Width = 593
+        Width = 519
         Height = 222
         Align = alClient
         DataSource = dsActionTree
@@ -157,6 +162,7 @@ object frmActionCodeSetup: TfrmActionCodeSetup
         Flat = True
         IndicatorOptions = [gioShowRowIndicatorEh]
         TabOrder = 0
+        OnDblClick = grdActionTreeDblClick
         Columns = <
           item
             Alignment = taCenter
@@ -212,7 +218,7 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       object dckActionTree: TTBXDock
         Left = 1
         Top = 1
-        Width = 593
+        Width = 519
         Height = 26
         object tbActionTree: TTBXToolbar
           Left = 0
@@ -224,32 +230,32 @@ object frmActionCodeSetup: TfrmActionCodeSetup
     end
     inline frmCritActionTree: TFrame1
       Left = 1
-      Top = 491
-      Width = 595
+      Top = 387
+      Width = 521
       Height = 150
       Align = alBottom
       TabOrder = 1
       inherited dckTop: TTBXDock
-        Width = 595
+        Width = 521
       end
       inherited grdCriterias: TDBGridEh
-        Width = 595
+        Width = 521
         Height = 124
       end
     end
     inline frmParamActionTree: TFrame2
       Left = 1
       Top = 254
-      Width = 595
-      Height = 234
+      Width = 521
+      Height = 130
       Align = alClient
       TabOrder = 2
       inherited grdParams: TDBGridEh
-        Width = 595
-        Height = 209
+        Width = 521
+        Height = 105
       end
       inherited dckParams: TTBXDock
-        Width = 595
+        Width = 521
       end
       inherited dsParams: TDataSource
         DataSet = qryActionTreeParams
@@ -259,8 +265,8 @@ object frmActionCodeSetup: TfrmActionCodeSetup
   object dsActionTree: TDataSource
     AutoEdit = False
     DataSet = qryActionTree
-    Left = 1037
-    Top = 17
+    Left = 637
+    Top = 153
   end
   object dsActionCodes: TDataSource
     DataSet = qryActionCodes
@@ -281,7 +287,8 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       'WHERE /*FILTER*/ 1=1'
       'ORDER by OBJECT_SIGN')
     Active = True
-    Transaction = dmOtto.trnAutonomouse
+    AfterScroll = qryActionCodesAfterScroll
+    Transaction = trnWrite
     Database = dmOtto.dbOtto
     Left = 297
     Top = 145
@@ -301,17 +308,63 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       'order by atr.order_no'
       '')
     Active = True
-    Transaction = dmOtto.trnAutonomouse
+    AfterScroll = qryActionTreeAfterScroll
+    Transaction = trnWrite
     Database = dmOtto.dbOtto
     DataSource = dsActionCodes
-    Left = 1005
-    Top = 113
+    Left = 581
+    Top = 153
+    dcForceOpen = True
   end
   object qryActionCodeParams: TpFIBDataSet
+    UpdateSQL.Strings = (
+      'UPDATE ACTIONCODE_PARAMS'
+      'SET '
+      '    PARAM_VALUE = :PARAM_VALUE,'
+      '    PARAM_NAME = :PARAM_NAME,'
+      '    PARAM_KIND = :PARAM_KIND'
+      'WHERE'
+      '    OBJECT_ID = :OLD_OBJECT_ID'
+      '    and PARAM_NAME = :OLD_PARAM_NAME'
+      '    and PARAM_KIND = :OLD_PARAM_KIND'
+      '    ')
+    DeleteSQL.Strings = (
+      'DELETE FROM'
+      '    ACTIONCODE_PARAMS'
+      'WHERE'
+      '        OBJECT_ID = :OLD_OBJECT_ID'
+      '    and PARAM_NAME = :OLD_PARAM_NAME'
+      '    and PARAM_KIND = :OLD_PARAM_KIND'
+      '    ')
+    InsertSQL.Strings = (
+      'INSERT INTO ACTIONCODE_PARAMS('
+      '    OBJECT_ID,'
+      '    PARAM_NAME,'
+      '    PARAM_KIND,'
+      '    PARAM_VALUE'
+      ')'
+      'VALUES('
+      '    :OBJECT_ID,'
+      '    :PARAM_NAME,'
+      '    :PARAM_KIND,'
+      '    :PARAM_VALUE'
+      ')')
+    RefreshSQL.Strings = (
+      'SELECT'
+      '    OBJECT_ID,'
+      '    PARAM_NAME,'
+      '    PARAM_KIND,'
+      '    PARAM_VALUE'
+      'FROM'
+      '    ACTIONCODE_PARAMS '
+      'WHERE OBJECT_ID = :ACTION_CODE'
+      '    and ACTIONCODE_PARAMS.OBJECT_ID = :OLD_OBJECT_ID'
+      '    and ACTIONCODE_PARAMS.PARAM_NAME = :OLD_PARAM_NAME'
+      '    and ACTIONCODE_PARAMS.PARAM_KIND = :OLD_PARAM_KIND'
+      '    ')
     SelectSQL.Strings = (
       'SELECT'
       '    OBJECT_ID,'
-      '    ACTION_SIGN,'
       '    PARAM_NAME,'
       '    PARAM_KIND,'
       '    PARAM_VALUE'
@@ -319,18 +372,35 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       '    ACTIONCODE_PARAMS '
       'WHERE OBJECT_ID = :ACTION_CODE'
       'ORDER BY PARAM_NAME')
-    Transaction = dmOtto.trnAutonomouse
+    Active = True
+    Transaction = trnWrite
     Database = dmOtto.dbOtto
     DataSource = dsActionCodes
-    Left = 337
-    Top = 425
+    Left = 297
+    Top = 201
+    WaitEndMasterScroll = True
+    dcForceOpen = True
   end
   object qryActionCodeCrit: TpFIBDataSet
-    Transaction = dmOtto.trnAutonomouse
+    SelectSQL.Strings = (
+      'SELECT'
+      '    OBJECT_ID,'
+      '    ACTIONCODE_SIGN,'
+      '    PARAM_NAME,'
+      '    PARAM_KIND,'
+      '    PARAM_ACTION,'
+      '    PARAM_VALUE_1,'
+      '    PARAM_VALUE_2'
+      'FROM'
+      '    ACTIONCODE_CRITERIAS '
+      'WHERE OBJECT_ID = :ACTION_CODE')
+    Active = True
+    Transaction = trnWrite
     Database = dmOtto.dbOtto
     DataSource = dsActionCodes
-    Left = 336
-    Top = 600
+    Left = 296
+    Top = 256
+    dcForceOpen = True
   end
   object qryActionTreeCrit: TpFIBDataSet
     SelectSQL.Strings = (
@@ -345,11 +415,13 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       '    ACTIONTREE_CRITERIAS '
       'WHERE OBJECT_ID = :ACTIONTREEITEM_ID'
       'ORDER BY PARAM_NAME')
-    Transaction = dmOtto.trnAutonomouse
+    Active = True
+    Transaction = trnWrite
     Database = dmOtto.dbOtto
     DataSource = dsActionTree
-    Left = 1041
-    Top = 624
+    Left = 585
+    Top = 256
+    dcForceOpen = True
   end
   object qryActionTreeParams: TpFIBDataSet
     SelectSQL.Strings = (
@@ -362,9 +434,19 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       '    ACTIONTREE_PARAMS '
       'WHERE OBJECT_ID = :ACTIONTREEITEM_ID'
       'ORDER BY PARAM_NAME')
-    Transaction = dmOtto.trnAutonomouse
+    Active = True
+    Transaction = trnWrite
     Database = dmOtto.dbOtto
-    Left = 1017
-    Top = 424
+    DataSource = dsActionTree
+    Left = 585
+    Top = 208
+    dcForceOpen = True
+  end
+  object trnWrite: TpFIBTransaction
+    Active = True
+    DefaultDatabase = dmOtto.dbOtto
+    TimeoutAction = TARollback
+    Left = 474
+    Top = 26
   end
 end
