@@ -54,31 +54,43 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       Align = alTop
       Caption = 'pnl3'
       TabOrder = 0
-      object grdActionCodes: TDBGridEh
-        Left = 1
-        Top = 27
-        Width = 546
-        Height = 222
-        Align = alClient
-        DataSource = dsActionCodes
-        DynProps = <>
-        Flat = True
-        IndicatorOptions = [gioShowRowIndicatorEh]
-        TabOrder = 0
-        object RowDetailData: TRowDetailPanelControlEh
-        end
-      end
       object dckActionCode: TTBXDock
         Left = 1
         Top = 1
         Width = 546
-        Height = 26
+        Height = 10
         object tbActionCodes: TTBXToolbar
           Left = 0
           Top = 0
           Caption = 'tbActionCodes'
           TabOrder = 0
+          object TBXItem1: TTBXItem
+          end
         end
+      end
+      object vsTreeActionCodes: TVirtualStringTree
+        Left = 1
+        Top = 11
+        Width = 546
+        Height = 238
+        Align = alClient
+        Header.AutoSizeIndex = -1
+        Header.Font.Charset = DEFAULT_CHARSET
+        Header.Font.Color = clWindowText
+        Header.Font.Height = -11
+        Header.Font.Name = 'Tahoma'
+        Header.Font.Style = []
+        Header.MainColumn = -1
+        Header.Options = [hoAutoResize, hoColumnResize, hoDrag, hoShowSortGlyphs]
+        TabOrder = 1
+        TreeOptions.AnimationOptions = [toAnimatedToggle]
+        TreeOptions.AutoOptions = [toAutoDropExpand, toAutoExpand, toAutoScrollOnExpand, toAutoSort, toAutoTristateTracking, toAutoDeleteMovedNodes, toAutoChangeScale]
+        OnFocusChanged = vsTreeActionCodesFocusChanged
+        OnFreeNode = vsTreeActionCodesFreeNode
+        OnGetText = vsTreeActionCodesGetText
+        OnInitChildren = vsTreeActionCodesInitChildren
+        OnInitNode = vsTreeActionCodesInitNode
+        Columns = <>
       end
     end
     inline frmParamActionCode: TFrame2
@@ -91,6 +103,7 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       inherited grdParams: TDBGridEh
         Width = 548
         Height = 105
+        AutoFitColWidths = True
         ReadOnly = False
       end
       inherited dckParams: TTBXDock
@@ -113,6 +126,7 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       inherited grdCriterias: TDBGridEh
         Width = 548
         Height = 124
+        AutoFitColWidths = True
       end
       inherited dsCriterias: TDataSource
         DataSet = qryActionCodeCrit
@@ -157,6 +171,7 @@ object frmActionCodeSetup: TfrmActionCodeSetup
         Width = 519
         Height = 222
         Align = alClient
+        AutoFitColWidths = True
         DataSource = dsActionTree
         DynProps = <>
         Flat = True
@@ -241,6 +256,7 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       inherited grdCriterias: TDBGridEh
         Width = 521
         Height = 124
+        AutoFitColWidths = True
       end
     end
     inline frmParamActionTree: TFrame2
@@ -253,6 +269,7 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       inherited grdParams: TDBGridEh
         Width = 521
         Height = 105
+        AutoFitColWidths = True
       end
       inherited dckParams: TTBXDock
         Width = 521
@@ -448,5 +465,29 @@ object frmActionCodeSetup: TfrmActionCodeSetup
     TimeoutAction = TARollback
     Left = 474
     Top = 26
+  end
+  object qryObjects: TpFIBDataSet
+    SelectSQL.Strings = (
+      'SELECT'
+      '    OBJECT_SIGN,'
+      '    OBJECT_NAME,'
+      '    TABLE_NAME,'
+      '    IDFIELD_NAME,'
+      '    ATTR_TABLE_NAME,'
+      '    PROCEDURE_READ,'
+      '    OBJECT_CODE'
+      'FROM'
+      '    OBJECTS '
+      'ORDER BY OBJECT_SIGN')
+    Transaction = trnWrite
+    Database = dmOtto.dbOtto
+    Left = 297
+    Top = 57
+  end
+  object qryTemp: TpFIBDataSet
+    Transaction = dmOtto.trnAutonomouse
+    Database = dmOtto.dbOtto
+    Left = 169
+    Top = 57
   end
 end
