@@ -19,11 +19,7 @@ function SkipBack(St: String; KeyChar: String = ' '): String; overload;
 function SkipBack(St: WideString; KeyChar: WideString = ' '): WideString; overload;
 
 function FillFront(St: String; Len: Integer; Ch: Char = #32): String; overload;
-function FillFront(St: WideString; Len: Integer; Ch: WideChar = ' '): WideString; overload;
-
 function FillBack(St: String; Len: Integer; Ch: Char = #32): String; overload;
-function FillBack(St: WideString; Len: Integer; Ch: WideChar = ' '): WideString; overload;
-
 function FillCenter(St: String; Len: Integer; Ch: Char = #32): String; overload;
 
 function LastChar(St:String): Char;
@@ -246,11 +242,9 @@ function UpCaseFirst(St: string): string;
 function UpCaseWord(St: string; KeyChars: string=' ,.!-:?'): string;
 
 function IsWordPresent(aWord, aWordList, aDelimiter: String): Boolean;
-function FormatString(aStr, aFormat: string): String;
+function FormatValue(aValue, aFormat: string): String;
 
 function CoalesceStr(aStr1, aStr2: string): string;
-
-function FormatterStr(aStr, aFormatter: string): string;
 
 implementation
 uses
@@ -345,25 +339,7 @@ begin
     Result:= StringOfChar(Ch,Len-LS)+St;
 end;
 
-function FillFront(St: WideString;  Len: Integer; Ch: WideChar = ' '): WideString;
-var
-  LS: Integer;
-begin
-  LS:= Length(St);
-  if LS>=Len then
-    result:= St
-  else
-    while Length(Result) < Len do Result:= Ch+Result;
-end;
-
-
 function FillBack(St: String; Len: Integer; Ch: Char=#32): String;
-begin
-  result:= St;
-  While Length(Result) < Len do Result:= Result+Ch;
-end;
-
-function FillBack(St: WideString; Len: Integer; Ch: WideChar= ' '): WideString;
 begin
   result:= St;
   While Length(Result) < Len do Result:= Result+Ch;
@@ -2388,43 +2364,17 @@ begin
   result:= Pos(aDelimiter+aWord+aDelimiter, aDelimiter+aWordList+aDelimiter) > 0;
 end;
 
-function FormatString(aStr, aFormat: string): String;
-var
-  l: Integer;
-  s: string;
-  Ch: Char;
-begin
-  result:= aFormat;
-  l:= Length(aStr);
-  repeat
-    s:= CopyBetween(Result, '[', ']');
-    if s <> '' then
-    begin
-      if StrToInt(s)>l then Ch:= ' ' else Ch:= aStr[StrToInt(s)];
-      Result:= ReplaceAll(Result, '['+s+']', Ch);
-    end;
-  until s = '';
-end;
-
-function CoalesceStr(aStr1, aStr2: string): string;
-begin
-  if aStr1 <> '' then
-    Result:= aStr1
-  else
-    Result:= aStr2;
-end;
-
-function FormatterStr(aStr, aFormatter: string): string;
+function FormatValue(aValue, aFormat: string): string;
 var
   FormatFunc, FormatParams: string;
   Params: TStringList;
 begin
   Params:= TStringList.Create;
   try
-    Result:= aStr;
-    while aFormatter<>'' do
+    Result:= aValue;
+    while aFormat<>'' do
     begin
-      FormatParams:= TakeFront5(aFormatter, '|');
+      FormatParams:= TakeFront5(aFormat, '|');
       FormatFunc:= TakeFront5(FormatParams, '=');
       if FormatFunc = 'LPAD' then
       begin
@@ -2459,6 +2409,15 @@ begin
   finally
     Params.Free;
   end;
+end;
+
+
+function CoalesceStr(aStr1, aStr2: string): string;
+begin
+  if aStr1 <> '' then
+    Result:= aStr1
+  else
+    Result:= aStr2;
 end;
 
 end.
