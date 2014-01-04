@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.303,D:\4Delphi\Gvindln\Package\GvindlnD16.dproj=D:\4Delphi\Gvindln\Package\Gvindln7.dproj</Transaction>
     <Transaction>1899.12.30 00:00:00.000.089,=D:\4Delphi\Gvindln\Source\GvXml.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.841,=D:\4Delphi\Gvindln\Source\GvVariant.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.303,D:\4Delphi\Gvindln\Package\Gvindln7.dproj=D:\4Delphi\Gvindln\Package\GvindlnD16.dproj</Transaction>
   </Transactions>
 </BorlandProject>

@@ -28,7 +28,8 @@ package Gvindln7;
 requires
   vcl,
   rtl,
-  vclx;
+  vclx,
+  dbrtl;
 
 contains
   GvDtTm in '..\Source\GvDtTm.pas',
@@ -41,6 +42,8 @@ contains
   gsFileVersionInfo in '..\Source\gsFileVersionInfo.pas',
   GvChkCombo in '..\Source\GvChkCombo.pas',
   GvCloner in '..\Source\GvCloner.pas',
-  GvColor in '..\Source\GvColor.pas';
+  GvColor in '..\Source\GvColor.pas',
+  GvXmlDataSet in '..\Source\GvXmlDataSet.pas',
+  GvListDataSet in '..\Source\GvListDataSet.pas';
 
 end.

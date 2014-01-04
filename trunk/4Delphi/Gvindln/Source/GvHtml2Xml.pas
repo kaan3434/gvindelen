@@ -3,10 +3,10 @@ unit GvHtml2Xml;
 interface
 
 uses
-  NativeXML;
+  GvXML;
 
 
-procedure TableHtmlToXML(Html: String; Xml: TXmlNode);
+procedure TableHtmlToXML(Html: String; Xml: TGvXmlNode);
 
 implementation
 
@@ -14,9 +14,9 @@ uses
   SysUtils, StrUtils, GvStr;
 
 
-procedure TableHtmlToXML(Html: String; Xml: TXmlNode);
+procedure TableHtmlToXML(Html: String; Xml: TGvXmlNode);
 var
-  tr, td, td2: TXmlNode;
+  tr, td, td2: TGvXmlNode;
   Row, Cell, AttName, AttValue: String;
   i, r, c, l, AttIndex, ColSpan, RowSpan: Integer;
 
@@ -47,34 +47,34 @@ begin
     Row:= DeleteAll(Row, '</tr>');
     Row:= DeleteAll(Row, '</th>');
     Row:= DeleteAll(Row, '</td>');
-    tr:= Xml.NodeNew('tr');
+    tr:= Xml.AddChild('tr');
     Row:= trim(Row);
     while Row<>'' do
     begin
-      td:= tr.NodeNew('td');
+      td:= tr.AddChild('td');
       Cell:= TakeFront5(Row, '>');
-      td.ValueAsString:= TakeFront4(Row, '<');
+      td.Text:= TakeFront4(Row, '<');
       Cell:= trim(DeleteAll(Cell, '<td'));
       while Cell<>'' do
       begin
         AttName:= LowerCase(TakeAttName(Cell));
         AttValue:= TakeAttValue(Cell);
-        td.WriteAttributeString(AttName, AttValue);
+        td[AttName]:= AttValue;
       end;
     end;
     Row:= TakeBE(Html,'<tr', '</tr>');
   end;
-  For r:= 0 to Xml.NodeCount-1 do
+  For r:= 0 to Xml.ChildNodes.Count-1 do
   begin
-    tr:= Xml.Nodes[r];
-    For c:= tr.NodeCount-1 downto 0 do
+    tr:= Xml.ChildNodes[r];
+    For c:= tr.ChildNodes.Count-1 downto 0 do
     begin
-      td:= tr.Nodes[c];
-      ColSpan:= td.ReadAttributeInteger('colspan', 0);
+      td:= tr.ChildNodes[c];
+      ColSpan:= td.Attr['colspan'].AsIntegerDef(0);
       if ColSpan>1 then
       begin
-        AttIndex:= td.AttributeIndexByname('colspan');
-        td.AttributeDelete(AttIndex);
+        AttIndex:= td.Attributes.IndexOf(tr.Attr['colspan']);
+        td.Attributes.Delete(AttIndex);
         while ColSpan>1 do
         begin
           td2:= tr.NodeNewAtIndex(c+1,'td');

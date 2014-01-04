@@ -3,22 +3,22 @@ unit GvWebScript;
 interface
 
 uses
-  SysUtils, Classes, Controls, ExtCtrls, ShDocVw, GvVars, NativeXML, ComCtrls,
+  SysUtils, Classes, Controls, ExtCtrls, ShDocVw, GvVars, GvXml, ComCtrls,
   Forms, MSHTML, ActiveX, IdHTTP, IdSSLOpenSSL, IdComponent, IdCookieManager;
 
 type
   TWebScriptStopAction = (saNone, saEndWait, saStopScript);
 
-  TOnUserCmdForDocument = procedure(Sender: TObject; ScriptNode: TXmlNode; HtmlDocument: IHTMLDocument2; Vars: TVarList) of object;
-  TOnUserCmdForElement = procedure(Sender: TObject; ScriptNode: TXmlNode; HtmlElement: IHTMLElement; Vars: TVarList) of object;
+  TOnUserCmdForDocument = procedure(Sender: TObject; ScriptNode: TGvXmlNode; HtmlDocument: IHTMLDocument2; Vars: TVarList) of object;
+  TOnUserCmdForElement = procedure(Sender: TObject; ScriptNode: TGvXmlNode; HtmlElement: IHTMLElement; Vars: TVarList) of object;
 
   TGvWebScript = class(TComponent)
   private
     { Private declarations }
     FWaitDocument: String;
     FWaitHref: String;
-    FScript: TNativeXML;
-    FScriptRoot: TXmlNode;
+    FScript: TGvXML;
+    FScriptRoot: TGvXmlNode;
     FWebBrowser: TWebBrowser;
     FScriptFileName: TFileName;
     FGotoLabelName: String;
@@ -31,26 +31,26 @@ type
     procedure DocumentComplete(Sender: TObject; const pDisp: IDispatch;
       var URL: OleVariant);
     procedure SetWebBrowser(const Value: TWebBrowser);
-    procedure ProcessSleep(ScriptNode: TXmlNode);
-    procedure Process_Download(ScriptNode: TXmlNode);
-    procedure Process_Load(ScriptNode: TXmlNode);
-    procedure Process_MassDownload(ScriptNode: TxmlNode);
-    procedure Process_ShowComment(ScriptNode: TXmlNode);
-    function Process_Include(ScriptNode: TXmlNode): Boolean;
+    procedure ProcessSleep(ScriptNode: TGvXmlNode);
+    procedure Process_Download(ScriptNode: TGvXmlNode);
+    procedure Process_Load(ScriptNode: TGvXmlNode);
+    procedure Process_MassDownload(ScriptNode: TGvXmlNode);
+    procedure Process_ShowComment(ScriptNode: TGvXmlNode);
+    function Process_Include(ScriptNode: TGvXmlNode): Boolean;
     function ApplyVars(St: String): String;
-    function RunScriptNode(ScriptNode: TXmlNode; StartIndex: Integer = 0): String;
+    function RunScriptNode(ScriptNode: TGvXmlNode; StartIndex: Integer = 0): String;
   protected
     { Protected declarations }
     FDownloadComplete: Boolean;
     procedure RunScript(EntryName: String='');
     procedure ExtractHostPage(URL: String; var Host, Page: String);
-    procedure SaveElement(ScriptNode: TXmlNode; Element: IHTMLElement);
-    procedure SetVarValue(ScriptNode: TXmlNode);
-    function  FindElement(ScriptNode: TXmlNode; Element: IHTMLElement; var Index: Integer): IHTMLElement;
-    function  ProcessIf(ScriptNode: TXmlNode): Boolean;
+    procedure SaveElement(ScriptNode: TGvXmlNode; Element: IHTMLElement);
+    procedure SetVarValue(ScriptNode: TGvXmlNode);
+    function  FindElement(ScriptNode: TGvXmlNode; Element: IHTMLElement; var Index: Integer): IHTMLElement;
+    function  ProcessIf(ScriptNode: TGvXmlNode): Boolean;
     function  GetFrameByName(HTMLDocument: IHTMLDocument2; aFrameName: string): IHTMLDocument2;
-    procedure ProcessElement(ScriptNode: TXmlNode; Element: IHTMLElement);
-    procedure ProcessDocument(ScriptNode: TXmlNode; HTMLDocument: IHTMLDocument2);
+    procedure ProcessElement(ScriptNode: TGvXmlNode; Element: IHTMLElement);
+    procedure ProcessDocument(ScriptNode: TGvXmlNode; HTMLDocument: IHTMLDocument2);
     procedure ProcessWait;
 
     function RunEvent(EventName, Html: String): String;
@@ -62,7 +62,7 @@ type
     destructor Destroy; override;
 
     procedure Run(EntryName: String='');
-    property ndScript: TXmlNode read FScriptRoot;
+    property ndScript: TGvXmlNode read FScriptRoot;
   published
     { Published declarations }
     property WebBrowser: TWebBrowser read FWebBrowser write SetWebBrowser;
@@ -97,7 +97,7 @@ end;
 constructor TGvWebScript.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FScript:= TNativeXml.CreateName('Root');
+  FScript:= TGvXml.Create('Root');
   FScriptRoot:= FScript.Root;
   Vars:= TVarList.Create;
 end;
@@ -135,7 +135,7 @@ begin
     FStatusBar.SimplePanel:= true;
   end;
   St:= LoadFileAsString(ScriptFileName);
-  FScript.ReadFromString(ApplyVars(St));
+  FScript.LoadFromString(ApplyVars(St));
   FScriptRoot:= FScript.Root;
   StopAction:= saNone;
   RunScript(EntryName);
@@ -146,7 +146,7 @@ begin
   end;
 end;
 
-function TGvWebScript.FindElement(ScriptNode: TXmlNode; Element: IHTMLElement; var Index: Integer): IHTMLElement;
+function TGvWebScript.FindElement(ScriptNode: TGvXmlNode; Element: IHTMLElement; var Index: Integer): IHTMLElement;
 var
   Tags: IHTMLElementCollection; // all tags in document body
   Tag: IHTMLElement;            // a tag in document body
@@ -161,7 +161,7 @@ begin
   Result := nil;
   Element2:= Element as IHTMLElement2;
   // Get all tags in body element ('*' => any tag name)
-  Tags := Element2.getElementsByTagName(ScriptNode.ReadAttributeString('TAG', '*'));
+  Tags := Element2.getElementsByTagName(ScriptNode.Attr['TAG'].AsStringDef('*'));
  // Scan through all tags in body
   Attributes:= TVarList.Create;
   Idx:= Index;
@@ -181,17 +181,17 @@ begin
           Attributes[AttName]:= AttValue;
         end;
         Founded:= true;
-        For A:= 0 to ScriptNode.AttributeCount - 1 do
+        For A:= 0 to ScriptNode.Attributes.Count - 1 do
         begin
-          AttName:= UpperCase(ScriptNode.AttributeName[A]);
-          AttValue:= ScriptNode.ReadAttributeString(AttName);
+          AttName:= UpperCase(ScriptNode.Attributes[A].Name);
+          AttValue:= ScriptNode[AttName];
           if (AttName = 'TAG') or
              (AttName = 'OPTIONAL') or
              (AttName='FOUNDEDINDEX') or
              (AttName='OFFSET') then
           else
           if AttName = 'INDEX' then
-            Founded:= ScriptNode.ReadAttributeInteger(AttName)=i
+            Founded:= ScriptNode[AttName]=i
           else
           if AttName = 'TEXT' then
             Founded:= Tag.innerText=AttValue
@@ -214,11 +214,11 @@ begin
       if Founded then
       begin
         Inc(FoundedIdx);
-        if FoundedIdx<>ScriptNode.ReadAttributeInteger('FoundedIndex',1) then
+        if FoundedIdx<>ScriptNode.Attr['FoundedIndex'].AsIntegerDef(1) then
           continue;
         Result := Tag;
-        if ScriptNode.ReadAttributeInteger('Offset')<>0 then
-          Result:= Tags.item(I+ScriptNode.ReadAttributeInteger('Offset'), EmptyParam) as IHTMLElement;
+        if ScriptNode['Offset']<>0 then
+          Result:= Tags.item(I+ScriptNode['Offset'], EmptyParam) as IHTMLElement;
 
         Break;
       end;
@@ -285,46 +285,45 @@ begin
     result := nil;
 end;
 
-procedure TGvWebScript.SaveElement(ScriptNode: TXmlNode; Element: IHTMLElement);
+procedure TGvWebScript.SaveElement(ScriptNode: TGvXmlNode; Element: IHTMLElement);
 var
   Html: String;
 begin
   if Element = nil then exit;
-  if ScriptNode.ReadAttributeInteger('Outer') = 1 then
+  if ScriptNode['Outer'] = 1 then
     Html:= Element.outerHTML
   else
     Html:= Element.innerHTML;
-  if ScriptNode.ReadAttributeInteger('UTF8ToAnsi',0) = 1 then
+  if ScriptNode.Attr['UTF8ToAnsi'].AsIntegerDef(0) = 1 then
     html:= GvUtf8ToAnsi(Html);
-  Html:= RunEvent(ScriptNode.ReadAttributeString('Event'), Html);
-  SaveStringAsFile(Html, ScriptNode.ReadAttributeString('FileName'),
-                   ScriptNode.ReadAttributeBool('Append'));
+  Html:= RunEvent(ScriptNode['Event'], Html);
+  SaveStringAsFile(Html, ScriptNode['FileName'], ScriptNode['Append']);
 end;
 
-procedure TGvWebScript.SetVarValue(ScriptNode: TXmlNode);
+procedure TGvWebScript.SetVarValue(ScriptNode: TGvXmlNode);
 var
   VarName: String;
 begin
-  VarName:= ScriptNode.ReadAttributeString('Name');
-  if ScriptNode.ReadAttributeString('Inc')<>'' then
-    Vars.AsInteger[VarName]:= Vars.AsInteger[VarName] + ScriptNode.ReadAttributeInteger('Inc')
+  VarName:= ScriptNode['Name'];
+  if ScriptNode.HasAttribute('Inc') then
+    Vars.AsInteger[VarName]:= Vars.AsInteger[VarName] + ScriptNode['Inc']
   else
-  if ScriptNode.ReadAttributeString('VarValue')<>'' then
-    Vars[VarName]:= Vars[ScriptNode.ReadAttributeString('VarValue')]
+  if ScriptNode.HasAttribute('VarValue') then
+    Vars[VarName]:= Vars[ScriptNode['VarValue']]
   else
-    Vars[VarName]:= ScriptNode.ReadAttributeString('Value');
+    Vars[VarName]:= ScriptNode['Value'];
 end;
 
-function TGvWebScript.ProcessIf(ScriptNode: TXmlNode): Boolean;
+function TGvWebScript.ProcessIf(ScriptNode: TGvXmlNode): Boolean;
 var
   VarName, VarValue, Action: String;
 begin
-  VarName:= ScriptNode.ReadAttributeString('Name');
-  if ScriptNode.ReadAttributeString('VarValue')<>'' then
-    VarValue:= ScriptNode.ReadAttributeString('VarValue')
+  VarName:= ScriptNode['Name'];
+  if ScriptNode.HasAttribute('VarValue') then
+    VarValue:= ScriptNode['VarValue']
   else
-    VarValue:= ScriptNode.ReadAttributeString('Value');
-  Action:= ScriptNode.ReadAttributeString('Action', 'EQ');
+    VarValue:= ScriptNode['Value'];
+  Action:= ScriptNode.Attr['Action'].AsStringDef('EQ');
   if Action = 'SEQ' then
     result:= Vars[VarName] = VarValue
   else
@@ -350,9 +349,9 @@ begin
     result:= Vars.AsInteger[VarName] <> StrToInt(VarValue);
 end;
 
-procedure TGvWebScript.ProcessElement(ScriptNode: TXmlNode; Element: IHTMLElement);
+procedure TGvWebScript.ProcessElement(ScriptNode: TGvXmlNode; Element: IHTMLElement);
 var
-  ChildNode: TXmlNode;
+  ChildNode: TGvXmlNode;
   SubElement: IHTMLElement;
   Element2: IHTMLElement2;
   SelElement: IHTMLSelectElement;
@@ -361,12 +360,12 @@ var
   i, Idx: Integer;
 begin
   Element2:= Element as IHTMLElement2;
-  For i:= 0 to ScriptNode.NodeCount-1 do
+  For i:= 0 to ScriptNode.ChildNodes.Count-1 do
   begin
-    ChildNode:= ScriptNode[i];
-    Name:= UpperCase(ChildNode.Name);
+    ChildNode:= ScriptNode.ChildNodes[i];
+    Name:= UpperCase(ChildNode.NodeName);
     if Name = 'WAIT' then
-      Sleep(ChildNode.ReadAttributeInteger('Value', 1000))
+      Sleep(ChildNode.Attr['Value'].AsIntegerDef(1000))
     else
     if Name = 'FINDELEMENT' then
     begin
@@ -375,14 +374,14 @@ begin
       if Assigned(SubElement) then
         ProcessElement(ChildNode, SubElement)
       else
-      if ChildNode.ReadAttributeInteger('Optional', 0) = 0 then
+      if ChildNode.Attr['Optional'].AsIntegerDef(0) = 0 then
         ShowMessage('Element Not Found');
     end
     else
     if Name = 'CLICK' then
     begin
-      FDownloadComplete:= ChildNode.AttributeCount=0;
-      FWaitDocument:= ChildNode.ReadAttributeString('WaitName');
+      FDownloadComplete:= ChildNode.Attributes.Count=0;
+      FWaitDocument:= ChildNode['WaitName'];
       Element.click;
       Sleep(500);
       ProcessWait;
@@ -391,22 +390,21 @@ begin
     if Name = 'INPUT' then
     begin
       InpElement:= Element as IHTMLInputElement;
-      InpElement.value:= ChildNode.ValueAsString;
+      InpElement.value:= ChildNode.Text;
     end
     else
     if Name = 'SETOPTION' then
     begin
       SelElement:= Element as IHTMLSelectElement;
-      if ChildNode.ReadAttributeString('Value')<>'' then
-        SelElement.value:= ChildNode.ReadAttributeString('Value')
+      if ChildNode.HasAttribute('Value') then
+        SelElement.value:= ChildNode['Value']
       else
-      if ChildNode.ReadAttributeString('Index')<>'' then
-        SelElement.selectedIndex:= ChildNode.ReadAttributeInteger('Index');
+      if ChildNode.HasAttribute('Index') then
+        SelElement.selectedIndex:= ChildNode['Index'];
     end
     else
     if Name='SETATTRIBUTE' then
-      Element.setAttribute(ChildNode.AttributeByName['AttName'],
-                           ChildNode.AttributeByName['Value'], 0)
+      Element.setAttribute(ChildNode['AttName'], ChildNode['Value'], 0)
     else
     if Name = 'SAVE' then
       SaveElement(ChildNode, Element)
@@ -415,7 +413,7 @@ begin
       SetVarValue(ChildNode)
     else
     if Name = 'GOTO' then
-      FGotoLabelName:= ChildNode.ReadAttributeString('Label')
+      FGotoLabelName:= ChildNode['Label']
     else
     if Assigned(FOnUserCmdForElement) then
       FOnUserCmdForElement(Self, ChildNode, Element, Vars);
@@ -424,20 +422,20 @@ begin
   end;
 end;
 
-procedure TGvWebScript.ProcessDocument(ScriptNode: TXmlNode; HTMLDocument: IHTMLDocument2);
+procedure TGvWebScript.ProcessDocument(ScriptNode: TGvXmlNode; HTMLDocument: IHTMLDocument2);
 var
-  ChildNode: TXmlNode;
+  ChildNode: TGvXmlNode;
   Element: IHTMLElement;
   Name: String;
   i, Idx: Integer;
 begin
 //  if HTMLDocument = nil then Exit;
-  For i:= 0 to ScriptNode.NodeCount-1 do
+  For i:= 0 to ScriptNode.ChildNodes.Count-1 do
   begin
-    ChildNode:= ScriptNode[i];
-    Name:= UpperCase(ChildNode.Name);
+    ChildNode:= ScriptNode.ChildNodes[i];
+    Name:= UpperCase(ChildNode.NodeName);
     if Name = 'FRAME' then
-      ProcessDocument(ChildNode, GetFrameByName(HTMLDocument, ChildNode.ReadAttributeString('Name')))
+      ProcessDocument(ChildNode, GetFrameByName(HTMLDocument, ChildNode['Name']))
     else
     if Name = 'SAVE' then
       SaveElement(ChildNode, HTMLDocument.body)
@@ -458,13 +456,13 @@ begin
       if Assigned(Element) then
         ProcessElement(ChildNode, Element)
       else
-      if ChildNode.ReadAttributeInteger('Optional', 0) = 0 then
+      if not ChildNode.HasAttribute('Optional') then
         ShowMessage('Element Not Found');
       //
     end
     else
     if Name = 'GOTO' then
-      FGotoLabelName:= ChildNode.ReadAttributeString('Label')
+      FGotoLabelName:= ChildNode['Label']
     else
     if Assigned(FOnUserCmdForDocument) then
       FOnUserCmdForDocument(Self, ChildNode, IHTMLDocument2(WebBrowser.Document), Vars);
@@ -473,11 +471,11 @@ begin
   end;
 end;
 
-procedure TGvWebScript.ProcessSleep(ScriptNode: TXmlNode);
+procedure TGvWebScript.ProcessSleep(ScriptNode: TGvXmlNode);
 var
   EndWait: TDateTime;
 begin
-  EndWait:= IncSecond(Now, ScriptNode.ReadAttributeInteger('Second'));
+  EndWait:= IncSecond(Now, ScriptNode['Second']);
   While Now < EndWait do
   begin
     Sleep(25);
@@ -487,7 +485,7 @@ begin
   end;
 end;
 
-procedure TGvWebScript.Process_Download(ScriptNode: TXmlNode);
+procedure TGvWebScript.Process_Download(ScriptNode: TGvXmlNode);
 var
   HTTP: TIdHTTP;
   i, idx: Integer;
@@ -496,11 +494,11 @@ var
   LURI: TIdURI;
   Cookie: TIdCookieManager;
   SSL: IdSSLOpenSSL.TIdSSLIOHandlerSocketOpenSSL;
-  ChildNode: TXmlNode;
+  ChildNode: TGvXmlNode;
   slParams, slCookie, slNewCookie, slHeader: TStringList;
   HtmlStream: TStringStream;
 begin
-  LURI:= TIdURI.Create(ScriptNode.ReadAttributeString('Href'));
+  LURI:= TIdURI.Create(ScriptNode['Href']);
   slCookie:= TStringList.Create;
   slNewCookie:= TStringList.Create;
   slParams:= TStringList.Create;
@@ -510,49 +508,49 @@ begin
   slParams.DelimitedText:= LURI.Params;
   slParams.Text:= LURI.URLDecode(slParams.Text);
   try
-    For i:= 0 to ScriptNode.NodeCount - 1 do
+    For i:= 0 to ScriptNode.ChildNodes.Count - 1 do
     begin
-      ChildNode:= ScriptNode.Nodes[i];
-      CmdName:= UpperCase(ChildNode.Name);
+      ChildNode:= ScriptNode.ChildNodes[i];
+      CmdName:= UpperCase(ChildNode.NodeName);
       if CmdName = 'PARAMADD' then
       begin
-        if ChildNode.ReadAttributeString('VarValue')<>'' then
-          PrmValue:= Vars[ChildNode.ReadAttributeString('VarValue')]
+        if ChildNode.HasAttribute('VarValue') then
+          PrmValue:= Vars[ChildNode['VarValue']]
         else
-        if ChildNode.ReadAttributeString('ValueFromFile')<>'' then
-          PrmValue:= LoadFileAsString(ChildNode.ReadAttributeString('ValueFromFile'))
+        if ChildNode.HasAttribute('ValueFromFile') then
+          PrmValue:= LoadFileAsString(ChildNode['ValueFromFile'])
         else
-          PrmValue:= ChildNode.ReadAttributeString('Value');
-        slParams.Add(Format('%s=%s', [ChildNode.ReadAttributeString('Name'), PrmValue]));
+          PrmValue:= ChildNode['Value'];
+        slParams.Add(Format('%s=%s', [ChildNode['Name'], PrmValue]));
       end
       else
       if CmdName = 'PARAMDEL' then
       begin
-        idx:= slParams.IndexOfName(ChildNode.ReadAttributeString('Name'));
+        idx:= slParams.IndexOfName(ChildNode['Name']);
         if idx>=0 then
           slParams.Delete(idx);
       end
       else
       if CmdName = 'PARAMLOAD' then
-        slParams.LoadFromFile(ChildNode.ReadAttributeString('FileName'))
+        slParams.LoadFromFile(ChildNode['FileName'])
       else
       if CmdName = 'SETPARAMVALUE' then
       begin
-        idx:= ChildNode.ReadAttributeInteger('Index');
+        idx:= ChildNode['Index'];
         PrmName:= CopyFront4(slParams[idx], '=');
-        if ChildNode.ReadAttributeString('VarValue')<>'' then
-          PrmValue:= Vars[ChildNode.ReadAttributeString('VarValue')]
+        if ChildNode.HasAttribute('VarValue') then
+          PrmValue:= Vars[ChildNode['VarValue']]
         else
-          PrmValue:= ChildNode.ReadAttributeString('Value');
+          PrmValue:= ChildNode['Value'];
         slParams[idx]:= Format('%s=%s', [PrmName, PrmValue]);
       end
       else
       if CmdName = 'COOKIES' then
       begin
-        CookieFName:= ChildNode.ReadAttributeString('FileName');
+        CookieFName:= ChildNode['FileName'];
         if Not FileExists(CookieFName) then
         begin
-          slCookie.LoadFromFile(ChildNode.ReadAttributeString('Default'));
+          slCookie.LoadFromFile(ChildNode['Default']);
           slCookie.SaveToFile(CookieFName);
         end
         else
@@ -561,7 +559,7 @@ begin
       else
       if CmdName = 'COOKIEADD' then
       begin
-        CookieFName:= ChildNode.ReadAttributeString('FileName');
+        CookieFName:= ChildNode['FileName'];
         if FileExists(CookieFName) then
         begin
           st:= LoadFileAsString(CookieFName);
@@ -572,7 +570,7 @@ begin
       else
       if CmdName = 'COOKIEDEL' then
       begin
-        PrmName:= ChildNode.ReadAttributeString('Name');
+        PrmName:= ChildNode['Name'];
         idx:= slCookie.IndexOfName(prmName);
         if idx >= 0 then
         begin
@@ -583,16 +581,16 @@ begin
       else
       if CmdName = 'REFERER' then
       begin
-        if ChildNode.ReadAttributeString('VarValue')<>'' then
-          Referer:= Vars[ChildNode.ReadAttributeString('VarValue')]
+        if ChildNode.HasAttribute('VarValue') then
+          Referer:= Vars[ChildNode['VarValue']]
         else
-          Referer:= ChildNode.ReadAttributeString('Value');
+          Referer:= ChildNode['Value'];
       end
       else
       if CmdName = 'HEADERADD' then
       begin
-        PrmName:= ChildNode.ReadAttributeString('Name');
-        PrmValue:= ChildNode.ReadAttributeString('Value');
+        PrmName:= ChildNode['Name'];
+        PrmValue:= ChildNode['Value'];
         slHeader.Values[PrmName]:= PrmValue;
       end;
     end;
@@ -613,7 +611,7 @@ begin
       Cookie.AddServerCookie(slCookie[i], LURI);
     HtmlStream:= TStringStream.Create('');
     try
-      if UpperCase(ScriptNode.ReadAttributeString('Method', 'GET')) = 'POST' then
+      if UpperCase(ScriptNode.Attr['Method'].AsStringDef('GET')) = 'POST' then
       begin
        LURL:= CopyFront4(LURI.GetFullURI, '?');
        HTTP.Post(LURL, slParams, HtmlStream);
@@ -637,14 +635,11 @@ begin
       end;
       HtmlStream.Seek(0, 0);
       html:= HtmlStream.DataString;
-      if ScriptNode.ReadAttributeInteger('UTF8ToAnsi',0) = 1 then
+      if ScriptNode.Attr['UTF8ToAnsi'].AsIntegerDef(0) = 1 then
         Html:= GvUtf8ToAnsi(Html);
-      if ScriptNode.ReadAttributeString('Event')<>'' then
-        Html:= Run_HtmlScript(ndScript,
-                              ScriptNode.ReadAttributeString('Event'), Html,
-                              Vars);
-      SaveStringAsFile(Html, ScriptNode.ReadAttributeString('FileName'),
-                             ScriptNode.ReadAttributeInteger('Append')=1);
+      if ScriptNode.HasAttribute('Event') then
+        Html:= Run_HtmlScript(ndScript, ScriptNode['Event'], Html, Vars);
+      SaveStringAsFile(Html, ScriptNode['FileName'], ScriptNode['Append']=1);
     finally
       FreeAndNil(HtmlStream);
       FreeAndNil(SSL);
@@ -660,7 +655,7 @@ begin
   end;
 end;
 
-procedure TGvWebScript.Process_MassDownload(ScriptNode: TxmlNode);
+procedure TGvWebScript.Process_MassDownload(ScriptNode: TGvXmlNode);
 var
   sl: TStringList;
   FName, href: String;
@@ -668,48 +663,45 @@ var
 begin
   sl:= TStringList.Create;
   try
-    FName:= ScriptNode.ReadAttributeString('FileName');
+    FName:= ScriptNode['FileName'];
     if FName<>'' then
       sl.LoadFromFile(FName);
     For i:= 0 to sl.Count-1 do
     begin
       href:= trim(sl[i]);
       if href='' then continue;
-      ScriptNode[0].WriteAttributeString('href', href);
-      Process_Download(ScriptNode[0]);
+      ScriptNode.ChildNodes[0].AttrValue['href']:= href;
+      Process_Download(ScriptNode.ChildNodes[0]);
     end;
   finally
     sl.Free;
   end;
 end;
 
-procedure TGvWebScript.Process_Load(ScriptNode: TXmlNode);
+procedure TGvWebScript.Process_Load(ScriptNode: TGvXmlNode);
 var
   Html: String;
 begin
-  Html:= LoadFileAsString(ScriptNode.ReadAttributeString('href'));
-  if ScriptNode.ReadAttributeInteger('UTF8ToAnsi',0) = 1 then
+  Html:= LoadFileAsString(ScriptNode['href']);
+  if ScriptNode.Attr['UTF8ToAnsi'].AsIntegerDef(0) = 1 then
     html:= GvUtf8ToAnsi(Html);
-  if ScriptNode.ReadAttributeString('Event')<>'' then
-    Html:= Run_HtmlScript(ndScript,
-                          ScriptNode.ReadAttributeString('Event'), Html,
-                          Vars);
-  SaveStringAsFile(Html, ScriptNode.ReadAttributeString('FileName'),
-                         ScriptNode.ReadAttributeInteger('Append')=1);
+  if ScriptNode.HasAttribute('Event') then
+    Html:= Run_HtmlScript(ndScript, ScriptNode['Event'], Html, Vars);
+  SaveStringAsFile(Html, ScriptNode['FileName'], ScriptNode['Append']=1);
 end;
 
-procedure TGvWebScript.Process_ShowComment(ScriptNode: TXmlNode);
+procedure TGvWebScript.Process_ShowComment(ScriptNode: TGvXmlNode);
 begin
   if StatusBar=nil then exit;
   if StatusBar.SimplePanel then
     StatusBar.SimpleText:= ScriptNode.WriteToString;
 end;
 
-function TGvWebScript.Process_Include(ScriptNode: TXmlNode): Boolean;
+function TGvWebScript.Process_Include(ScriptNode: TGvXmlNode): Boolean;
 var
   FName, St: String;
 begin
-{  FName:= ScriptNode.ReadAttributeString('Name');
+{  FName:= ScriptNode['Name');
   result:= FileExists(FName);
   if result then
   begin
@@ -724,31 +716,31 @@ begin
   result:= false;
 end;
 
-function TGvWebScript.RunScriptNode(ScriptNode: TXmlNode; StartIndex: Integer = 0): String;
+function TGvWebScript.RunScriptNode(ScriptNode: TGvXmlNode; StartIndex: Integer = 0): String;
 var
-  ChildNode: TXmlNode;
+  ChildNode: TGvXmlNode;
   CmdName, URL: String;
   i: Integer;
   Flags, TargetFrameName, PostData, Header: OleVariant;
 
 begin
   i:= StartIndex;
-  While i<=ScriptNode.NodeCount-1 do
+  While i<=ScriptNode.ChildNodes.Count-1 do
   begin
     Application.ProcessMessages;
-    ChildNode:= ScriptNode[i];
-    CmdName:= UpperCase(ChildNode.Name);
+    ChildNode:= ScriptNode.ChildNodes[i];
+    CmdName:= UpperCase(ChildNode.NodeName);
     if CmdName = 'LABEL' then
     else
     if CmdName = 'NAVIGATE' then
     begin
       Flags:= navNoReadFromCache;
-      URL:= ChildNode.ReadAttributeString('Href', 'about:blank');
-      TargetFrameName:= ChildNode.ReadAttributeString('Target');
-      Header:= ChildNode.ReadAttributeString('Header');
+      URL:= ChildNode.Attr['Href'].AsStringDef('about:blank');
+      TargetFrameName:= ChildNode['Target'];
+      Header:= ChildNode['Header'];
       FDownloadComplete:= false;
-      FWaitDocument:= ChildNode.ReadAttributeString('WaitName');
-      FWaitHref:= ChildNode.ReadAttributeString('WaitHref');
+      FWaitDocument:= ChildNode['WaitName'];
+      FWaitHref:= ChildNode['WaitHref'];
       FWebBrowser.Navigate(URL, Flags, TargetFrameName, PostData, Header);
       ProcessWait;
     end
@@ -771,7 +763,7 @@ begin
     end
     else
     if CmdName = 'GOTO' then
-      FGotoLabelName:= ChildNode.ReadAttributeString('Label')
+      FGotoLabelName:= ChildNode['Label']
     else
     if CmdName = 'WHILE_DO' then
       while ProcessIf(ChildNode) do
@@ -833,7 +825,7 @@ begin
     inc(i);
     if FGotoLabelName<>'' then
     begin
-      ChildNode:= ScriptNode.NodeByAttributeValue('LABEL', 'Name', FGotoLabelName);
+      ChildNode:= ScriptNode.Find('LABEL', 'Name', FGotoLabelName);
       if ChildNode<>nil then
       begin
         i:= ChildNode.IndexInParent;
@@ -846,7 +838,7 @@ end;
 
 procedure TGvWebScript.RunScript(EntryName: String='');
 var
-  RootNode, ChildNode: TXmlNode;
+  RootNode, ChildNode: TGvXmlNode;
   CmdName, URL: String;
   i: Integer;
   Flags, TargetFrameName, PostData, Header: OleVariant;
@@ -856,7 +848,7 @@ begin
   i:= 0;
   if EntryName<>'' then
   begin
-    ChildNode:= RootNode.NodeByAttributeValue('LABEL', 'Name', EntryName);
+    ChildNode:= RootNode.Find('LABEL', 'Name', EntryName);
     if ChildNode<>nil then
       i:= ChildNode.IndexInParent;
   end;

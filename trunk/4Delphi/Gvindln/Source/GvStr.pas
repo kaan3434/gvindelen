@@ -19,7 +19,11 @@ function SkipBack(St: String; KeyChar: String = ' '): String; overload;
 function SkipBack(St: WideString; KeyChar: WideString = ' '): WideString; overload;
 
 function FillFront(St: String; Len: Integer; Ch: Char = #32): String; overload;
+function FillFront(St: WideString; Len: Integer; Ch: WideChar = ' '): WideString; overload;
+
 function FillBack(St: String; Len: Integer; Ch: Char = #32): String; overload;
+function FillBack(St: WideString; Len: Integer; Ch: WideChar = ' '): WideString; overload;
+
 function FillCenter(St: String; Len: Integer; Ch: Char = #32): String; overload;
 
 function LastChar(St:String): Char;
@@ -242,9 +246,15 @@ function UpCaseFirst(St: string): string;
 function UpCaseWord(St: string; KeyChars: string=' ,.!-:?'): string;
 
 function IsWordPresent(aWord, aWordList, aDelimiter: String): Boolean;
-function FormatValue(aValue, aFormat: string): String;
 
 function CoalesceStr(aStr1, aStr2: string): string;
+
+// переформатировать строку по маске
+//  Phone:= FormatString(Phone, '+375([3][4])[5][6][7]-[8][9][10][11]');
+function Recode(const aStr, aMask: String): String;
+
+function FormatValue(aValue, aFormat: string): string;
+
 
 implementation
 uses
@@ -339,7 +349,25 @@ begin
     Result:= StringOfChar(Ch,Len-LS)+St;
 end;
 
+function FillFront(St: WideString;  Len: Integer; Ch: WideChar = ' '): WideString;
+var
+  LS: Integer;
+begin
+  LS:= Length(St);
+  if LS>=Len then
+    result:= St
+  else
+    while Length(Result) < Len do Result:= Ch+Result;
+end;
+
+
 function FillBack(St: String; Len: Integer; Ch: Char=#32): String;
+begin
+  result:= St;
+  While Length(Result) < Len do Result:= Result+Ch;
+end;
+
+function FillBack(St: WideString; Len: Integer; Ch: WideChar= ' '): WideString;
 begin
   result:= St;
   While Length(Result) < Len do Result:= Result+Ch;
@@ -2364,6 +2392,45 @@ begin
   result:= Pos(aDelimiter+aWord+aDelimiter, aDelimiter+aWordList+aDelimiter) > 0;
 end;
 
+function CoalesceStr(aStr1, aStr2: string): string;
+begin
+  if aStr1 <> '' then
+    Result:= aStr1
+  else
+    Result:= aStr2;
+end;
+
+function Recode(const aStr, aMask: String): String;
+var
+  Ch: Char;
+  Len, LMask, PMask, PSkob: Integer;
+begin
+  Len:= 0;
+  PMask:= 1;
+  LMask:= Length(aMask);
+  SetLength(result, LMask);
+  while (PMask <= LMask) do
+  begin
+    Ch:= aMask[PMask];
+    Inc(Len);
+    if Ch = '[' then
+    begin
+      Inc(PMask);
+      PSkob:= PosEx(']', aMask, PMask);
+      try
+        Ch:= aStr[StrToInt(copy(aMask, PMask, PSkob-PMask))];
+      except
+        Ch:= ' ';
+      end;
+      PMask:= succ(PSkob);
+    end
+    else
+      inc(PMask);
+    result[Len]:= Ch;
+  end;
+  SetLength(result, Len);
+end;
+
 function FormatValue(aValue, aFormat: string): string;
 var
   FormatFunc, FormatParams: string;
@@ -2409,15 +2476,6 @@ begin
   finally
     Params.Free;
   end;
-end;
-
-
-function CoalesceStr(aStr1, aStr2: string): string;
-begin
-  if aStr1 <> '' then
-    Result:= aStr1
-  else
-    Result:= aStr2;
 end;
 
 end.

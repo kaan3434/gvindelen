@@ -3,7 +3,11 @@ unit GvXml;
 interface
 
 uses
-  Classes, Generics.Defaults, Generics.Collections, Variants;
+  Classes, Contnrs,
+  {$IFDEF VER230}
+  Generics.Defaults, Generics.Collections,
+  {$ENDIF}
+  Variants;
 
 type
   TGvXmlNodeList = class;
@@ -45,10 +49,12 @@ type
     property Value: variant read GetAsVariant write SetAsVariant;
   end;
 
-  TGvXmlAttributeList = class(TObjectList<TGvXmlAttribute>)
+  TGvXmlAttributeList = class(TObjectList)
+  private
+    function GetAttrByIndex(aIndex: Integer): TGvXmlAttribute;
   public
-    // Find an Attribute by Name (not case sensitive)
     function Find(aAttrName: String): TGvXmlAttribute;
+    property Items[aIndex: Integer]: TGvXmlAttribute read GetAttrByIndex; default;
   end;
 
   TGvXmlNode = class(TObject)
@@ -72,7 +78,8 @@ type
     Text: WideString; // Node text
     ChildNodes: TGvXmlNodeList; // Child nodes, never NIL
     EndTerminator: Char;
-    constructor Create; virtual;
+    constructor Create(aNodeName: string); overload;
+    constructor Create; overload; virtual;
     destructor Destroy; override;
     procedure Clear;
     function Find(aNodeName: String): TGvXmlNode; overload;
@@ -98,8 +105,10 @@ type
     procedure ExportAttrs(aStringList: TStringList);
     procedure DeleteChildsByState(aNodeName: String; aStates: TGvNodeStateSet);
     procedure ChangeChildsState(aNodeName: String; aStates: TGvNodeStateSet; aNewState: TGvNodeState);
+    function IndexInParent: integer;
+    procedure Assign(const aXmlNode: TGvXmlNode);
     property Attributes: TGvXmlAttributeList read FAttributes;
-    property AttributeValue[const aAttrName: String]: Variant read GetAttrValue
+    property AttrValue[const aAttrName: String]: Variant read GetAttrValue
       write SetAttrValue; default;
     property NodeName: String read FNodeName write SetNodeName;
     property FullNodeName: String read GetFullNodeName write SetFullNodeName;
@@ -107,7 +116,16 @@ type
     property State: TGvNodeState read FState write FState;
   end;
 
-  TGvXmlNodeList = class(TObjectList<TGvXmlNode>);
+{$IFDEF VER230}
+//  TGvXmlNodeList = class(TObjectList<TGvXmlNode>);
+{$ELSE}
+  TGvXmlNodeList = class(TObjectList)
+  private
+    function GetItemByIndex(aIndex: Integer): TGvXmlNode;
+  public
+    property Items[aIndex: integer]: TGvXmlNode read GetItemByIndex; default;
+  end;
+{$ENDIF}
 
   TGvXml = class(TObject)
   private
@@ -116,16 +134,17 @@ type
     Root: TGvXmlNode; // There is only one Root Node
     Header: TGvXmlNode; // XML declarations are stored in here as Attributes
     constructor Create; overload; virtual;
-    constructor Create(const aFileName: string); overload; virtual;
+    constructor Create(const aRootNodeName: string; const aFileName: string = ''); overload; virtual;
     destructor Destroy; override;
     procedure Clear; virtual;
-    // Load XML from a file
     procedure LoadFromFile(const aFileName: String); virtual;
-    // Load XML for a stream
     procedure LoadFromStream(const aStream: TStream); virtual;
+    procedure LoadFromString(const aText: string); virtual;
     // Encoding is specified in Header-Node
+    function SaveToString: string; virtual;
     procedure SaveToStream(const aStream: TStream); virtual;
     procedure SaveToFile(const aFileName: String); virtual;
+    procedure Assign(const aXml: TGvXml);
   end;
 
 implementation
@@ -191,9 +210,10 @@ begin
   Clear;
 end;
 
-constructor TGvXml.Create(const aFileName: string);
+constructor TGvXml.Create(const aRootNodeName: string; const aFileName: string = '');
 begin
   Create;
+  Root.NodeName:= aRootNodeName;
   if FileExists(aFileName) then
     LoadFromFile(aFileName);
 end;
@@ -233,6 +253,13 @@ begin
   end;
 end;
 
+procedure TGvXml.LoadFromString(const aText: string);
+begin
+  Clear;
+  Parse(aText);
+end;
+
+
 procedure TGvXml.Parse(Line: string);
 var
   Idx, Len, P: integer;
@@ -263,18 +290,54 @@ begin
 end;
 
 procedure TGvXml.SaveToStream(const aStream: TStream);
+{$IFNDEF VER230}
+type
+  TEncoding = (eAsIs, eUTF8);
+{$ENDIF}
 var
   Encoding: TEncoding;
   Lines: TStringList;
 begin
+{$IFDEF VER230}
   Encoding := TEncoding.Default;
   if lowercase(Header['encoding']) = 'utf-8' then
     Encoding := TEncoding.UTF8;
+{$ELSE}
+  if lowercase(Header['encoding']) = 'utf-8' then
+    Encoding := eUTF8;
+{$ENDIF}
   Lines:= TStringList.Create;
   try
     Lines.Add(Header.WriteToString(True));
     Lines.Add(Root.WriteToString(True));
+{$IFDEF VER230}
     Lines.SaveToStream(aStream, Encoding);
+{$ELSE}
+    case Encoding of
+      eUTF8: Lines.Text:= AnsiToUtf8(Lines.Text);
+    end;
+    Lines.SaveToStream(aStream);
+{$ENDIF}
+  finally
+    Lines.Free;
+  end;
+end;
+
+procedure TGvXml.Assign(const aXml: TGvXml);
+begin
+  Clear;
+  LoadFromString(aXml.Root.WriteToString);
+end;
+
+function TGvXml.SaveToString: string;
+var
+  Lines: TStringList;
+begin
+  Lines:= TStringList.Create;
+  try
+    Lines.Add(Header.WriteToString(True));
+    Lines.Add(Root.WriteToString(True));
+    Result:= Lines.Text;
   finally
     Lines.Free;
   end;
@@ -284,8 +347,7 @@ end;
 
 function TGvXmlNode.AddChild(const aNodeName: String; aValue: String = ''): TGvXmlNode;
 begin
-  Result := TGvXmlNode.Create;
-  Result.NodeName := aNodeName;
+  Result := TGvXmlNode.Create(aNodeName);
   Result.Parent := Self;
   Result.Document:= Document;
   Result.Text:= aValue;
@@ -296,9 +358,26 @@ procedure TGvXmlNode.ChangeChildsState(aNodeName: String;
   aStates: TGvNodeStateSet; aNewState: TGvNodeState);
 var
   Node: TGvXmlNode;
+  Nodes: TGvXmlNodeList;
+  i: Integer;
 begin
+{$IFDEF VER230}
   for Node in FindNodes(aNodeName, aStates) do
+  begin
     Node.State:= aNewState;
+{$ELSE}
+  Nodes := FindNodes(aNodeName, aStates);
+  for i:= 0 to Nodes.Count - 1 do
+  begin
+    Node:= TGvXmlNode(Nodes[i]);
+{$ENDIF}
+    Node.State:= aNewState;
+  end;
+end;
+
+function TGvXmlNode.IndexInParent: integer;
+begin
+  Result:= Parent.ChildNodes.IndexOf(Self);
 end;
 
 procedure TGvXmlNode.Clear;
@@ -307,20 +386,46 @@ begin
   FAttributes.Clear;
 end;
 
+procedure TGvXmlNode.Assign(const aXmlNode: TGvXmlNode);
+var
+  St: String;
+  Idx: Integer;
+begin
+  Idx:= 1;
+  St:= aXmlNode.WriteToString;
+  Self.Clear;
+  Self.ReadFromString(St, Length(St), Idx);
+end;
+
+constructor TGvXmlNode.Create(aNodeName: string);
+begin
+  ChildNodes := TGvXmlNodeList.Create(True);
+  Parent := NIL;
+  FAttributes := TGvXmlAttributeList.Create(True);
+  EndTerminator:= '/';
+  FNodeName:= aNodeName;
+end;
+
 constructor TGvXmlNode.Create;
 begin
-  ChildNodes := TGvXmlNodeList.Create;
-  Parent := NIL;
-  FAttributes := TGvXmlAttributeList.Create;
-  EndTerminator:= '/';
+  Create('');
 end;
 
 procedure TGvXmlNode.DeleteChildsByState(aNodeName: String; aStates: TGvNodeStateSet);
 var
   Node: TGvXmlNode;
+  Nodes: TGvXmlNodeList;
+  i: Integer;
 begin
+{$IFDEF VER230}
   for Node in FindNodes(aNodeName, aStates) do
   begin
+{$ELSE}
+  Nodes := FindNodes(aNodeName, aStates);
+  for i:= 0 to Nodes.Count - 1 do
+  begin
+    Node:= TGvXmlNode(Nodes[i]);;
+{$ENDIF}
     Node.Clear;
     ChildNodes.Delete(ChildNodes.IndexOf(Node));
   end;
@@ -336,31 +441,62 @@ end;
 procedure TGvXmlNode.ExportAttrs(aStringList: TStringList);
 var
   Att: TGvXmlAttribute;
+{$IFNDEF VER230}
+  i: Integer;
+{$ENDIF}
 begin
+{$IFDEF VER230}
   for Att in FAttributes do
+  begin
+{$ELSE}
+  for i:= 0 to FAttributes.count-1 do
+  begin
+    Att:= FAttributes[i];
+{$ENDIF}
     aStringList.Values[Att.Name]:= Att.FValue;
+  end;
 end;
 
 function TGvXmlNode.Find(aNodeName: String): TGvXmlNode;
 var
   Node: TGvXmlNode;
+{$IFNDEF VER230}
+  i: Integer;
+{$ENDIF}
 begin
   Result := NIL;
+{$IFDEF VER230}
   for Node in ChildNodes do
+  begin
+{$ELSE}
+  for i:= 0 to ChildNodes.Count-1 do
+  begin
+    Node:= ChildNodes[i];
+{$ENDIF}
     if lowercase(Node.NodeName) = lowercase(aNodeName) then
     begin
       Result := Node;
       Break;
     end
-
+  end;
 end;
 
 function TGvXmlNode.Find(aNodeName, aAttrName, aAttrValue: String): TGvXmlNode;
 var
   Node: TGvXmlNode;
+{$IFNDEF VER230}
+  i: Integer;
+{$ENDIF}
 begin
   Result := NIL;
+{$IFDEF VER230}
   for Node in ChildNodes do
+  begin
+{$ELSE}
+  for i:= 0 to ChildNodes.Count - 1 do
+  begin
+    Node:= ChildNodes[i];
+{$ENDIF}
     if (lowercase(Node.NodeName) = lowercase(aNodeName)) and
        (Node.HasAttribute(aAttrName)) and
        (Node[aAttrName] = aAttrValue) then
@@ -368,32 +504,55 @@ begin
       Result := Node;
       Break;
     end;
+  end;
 end;
 
 function TGvXmlNode.Find(aNodeName, aAttrName: String): TGvXmlNode;
 var
   Node: TGvXmlNode;
+{$IFNDEF VER230}
+  i: Integer;
+{$ENDIF}
 begin
   Result := NIL;
+{$IFDEF VER230}
   for Node in ChildNodes do
+  begin
+{$ELSE}
+  for i:= 0 to ChildNodes.Count - 1 do
+  begin
+    Node:= ChildNodes[i];
+{$ENDIF}
     if (lowercase(Node.NodeName) = lowercase(aNodeName)) and
        (Node.HasAttribute(aAttrName)) then
     begin
       Result := Node;
       Break;
     end;
+  end;
 end;
 
 function TGvXmlNode.FindNodes(aNodeName: String;
   aStates: TGvNodeStateSet = []): TGvXmlNodeList;
 var
   Node: TGvXmlNode;
+{$IFNDEF VER230}
+  i: Integer;
+{$ENDIF}
 begin
   Result := TGvXmlNodeList.Create(False);
+{$IFDEF VER230}
   for Node in ChildNodes do
+  begin
+{$ELSE}
+  for i:= 0 to ChildNodes.count-1 do
+  begin
+    Node:= ChildNodes[i];
+{$ENDIF}
     if (lowercase(Node.NodeName) = lowercase(aNodeName)) and
        ((aStates = []) or (Node.State in aStates)) then
       Result.Add(Node);
+  end;
 end;
 
 function TGvXmlNode.FindOrCreate(aNodeName, aAttrName: String): TGvXmlNode;
@@ -453,7 +612,7 @@ var
   i: Integer;
 begin
   for i := 0 to aStringList.Count-1 do
-    AttributeValue[aStringList.Names[i]]:= aStringList.ValueFromIndex[i];
+    AttrValue[aStringList.Names[i]]:= aStringList.ValueFromIndex[i];
 end;
 
 procedure TGvXmlNode.LoadFromString(aStr: string);
@@ -583,6 +742,9 @@ var
   Lines: TStringList;
   Attribute: TGvXmlAttribute;
   Child: TGvXmlNode;
+{$IFNDEF VER230}
+  i: Integer;
+{$ENDIF}
 function Ident: string;
 begin
   if aReadable then
@@ -605,8 +767,16 @@ begin
   else
   begin
     Result:= Ident + '<' + FullNodeName;
+{$IFDEF VER230}
     for Attribute in FAttributes do
+    begin
+{$ELSE}
+    for i:= 0 to FAttributes.count-1 do
+    begin
+      Attribute:= FAttributes[i];
+{$ENDIF}
       Result:= Result + ' '+Attribute.FullName+'="'+Attribute.AsString+'"';
+    end;
     if (Text = '') and (ChildNodes.Count = 0) then
       Result:= Result + EndTerminator+'>'+EOL
     else
@@ -615,8 +785,16 @@ begin
     else
     begin
       Result:= Result +'>'+Text+EOL;
+{$IFDEF VER230}
       for Child in ChildNodes do
-         Result:= Result+Child.WriteToString(aReadable, aLevel+1);
+      begin
+{$ELSE}
+      for i:= 0 to ChildNodes.Count-1 do
+      begin
+        Child:= ChildNodes[i];
+{$ENDIF}
+        Result:= Result+Child.WriteToString(aReadable, aLevel+1);
+      end;
       Result:= Result + Ident+'</'+FullNodeName+'>'+EOL;
     end;
   end;
@@ -624,18 +802,36 @@ end;
 
 { TGvXmlAttributeList }
 
+function TGvXmlAttributeList.GetAttrByIndex(aIndex: Integer): TGvXmlAttribute;
+begin
+  Result:= TGvXmlAttribute(inherited Items[aIndex]);
+end;
+
 function TGvXmlAttributeList.Find(aAttrName: String): TGvXmlAttribute;
 var
   Attribute: TGvXmlAttribute;
+{$IFNDEF VER230}
+  i: Integer;
+{$ENDIF}
 begin
   Result := NIL;
+{$IFDEF VER230}
   for Attribute in Self do
+  begin
+{$ELSE}
+  for i:= 0 to Self.count-1 do
+  begin
+    Attribute:= Self[i];
+{$ENDIF}
     if lowercase(Attribute.Name) = lowercase(aAttrName) then
     begin
       Result := Attribute;
       Break;
     end;
+  end;
 end;
+
+
 
 { TGvXmlAttribute }
 
@@ -772,9 +968,11 @@ end;
 
 procedure TGvXmlAttribute.SetAsVariant(const Value: Variant);
 begin
+{$IFDEF VER230}
   if VarType(Value) = varUString then
     FValue:= Value
   else
+{$ENDIF}  
   if VarType(Value) = varString then
     FValue:= Value
   else
@@ -804,5 +1002,12 @@ begin
   else
     FullName:= Value;
 end;
+
+{TGvXmlNodeList}
+function TGvXmlNodeList.GetItemByIndex(aIndex: Integer): TGvXmlNode;
+begin
+  Result:= TGvXmlNode(inherited Items[aIndex]);
+end;
+
 
 end.
