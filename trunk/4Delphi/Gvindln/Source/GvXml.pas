@@ -12,6 +12,7 @@ uses
 type
   TGvXmlNodeList = class;
   TGvXml = class;
+  TGvXmlNode = class;
   TGvNodeState = (stNone, stChanged, stSelected);
   TGvNodeStateSet = Set of TGvNodeState;
 
@@ -20,6 +21,7 @@ type
     FNameSpace: String;
     FName: String; // Attribute name
     FValue: String;
+    FOwner: TGvXmlNode;
     function GetAsBoolean: Boolean;
     function GetAsDateTime: TDateTime;
     function GetAsInteger: Integer;
@@ -33,12 +35,17 @@ type
     function GetFullName: String;
     procedure SetName(const Value: String);
     procedure SetFullName(const Value: String);
+    function GetAsMoney: Currency;
+    procedure SetAsMoney(const Value: Currency);
   public
+    constructor Create(AOwner: TGvXmlNode);
     function AsIntegerDef(DefaultValue: Integer): Integer;
     function AsStringDef(DefaultValue: String): String;
     function AsBooleanDef(DefaultValue: Boolean): Boolean;
     function AsDateTimeDef(DefaultValue: TDateTime): TDateTime;
     function AsFloatDef(DefaultValue: Double): Double;
+    function AsMoneyDef(DefaultValue: Currency): Currency;
+    function ValueIn(aAttrValues: array of Variant): Boolean;
     property Name: String read FName write SetName;
     property FullName: String read GetFullName write SetFullName;
     property AsString: String read FValue write FValue;
@@ -46,6 +53,7 @@ type
     property AsBoolean: Boolean read GetAsBoolean write SetAsBoolean;
     property AsDateTime: TDateTime read GetAsDateTime write SetAsDateTime;
     property AsFloat: Double read GetAsFloat write SetAsFloat;
+    property AsMoney: Currency read GetAsMoney write SetAsMoney;
     property Value: variant read GetAsVariant write SetAsVariant;
   end;
 
@@ -69,6 +77,7 @@ type
     function GetFullNodeName: String;
     procedure SetNodeName(const Value: String);
     procedure SetFullNodeName(const Value: String);
+    function GetNodeByIndex(const aIndex: Integer): TGvXmlNode;
   protected
     procedure ReadFromString(aLine: string; aLen: Integer; var aIdx: integer);
   public
@@ -85,6 +94,7 @@ type
     function Find(aNodeName: String): TGvXmlNode; overload;
     function Find(aNodeName, aAttrName: String): TGvXmlNode; overload;
     function Find(aNodeName, aAttrName, aAttrValue: String): TGvXmlNode; overload;
+    function Find(aNodeName, aAttrNames: string; aAttrValues: array of Variant): TGvXmlNode; overload;
     // Find or Create a childnode by its name
     function FindOrCreate(aNodeName: String): TGvXmlNode; overload;
     function FindOrCreate(aNodeName, aAttrName: String): TGvXmlNode; overload;
@@ -103,16 +113,19 @@ type
     function WriteToString(aReadable: Boolean = false; aLevel: integer = 0): string;
     procedure ImportAttrs(aStringList: TStringList);
     procedure ExportAttrs(aStringList: TStringList);
+    function NodeCount: Integer;
     procedure DeleteChildsByState(aNodeName: String; aStates: TGvNodeStateSet);
     procedure ChangeChildsState(aNodeName: String; aStates: TGvNodeStateSet; aNewState: TGvNodeState);
     function IndexInParent: integer;
     procedure Assign(const aXmlNode: TGvXmlNode);
+    procedure AttrDelete(const aAttribute: TGvXmlAttribute);
     property Attributes: TGvXmlAttributeList read FAttributes;
     property AttrValue[const aAttrName: String]: Variant read GetAttrValue
       write SetAttrValue; default;
     property NodeName: String read FNodeName write SetNodeName;
     property FullNodeName: String read GetFullNodeName write SetFullNodeName;
     property Attr[const aAttrName: string]: TGvXmlAttribute read GetAttribute;
+    property Nodes[const aIndex: Integer]: TGvXmlNode read GetNodeByIndex;
     property State: TGvNodeState read FState write FState;
   end;
 
@@ -438,6 +451,11 @@ begin
   inherited;
 end;
 
+procedure TGvXmlNode.AttrDelete(const aAttribute: TGvXmlAttribute);
+begin
+  Attributes.Delete(FAttributes.IndexOf(aAttribute));
+end;
+
 procedure TGvXmlNode.ExportAttrs(aStringList: TStringList);
 var
   Att: TGvXmlAttribute;
@@ -532,6 +550,52 @@ begin
   end;
 end;
 
+function TGvXmlNode.Find(aNodeName, aAttrNames: string; aAttrValues: array of Variant): TGvXmlNode;
+var
+  i, j, k: Integer;
+  AttrNames: TStringList;
+  Founded, AnyFounded: Boolean;
+  Value: String;
+  varArray: array of Variant;
+begin
+  AttrNames:= TStringList.Create;
+  try
+    AttrNames.Delimiter:= ';';
+    AttrNames.DelimitedText:= '"'+ReplaceAll(aAttrNames, ';', '";"')+'"';
+    For i:= 0 to ChildNodes.Count - 1 do
+    begin
+      Result:= ChildNodes[i];
+      if Result.NodeName = aNodeName then
+      begin
+        Founded:= true;
+        for j:= 0 to AttrNames.Count - 1 do
+        begin
+          Value:= Result[AttrNames[j]];
+          if VarIsArray(aAttrValues[j]) then
+          begin
+            varArray:= aAttrValues[j];
+            AnyFounded:= false;
+            for k:= VarArrayLowBound(varArray, 1) to VarArrayHighBound(varArray, 1) do
+            begin
+              AnyFounded:= Value = varArray[k];
+              if AnyFounded then break;
+            end;
+            Founded:= AnyFounded and Founded;
+          end
+          else
+            Founded:=  Value = aAttrValues[j];
+          if not Founded then Break;
+        end;
+        if Founded then Exit;
+      end;
+    end;
+    Result:= nil;
+  finally
+    AttrNames.Free;
+  end;
+end;
+
+
 function TGvXmlNode.FindNodes(aNodeName: String;
   aStates: TGvNodeStateSet = []): TGvXmlNodeList;
 var
@@ -624,6 +688,16 @@ begin
   ReadFromString(aStr, Len, Idx);
 end;
 
+function TGvXmlNode.GetNodeByIndex(const aIndex: Integer): TGvXmlNode;
+begin
+  Result:= ChildNodes.GetItemByIndex(aIndex);
+end;
+
+function TGvXmlNode.NodeCount: Integer;
+begin
+  Result:= ChildNodes.Count;
+end;
+
 procedure TGvXmlNode.ReadAttributes(Tag: string; var isEmpty: Boolean);
 var
   idx, j, ii, p, Len: integer;
@@ -696,7 +770,7 @@ end;
 
 function TGvXmlNode.AttributeAdd(const aAttrName: String): TGvXmlAttribute;
 begin
-  Result:= TGvXmlAttribute.Create;
+  Result:= TGvXmlAttribute.Create(Self);
   Result.Name:= aAttrName;
   FAttributes.Add(Result);
 end;
@@ -879,6 +953,17 @@ begin
     Result:= GetAsInteger;
 end;
 
+function TGvXmlAttribute.AsMoneyDef(DefaultValue: Currency): Currency;
+begin
+  if FValue = '' then
+  begin
+    AsMoney:= DefaultValue;
+    Result:= DefaultValue;
+  end
+  else
+    Result:= GetAsMoney;
+end;
+
 function TGvXmlAttribute.AsStringDef(DefaultValue: String): String;
 begin
   if FValue = '' then
@@ -888,6 +973,12 @@ begin
   end
   else
     Result:= FValue;
+end;
+
+constructor TGvXmlAttribute.Create(AOwner: TGvXmlNode);
+begin
+  inherited Create;
+  FOwner:= AOwner;
 end;
 
 function TGvXmlAttribute.GetAsBoolean: Boolean;
@@ -930,6 +1021,11 @@ begin
   Result:= StrToInt(FValue);
 end;
 
+function TGvXmlAttribute.GetAsMoney: Currency;
+begin
+  Result:= StrToCurr(FValue);
+end;
+
 function TGvXmlAttribute.GetAsVariant: variant;
 begin
   if FilterString(FValue, '-T:') = '--T::' then
@@ -966,27 +1062,35 @@ begin
   FValue:= IntToStr(Value);
 end;
 
+procedure TGvXmlAttribute.SetAsMoney(const Value: Currency);
+begin
+  FValue:= CurrToStr(Value);
+end;
+
 procedure TGvXmlAttribute.SetAsVariant(const Value: Variant);
 begin
+  case VarType(Value) of
 {$IFDEF VER230}
-  if VarType(Value) = varUString then
-    FValue:= Value
+    varUString:
+      FValue:= Value;
+{$ENDIF}
+    varString:
+      FValue:= Value;
+    varDate:
+      AsDateTime:= Value;
+    varByte, varSmallInt, varInteger, varInt64:
+      AsInteger:= Value;
+    varBoolean:
+      AsBoolean:= Value;
+    varSingle, varDouble:
+      AsFloat:= Value;
+    varCurrency:
+      AsMoney:= Value;
+    varNull:
+      FOwner.AttrDelete(Self);
   else
-{$ENDIF}  
-  if VarType(Value) = varString then
-    FValue:= Value
-  else
-  if VarType(Value) = varDate then
-    AsDateTime:= Value
-  else
-  if VarType(Value) in [varByte, varSmallInt, varInteger, varInt64] then
-    AsInteger:= Value
-  else
-  if VarType(Value) = varBoolean then
-    AsBoolean:= Value
-  else
-  if VarType(Value) in [varSingle, varDouble] then
-    AsFloat:= Value;
+    raise Exception.Create('Unsupperted data type');
+  end;
 end;
 
 procedure TGvXmlAttribute.SetFullName(const Value: String);
@@ -1001,6 +1105,19 @@ begin
     FName := Value
   else
     FullName:= Value;
+end;
+
+function TGvXmlAttribute.ValueIn(aAttrValues: array of Variant): Boolean;
+var
+  V: Variant;
+  k: Integer;
+begin
+  Result:= True;
+  V:= GetAsVariant;
+  for k:= Low(aAttrValues) to High(aAttrValues) do
+    if V = aAttrValues[k] then
+      Exit;
+  Result:= False;
 end;
 
 {TGvXmlNodeList}

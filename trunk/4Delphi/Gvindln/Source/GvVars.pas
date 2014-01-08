@@ -80,11 +80,6 @@ function IsInteger(Value: String): Boolean;
 function IsFloat(Value: String): Boolean;
 function VarNameLevel(VarName: String):integer;
 
-function FillPattern(aPattern: string; aValues: TVarList;
-  aClearUnknown: Boolean = true): String; overload;
-function FillPattern(aPattern, aValues: string;
-  aClearUnknown: Boolean = true): String; overload;
-
 implementation
 
 uses

@@ -17,6 +17,7 @@ type
   TGvCustomDataSet = class(TDataSet)
   protected
     // status
+    FMaxRecords: integer;
     FIsTableOpen: Boolean;
 
     // record data
@@ -98,6 +99,8 @@ type
 
 implementation
 
+uses
+  GvMath, Math;
 /////////////////////////////////////////////////
 ////// Part I:
 ////// Initialization, opening, and closing
@@ -106,6 +109,7 @@ implementation
 // I: open the dataset
 procedure TGvCustomDataSet.InternalOpen;
 begin
+  FMaxRecords:= 0;
   InternalPreOpen; // custom method for subclasses
 
   // initialize the field definitions
@@ -200,7 +204,10 @@ end;
 // II: Go to a special position after the last record
 procedure TGvCustomDataSet.InternalLast;
 begin
-  EofCrack := InternalRecordCount;
+  if FMaxRecords > 0 then
+    EofCrack:= GvMath.MinInt(FMaxRecords, InternalRecordCount)
+  else
+    EofCrack := InternalRecordCount;
   FCurrentRecord := EofCrack;
 end;
 
@@ -274,12 +281,16 @@ begin
       if FCurrentRecord >= InternalRecordCount then
         Result := grError;
   end;
+  if (FMaxRecords > 0) and (FCurrentRecord > FMaxRecords - 1 ) then
+    Result:= grError;
   // load the data
   if Result = grOK then
     InternalLoadCurrentRecord (Buffer)
   else
-    if (Result = grError) and DoCheck then
-      raise EGvDataSetError.Create ('GetRecord: Invalid record');
+  if (Result = grError) and (FCurrentRecord > FMaxRecords - 1) then
+  else
+  if (Result = grError) and DoCheck then
+    raise EGvDataSetError.Create ('GetRecord: Invalid record');
 end;
 
 // III: Initialize the record (set to 0)

@@ -43,7 +43,11 @@ contains
   GvChkCombo in '..\Source\GvChkCombo.pas',
   GvCloner in '..\Source\GvCloner.pas',
   GvColor in '..\Source\GvColor.pas',
+  GvListDataSet in '..\Source\GvListDataSet.pas',
   GvXmlDataSet in '..\Source\GvXmlDataSet.pas',
-  GvListDataSet in '..\Source\GvListDataSet.pas';
+  GvNodeDataSet in '..\Source\GvNodeDataSet.pas',
+  GvXml in '..\Source\GvXml.pas',
+  GvCustomDataSet in '..\Source\GvCustomDataSet.pas',
+  GvVariant in '..\Source\GvVariant.pas';
 
 end.

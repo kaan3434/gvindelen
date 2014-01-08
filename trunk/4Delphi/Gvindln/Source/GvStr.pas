@@ -2467,6 +2467,9 @@ begin
         Result:= Copy(Result, StrToInt(Params[0]), StrToInt(Params[1]));
       end
       else
+      if FormatFunc = 'TRANSLIT' then
+        Result:= Translit(Result)
+      else
       if FormatFunc = 'MASKQUOTE' then
         Result:= ReplaceAll(Result, '''', '''''')
       else

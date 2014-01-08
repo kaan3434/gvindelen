@@ -20,6 +20,9 @@ type
 
 implementation
 
+uses
+  GvMath;
+
 procedure TGvListDataSet.InternalPreOpen;
 begin
   if not Assigned(FList) then
@@ -47,7 +50,7 @@ end;
 
 function TGvListDataSet.InternalRecordCount: Integer;
 begin
-  Result := fList.Count;
+  Result:= MinInt(fList.Count, FMaxRecords);
 end;
 
 end.

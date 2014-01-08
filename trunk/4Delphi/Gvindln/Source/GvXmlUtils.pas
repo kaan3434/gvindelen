@@ -11,16 +11,14 @@ type
 function ExpandMapping(aNode: TGvXmlNode; aMapping: String = '*'): String; overload;
 
 
+procedure BatchMoveFields(aDestDataSet, aSrcDataSet: TDataSet; 
+  aMapping: String); overload;
 procedure BatchMoveFields(aDestDataSet: TDataSet; aSrcNode: TGvXmlNode;
   aMapping: String); overload;
 procedure BatchMoveFields(aDestNode: TGvXmlNode; aSrcDataSet: TDataSet;
   aMapping: String); overload;
 procedure BatchMoveFields(aDestNode, aSrcNode: TGvXmlNode;
   aMapping: String); overload;
-procedure BatchMoveFields(aDestBuffer: PChar; aSrcNode: TGvXmlNode;
-  aFieldDefs: TFieldDefs); overload;
-procedure BatchMoveFields(aDestNode: TGvXmlNode; aSrcBuffer: PChar;
-  aFieldDefs: TFieldDefs); overload;
 
 procedure BatchMove(aDestNode: TGvXmlNode; aSrcDataSet: TDataSet;
   aRowNodeName: String; aMapping: String; aAppendMode: TAppendMode = amReplace); overload;
@@ -34,11 +32,14 @@ function XmlAttrs2Attr(aSrcNode: TGvXmlNode; aAttrNames: string; aDestNode: TGvX
 function Strings2Attr(aSrcStrings: TStrings; aAttrNames: string; aDestNode: TGvXmlNode = nil): TGvXmlNode;
 function Value2Attr(aValue: Variant; aAttrName: string; aDestNode: TGvXmlNode = nil): TGvXmlNode;
 
+function FlagPresent(aNode: TGvXmlNode; aAttributeName, Flag: string): Boolean;
+
+function FillPattern(aPattern: String; aParams: TGvXmlNode): string;
 
 implementation
 
 uses
-  GvStr, SysUtils;
+  GvStr, GvMath, SysUtils;
 
 procedure ExtractMapPair(var oMapping, oFldDest, oFldSrc: String);
 begin
@@ -81,6 +82,22 @@ begin
     Result:= sl.DelimitedText;
   finally
     sl.Free;
+  end;
+end;
+
+procedure BatchMoveFields(aDestDataSet, aSrcDataSet: TDataSet;
+  aMapping: String);
+var
+  FldSrc, FldDest: string;
+  AttrSrc: TGvXmlAttribute;
+begin
+  while aMapping <> '' do
+  begin
+    ExtractMapPair(aMapping, FldDest, FldSrc);
+    if FldSrc[1] = '"' then
+      aDestDataSet[FldDest]:= CopyBetween(FldSrc, '"', '"')
+    else
+      aDestDataSet[FldDest]:= aSrcDataSet[FldSrc];
   end;
 end;
 
@@ -150,35 +167,6 @@ begin
     end;
   end;
 end;
-
-procedure BatchMoveFields(aDestBuffer: PChar; aSrcNode: TGvXmlNode;
-  aFieldDefs: TFieldDefs);
-var
-  i: Integer;
-  FieldDef: TFieldDef;
-  ofs, len: Word;
-begin
-  ofs:= 0;
-  for i:= 0 to aFieldDefs.Count-1 do
-  begin
-    FieldDef:= aFieldDefs[i];
-    case FieldDef.DataType of
-      ftInteger:
-        begin
-          len:=4;
-          if aSrcNode.HasAttribute(FieldDef.Name) then
-          Move(aDestBuffer^, Integer(
-        end;
-    end;
-  end;
-end;
-procedure BatchMoveFields(aDestNode: TGvXmlNode; aSrcBuffer: PChar;
-  aFieldDefs: TFieldDefs);
-begin
-
-end;
-
-
 
 procedure BatchMove(aDestNode: TGvXmlNode; aSrcDataSet: TDataSet;
   aRowNodeName: String; aMapping: String; aAppendMode: TAppendMode);
@@ -287,7 +275,7 @@ begin
     if aAppendMode = amAppend then
       ndDest:= aDestNode.AddChild(aRowNodeName)
     else
-      ndDest:= aDestNode.FindOrCreate(aRowNodeName, FldDest, Node.AttributeValue[FldDest]);
+      ndDest:= aDestNode.FindOrCreate(aRowNodeName, FldDest, Node[FldDest]);
     if ndDest.State = stNone then
     begin
       ndDest.State:= stChanged;
@@ -344,5 +332,104 @@ begin
     Result:= aDestNode;
   Result.Attr[aAttrName].Value:= aValue;
 end;
+
+function FlagPresent(aNode: TGvXmlNode; aAttributeName, Flag: string): Boolean;
+begin
+  Result:= Pos(','+Flag+',', ','+aNode[aAttributeName]+',') > 0;
+end;
+
+function FillPattern(aPattern: String; aParams: TGvXmlNode): string;
+
+function ProcessCondition(CondSrc: String): string;
+const
+  cThen = ' THEN ';
+  cElse = ' ELSE ';
+var
+  CondExpr, ThenText, ElseText, AttrName, AttrValue: String;
+  pThenS, pThenE, pElseS, pElseE, pLen, pAction : Integer;
+  IsValid: Boolean;
+  sl: TStringList;
+begin
+  pLen:= Length(CondSrc);
+  pThenS:= Pos(cThen, CondSrc);
+  pThenE:= pThenS+Length(cThen);
+  pElseS:= Pos(cElse, CondSrc);
+  if pElseS = 0 then
+    pElseE:= pElseS + Length(cElse)
+  else
+  begin
+    pElseS:= pLen;
+    pElseE:= pLen;
+  end;
+  CondExpr:= Copy(CondSrc, 1, pThenS-1);
+  ThenText:= Copy(CondSrc, pThenE, pElseS-pThenE);
+  ElseText:= Copy(CondSrc, pElseE, pLen-pElseE);
+  sl:= TStringList.Create;
+  try
+    if Pos(' = ', CondExpr) > 0 then
+    begin
+      sl.CommaText:= ReplaceAll(CondExpr, ' = ', ',');
+      IsValid:= aParams.Attr[sl[0]].Value = sl[1];
+    end
+    else
+    if Pos(' <> ', CondExpr) > 0 then
+    begin
+      sl.CommaText:= ReplaceAll(CondExpr, ' <> ', ',');
+      IsValid:= aParams.Attr[sl[0]].Value <> sl[1];
+    end
+    else
+    if Pos(' > ', CondExpr) > 0 then
+    begin
+      sl.CommaText:= ReplaceAll(CondExpr, ' > ', ',');
+      IsValid:= aParams.Attr[sl[0]].Value > sl[1];
+    end
+    else
+    if Pos(' >= ', CondExpr) > 0 then
+    begin
+      sl.CommaText:= ReplaceAll(CondExpr, ' >= ', ',');
+      IsValid:= aParams.Attr[sl[0]].Value >= sl[1];
+    end
+    else
+    begin
+      if aParams.HasAttribute(CondExpr) then
+        Result:= ThenText
+      else
+        Result:= ElseText;
+    end;
+  finally
+    sl.Free;
+  end;
+  Result:= IfThen(IsValid, ThenText, ElseText);
+end;
+
+function ProcessValue(aValuePattern: string): String;
+var
+  AttrName: string;
+begin
+  AttrName:= TakeFront5(aValuePattern, '|');
+  if aParams.HasAttribute(AttrName) then
+    result:= aParams.Attr[AttrName].AsString
+  else
+    result:= '';
+  Result:= FormatValue(Result, aValuePattern);
+end;
+
+var
+  Pattern: string;
+begin
+  Result:= aPattern;
+  repeat
+    Pattern:= CopyBetween(Result, '{', '}');
+    if Pattern = '' then Break;
+    Result:= ReplaceAll(Result, '{'+Pattern+'}', ProcessCondition(Pattern));
+  until False;
+  repeat
+    Pattern:= CopyBetween(Result, '[', ']');
+    if Pattern = '' then break;
+    Result:= ReplaceAll(Result, '['+Pattern+']', ProcessValue(Pattern));
+  until false;
+  aParams.Free;
+end;
+
 
 end.

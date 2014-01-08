@@ -1,4 +1,4 @@
-unit GvXmlDataSet;
+unit GvNodeDataSet;
 
 interface
 
@@ -6,19 +6,16 @@ uses
   GvListDataSet, GvCustomDataSet, TypInfo, db, classes, sysutils, GvXml;
 
 type
-  TGvXmlDataSet = class(TGvListDataSet)
+  TGvNodeDataSet = class(TGvListDataSet)
   private
     FDataSetNode: TGvXmlNode;
     DataBackup: TStringList;
-    FRowNodeName: string;
     FInitFieldDefs: TStringList;
     procedure SetDataSetNode(const Value: TGvXmlNode);
     procedure SetInitFieldDefs(const Value: TStringList);
-    procedure SetRowNodeName(const Value: string);
     function ActiveNode:TGvXmlNode;
   protected
     procedure InternalInitFieldDefs; override;
-    procedure InternalInsert; override;
     procedure InternalPost; override;
     procedure InternalCancel; override;
     procedure InternalEdit; override;
@@ -30,12 +27,11 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetFieldData(Field: TField; Buffer: Pointer; NativeFormat: Boolean): Boolean; overload; override; 
-    function GetFieldData(Field: TField; Buffer: Pointer): Boolean; overload; override; 
+    function GetFieldData(Field: TField; Buffer: Pointer; NativeFormat: Boolean): Boolean; overload; override;
+    function GetFieldData(Field: TField; Buffer: Pointer): Boolean; overload; override;
     property Node: TGvXmlNode read FDataSetNode write SetDataSetNode;
   published
     property InitFieldDefs: TStringList read FInitFieldDefs write SetInitFieldDefs;
-    property RowNodeName: string read FRowNodeName write SetRowNodeName;
   end;
 
 procedure Register;
@@ -43,17 +39,17 @@ procedure Register;
 implementation
 
 uses
-  Dialogs, Windows, Forms, Controls, GvMath, Variants, GvVariant;
+  Contnrs, Dialogs, Windows, Forms, Controls, GvMath, Variants, GvVariant;
 
-{$R GvXmlDataSet.res}
+{$R GvNodeDataSet.res}
 
 
 procedure Register;
 begin
-  RegisterComponents ('Gvindelen', [TGvXmlDataSet]);
+  RegisterComponents ('Gvindelen', [TGvNodeDataSet]);
 end;
 
-procedure TGvXmlDataSet.InternalInitFieldDefs;
+procedure TGvNodeDataSet.InternalInitFieldDefs;
 var
   FieldName: string;
   I, nSize: Integer;
@@ -61,7 +57,7 @@ var
   FieldDef: TFieldDef;
   sl: TStringList;
 begin
-  if FDataSetNode = nil then
+  if not (csDesigning in ComponentState) and (FDataSetNode = nil) then
     raise EGvDataSetError.Create ('Missing DataSet Node');
   sl:= TStringList.Create;
   FieldDefs.Clear;
@@ -96,19 +92,18 @@ begin
       else
         FieldDef.Precision:= 0;
       end;
-//      FieldDef.DisplayName:= IfThen(sl[4]<>'', sl[4], sl[0]);
-    end; // for
+    end;
   finally
     sl.Free;
   end;
 end;
 
-procedure TGvXmlDataSet.InternalPost;
+procedure TGvNodeDataSet.InternalPost;
 begin
   DataBackup.Clear;
 end;
 
-procedure TGvXmlDataSet.InternalCancel;
+procedure TGvNodeDataSet.InternalCancel;
 var
   Node: TGvXmlNode;
 begin
@@ -118,16 +113,16 @@ begin
     Node.Attributes.Clear;
     Node.ImportAttrs(DataBackup);
   end
-  else
-  if State = dsInsert then
-  begin
-    DataBackup.Clear;
-    FList.Delete(FList.count-1);
-  end;
 end;
 
-function TGvXmlDataSet.GetFieldData (
+function TGvNodeDataSet.GetFieldData (
   Field: TField; Buffer: Pointer; NativeFormat: Boolean): Boolean;
+var
+  Node: TGvXmlNode;
+  vInteger: Integer;
+  vString: string;
+  vDateTime: TDateTime;
+  vBool: WordBool;
 
 procedure VarToBuffer(var Value: Variant);
 begin
@@ -195,25 +190,28 @@ begin
   end;
 end;
 
-function TGvXmlDataSet.GetFieldData(Field: TField; Buffer: Pointer): Boolean;
+function TGvNodeDataSet.GetFieldData(Field: TField; Buffer: Pointer): Boolean;
 begin
   Result:= GetFieldData(Field, Buffer, True);
 end;
 
 
 // III: Move data from field to record buffer
-procedure TGvXmlDataSet.SetFieldData(Field: TField; Buffer: Pointer; NativeFormat: Boolean);
+procedure TGvNodeDataSet.SetFieldData(Field: TField; Buffer: Pointer; NativeFormat: Boolean);
 var
   v: Variant;
+  Node: TGvXmlNode;
+  vInteger: Integer;
+  vString: String;
+  vDateTime: TDateTime;
+  vBool: WordBool;
   procedure BufferToVar(var Data: Variant);
   begin
     case Field.DataType of
       ftString, ftFixedChar, ftGuid:
         Data := AnsiString(PAnsiChar(Buffer));
-//        SetString(Data, PChar(Buffer), StrLen(PChar(Buffer)));
       ftWideString:
         Data := WideString(Buffer^);
-//        WStrCopy(PWideChar(Data), PWideChar(VarToWideStr(Buffer)));
       ftAutoInc, ftInteger:
         Data := LongInt(Buffer^);
       ftSmallInt:
@@ -262,75 +260,63 @@ begin
   SetModified(True);
 end;
 
-procedure TGvXmlDataSet.SetFieldData(Field: TField; Buffer: Pointer);
+procedure TGvNodeDataSet.SetFieldData(Field: TField; Buffer: Pointer);
 begin
   SetFieldData(Field, Buffer, true);
 end;
 
-procedure TGvXmlDataSet.InternalInsert;
-var
-  Node: TGvXmlNode;
-begin
-  Node:= FDataSetNode.AddChild(FRowNodeName);
-  Node.ExportAttrs(DataBackup);
-  Last;
-end;
-
-procedure TGvXmlDataSet.InternalEdit;
+procedure TGvNodeDataSet.InternalEdit;
 begin
   DataBackup.Clear;
   ActiveNode.ExportAttrs(DataBackup);
 end;
 
-function TGvXmlDataSet.GetCanModify: Boolean;
+function TGvNodeDataSet.GetCanModify: Boolean;
 begin
   Result := True; // read-write
 end;
 
-procedure TGvXmlDataSet.InternalPreOpen;
+procedure TGvNodeDataSet.InternalPreOpen;
 begin
+  FMaxRecords:= 1;
+  FList := TObjectList.Create(false);
+  FList.Add(FDataSetNode);
   DataBackup:= TStringList.Create;
-  FList:= FDataSetNode.ChildNodes;
   inherited;
 end;
 
-procedure TGvXmlDataSet.InternalClose;
+procedure TGvNodeDataSet.InternalClose;
 begin
-  FList:= nil;
+  FList.Extract(FDataSetNode);
   FreeAndNil(DataBackup);
   inherited;
 end;
 
-procedure TGvXmlDataSet.SetDataSetNode(const Value: TGvXmlNode);
+procedure TGvNodeDataSet.SetDataSetNode(const Value: TGvXmlNode);
 begin
   FDataSetNode := Value;
 end;
 
-procedure TGvXmlDataSet.SetInitFieldDefs(const Value: TStringList);
+procedure TGvNodeDataSet.SetInitFieldDefs(const Value: TStringList);
 begin
   FInitFieldDefs.Assign(Value);
 end;
 
-procedure TGvXmlDataSet.SetRowNodeName(const Value: string);
-begin
-  FRowNodeName := Value;
-end;
-
-constructor TGvXmlDataset.Create(AOwner: TComponent);
+constructor TGvNodeDataSet.Create(AOwner: TComponent);
 begin
   inherited;
   FInitFieldDefs:= TStringList.Create;
 end;
 
-destructor TGvXmlDataset.Destroy;
+destructor TGvNodeDataSet.Destroy;
 begin
   FInitFieldDefs.Free;
   inherited;
 end;
 
-function TGvXmlDataSet.ActiveNode: TGvXmlNode;
+function TGvNodeDataSet.ActiveNode: TGvXmlNode;
 begin
-  Result:= TGvXmlNode(FList[ActiveRecord]);
+  Result:= FDataSetNode;
 end;
 
 end.
