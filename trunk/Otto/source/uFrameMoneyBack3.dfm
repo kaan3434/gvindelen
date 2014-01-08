@@ -1,28 +1,26 @@
 inherited FrameMoneyBack3: TFrameMoneyBack3
-  Left = 308
-  Top = 128
-  Width = 788
-  Height = 492
-  Caption = 'FrameMoneyBack3'
-  PixelsPerInch = 96
-  TextHeight = 13
-  inherited dckTop: TTBXDock
-    Width = 780
+  inherited pnlFrame: TPanel
+    Top = 304
+    Width = 418
     Height = 23
-    inherited tlBarTop: TTBXToolbar
-      object btnMoneyBack: TTBXItem
-        Action = actMoneyBack
+    inherited sBarFrame: TTBXStatusBar
+      Top = -4
+      Width = 408
+    end
+    inherited dckTop: TTBXDock
+      Width = 408
+      Height = 25
+      inherited tbBarTop: TTBXToolbar
+        object btnMoneyBack: TTBXItem
+          Action = actMoneyBack
+        end
       end
     end
   end
-  inherited sb: TTBXStatusBar
-    Top = 436
-    Width = 780
-  end
-  object grpCommon: TJvGroupBox [2]
+  object grpCommon: TJvGroupBox [1]
     Left = 0
-    Top = 23
-    Width = 780
+    Top = 0
+    Width = 418
     Height = 104
     Align = alTop
     Caption = #1055#1072#1089#1087#1086#1088#1090#1085#1099#1077' '#1076#1072#1085#1085#1099#1077' '#1082#1083#1080#1077#1085#1090#1072
@@ -50,6 +48,7 @@ inherited FrameMoneyBack3: TFrameMoneyBack3
       Top = 40
       Width = 97
       Height = 21
+      DynProps = <>
       EditButtons = <>
       Kind = dtkDateEh
       TabOrder = 1
@@ -74,10 +73,10 @@ inherited FrameMoneyBack3: TFrameMoneyBack3
       TabOrder = 3
     end
   end
-  object rgMoneyBackKind: TRadioGroup [3]
+  object rgMoneyBackKind: TRadioGroup [2]
     Left = 0
-    Top = 127
-    Width = 780
+    Top = 104
+    Width = 418
     Height = 48
     Align = alTop
     Caption = #1044#1077#1081#1089#1090#1074#1080#1103' '#1089' '#1086#1089#1090#1072#1090#1082#1086#1084
@@ -88,10 +87,10 @@ inherited FrameMoneyBack3: TFrameMoneyBack3
     TabOrder = 2
     OnClick = rgMoneyBackKindClick
   end
-  object grpBankMovement: TJvGroupBox [4]
+  object grpBankMovement: TJvGroupBox [3]
     Left = 0
-    Top = 175
-    Width = 780
+    Top = 152
+    Width = 418
     Height = 152
     Align = alTop
     Caption = #1040#1090#1088#1080#1073#1091#1090#1099' '#1073#1072#1085#1082#1086#1074#1089#1082#1086#1075#1086' '#1087#1077#1088#1077#1074#1086#1076#1072

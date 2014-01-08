@@ -7,6 +7,7 @@ inherited FormWizardBase1: TFormWizardBase1
   inherited wzForm: TJvWizard
     ActivePage = wzIPageMoneyBack
     object wzIPageMoneyBack: TJvWizardInteriorPage
+      Header.ParentFont = False
       Header.Title.Color = clNone
       Header.Title.Text = 'Title'
       Header.Title.Anchors = [akLeft, akTop, akRight]

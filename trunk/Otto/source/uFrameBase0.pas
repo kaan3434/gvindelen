@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, 
   Dialogs, TBXStatusBars, TB2Dock, TB2Toolbar, TBX, FIBDatabase,
-  pFIBDatabase, ImgList, PngImageList, ActnList, NativeXml,
+  pFIBDatabase, ImgList, PngImageList, ActnList, GvXml,
   JvComponentBase, JvEmbeddedForms, ExtCtrls, JvExExtCtrls, JvExtComponent,
   JvPanel;
 
@@ -28,7 +28,7 @@ type
   protected
     function StoreComponent(Component: TComponent; var StoredComponent: Pointer): Pointer;
     function RestoreComponent(Component: TComponent; var StoredComponent: Pointer): Pointer;
-    function DetectCaption(aNode: TXmlNode; aCaption: String): string;
+    //function DetectCaption(aNode: TGvXmlNode; aCaption: String): string;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
@@ -131,11 +131,6 @@ end;
 procedure TFrameBase0.Read;
 begin
   UpdateCaptions;
-end;
-
-function TFrameBase0.DetectCaption(aNode : TXmlNode; aCaption: String): string;
-begin
-  Result:= aCaption + ' ['+aNode.ReadAttributeString('ID', 'Новый')+']';
 end;
 
 procedure TFrameBase0.UpdateCaptions;

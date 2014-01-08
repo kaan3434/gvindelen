@@ -1,22 +1,9 @@
 inherited FrameOrder: TFrameOrder
-  Left = 253
-  Top = 114
-  Width = 699
-  Height = 423
-  PixelsPerInch = 96
-  TextHeight = 13
-  inherited dckTop: TTBXDock
-    Width = 683
-  end
-  inherited sb: TTBXStatusBar
-    Top = 363
-    Width = 683
-  end
-  object grBoxOrder: TJvGroupBox [2]
+  object grBoxOrder: TJvGroupBox [1]
     Left = 0
-    Top = 26
-    Width = 683
-    Height = 337
+    Top = 0
+    Width = 435
+    Height = 266
     Align = alClient
     Caption = #1061#1072#1088#1072#1082#1090#1077#1088#1080#1089#1090#1080#1082#1080' '#1079#1072#1103#1074#1082#1080
     TabOrder = 1
@@ -127,7 +114,6 @@ inherited FrameOrder: TFrameOrder
         'n_id)'
       'where p2tp.product_id = :product_id'
       'order by s.status_id')
-    Transaction = trnWrite
     Database = dmOtto.dbOtto
     DataSource = dsProducts
     Left = 40
@@ -151,7 +137,6 @@ inherited FrameOrder: TFrameOrder
         'inner join flags2statuses f2s on (f2s.status_id = p.status_id an' +
         'd f2s.flag_sign = '#39'ACTIVE'#39')'
       'order by s.status_id')
-    Transaction = trnWrite
     Database = dmOtto.dbOtto
     Left = 40
     Top = 296

@@ -9,28 +9,28 @@ procedure ExportDealerData(aTransaction: TpFIBTransaction);
 implementation
 
 uses
-  NativeXml, GvNativeXml, udmOtto, GvStr, GvFile, GvDtTm, DateUtils, Dialogs;
+  GvXml, GvXmlUtils, udmOtto, GvStr, GvFile, GvDtTm, DateUtils, Dialogs;
 
-function ExportMessageLine(aTransaction: TpFIBTransaction; ndMessage: TXmlNode;
+function ExportMessageLine(aTransaction: TpFIBTransaction; ndMessage: TGvXmlNode;
   aNotifyId: integer): string;
 var
-  ndNotify : TXmlNode;
+  ndNotify : TGvXmlNode;
 begin
-  ndNotify:= ndMessage.NodeNew('DEALERNOTIFY');
+  ndNotify:= ndMessage.AddChild('DEALERNOTIFY');
   dmOtto.ObjectGet(ndNotify, aNotifyId, aTransaction);
-  result:= GetXmlAttr(ndNotify, 'NOTIFY_TEXT');
+  result:= ndNotify['NOTIFY_TEXT'];
   dmOtto.ActionExecute(aTransaction, 'DEALERNOTIFY_UPLOAD', ndNotify);
 end;
 
-procedure ExportMessage(aTransaction: TpFIBTransaction; ndDealer, ndMessages: TXmlNode;
+procedure ExportMessage(aTransaction: TpFIBTransaction; ndDealer, ndMessages: TGvXmlNode;
   aMessageId: integer);
 var
-  ndMessage: TXmlNode;
+  ndMessage: TGvXmlNode;
   NotifyList, St, FilePath: string;
   NotifyId : variant;
   sl : TStringList;
 begin
-  ndMessage:= ndMessages.NodeNew('MESSAGE');
+  ndMessage:= ndMessages.AddChild('MESSAGE');
   dmOtto.ObjectGet(ndMessage, aMessageId, aTransaction);
   sl:= TStringList.Create;
   try
@@ -41,30 +41,30 @@ begin
       '        where dn.message_id = :message_id '+
       '          and dn.dealer_id = :dealer_id '+
       '        order by dn.dealernotify_id)',
-      0, [aMessageId, GetXmlAttrValue(ndDealer, 'ID')]);
+      0, [aMessageId, ndDealer['ID']]);
     while NotifyList <> '' do
     begin
       NotifyId:= TakeFront5(NotifyList, ',');
       sl.Add(St);
     end;
-    FilePath:= Path['Dealers']+GetXmlAttr(ndDealer, 'ID')+'\In\';
+    FilePath:= Path['Dealers']+ndDealer['ID']+'\In\';
     ForceDirectories(FilePath);
-    sl.SaveToFile(FilePath+GetXmlAttr(ndMessage, 'FILE_NAME'));
+    sl.SaveToFile(FilePath+ndMessage['FILE_NAME']);
   finally
     sl.Free;
   end;
 end;
 
-procedure ExportDealer(aTransaction: TpFIBTransaction; ndDealers: TXmlNode;
+procedure ExportDealer(aTransaction: TpFIBTransaction; ndDealers: TGvXmlNode;
   aDealerId: integer);
 var
-  ndDealer, ndMessages: TXmlNode;
+  ndDealer, ndMessages: TGvXmlNode;
   MessageList: string;
   MessageId: Variant;
 begin
-  ndDealer:= ndDealers.NodeNew('DEALER');
-  SetXmlAttr(ndDealer, 'ID', aDealerId);
-  ndMessages:= ndDealer.NodeNew('MESSAGES');
+  ndDealer:= ndDealers.AddChild('DEALER');
+  ndDealer['ID']:= aDealerId;
+  ndMessages:= ndDealer.AddChild('MESSAGES');
   MessageList:= aTransaction.DefaultDatabase.QueryValue(
     'select list(distinct dn.message_id) '+
     'from dealernotifies dn '+
@@ -80,14 +80,14 @@ end;
 
 procedure ExportDealerData(aTransaction: TpFIBTransaction);
 var
-  Xml: TNativeXml;
-  ndDealers: TXmlNode;
+  Xml: TGvXml;
+  ndDealers: TGvXmlNode;
   DealerId: Variant;
   DealerList: string;
 begin
   aTransaction.StartTransaction;
   try
-    xml:= TNativeXml.CreateName('DEALERS');
+    xml:= TGvXml.Create('DEALERS');
     try
       ndDealers:= Xml.Root;
       DealerList:= aTransaction.DefaultDatabase.QueryValue(

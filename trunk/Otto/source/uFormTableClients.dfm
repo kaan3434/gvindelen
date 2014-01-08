@@ -1,18 +1,18 @@
 inherited FormTableClients: TFormTableClients
-  Left = -8
-  Top = -8
-  Width = 1382
-  Height = 744
+  Left = 171
+  Top = 188
+  Width = 870
+  Height = 445
   Caption = 'FormTableClients'
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   inherited StatusBar: TStatusBar
-    Top = 687
-    Width = 1366
+    Top = 388
+    Width = 854
   end
   inherited dckTop: TTBXDock
-    Width = 1366
+    Width = 854
     inherited tlBarNsiActions: TTBXToolbar
       Images = imgListMain
       object btnAccountUserCredit: TTBXItem
@@ -29,15 +29,15 @@ inherited FormTableClients: TFormTableClients
     end
   end
   inherited pnlMain: TJvPanel
-    Width = 1366
-    Height = 661
+    Width = 854
+    Height = 362
     inherited grBoxMain: TJvGroupBox
-      Width = 1356
-      Height = 651
+      Width = 844
+      Height = 352
       Caption = #1050#1083#1080#1077#1085#1090#1099
       inherited grdMain: TDBGridEh
-        Width = 1352
-        Height = 634
+        Width = 840
+        Height = 335
         OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghIncSearch, dghPreferIncSearch, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
         ReadOnly = True
         RowDetailPanel.Active = True

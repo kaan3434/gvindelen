@@ -7,7 +7,7 @@ uses
   Dialogs, uFrameBase1, StdCtrls, ExtCtrls, ImgList, PngImageList,
   ActnList, FIBDatabase, pFIBDatabase, TBXStatusBars, TB2Dock, TB2Toolbar,
   TBX, JvExStdCtrls, JvGroupBox, Mask, JvExMask, JvMaskEdit,
-  DBCtrlsEh, NativeXml, TB2Item, JvValidators, JvErrorIndicator,
+  DBCtrlsEh, GvXml, TB2Item, JvValidators, JvErrorIndicator,
   JvComponentBase;
 
 type
@@ -40,16 +40,10 @@ type
     function Valid: Boolean;
     { Private declarations }
   public
-    ndOrder: TXmlNode;
-    ndClient: TXmlNode;
-    ndOrderMoneys: TXmlNode;
-//    ndMoneyBack: TXmlNode;
-    procedure InitData; override;
-    procedure FreeData; override;
-    procedure OpenTables; override;
-    procedure Read; override;
-    procedure Write; override;
-    procedure UpdateCaptions; override;
+    ndOrder: TGvXmlNode;
+    ndClient: TGvXmlNode;
+    ndOrderMoneys: TGvXmlNode;
+//    ndMoneyBack: TGvXmlNode;
     property OrderId: Integer read GetOrderId;
   end;
 
@@ -58,32 +52,14 @@ implementation
 
 {$R *.dfm}
 uses
-  GvNativeXml, udmOtto, GvStr;
-
-procedure TFrameMoneyBack.FreeData;
-begin
-  inherited;
-
-end;
+  GvXmlUtils, udmOtto, GvStr;
 
 function TFrameMoneyBack.GetOrderId: Integer;
 begin
-  Result:= ndOrder.ReadAttributeInteger('ID', 0)
+  Result:= ndOrder.Attr['ID'].AsIntegerDef(0);
 end;
 
-procedure TFrameMoneyBack.InitData;
-begin
-  inherited;
-
-end;
-
-procedure TFrameMoneyBack.OpenTables;
-begin
-  inherited;
-
-end;
-
-procedure TFrameMoneyBack.Read;
+{procedure TFrameMoneyBack.Read;
 var
   ReturnKind: string;
 begin
@@ -101,19 +77,13 @@ begin
   edBankUNP.Text:= GetXmlAttr(ndClient, 'BANK_UNP');
   edPersonalNum.Text:= GetXmlAttr(ndClient, 'PERSONAL_NUM');
 end;
-
+}
 procedure TFrameMoneyBack.rgMoneyBackKindClick(Sender: TObject);
 begin
   grpBankMovement.Enabled:= rgMoneyBackKind.ItemIndex = 2;
 end;
 
-procedure TFrameMoneyBack.UpdateCaptions;
-begin
-  inherited;
-
-end;
-
-procedure TFrameMoneyBack.Write;
+{procedure TFrameMoneyBack.Write;
 var
   ReturnKind: string;
 begin
@@ -143,7 +113,7 @@ begin
     raise;
   end;
 end;
-
+}
 procedure TFrameMoneyBack.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -202,8 +172,8 @@ begin
   if Valid then
   try
     dmOtto.ActionExecute(trnWrite, 'ORDER', 'ORDER_RETURN',
-      XmlAttrs2Vars(ndOrder, 'MONEYBACK_KIND;BONUS_EUR',
-      Value2Vars(Byte(chkPayByFirm.Checked), 'PAYBYFIRM')),
+      XmlAttrs2Attr(ndOrder, 'MONEYBACK_KIND;BONUS_EUR',
+      Value2Attr(Byte(chkPayByFirm.Checked), 'PAYBYFIRM')),
         OrderId);
     dmOtto.ObjectGet(ndOrder, OrderId, trnWrite);
 

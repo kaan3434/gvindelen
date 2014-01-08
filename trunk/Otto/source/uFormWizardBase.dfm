@@ -1,6 +1,6 @@
 object FormWizardBase: TFormWizardBase
-  Left = 305
-  Top = 244
+  Left = 200
+  Top = 71
   Width = 1024
   Height = 555
   Caption = 'FormWizardBase'
@@ -21,8 +21,8 @@ object FormWizardBase: TFormWizardBase
   object wzForm: TJvWizard
     Left = 0
     Top = 0
-    Width = 1016
-    Height = 521
+    Width = 1008
+    Height = 517
     ButtonBarHeight = 42
     ButtonStart.Caption = 'To &Start Page'
     ButtonStart.NumGlyphs = 1
@@ -49,8 +49,8 @@ object FormWizardBase: TFormWizardBase
     ShowRouteMap = False
     OnCancelButtonClick = wzFormCancelButtonClick
     DesignSize = (
-      1016
-      521)
+      1008
+      517)
   end
   object actListWzrdBtn: TActionList
     Left = 24

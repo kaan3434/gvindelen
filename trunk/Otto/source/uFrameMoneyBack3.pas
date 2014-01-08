@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uFrameBase1, ExtCtrls, Mask, DBCtrlsEh, StdCtrls, JvExStdCtrls,
   JvGroupBox, ImgList, PngImageList, ActnList, FIBDatabase, pFIBDatabase,
-  TBXStatusBars, TB2Dock, TB2Toolbar, TBX, NativeXml, TB2Item;
+  TBXStatusBars, TB2Dock, TB2Toolbar, TBX, TB2Item, GvXml;
 
 type
   TFrameMoneyBack3 = class(TFrameBase1)
@@ -34,12 +34,7 @@ type
     { Private declarations }
   public
     { Public declarations }
-    ndClient: TXmlNode;
-    procedure InitData; override;
-    procedure FreeData; override;
-    procedure OpenTables; override;
-    procedure Read; override;
-    procedure Write; override;
+    ndClient: TGvXmlNode;
     function Valid: Boolean;
   end;
 
@@ -47,11 +42,11 @@ type
 implementation
 
 uses
-  udmOtto, GvNativeXml, GvStr;
+  udmOtto, GvStr, GvXmlUtils;
 
 {$R *.dfm}
 
-procedure TFrameMoneyBack3.Read;
+{procedure TFrameMoneyBack3.Read;
 var
   ReturnKind: string;
 begin
@@ -65,10 +60,10 @@ begin
   edBankMFO.Text:= GetXmlAttr(ndClient, 'BANK_MFO');
   edBankUNP.Text:= GetXmlAttr(ndClient, 'BANK_UNP');
   edPersonalNum.Text:= GetXmlAttr(ndClient, 'PERSONAL_NUM');
-end;
+end;}
 
 
-procedure TFrameMoneyBack3.Write;
+{procedure TFrameMoneyBack3.Write;
 var
   ReturnKind: string;
 begin
@@ -92,7 +87,7 @@ begin
     trnWrite.RollBackToSavePoint('OnMoneyBack');
     raise;
   end;
-end;
+end;}
 
 procedure TFrameMoneyBack3.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
@@ -139,24 +134,6 @@ begin
   end;
 end;
 
-procedure TFrameMoneyBack3.FreeData;
-begin
-  inherited;
-
-end;
-
-procedure TFrameMoneyBack3.InitData;
-begin
-  inherited;
-
-end;
-
-procedure TFrameMoneyBack3.OpenTables;
-begin
-  inherited;
-
-end;
-
 procedure TFrameMoneyBack3.actMoneyBackExecute(Sender: TObject);
 begin
   inherited;
@@ -164,9 +141,9 @@ begin
   if Valid then
   try
     dmOtto.ActionExecute(trnWrite, 'MONEYBACK', 'MONEYBACK_CREATE',
-      XmlAttrs2Vars(ndClient, 'ACCOUNT_ID',
-      Value2Vars(Byte(chkPayByFirm.Checked), 'PAYBYFIRM',
-      Value2Vars(ExtractWord(rgMoneyBackKind.ItemIndex+1, 'BELPOST;BANK', ';'), 'KIND'))));
+      XmlAttrs2Attr(ndClient, 'ACCOUNT_ID',
+      Value2Attr(Byte(chkPayByFirm.Checked), 'PAYBYFIRM',
+      Value2Attr(ExtractWord(rgMoneyBackKind.ItemIndex+1, 'BELPOST;BANK', ';'), 'KIND'))));
 
     trnWrite.Commit;
     ShowMessage('Возврат оформлен');

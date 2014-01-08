@@ -8,7 +8,7 @@ uses
   pFIBDatabase, ExtCtrls, JvExExtCtrls, JvExtComponent, JvPanel,
   TBXStatusBars, TB2Dock, TB2Toolbar, TBX, GridsEh,
   DBGridEh, StdCtrls, JvExStdCtrls, JvCheckBox, JvGroupBox, DB, FIBDataSet,
-  pFIBDataSet, NativeXml, TB2Item, DBGridEhGrouping, IdBaseComponent,
+  pFIBDataSet, GvXml, TB2Item, DBGridEhGrouping, IdBaseComponent,
   IdComponent, IdTCPConnection, IdTCPClient, IdExplicitTLSClientServerBase,
   IdMessageClient, IdSMTPBase, IdSMTP, ToolCtrlsEh, DBGridEhToolCtrls,
   DBAxisGridsEh;
@@ -55,21 +55,17 @@ type
     procedure actStoreUpdate(Sender: TObject);
   private
     function GetOrderId: Integer;
-    function FullAdress: String;
+//    function FullAdress: String;
     { Private declarations }
   public
     { Public declarations }
-    ndOrder: TXmlNode;
-    ndClient: TXmlNode;
-    ndAdress: TXmlNode;
-    ndPlace: TXmlNode;
-    ndAccount: TXmlNode;
-    ndBonus: TXmlNode;
-    ndProduct: TXmlNode;
-    procedure InitData; override;
-    procedure FreeData; override;
-    procedure OpenTables; override;
-    procedure Read; override;
+    ndOrder: TGvXmlNode;
+    ndClient: TGvXmlNode;
+    ndAdress: TGvXmlNode;
+    ndPlace: TGvXmlNode;
+    ndAccount: TGvXmlNode;
+    ndBonus: TGvXmlNode;
+    ndProduct: TGvXmlNode;
     property OrderId: Integer read GetOrderId;
   end;
 
@@ -79,24 +75,13 @@ var
 implementation
 
 uses
-  udmOtto, GvNativeXml, GvStr;
+  udmOtto, GvXmlUtils, GvStr;
 
 {$R *.dfm}
 
 { TFrameOrderSummary }
 
-procedure TFrameOrderSummary.FreeData;
-begin
-  inherited;
-
-end;
-
-procedure TFrameOrderSummary.InitData;
-begin
-  inherited;
-end;
-
-function TFrameOrderSummary.FullAdress: String;
+{function TFrameOrderSummary.FullAdress: String;
 begin
   result:= GetXmlAttr(ndAdress, 'POSTINDEX', '', '. ') +
     GetXmlAttr(ndPlace, 'PLACE_NAME', ' '+ndPlace.ReadAttributeString('PLACETYPE_SIGN', 'г')+'. ') +
@@ -108,8 +93,9 @@ begin
     GetXmlAttr(ndAdress, 'FLAT', ', кв. ');
   result:= ReplaceAll(Result, '  ', ' ');
 end;
+}
 
-procedure TFrameOrderSummary.Read;
+{procedure TFrameOrderSummary.Read;
 var
   RestEur: Variant;
 begin
@@ -129,15 +115,15 @@ begin
   txtOrderCode.Caption:= GetXmlAttr(ndOrder, 'ORDER_CODE');
   qryOrderFullSpecification.OpenWP([OrderId]);
 end;
-
+}
 procedure TFrameOrderSummary.actSetStateDraftExecute(Sender: TObject);
 const
   StatusSignNew = 'DRAFT';
 begin
   trnWrite.SetSavePoint('OnSetStatus'+StatusSignNew);
   try
-    SetXmlAttr(ndOrder, 'NOTE', mmoNote.Text);
-    SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', StatusSignNew);
+    ndOrder['NOTE']:= mmoNote.Text;
+    ndOrder['NEW.STATUS_SIGN']:= StatusSignNew;
     dmOtto.ActionExecute(trnWrite, ndOrder);
     trnWrite.Commit;
     trnRead.Commit;
@@ -145,14 +131,14 @@ begin
     ShowMessage('Заявка сохранена как черновик');
   except
     ShowMessageFmt('Невозможно установить статус %s', [StatusSignNew]);
-    SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', null);
+    ndOrder['NEW.STATUS_SIGN']:= null;
     trnWrite.RollBackToSavePoint('OnSetStatus'+StatusSignNew);
   end;
 end;
 
 function TFrameOrderSummary.GetOrderId: Integer;
 begin
-  Result:= ndOrder.ReadAttributeInteger('ID', 0)
+  Result:= ndOrder.Attr['ID'].AsIntegerDef(0);
 end;
 
 procedure TFrameOrderSummary.actSetStateApprovedExecute(Sender: TObject);
@@ -160,40 +146,37 @@ const
   StatusSignNew = 'APPROVED';
 var
   OrderCode: string;
-  ndOrderMoney: TXmlNode;
+  ndOrderMoney: TGvXmlNode;
   PatternMessage: String;
 begin
-  SetXmlAttr(ndOrder, 'NOTE', mmoNote.Text);
-  if GetXmlAttrValue(ndOrder, 'ADRESS_ID') = null then
+  ndOrder['NOTE']:= mmoNote.Text;
+  if not ndOrder.HasAttribute('ADRESS_ID')then
   begin
     ShowMessage('Не указан адрес клиента');
     Exit;
   end;
-  SetXmlAttr(ndOrder, 'BYR2EUR', dmOtto.SettingGet(trnRead, 'BYR2EUR'));
-  if not AttrExists(ndOrder, 'ORDER_CODE') then
-  begin
-    OrderCode:= dmOtto.GetNextCounterValue('PRODUCT', 'ORDER_CODE', GetXmlAttrValue(ndOrder, 'PRODUCT_ID'));
-    SetXmlAttr(ndOrder, 'ORDER_CODE', OrderCode);
-  end;
+  ndOrder.Attr['BYR2EUR'].AsMoney:= dmOtto.SettingGet(trnRead, 'BYR2EUR');
+  if not ndOrder.HasAttribute('ORDER_CODE') then
+    ndOrder['ORDER_CODE']:= dmOtto.GetNextCounterValue('PRODUCT', 'ORDER_CODE', ndOrder['PRODUCT_ID']);
   Caption:= txtOrderCode.Caption;
 
   if chkUseRest.Checked then
   begin
-    ndOrderMoney:= ndOrder.NodeNew('ORDERMONEY');
-    SetXmlAttr(ndOrderMoney, 'ID', dmOtto.GetNewObjectId('ORDERMONEY'));
-    BatchMoveFields2(ndOrderMoney, ndOrder,
+    ndOrderMoney:= ndOrder.AddChild('ORDERMONEY');
+    ndOrderMoney['ID']:= dmOtto.GetNewObjectId('ORDERMONEY');
+    BatchMoveFields(ndOrderMoney, ndOrder,
       'ORDER_ID=ID');
-    BatchMoveFields2(ndOrderMoney, ndAccount,
+    BatchMoveFields(ndOrderMoney, ndAccount,
       'ACCOUNT_ID=ID;AMOUNT_EUR=REST_EUR');
-    if GetXmlAttrValue(ndAccount, 'REST_EUR', 0) <> 0 then
+    if ndAccount.Attr['REST_EUR'].AsMoneyDef(0) <> 0 then
       dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_CREDITORDER',
-        XmlAttrs2Vars(ndAccount, 'ID;AMOUNT_EUR=REST_EUR',
-        XmlAttrs2Vars(ndOrder, 'ORDER_ID=ID;ORDER_CODE',
-        Value2Vars('Перенос остатка на заявку при оформлении', 'NOTES'))))
+        XmlAttrs2Attr(ndAccount, 'ID;AMOUNT_EUR=REST_EUR',
+        XmlAttrs2Attr(ndOrder, 'ORDER_ID=ID;ORDER_CODE',
+        Value2Attr('Перенос остатка на заявку при оформлении', 'NOTES'))))
   end;
   trnWrite.SetSavePoint('OnSetStatus'+StatusSignNew);
   try
-    SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', StatusSignNew);
+    ndOrder['NEW.STATUS_SIGN']:= StatusSignNew;
     dmOtto.ActionExecute(trnWrite, ndOrder);
 //    if GetXmlAttrValue(ndOrder, 'SOURCE') = 'Internet' then
 //    begin
@@ -203,24 +186,13 @@ begin
     trnWrite.Commit;
     trnRead.Commit;
     TForm(Owner).Close;
-    ShowMessage(GetXmlAttr(ndOrder, 'ORDER_CODE', 'Заявка ', ' сохранена и переведена в статус "Оформлена"'));
+    ShowMessage('Заявка '+ndOrder['ORDER_CODE']+' сохранена и переведена в статус "Оформлена"');
   except
     ShowMessageFmt('Невозможно установить статус %s', [StatusSignNew]);
-    SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', null);
+    ndOrder['NEW.STATUS_SIGN']:= null;
     trnWrite.RollBackToSavePoint('OnSetStatus'+StatusSignNew);
   end;
 //  dmOtto.SendEmail(GetXmlAttr(ndClient, 'EMAIL'), 'Номер присвоенной заявки', PatternMessage);
-end;
-
-procedure TFrameOrderSummary.OpenTables;
-begin
-  inherited;
-  qryOrderFullSpecification.Close;
-  if trnWrite.Active then
-    qryOrderFullSpecification.Transaction:= trnWrite
-  else
-    qryOrderFullSpecification.Transaction:= trnRead;
-  qryOrderFullSpecification.OpenWP([OrderId]);
 end;
 
 procedure TFrameOrderSummary.actStoreExecute(Sender: TObject);
@@ -229,7 +201,7 @@ begin
     trnWrite.Commit;
     trnRead.Commit;
     TForm(Owner).Close;
-    ShowMessage(GetXmlAttr(ndOrder, 'ORDER_CODE', 'Заявка ', ' сохранена'));
+    ShowMessage('Заявка '+ndOrder['ORDER_CODE']+' сохранена');
   except
     trnWrite.RollBack;
   end;

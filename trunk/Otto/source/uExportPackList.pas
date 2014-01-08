@@ -2,42 +2,37 @@ unit uExportPackList;
 
 interface
 uses
-  Classes, NativeXml, FIBDatabase, pFIBDatabase, DB;
+  Classes, GvXml, FIBDatabase, pFIBDatabase, DB;
 
 procedure ExportPackList(aTransaction: TpFIBTransaction);
 
 implementation
 uses
-  SysUtils, GvNativeXml, udmOtto, GvStr, Dbf, GvFile, uMain, Dialogs, GvVariant,
+  SysUtils, GvXmlUtils, udmOtto, GvStr, Dbf, GvFile, uMain, Dialogs, GvVariant,
   frxClass, frxExportXLS, GvMath, GvVars, Variants;
 
-function GetPlace(ndPlace: TXmlNode): string;
+function GetPlace(ndPlace: TGvXmlNode): string;
 begin
-  if GetXmlAttrValue(ndPlace, 'PLACETYPE_CODE', '4') = 4 then
-    Result:= GetXmlAttr(ndPlace, 'PLACE_NAME')
-  else
-    Result:= GetXmlAttr(ndPlace, 'PLACETYPE_NAME', ' ', '.') +
-             GetXmlAttr(ndPlace, 'PLACE_NAME', ' ');
+  Result:= FillPattern(
+    '{PLACETYPE_CODE <> "4" THEN [PLACETYPE_SIGN]. }[PLACE_NAME]',
+    XmlAttrs2Attr(ndPlace, 'PLACETYPE_CODE;PLACETYPE_SIGN;PLACE_NAME'));
 end;
 
-function GetStreet(ndAdress: TXmlNode): string;
+function GetStreet(ndAdress: TGvXmlNode): string;
 begin
-   if GetXmlAttrValue(ndAdress, 'STREETTYPE_CODE', '1') > 1 then
-     Result:= GetXmlAttr(ndAdress, 'STREETTYPE_NAME', ' ', '. ') +
-             GetXmlAttr(ndAdress, 'STREET_NAME')
-   else
-     Result:= GetXmlAttr(ndAdress, 'STREET_NAME');
+  Result:= FillPattern(
+    '{STREETTYPE_CODE > "1" THEN  [STREETTYPE_NAME]. }[STREET_NAME]',
+    XmlAttrs2Attr(ndAdress, 'STREETTYPE_CODE;STREETTYPE_NAME;STREET_NAME'));
 end;
 
-function GetHome(ndAdress: TXmlNode): string;
+function GetHome(ndAdress: TGvXmlNode): string;
 begin
-   Result:= GetXmlAttr(ndAdress, 'HOUSE') +
-           GetXmlAttr(ndAdress, 'BUILDING', '/') +
-           GetXmlAttr(ndAdress, 'FLAT', '-');
-
+  Result:= FillPattern(
+    '{HOUSE THEN [HOUSE]}{BUILDING THEN /[BUILDING]}{FLAT THEN -[FLAT]}',
+    XmlAttrs2Attr(ndAdress, 'HOUSE;BUILDING;FLAT'));
 end;
 
-function GetAdress(ndAdress: TXmlNode): string;
+function GetAdress(ndAdress: TGvXmlNode): string;
 begin
   Result:= GetStreet(ndAdress) + ', ' + GetHome(ndAdress);
 end;
@@ -51,82 +46,83 @@ begin
 end;
 
 procedure ExportOrderItem(aTransaction: TpFIBTransaction;
-  ndProduct, ndOrder, ndOrderItems, ndOrderTaxs, ndClient, ndAdress, ndPlace: TXmlNode;
+  ndProduct, ndOrder, ndOrderItems, ndOrderTaxs, ndClient, ndAdress, ndPlace: TGvXmlNode;
   tblCons, tblConsPi3: TDataSet; aOrderItemId: variant);
 var
-  ndOrderItem, ndTaxSSbor: TXmlNode;
+  ndOrderItem, ndTaxSSbor: TGvXmlNode;
   ShortClientName: string;
   St: string;
 begin
-  ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM', 'ID', aOrderItemId);
+  ndOrderItem:= ndOrderItems.Find('ORDERITEM', 'ID', aOrderItemId);
   try
-    ndTaxSSbor:= ndOrderTaxs.NodeByAttributeValue('ORDERTAX', 'TAXSERV_ID', '1');
+    ndTaxSSbor:= ndOrderTaxs.Find('ORDERTAX', 'TAXSERV_ID', '1');
     if not Assigned(ndTaxSSbor) then
     begin
-      ShowMessage(GetXmlAttr(ndOrder, 'ORDER_CODE', 'Отсутствует сервисный сбор на заявке '));
+      ShowMessage('Отсутствует сервисный сбор на заявке '+ndOrder['ORDER_CODE']);
     end;
 
 //    ndProduct.Document.XmlFormat:= xfReadable;
 //    ndProduct.Document.SaveToFile('order.xml');
     tblCons.Append;
-    BatchMoveFields2(tblCons, ndProduct, 'KTPART=PARTNER_NUMBER');
-    BatchMoveFields2(tblCons, ndOrder,
+    BatchMoveFields(tblCons, ndProduct, 'KTPART=PARTNER_NUMBER');
+    BatchMoveFields(tblCons, ndOrder,
       'KTKUNDE=ORDER_CODE;NRSENDUNG=PACKLIST_NO;NRKARTON=PALETTE_NO;'+
       'DATEEXCH=CREATE_DTM;RATEEXCH=BYR2EUR;USEXCH="0";VIDPLAT="0";'+
       'CONTR_ID=ID;COSTALL=ITEMSCOST_EUR;BARKOD=BAR_CODE');
-    BatchMoveFields2(tblCons, ndOrderItem,
+    BatchMoveFields(tblCons, ndOrderItem,
       'NRART=ARTICLE_CODE;BZARTORG=DESCRIPTION;MENGE=AMOUNT;PRVK=PRICE_EUR;'+
       'NREGWG;ZNAK="1";INSUM="1";NRAUFPOS=ORDERITEM_INDEX');
-    BatchMoveFields2(tblCons, ndTaxSSbor,
+    BatchMoveFields(tblCons, ndTaxSSbor,
         'SBOR=COST_EUR');
-    BatchMoveFields2(tblCons, ndAdress,
+    BatchMoveFields(tblCons, ndAdress,
       'GOSNUM=POSTINDEX');
-    BatchMoveFields2(tblCons, ndClient,
+    BatchMoveFields(tblCons, ndClient,
       'BLACKLIST="0"');
-    tblCons['NEWICHT']:= GetXmlAttrValue(ndOrder, 'WEIGHT', 0)/1000;
+    tblCons['NEWICHT']:= ndOrder.Attr['WEIGHT'].AsIntegerDef(0)/1000;
 
-    tblCons['KTNAME']:= Translit(
-      GetXmlAttr(ndClient, 'FIRST_NAME') + ' '+
-      Copy(GetXmlAttr(ndClient, 'MID_NAME'), 1, 1) + ' ' +
-      nvl(GetXmlAttrValue(ndOrder, 'LAST_NAME'), GetXmlAttrValue(ndClient, 'LAST_NAME')));
-    tblCons['AUFEXT']:= CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5);
-    tblCons['GRART']:= dmOtto.Recode('ORDERITEM', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION'));
-    tblCons['NAMEZAK']:= GetXmlAttr(ndOrderItem, 'NAME_RUS') + GetXmlAttr(ndOrderItem, 'KIND_RUS', ' ');
-    tblCons['FAMILY']:= nvl(GetXmlAttrValue(ndOrder, 'LAST_NAME'), GetXmlAttrValue(ndClient, 'LAST_NAME'))+
-                        GetXmlAttr(ndClient, 'FIRST_NAME', ' ') +
-                        GetXmlAttr(ndClient, 'MID_NAME', ' ');
+    tblCons['KTNAME']:= FillPattern(
+      '[FIRST_NAME|TRANSLIT]{MID_NAME THEN  [MID_NAME|SUBSTR=1,1|TRANSLIT]}[{ORDER_LAST_NAME THEN ORDER_LAST_NAME ELSE LAST_NAME}|TRANSLIT]',
+      XmlAttrs2Attr(ndClient, 'FIRST_NAME;MID_NAME;LAST_NAME',
+      XmlAttrs2Attr(ndOrder, 'ORDER_LAST_NAME=LAST_NAME')));
+    tblCons['AUFEXT']:= CopyLast(ndOrder['ORDER_CODE'], 5);
+    tblCons['GRART']:= dmOtto.Recode('ORDERITEM', 'DIMENSION_ENCODE', ndOrderItem['DIMENSION']);
+    tblCons['NAMEZAK']:= ndOrderItem['NAME_RUS'];
+    tblCons['FAMILY']:= FillPattern(
+      '{ORDER_LAST_NAME THEN [ORDER_LAST_NAME] ELSE [LAST_NAME]} [FIRST_NAME]{MID_NAME THEN  [MID_NAME]}',
+      XmlAttrs2Attr(ndClient, 'FIRST_NAME;LAST_NAME;MID_NAME',
+      XmlAttrs2Attr(ndOrder, 'ORDER_LAST_NAME=LAST_NAME')));
     tblCons['STREETRUS']:= GetAdress(ndAdress);
     tblCons['CITYRUS']:= GetPlace(ndPlace);
-    tblCons['REGIONRUS']:= GetXmlAttr(ndPlace, 'AREA_NAME', '', ' р-н., ')+
-                           GetXmlAttr(ndPlace, 'REGION_NAME', '', ' обл.');
+    tblCons['REGIONRUS']:= FillPattern(
+      '{AREA_NAME THEN [AREA_NAME] р-н., }{REGION_NAME THEN [REGION_NAME] обл.}',
+      XmlAttrs2Attr(ndPlace, 'AREA_NAME;REGION_NAME'));
     tblCons['STREET']:= Translit(GetAdress(ndAdress));
     tblCons['CITY']:= Translit(GetPlace(ndPlace));
-    tblCons['REGION']:= Translit(GetXmlAttr(ndPlace, 'AREA_NAME', '', ' р-н., ')+
-                           GetXmlAttr(ndPlace, 'REGION_NAME', '', ' обл.'));
+    tblCons['REGION']:= Translit(tblCons['REGIONRUS']);
 
-    tblCons['TEL']:= GetMobilePhone(GetXmlAttr(ndClient, 'MOBILE_PHONE', '+375'));
-    tblCons['COSTBYR']:= GetXmlAttr(ndOrder, 'COST_BYR');
-    tblCons['SBORBYR']:= GetXmlAttrValue(ndTaxSSbor, 'COST_BYR');
+    tblCons['TEL']:= GetMobilePhone('+375'+ndClient['MOBILE_PHONE']);
+    tblCons['COSTBYR']:= ndOrder.Attr['COST_BYR'].AsMoney;
+    tblCons['SBORBYR']:= ndTaxSSbor.Attr['COST_BYR'].AsMoney;
 
-    if GetXmlAttrValue(ndProduct, 'PAYTYPE_SIGN') = 'POSTPAY' then // Наложенный платеж
+    if ndProduct.Attr['PAYTYPE_SIGN'].ValueIn(['POSTPAY']) then // Наложенный платеж
     begin
-      BatchMoveFields2(tblCons, ndOrder,
+      BatchMoveFields(tblCons, ndOrder,
         'VIDPLAT="1";INFOP=PACKLIST_NO;INFOPDATE=INVOICE_DT_0;COSTALLN=INVOICE_BYR_0');
     end;
     tblCons.Post;
     tblConsPi3.Append;
-    BatchMoveFields2(tblConsPi3, tblCons,
+    BatchMoveFields(tblConsPi3, tblCons,
       'KTPART;X211=NRSENDUNG;NZAK=KTKUNDE;EXP_3="300";NAMEZAK;NRART;GRART;KOL="1";'+
       'PRICE=PRVK;PRICEBEL=COSTBYR;SERVBEL=SBORBYR;DATEPOST=DATEEXCH;NREGWG;'+
       'FAMILY;PARTOBL=REGIONRUS;TELEPHONE=TEL;NORG="1";INDEXCITY=GOSNUM;'+
       'CITYRUS;N14=NRPALETTE');
-    BatchMoveFields2(tblConsPi3, ndOrderItem,
+    BatchMoveFields(tblConsPi3, ndOrderItem,
       'NRAUFPOS=ORDERITEM_INDEX');
     tblConsPi3['STREET']:= GetStreet(ndAdress);
     tblConsPi3['HOME']:= GetHome(ndAdress);
-    tblConsPi3['NEWICHT']:= GetXmlAttrValue(ndOrderItem, 'WEIGHT', 0)/1000;
+    tblConsPi3['NEWICHT']:= ndOrderItem.Attr['WEIGHT'].AsIntegerDef(0)/1000;
     tblConsPi3.Post;
-    SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'DELIVERING');
+    ndOrderItem['NEW.STATUS_SIGN']:= 'DELIVERING';
     dmOtto.ActionExecute(aTransaction, ndOrderItem);
   finally
     ndOrderItem.Clear;
@@ -134,10 +130,10 @@ begin
 end;
 
 procedure ExportOrder(aTransaction: TpFIBTransaction;
-  ndProduct, ndOrders: TXmlNode; tblCons, tblConsPi3: TDataSet;
+  ndProduct, ndOrders: TGvXmlNode; tblCons, tblConsPi3: TDataSet;
   aOrderId: integer; var BelPostLine: string);
 var
-  ndOrder, ndOrderItems, ndOrderItem, ndOrderTaxs, ndClient, ndAdress, ndPlace: TXmlNode;
+  ndOrder, ndOrderItems, ndOrderItem, ndOrderTaxs, ndClient, ndAdress, ndPlace: TGvXmlNode;
   OrderItemList: string;
   OrderItemId: Variant;
   i: integer;
@@ -145,20 +141,20 @@ var
 begin
   sl:= TStringList.Create;
   try
-    ndOrder:= ndOrders.NodeNew('ORDER');
-    ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
-    ndOrderTaxs:= ndOrder.NodeFindOrCreate('ORDERTAXS');
-    ndClient:= ndOrder.NodeFindOrCreate('CLIENT');
-    ndAdress:= ndOrder.NodeFindOrCreate('ADRESS');
-    ndPlace:= ndAdress.NodeFindOrCreate('PLACE');
+    ndOrder:= ndOrders.AddChild('ORDER');
+    ndOrderItems:= ndOrder.FindOrCreate('ORDERITEMS');
+    ndOrderTaxs:= ndOrder.FindOrCreate('ORDERTAXS');
+    ndClient:= ndOrder.FindOrCreate('CLIENT');
+    ndAdress:= ndOrder.FindOrCreate('ADRESS');
+    ndPlace:= ndAdress.FindOrCreate('PLACE');
 
     dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
     dmOtto.OrderItemsGet(ndOrderItems, aOrderId, aTransaction);
     dmOtto.OrderTaxsGet(ndOrderTaxs, aOrderId, aTransaction);
-    dmOtto.ObjectGet(ndClient, GetXmlAttrValue(ndOrder, 'CLIENT_ID'), aTransaction);
-    dmOtto.AdressRead(ndAdress, GetXmlAttrValue(ndOrder, 'ADRESS_ID'), aTransaction);
+    dmOtto.ObjectGet(ndClient, ndOrder['CLIENT_ID'], aTransaction);
+    dmOtto.AdressRead(ndAdress, ndOrder['ADRESS_ID'], aTransaction);
 
-    SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'DELIVERING');
+    ndOrder['NEW.STATUS_SIGN']:= 'DELIVERING';
     dmOtto.ActionExecute(aTransaction, ndOrder);
 
     OrderItemList:= aTransaction.DefaultDatabase.QueryValue(
@@ -173,24 +169,18 @@ begin
       ExportOrderItem(aTransaction, ndProduct, ndOrder, ndOrderItems, ndOrderTaxs, ndClient, ndAdress, ndPlace,
         tblCons, tblConsPi3, OrderItemId);
     end;
-    BelPostLine:= '[BAR_CODE];[COST_BYR];[EXPN];[ITEMSCOST_EUR];[WEIGHT];'+
+
+    BelPostLine:= FillPattern(
+      '[BAR_CODE];{PAYTYPE_SIGN <> "POSTPAY" THEN 0 ELSE [COST_BYR]};[EXPN];[ITEMSCOST_EUR];[WEIGHT];'+
       '[CLIENT_FIO];[AREA_NAME];[REGION_NAME];[PLACE_NAME];[STREETTYPE_SIGN] [STREET_NAME];[HOUSE];[BUILD];[FLAT];[POSTINDEX];'+
-      '[NUMDEP];[MOBILE_PHONE];[REMK];0';
-
-    if GetXmlAttrValue(ndOrder, 'WEIGHT') <> null then
-      BelPostLine:= FillPattern(BelPostLine,
-        Value2Vars(GetXmlAttrValue(ndOrder, 'WEIGHT')/1000, 'WEIGHT'
-        ), false);
-    if GetXmlAttrValue(ndProduct, 'PAYTYPE_SIGN') <> 'POSTPAY' then
-      BelPostLine:= FillPattern(BelPostLine,
-        Value2Vars('0', 'COST_BYR'), false);
-
-    BelPostLine:= FillPattern(BelPostLine,
-      XmlAttrs2Vars(ndOrder, 'BAR_CODE;ITEMSCOST_EUR;CLIENT_FIO;COST_BYR',
-      XmlAttrs2Vars(ndClient, 'MOBILE_PHONE',
-      XmlAttrs2Vars(ndPlace, 'AREA_NAME;REGION_NAME;PLACE_NAME',
-      XmlAttrs2Vars(ndAdress, 'STREET_NAME;STREETTYPE_SIGN;HOUSE;BUILD;FLAT;POSTINDEX'
-      )))), true);
+      '[NUMDEP];[MOBILE_PHONE];[REMK];0',
+      XmlAttrs2Attr(ndProduct, 'PAYTYPE_SIGN',
+      XmlAttrs2Attr(ndOrder, 'BAR_CODE;ITEMSCOST_EUR;CLIENT_FIO;COST_BYR',
+      XmlAttrs2Attr(ndClient, 'MOBILE_PHONE',
+      XmlAttrs2Attr(ndPlace, 'AREA_NAME;REGION_NAME;PLACE_NAME',
+      XmlAttrs2Attr(ndAdress, 'STREET_NAME;STREETTYPE_SIGN;HOUSE;BUILD;FLAT;POSTINDEX',
+      Value2Attr(ndOrder.Attr['WEIGHT'].AsIntegerDef(0)/1000, 'WEIGHT'
+      )))))));
 
   finally
     sl.Free;
@@ -220,7 +210,7 @@ end;
 
 
 procedure ExportPack(aTransaction: TpFIBTransaction;
-  ndProduct, ndOrders: TXmlNode; aPacklistNo: integer);
+  ndProduct, ndOrders: TGvXmlNode; aPacklistNo: integer);
 const
   HeaderText = 'Формирование паклиста';
 var
@@ -230,15 +220,15 @@ var
   dbfCons, dbfConsPi3: TDbf;
   BelPostLines: TStringList;
 begin
-  SetXmlAttr(ndOrders, 'PACKLIST_NO', aPackListNo);
+  ndOrders['PACKLIST_NO']:= aPackListNo;
   dbfCons:= TDbf.Create(nil);
   dbfConsPi3:= TDbf.Create(nil);
   ForceDirectories(Path['DbfPackLists']);
   ConsName:= Format('t-cons_%s_%uv.dbf',
-      [GetXmlAttr(ndProduct, 'PARTNER_NUMBER'), aPacklistNo]);
+      [ndProduct['PARTNER_NUMBER'], aPacklistNo]);
   copyFile(Path['Stru']+'tcons.dbf', Path['DbfPackLists'] + ConsName);
   ConsPi3Name:= Format('t-cons_%s_%uvpi3',
-      [GetXmlAttr(ndProduct, 'PARTNER_NUMBER'), aPacklistNo]);
+      [ndProduct['PARTNER_NUMBER'], aPacklistNo]);
   copyFile(Path['Stru']+'tconspi3.dbf', Path['DbfPackLists'] + ConsPi3Name+'.dbf');
 
   MakeXls(aPacklistNo, ConsPi3Name+'.xls');
@@ -269,7 +259,7 @@ begin
       BelPostLines.SaveToFile(Format(
         '%sBaltPost_%s_%u.txt',
         [Path['DbfPackLists'],
-         GetXmlAttr(ndProduct, 'PARTNER_NUMBER'),
+         ndProduct['PARTNER_NUMBER'],
          aPacklistNo]));
     finally
       dmOtto.InitProgress;
@@ -285,14 +275,14 @@ begin
 end;
 
 procedure ExportProduct(aTransaction: TpFIBTransaction;
-  ndProducts: TXmlNode; aProductId: integer);
+  ndProducts: TGvXmlNode; aProductId: integer);
 var
-  ndProduct, ndOrders: TXmlNode;
+  ndProduct, ndOrders: TGvXmlNode;
   PackList, FileName, OrderText: string;
   PacklistNo: variant;
 begin
-  ndProduct:= ndProducts.NodeFindOrCreate('PRODUCT');
-  ndOrders:= ndProduct.NodeNew('ORDERS');
+  ndProduct:= ndProducts.FindOrCreate('PRODUCT');
+  ndOrders:= ndProduct.AddChild('ORDERS');
 
   dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
   PackList:= aTransaction.DefaultDatabase.QueryValue(
@@ -310,14 +300,14 @@ end;
 
 procedure ExportPackList(aTransaction: TpFIBTransaction);
 var
-  Xml: TNativeXml;
-  ndProducts: TXmlNode;
+  Xml: TGvXml;
+  ndProducts: TGvXmlNode;
   ProductId: Variant;
   ProductList: string;
 begin
   aTransaction.StartTransaction;
   try
-    xml:= TNativeXml.CreateName('PRODUCTS');
+    xml:= TGvXml.Create('PRODUCTS');
     try
       ndProducts:= Xml.Root;
       ProductList:= aTransaction.DefaultDatabase.QueryValue(

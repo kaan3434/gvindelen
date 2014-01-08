@@ -1,52 +1,48 @@
 object FrameBase1: TFrameBase1
-  Left = 533
-  Top = 158
-  Width = 530
-  Height = 413
+  Left = 0
+  Top = 0
+  Width = 435
+  Height = 266
   Align = alClient
-  Caption = 'FrameBase1'
-  Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
-  OnShow = FormShow
-  PixelsPerInch = 96
-  TextHeight = 13
-  object dckTop: TTBXDock
+  ParentFont = False
+  TabOrder = 0
+  object pnlFrame: TPanel
     Left = 0
     Top = 0
-    Width = 514
-    Height = 26
-    object tlBarTop: TTBXToolbar
-      Left = 0
-      Top = 0
-      Caption = 'tlBarTop'
-      Images = imgList
-      Stretch = True
-      TabOrder = 0
+    Width = 435
+    Height = 266
+    Align = alClient
+    BorderWidth = 4
+    TabOrder = 0
+    object sBarFrame: TTBXStatusBar
+      Left = 5
+      Top = 239
+      Width = 425
+      Panels = <>
+      UseSystemFont = False
     end
-  end
-  object sb: TTBXStatusBar
-    Left = 0
-    Top = 353
-    Width = 514
-    Panels = <>
-    UseSystemFont = False
-  end
-  object trnRead: TpFIBTransaction
-    DefaultDatabase = dmOtto.dbOtto
-    TimeoutAction = TARollback
-    Left = 40
-    Top = 24
-  end
-  object trnWrite: TpFIBTransaction
-    DefaultDatabase = dmOtto.dbOtto
-    TimeoutAction = TARollback
-    Left = 112
-    Top = 24
+    object dckTop: TTBXDock
+      Left = 5
+      Top = 5
+      Width = 425
+      Height = 26
+      object tbBarTop: TTBXToolbar
+        Left = 0
+        Top = 0
+        Caption = 'tbBarTop'
+        DockMode = dmCannotFloatOrChangeDocks
+        DragHandleStyle = dhNone
+        FullSize = True
+        Images = imgList
+        Stretch = True
+        TabOrder = 0
+      end
+    end
   end
   object actList: TActionList
     Images = imgList

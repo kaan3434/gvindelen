@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uFormWizardBase, JvWizard, FIBDatabase, pFIBDatabase, ActnList,
-  JvExControls, NativeXml, uFrameMoneyBack3;
+  JvExControls, GvXml, uFrameMoneyBack3;
 
 type
   TFormWizardBase1 = class(TFormWizardBase)
@@ -13,8 +13,8 @@ type
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
-    ndClient: TXmlNode;
-    ndAccount: TXmlNode;
+    ndClient: TGvXmlNode;
+    ndAccount: TGvXmlNode;
     frmMoneyBack: TFrameMoneyBack3;
 //    function GetObjectId: integer;
 //    procedure SetObjectId(const Value: integer);
@@ -28,16 +28,16 @@ type
 implementation
 
 uses
-  udmOtto, GvNativeXml;
+  udmOtto, GvXmlUtils;
 
 {$R *.dfm}
 
 procedure TFormWizardBase1.BuildXml;
 begin
   inherited;
-  Root.Name:= 'CLIENT';
+  Root.NodeName:= 'CLIENT';
   ndClient:= Root;
-  ndAccount:= ndClient.NodeFindOrCreate('ACCOUNT');
+  ndAccount:= ndClient.FindOrCreate('ACCOUNT');
 end;
 
 procedure TFormWizardBase1.ReadFromDB(aObjectId: Integer);
@@ -45,7 +45,7 @@ begin
   inherited;
   dmOtto.ObjectGet(ndClient, aObjectId, trnRead);
   trnWrite.StartTransaction;
-  dmOtto.ObjectGet(ndAccount, GetXmlAttrValue(ndClient, 'ACCOUNT_ID'), trnWrite);
+  dmOtto.ObjectGet(ndAccount, ndClient['ACCOUNT_ID'], trnWrite);
 end;
 
 

@@ -8,28 +8,28 @@ procedure ExportCancelRequest(aTransaction: TpFIBTransaction);
 implementation
 
 uses
-  NativeXml, GvNativeXml, udmOtto, GvStr, GvFile, GvDtTm, DateUtils, Dialogs;
+  GvXml, GvXmlUtils, udmOtto, GvStr, GvFile, GvDtTm, DateUtils, Dialogs;
 
 function ExportOrderItem(aTransaction: TpFIBTransaction;
-  ndProduct, ndOrder, ndOrderItems: TXmlNode; aOrderItemId: integer): string;
+  ndProduct, ndOrder, ndOrderItems: TGvXmlNode; aOrderItemId: integer): string;
 var
-  ndOrderItem: TXmlNode;
+  ndOrderItem: TGvXmlNode;
   Line: TStringList;
 begin
   Line:= TStringList.Create;
   try
-    ndOrderItem:= ndOrderItems.NodeNew('ORDERITEM');
+    ndOrderItem:= ndOrderItems.AddChild('ORDERITEM');
     dmOtto.ObjectGet(ndOrderItem, aOrderItemId, aTransaction);
-    Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
-    Line.Add(CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5));
+    Line.Add(ndProduct['PARTNER_NUMBER']);
+    Line.Add(CopyLast(ndOrder['ORDER_CODE'], 5));
     Line.Add('900');
-    Line.Add(GetXmlAttr(ndOrderItem, 'AUFTRAG_ID'));
-    Line.Add(GetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX'));
-    Line.Add(GetXmlAttr(ndOrderItem, 'ARTICLE_CODE'));
-    Line.Add(dmOtto.Recode('ORDERITEM', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION')));
+    Line.Add(ndOrderItem['AUFTRAG_ID']);
+    Line.Add(ndOrderItem['ORDERITEM_INDEX']);
+    Line.Add(ndOrderItem['ARTICLE_CODE']);
+    Line.Add(dmOtto.Recode('ORDERITEM', 'DIMENSION_ENCODE', ndOrderItem['DIMENSION']));
     Line.Add('1');
     Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
-    SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'CANCELREQUESTSENT');
+    ndOrderItem['NEW.STATE_SIGN']:= 'CANCELREQUESTSENT';
     dmOtto.ActionExecute(aTransaction, ndOrderItem);
   finally
     Line.Free;
@@ -37,15 +37,15 @@ begin
 end;
 
 function ExportOrder(aTransaction: TpFIBTransaction;
-  ndProduct, ndOrders: TXmlNode; aOrderId: integer): string;
+  ndProduct, ndOrders: TGvXmlNode; aOrderId: integer): string;
 var
   OrderItemList: string;
-  ndOrder, ndOrderItems: TXmlNode;
+  ndOrder, ndOrderItems: TGvXmlNode;
   OrderItemId: Variant;
 begin
   Result:= '';
-  ndOrder:= ndOrders.NodeNew('ORDER');
-  ndOrderItems:= ndOrder.NodeNew('ORDERITEMS');
+  ndOrder:= ndOrders.AddChild('ORDER');
+  ndOrderItems:= ndOrder.AddChild('ORDERITEMS');
   dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
   OrderItemList:= aTransaction.DefaultDatabase.QueryValue(
     'select list(orderitem_id) from '+
@@ -65,16 +65,16 @@ begin
 end;
 
 procedure ExportProduct(aTransaction: TpFIBTransaction;
-  ndProducts: TXmlNode; aProductId: integer);
+  ndProducts: TGvXmlNode; aProductId: integer);
 var
-  ndProduct, ndOrders: TXmlNode;
+  ndProduct, ndOrders: TGvXmlNode;
   OrderList, FileName, Text: string;
   OrderId: variant;
 begin
   Text:= '';
   try
-    ndProduct:= ndProducts.NodeNew('PRODUCT');
-    ndOrders:= ndProduct.NodeNew('ORDERS');
+    ndProduct:= ndProducts.AddChild('PRODUCT');
+    ndOrders:= ndProduct.AddChild('ORDERS');
     dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
     OrderList:= aTransaction.DefaultDatabase.QueryValue(
       'select list(distinct order_id) from ('+
@@ -94,7 +94,7 @@ begin
     end;
     ForceDirectories(Path['CancelRequests']);
     FileName:= GetNextFileName(Format('%ss%s_%.1u%%.1u.%.3d', [
-      Path['CancelRequests'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
+      Path['CancelRequests'], ndProduct['PARTNER_NUMBER'],
       Integer(dmOtto.DealerId), DayOfTheYear(Date)]));
     SaveStringAsFile(Text, FileName);
     dmOtto.CreateAlert('Запрос на ануляцию', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
@@ -105,14 +105,14 @@ end;
 
 procedure ExportCancelRequest(aTransaction: TpFIBTransaction);
 var
-  Xml: TNativeXml;
-  ndProducts: TXmlNode;
+  Xml: TGvXml;
+  ndProducts: TGvXmlNode;
   ProductId: Variant;
   ProductList: string;
 begin
   aTransaction.StartTransaction;
   try
-    xml:= TNativeXml.CreateName('PRODUCTS');
+    xml:= TGvXml.Create('PRODUCTS');
     try
       ndProducts:= Xml.Root;
       ProductList:= aTransaction.DefaultDatabase.QueryValue(

@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, JvWizard, JvWizardRouteMapNodes, JvExControls, 
-  Buttons, ActnList, NativeXml, FIBDatabase, pFIBDatabase;
+  Buttons, ActnList, FIBDatabase, pFIBDatabase, GvXml;
 
 type
   TSourceFlag = (sfBlank, sfMessage, sfDatabase, sfXml);
@@ -22,20 +22,20 @@ type
   protected
     ObjectId: Integer;
     MessageId: Integer;
-    XmlData: TNativeXml;
+    XmlData: TGvXml;
     SourceFlag: TSourceFlag;
 //    property ObjectId: Integer read FObjectId write FObjectId;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
     constructor CreateBlank(AOwner: TComponent); virtual;
-    constructor CreateDB(AOwner: TComponent;aObjectId: Integer); 
-    constructor CreateXml(AOwner: TComponent;aXml: TNativeXml); virtual;
+    constructor CreateDB(AOwner: TComponent;aObjectId: Integer);
+    constructor CreateXml(AOwner: TComponent;aXml: TGvXml); virtual;
     constructor CreateMessage(AOwner: TComponent; aMessageId: integer); virtual;
     destructor Destroy; override;
     procedure IncludeForm(aWinControl: TWinControl; aForm: TWinControl);
     procedure InitFrames; virtual;
-    function Root: TXmlNode;
+    function Root: TGvXmlNode;
     procedure BuildXml; virtual;
     procedure ReadFromDB(aObjectId: Integer); virtual;
     procedure ParseMessage(aFileName: string); virtual; abstract;
@@ -47,7 +47,7 @@ type
 implementation
 
 uses
-  udmOtto, GvNativeXml;
+  udmOtto, GvXmlUtils;
 
 {$R *.dfm}
 
@@ -57,7 +57,7 @@ constructor TFormWizardBase.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   trnRead.StartTransaction;
-  XmlData:= TNativeXml.Create;
+  XmlData:= TGvXml.Create;
   BuildXml;
 end;
 
@@ -82,7 +82,7 @@ begin
   inherited;
 end;
 
-function TFormWizardBase.Root: TXmlNode;
+function TFormWizardBase.Root: TGvXmlNode;
 begin
   Result:= XmlData.Root;
 end;
@@ -99,11 +99,11 @@ begin
 end;
 
 constructor TFormWizardBase.CreateXml(AOwner: TComponent;
-  aXml: TNativeXml);
+  aXml: TGvXml);
 begin
   inherited Create(AOwner);
   SourceFlag:= sfXml;
-  XmlData:= TNativeXml.Create;
+  XmlData:= TGvXml.Create;
   XmlData.Assign(aXml);
   BuildXml;
 end;
@@ -163,15 +163,15 @@ end;
 constructor TFormWizardBase.CreateMessage(AOwner: TComponent;
   aMessageId: integer);
 var
-  ndMessage: TXmlNode;
+  ndMessage: TGvXmlNode;
 begin
   Create(AOwner);
   SourceFlag:= sfMessage;
-  ndMessage:= XmlData.Root.NodeNew('MESSAGE');
+  ndMessage:= XmlData.Root.AddChild('MESSAGE');
   MessageId:= aMessageId;
   trnWrite.StartTransaction;
   dmOtto.ObjectGet(ndMessage, aMessageId, trnWrite);
-  Caption:= GetXmlAttr(ndMessage, 'FILE_NAME');
+  Caption:= ndMessage.Attr['FILE_NAME'].AsString;
   ParseMessage(Caption);
 end;
 

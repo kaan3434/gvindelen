@@ -1,4 +1,4 @@
-object Frame1: TFrame1
+object FrameCriterias: TFrameCriterias
   Left = 0
   Top = 0
   Width = 495
@@ -8,19 +8,42 @@ object Frame1: TFrame1
     Left = 0
     Top = 0
     Width = 495
-    Height = 26
+    Height = 25
     object tb1: TTBXToolbar
       Left = 0
       Top = 0
       Caption = 'tb1'
+      DockMode = dmCannotFloatOrChangeDocks
+      DragHandleStyle = dhNone
+      FullSize = True
       TabOrder = 0
+      object btnNew: TTBXItem
+        Action = actNew
+      end
+      object btnEdit: TTBXItem
+        Action = actEdit
+      end
+      object btnDelete: TTBXItem
+        Action = actDelete
+      end
+      object tbsep1: TTBXSeparatorItem
+      end
+      object btnCopy: TTBXItem
+        Action = actCopy
+      end
+      object btnPaste: TTBXItem
+        Action = actPaste
+      end
+      object btnClear: TTBXItem
+        Action = actClear
+      end
     end
   end
   object grdCriterias: TDBGridEh
     Left = 0
-    Top = 26
+    Top = 25
     Width = 495
-    Height = 214
+    Height = 215
     Align = alClient
     DataSource = dsCriterias
     DynProps = <>
@@ -87,7 +110,41 @@ object Frame1: TFrame1
   end
   object dsCriterias: TDataSource
     AutoEdit = False
-    Left = 392
-    Top = 152
+    Left = 232
+    Top = 64
+  end
+  object actCriterias: TActionList
+    Left = 136
+    Top = 64
+    object actNew: TAction
+      Caption = #1053#1086#1074#1099#1081
+      OnExecute = actNewExecute
+      OnUpdate = actNewUpdate
+    end
+    object actEdit: TAction
+      Caption = #1048#1079#1084#1077#1085#1080#1090#1100
+      OnExecute = actEditExecute
+      OnUpdate = actEditUpdate
+    end
+    object actDelete: TAction
+      Caption = #1059#1076#1072#1083#1080#1090#1100
+      OnExecute = actDeleteExecute
+      OnUpdate = actDeleteUpdate
+    end
+    object actCopy: TAction
+      Caption = #1050#1086#1087#1080#1088#1086#1074#1072#1090#1100
+      OnExecute = actCopyExecute
+      OnUpdate = actCopyUpdate
+    end
+    object actPaste: TAction
+      Caption = #1042#1089#1090#1072#1074#1080#1090#1100
+      OnExecute = actPasteExecute
+      OnUpdate = actPasteUpdate
+    end
+    object actClear: TAction
+      Caption = #1054#1095#1080#1089#1090#1080#1090#1100
+      OnExecute = actClearExecute
+      OnUpdate = actClearUpdate
+    end
   end
 end

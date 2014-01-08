@@ -41,19 +41,17 @@ object FrameBase0: TFrameBase0
     BevelOuter = bvNone
     BorderWidth = 4
     Caption = 'pnlContainer'
-    TabOrder = 2
+    TabOrder = 1
   end
   object trnRead: TpFIBTransaction
     DefaultDatabase = dmOtto.dbOtto
     TimeoutAction = TARollback
-    MDTTransactionRole = mtrAutoDefine
     Left = 40
     Top = 24
   end
   object trnWrite: TpFIBTransaction
     DefaultDatabase = dmOtto.dbOtto
     TimeoutAction = TARollback
-    MDTTransactionRole = mtrAutoDefine
     Left = 112
     Top = 24
   end

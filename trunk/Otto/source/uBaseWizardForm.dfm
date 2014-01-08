@@ -64,7 +64,6 @@ object BaseWizardForm: TBaseWizardForm
       'nowait'
       'rec_version'
       'read_committed')
-    MDTTransactionRole = mtrAutoDefine
     TPBMode = tpbDefault
     Left = 352
     Top = 16
@@ -76,7 +75,6 @@ object BaseWizardForm: TBaseWizardForm
       'read'
       'nowait'
       'concurrency')
-    MDTTransactionRole = mtrAutoDefine
     TPBMode = tpbDefault
     Left = 400
     Top = 16

@@ -15,8 +15,8 @@ type
   TVSTRecord = record
     NodeKind: TNodeKind;
     Id: Integer;
-    Caption : String;
-    ObjectSign : string;
+    Caption: string;
+    ObjectSign: string;
   end;
 
 type
@@ -28,7 +28,7 @@ type
     pnl4: TPanel;
     pnl5: TPanel;
     spl3: TSplitter;
-    frmParamActionTree: TFrame2;
+    frmParamActionTree: TFrameParams;
     spl4: TSplitter;
     grdActionTree: TDBGridEh;
     dsActionTree: TDataSource;
@@ -37,13 +37,11 @@ type
     qryActionTree: TpFIBDataSet;
     qryActionCodeParams: TpFIBDataSet;
     spl5: TSplitter;
-    frmParamActionCode: TFrame2;
-    frmCritActionCode: TFrame1;
+    frmParamActionCode: TFrameParams;
     dckActionTree: TTBXDock;
     tbActionTree: TTBXToolbar;
     dckActionCode: TTBXDock;
     tbActionCodes: TTBXToolbar;
-    frmCritActionTree: TFrame1;
     qryActionCodeCrit: TpFIBDataSet;
     qryActionTreeCrit: TpFIBDataSet;
     qryActionTreeParams: TpFIBDataSet;
@@ -52,11 +50,12 @@ type
     TBXItem1: TTBXItem;
     qryObjects: TpFIBDataSet;
     qryTemp: TpFIBDataSet;
+    frmCriteriaActionCode: TFrameCriterias;
+    frmCriteriaActionTree: TFrameCriterias;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
-    procedure qryActionCodesAfterScroll(DataSet: TDataSet);
     procedure qryActionTreeAfterScroll(DataSet: TDataSet);
     procedure grdActionTreeDblClick(Sender: TObject);
     procedure vsTreeActionCodesGetText(Sender: TBaseVirtualTree;
@@ -71,6 +70,10 @@ type
       Node: PVirtualNode; var ChildCount: Cardinal);
     procedure vsTreeActionCodesFocusChanged(Sender: TBaseVirtualTree;
       Node: PVirtualNode; Column: TColumnIndex);
+    procedure qryActionCodeParamsBeforePost(DataSet: TDataSet);
+    procedure qryActionCodeCritBeforePost(DataSet: TDataSet);
+    procedure qryActionTreeParamsBeforePost(DataSet: TDataSet);
+    procedure qryActionTreeCritBeforePost(DataSet: TDataSet);
   private
     procedure CreateObjectChilds(Sender: TBaseVirtualTree;
       Node: PVirtualNode);
@@ -85,15 +88,18 @@ var
 implementation
 
 uses
-  uFormParamEdit, GvStr;
+  uFormParamEdit, GvStr, uFormCriteriaEdit;
 
 {$R *.dfm}
 
 procedure TfrmActionCodeSetup.FormCreate(Sender: TObject);
 begin
   trnWrite.StartTransaction;
-  frmParamEdit:= TfrmParamEdit.Create(Self);
-  frmParamEdit.trnWrite:= trnWrite;
+  FormParamEdit := TFormParamEdit.Create(Self);
+  FormParamEdit.trnWrite := trnWrite;
+  FormCriteriaEdit := TFormCriteriaEdit.Create(Self);
+  FormCriteriaEdit.trnWrite := trnWrite;
+
 
   vsTreeActionCodes.NodeDataSize := SizeOf(TVSTRecord);
 //  vsTreeActionCodes.RootNodeCount:= trnWrite.DefaultDatabase.QueryValue(
@@ -103,25 +109,27 @@ end;
 
 procedure TfrmActionCodeSetup.FormDestroy(Sender: TObject);
 begin
-  FreeAndNil(frmParamEdit);
-  trnWrite.Rollback;
+  FreeAndNil(FormParamEdit);
+  FreeAndNil(FormCriteriaEdit);
+  if trnWrite.Active then
+    trnWrite.Rollback;
 end;
 
 procedure TfrmActionCodeSetup.CreateObjectChilds(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
-  Data : PVSTRecord;
+  Data: PVSTRecord;
   ChildNode: PVirtualNode;
 begin
   qryObjects.First;
   while not qryObjects.Eof do
   begin
     ChildNode := Sender.AddChild(Node);
-      if not (vsInitialized in ChildNode.States) then
-        vsTreeActionCodes.ReinitNode(ChildNode, False);
-      Data := Sender.GetNodeData(ChildNode);
-      Data.NodeKind := nkObjectCode;
-      Data.Id := qryObjects['OBJECT_CODE'];
-      Data.Caption := qryObjects['OBJECT_NAME'];
+    if not (vsInitialized in ChildNode.States) then
+      vsTreeActionCodes.ReinitNode(ChildNode, False);
+    Data := Sender.GetNodeData(ChildNode);
+    Data.NodeKind := nkObjectCode;
+    Data.Id := qryObjects['OBJECT_CODE'];
+    Data.Caption := qryObjects['OBJECT_NAME'];
     qryObjects.Next;
   end;
 end;
@@ -170,14 +178,10 @@ begin
   trnWrite.Commit;
 end;
 
-procedure TfrmActionCodeSetup.qryActionCodesAfterScroll(DataSet: TDataSet);
-begin
-  DataSet.Tag:= DataSet['Action_Code'];
-end;
-
 procedure TfrmActionCodeSetup.qryActionTreeAfterScroll(DataSet: TDataSet);
 begin
-  DataSet.Tag:= DataSet['actiontreeitem_id'];
+  frmParamActionTree.ObjectId := DataSet['actiontreeitem_id'];
+  frmCriteriaActionTree.ObjectId := DataSet['actiontreeitem_id'];
 end;
 
 procedure TfrmActionCodeSetup.grdActionTreeDblClick(Sender: TObject);
@@ -199,7 +203,7 @@ end;
 procedure TfrmActionCodeSetup.vsTreeActionCodesFreeNode(
   Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
- Data: PVSTRecord;
+  Data: PVSTRecord;
 begin
   Data := Sender.GetNodeData(Node);
   if Assigned(Data) then
@@ -212,11 +216,11 @@ procedure TfrmActionCodeSetup.vsTreeActionCodesInitNode(
 var
   Data: PVSTRecord;
 begin
-  Data:= Sender.GetNodeData(Node);
+  Data := Sender.GetNodeData(Node);
   if ParentNode = nil then
   begin
-    Data.NodeKind:= nkRoot;
-    Data.Caption:= 'Все действия';
+    Data.NodeKind := nkRoot;
+    Data.Caption := 'Все действия';
     Data.Id := 0;
     Include(InitialStates, ivsHasChildren);
   end;
@@ -228,19 +232,19 @@ var
   NodeData, ChildData: PVSTRecord;
   ChildNode: PVirtualNode;
 begin
-  NodeData:= Sender.GetNodeData(Node);
+  NodeData := Sender.GetNodeData(Node);
   if NodeData.NodeKind = nkRoot then
   begin
-    qryTemp.SelectSQL.Text:=
+    qryTemp.SelectSQL.Text :=
       'select * from objects';
     qryTemp.Open;
     while not qryTemp.Eof do
     begin
       ChildNode := Sender.AddChild(Node);
-      ChildData:= Sender.GetNodeData(ChildNode);
+      ChildData := Sender.GetNodeData(ChildNode);
       ChildData.NodeKind := nkObjectCode;
       ChildData.Id := qryTemp['OBJECT_CODE'];
-      ChildData.Caption := 'Объект - "'+qryTemp['OBJECT_NAME']+'"';
+      ChildData.Caption := 'Объект - "' + qryTemp['OBJECT_NAME'] + '"';
       Include(ChildNode.States, vsHasChildren);
       Sender.ValidateNode(Node, False);
       qryTemp.Next;
@@ -251,49 +255,49 @@ begin
 //      Sender.Sort(Node, 0, TVirtualStringTree(Sender).Header.SortDirection, False);
   end
   else
-  if NodeData.NodeKind = nkObjectCode then
-  begin
-    qryTemp.SelectSQL.Text:=
-      'select * from actioncodes where object_code = :object_code';
-    qryTemp.OpenWP([NodeData.Id]);
-    while not qryTemp.Eof do
+    if NodeData.NodeKind = nkObjectCode then
     begin
-      ChildNode := Sender.AddChild(Node);
-      Include(ChildNode.States, vsHasChildren);
-      if not (vsInitialized in ChildNode.States) then
-        Sender.ReinitNode(ChildNode, False);
-      ChildData:= Sender.GetNodeData(ChildNode);
-      ChildData.NodeKind := nkActionCode;
-      ChildData.Id := qryTemp['ACTION_CODE'];
-      ChildData.Caption := qryActionCodes.Lookup('ACTION_CODE', ChildData.Id, 'ACTION_NAME');
-      Sender.ValidateNode(Node, False);
-      qryTemp.Next;
-    end;
-    qryTemp.Close;
-    ChildCount := Sender.ChildCount[Node];
-  end
-  else
-  if NodeData.NodeKind = nkActionCode then
-  begin
-    qryTemp.SelectSQL.Text:=
-      'select * from actiontree where action_code = :action_code';
-    qryTemp.OpenWP([NodeData.Id]);
-    while not qryTemp.Eof do
-    begin
-      ChildNode := Sender.AddChild(Node);
-      Include(ChildNode.States, vsHasChildren);
-      if not (vsInitialized in ChildNode.States) then
-        Sender.ReinitNode(ChildNode, False);
-      ChildData:= Sender.GetNodeData(ChildNode);
-      ChildData.NodeKind := nkActionCode;
-      ChildData.Id := qryTemp['CHILD_CODE'];
-      ChildData.Caption := qryActionCodes.Lookup('ACTION_CODE', ChildData.Id, 'ACTION_NAME');
-      Sender.ValidateNode(Node, False);
-      qryTemp.Next;
-    end;
-    qryTemp.Close;
-    ChildCount := Sender.ChildCount[Node];
-  end;
+      qryTemp.SelectSQL.Text :=
+        'select * from actioncodes where object_code = :object_code';
+      qryTemp.OpenWP([NodeData.Id]);
+      while not qryTemp.Eof do
+      begin
+        ChildNode := Sender.AddChild(Node);
+        Include(ChildNode.States, vsHasChildren);
+        if not (vsInitialized in ChildNode.States) then
+          Sender.ReinitNode(ChildNode, False);
+        ChildData := Sender.GetNodeData(ChildNode);
+        ChildData.NodeKind := nkActionCode;
+        ChildData.Id := qryTemp['ACTION_CODE'];
+        ChildData.Caption := qryActionCodes.Lookup('ACTION_CODE', ChildData.Id, 'ACTION_NAME');
+        Sender.ValidateNode(Node, False);
+        qryTemp.Next;
+      end;
+      qryTemp.Close;
+      ChildCount := Sender.ChildCount[Node];
+    end
+    else
+      if NodeData.NodeKind = nkActionCode then
+      begin
+        qryTemp.SelectSQL.Text :=
+          'select * from actiontree where action_code = :action_code';
+        qryTemp.OpenWP([NodeData.Id]);
+        while not qryTemp.Eof do
+        begin
+          ChildNode := Sender.AddChild(Node);
+          Include(ChildNode.States, vsHasChildren);
+          if not (vsInitialized in ChildNode.States) then
+            Sender.ReinitNode(ChildNode, False);
+          ChildData := Sender.GetNodeData(ChildNode);
+          ChildData.NodeKind := nkActionCode;
+          ChildData.Id := qryTemp['CHILD_CODE'];
+          ChildData.Caption := qryActionCodes.Lookup('ACTION_CODE', ChildData.Id, 'ACTION_NAME');
+          Sender.ValidateNode(Node, False);
+          qryTemp.Next;
+        end;
+        qryTemp.Close;
+        ChildCount := Sender.ChildCount[Node];
+      end;
   if ChildCount = 0 then
     Exclude(Node.States, vsHasChildren);
 end;
@@ -301,11 +305,44 @@ end;
 procedure TfrmActionCodeSetup.vsTreeActionCodesFocusChanged(
   Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex);
 var
-  Data : PVSTRecord;
+  Data: PVSTRecord;
+  NodeIsAction: Boolean;
 begin
-  Data:= Sender.GetNodeData(Node);
-  if Data.NodeKind = nkActionCode then
+  Data := Sender.GetNodeData(Node);
+  NodeIsAction := Data.NodeKind = nkActionCode;
+  frmParamActionCode.Enabled := NodeIsAction;
+  frmCriteriaActionCode.Enabled := NodeIsAction;
+  if NodeIsAction then
+  begin
     qryActionCodes.Locate('ACTION_CODE', Data.Id, []);
+    frmParamActionCode.ObjectId := Data.Id;
+    frmCriteriaActionCode.ObjectId := Data.Id;
+  end;
+end;
+
+procedure TfrmActionCodeSetup.qryActionCodeParamsBeforePost(
+  DataSet: TDataSet);
+begin
+  DataSet['OBJECT_ID'] := qryActionCodes['ACTION_CODE'];
+end;
+
+procedure TfrmActionCodeSetup.qryActionCodeCritBeforePost(
+  DataSet: TDataSet);
+begin
+  DataSet['OBJECT_ID'] := qryActionCodes['ACTION_CODE'];
+end;
+
+procedure TfrmActionCodeSetup.qryActionTreeParamsBeforePost(
+  DataSet: TDataSet);
+begin
+  DataSet['OBJECT_ID'] := qryActionTree['ACTIONTREEITEM_ID'];
+end;
+
+procedure TfrmActionCodeSetup.qryActionTreeCritBeforePost(
+  DataSet: TDataSet);
+begin
+  DataSet['OBJECT_ID'] := qryActionTree['ACTIONTREEITEM_ID'];
 end;
 
 end.
+

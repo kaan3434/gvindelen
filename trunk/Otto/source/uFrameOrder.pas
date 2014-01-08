@@ -8,7 +8,7 @@ uses
   pFIBDatabase, TBXStatusBars, TB2Dock, TB2Toolbar, TBX, DBGridEh,
   DB, FIBDataSet, pFIBDataSet, GridsEh, ExtCtrls,
   JvExExtCtrls, JvNetscapeSplitter, JvExStdCtrls, JvEdit, JvValidateEdit,
-  DBCtrlsEh, StdCtrls, Mask, DBLookupEh, JvGroupBox, NativeXml,
+  DBCtrlsEh, StdCtrls, Mask, DBLookupEh, JvGroupBox, GvXml,
   JvComponentBase, JvEmbeddedForms, JvPanel, DBGridEhGrouping;
 
 type
@@ -31,13 +31,7 @@ type
     function GetOrderId: Integer;
   public
     { Public declarations }
-    ndOrder: TXmlNode;
-    procedure InitData; override;
-    procedure FreeData; override;
-    procedure OpenTables; override;
-    procedure Read; override;
-    procedure Write; override;
-    procedure UpdateCaptions; override;
+    ndOrder: TGvXmlNode;
     property OrderId: Integer read GetOrderId;
   end;
 
@@ -47,7 +41,7 @@ var
 implementation
 
 uses
-  udmOtto, GvNativeXml, GvStr;
+  udmOtto, GvXmlUtils, GvStr;
 
 {$R *.dfm}
 
@@ -55,10 +49,10 @@ uses
 
 function TFrameOrder.GetOrderId: Integer;
 begin
-  Result:= ndOrder.ReadAttributeInteger('ID', 0)
+  Result:= ndOrder.Attr['ID'].AsIntegerDef(0);
 end;
 
-procedure TFrameOrder.Read;
+{procedure TFrameOrder.Read;
 var
   HasDeleteableFlag: Boolean;
 begin
@@ -73,9 +67,9 @@ begin
 
   if AttrExists(ndOrder, 'WEIGHT') then
     edtOrderWeight.Value:= GetXmlAttrValue(ndOrder, 'WEIGHT');
-end;
+end;}
 
-procedure TFrameOrder.Write;
+{procedure TFrameOrder.Write;
 begin
   inherited;
   if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'NEW') then
@@ -96,34 +90,12 @@ begin
         SetXmlAttr(ndOrder, 'PRODUCT_ID', lcbProduct.Value);
         SetXmlAttr(ndOrder, 'TAXPLAN_ID', lcbTaxPlan.Value);
         dmOtto.ActionExecute(trnWrite, 'ORDER', 'ORDER_RENEW',
-          XmlAttrs2Vars(ndOrder, 'PRODUCT_ID;TAXPLAN_ID'), OrderId);
+          XmlAttrs2Attr(ndOrder, 'PRODUCT_ID;TAXPLAN_ID'), OrderId);
         dmOtto.ActionExecute(trnWrite, ndOrder, 'DRAFT');
       end;
     end;
   end;
   dmOtto.ObjectGet(ndOrder, OrderId, trnWrite);
-end;
-
-procedure TFrameOrder.FreeData;
-begin
-  inherited;
-end;
-
-procedure TFrameOrder.InitData;
-begin
-  inherited;
-end;
-
-procedure TFrameOrder.OpenTables;
-begin
-  inherited;
-  qryProducts.Open;
-  qryTaxPlans.Open;
-end;
-
-procedure TFrameOrder.UpdateCaptions;
-begin
-  grBoxOrder.Caption:= DetectCaption(ndOrder, 'Заявка');
-end;
+end;}
 
 end.

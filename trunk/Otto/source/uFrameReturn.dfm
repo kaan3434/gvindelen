@@ -1,29 +1,26 @@
 inherited FrameMoneyBack: TFrameMoneyBack
-  Left = 154
-  Top = 186
-  Width = 960
-  Height = 512
-  Caption = 'FrameMoneyBack'
-  OnKeyDown = FormKeyDown
-  PixelsPerInch = 96
-  TextHeight = 13
-  inherited dckTop: TTBXDock
-    Width = 944
+  inherited pnlFrame: TPanel
+    Top = 346
+    Width = 418
     Height = 25
-    inherited tlBarTop: TTBXToolbar
-      object btnMakeReturn: TTBXItem
-        Action = actCreateReturn
+    inherited sBarFrame: TTBXStatusBar
+      Top = -2
+      Width = 408
+    end
+    inherited dckTop: TTBXDock
+      Width = 408
+      Height = 25
+      inherited tbBarTop: TTBXToolbar
+        object btnMakeReturn: TTBXItem
+          Action = actCreateReturn
+        end
       end
     end
   end
-  inherited sb: TTBXStatusBar
-    Top = 452
-    Width = 944
-  end
-  object grpBankMovement: TJvGroupBox [2]
+  object grpBankMovement: TJvGroupBox [1]
     Left = 0
-    Top = 219
-    Width = 944
+    Top = 194
+    Width = 418
     Height = 152
     Align = alTop
     Caption = #1040#1090#1088#1080#1073#1091#1090#1099' '#1073#1072#1085#1082#1086#1074#1089#1082#1086#1075#1086' '#1087#1077#1088#1077#1074#1086#1076#1072
@@ -95,10 +92,10 @@ inherited FrameMoneyBack: TFrameMoneyBack
       TabOrder = 5
     end
   end
-  object grpCommon: TJvGroupBox [3]
+  object grpCommon: TJvGroupBox [2]
     Left = 0
-    Top = 25
-    Width = 944
+    Top = 0
+    Width = 418
     Height = 146
     Align = alTop
     Caption = #1054#1073#1097#1080#1077' '#1072#1090#1088#1080#1073#1091#1090#1099
@@ -136,6 +133,7 @@ inherited FrameMoneyBack: TFrameMoneyBack
       Top = 40
       Width = 97
       Height = 21
+      DynProps = <>
       EditButtons = <>
       Kind = dtkDateEh
       TabOrder = 2
@@ -174,10 +172,10 @@ inherited FrameMoneyBack: TFrameMoneyBack
       OnClick = rgArtReturnKindClick
     end
   end
-  object rgMoneyBackKind: TRadioGroup [4]
+  object rgMoneyBackKind: TRadioGroup [3]
     Left = 0
-    Top = 171
-    Width = 944
+    Top = 146
+    Width = 418
     Height = 48
     Align = alTop
     Caption = #1044#1077#1081#1089#1090#1074#1080#1103' '#1089' '#1086#1089#1090#1072#1090#1082#1086#1084
@@ -189,14 +187,6 @@ inherited FrameMoneyBack: TFrameMoneyBack
     TabOrder = 2
     OnClick = rgMoneyBackKindClick
   end
-  inherited trnRead: TpFIBTransaction
-    Left = 48
-    Top = 0
-  end
-  inherited trnWrite: TpFIBTransaction
-    Left = 88
-    Top = 0
-  end
   inherited actList: TActionList
     object actCreateReturn: TAction
       Caption = #1054#1092#1086#1088#1084#1080#1090#1100' '#1074#1086#1079#1074#1088#1072#1090
@@ -205,5 +195,13 @@ inherited FrameMoneyBack: TFrameMoneyBack
   end
   inherited imgList: TPngImageList
     Top = 192
+  end
+  object trnRead: TpFIBTransaction
+    TimeoutAction = TARollback
+    Left = 48
+  end
+  object trnWrite: TpFIBTransaction
+    TimeoutAction = TARollback
+    Left = 88
   end
 end

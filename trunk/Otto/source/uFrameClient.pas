@@ -9,7 +9,8 @@ uses
   TBXStatusBars, TB2Dock, TB2Toolbar, TBX, DB,
   FIBDataSet, pFIBDataSet, StdCtrls, DBCtrlsEh, Mask, JvExMask, JvToolEdit,
   JvMaskEdit, JvExStdCtrls, JvGroupBox, GridsEh, DBGridEh,
-  JvNetscapeSplitter, NativeXml, DBGridEhGrouping;
+  JvNetscapeSplitter, GvXml, DBGridEhGrouping, ToolCtrlsEh,
+  DBGridEhToolCtrls, DBAxisGridsEh;
 
 type
   TFrameClient = class(TFrameBase1)
@@ -65,22 +66,18 @@ type
     procedure dedLastNameKeyPress(Sender: TObject; var Key: Char);
   private
     function GetOrderId: Integer;
-    function FullAdress: String;
+//    function FullAdress: String;
     function GetClientId: Integer;
     function GetAccountId: Integer;
     { Private declarations }
   public
     { Public declarations }
-    ndOrder: TXmlNode;
-    ndClient: TXmlNode;
-    ndAdress: TXmlNode;
-    ndPlace: TXmlNode;
-    ndAccount: TXmlNode;
-    procedure OpenTables; override;
-    procedure Read; override;
-    procedure Write; override;
-    procedure UpdateCaptions; override;
-    procedure ClearClient;
+    ndOrder: TGvXmlNode;
+    ndClient: TGvXmlNode;
+    ndAdress: TGvXmlNode;
+    ndPlace: TGvXmlNode;
+    ndAccount: TGvXmlNode;
+//    procedure ClearClient;
     property OrderId: Integer read GetOrderId;
     property ClientId: Integer read GetClientId;
     property AccountId: Integer read GetAccountId;
@@ -92,7 +89,7 @@ var
 implementation
 
 uses
-  udmOtto, GvNativeXml, GvStr, GvKbd;
+  udmOtto, GvXmlUtils, GvStr, GvKbd;
 
 {$R *.dfm}
 
@@ -100,21 +97,21 @@ uses
 
 function TFrameClient.GetOrderId: Integer;
 begin
-  Result:= ndOrder.ReadAttributeInteger('ID', 0)
+  Result:= ndOrder.Attr['ID'].AsIntegerDef(0);
 end;
 
 function TFrameClient.GetClientId: Integer;
 begin
-  Result:= ndClient.ReadAttributeInteger('ID', 0)
+  Result:= ndClient.Attr['ID'].AsIntegerDef(0);
 end;
 
 function TFrameClient.GetAccountId: Integer;
 begin
-  Result:= ndAccount.ReadAttributeInteger('ID', 0)
+  Result:= ndAccount.Attr['ID'].AsIntegerDef(0);
 end;
 
 
-function TFrameClient.FullAdress: String;
+{function TFrameClient.FullAdress: String;
 begin
   result:= GetXmlAttr(ndAdress, 'POSTINDEX', '', '. ') +
     GetXmlAttr(ndPlace, 'PLACE_NAME', ' '+ndPlace.ReadAttributeString('PLACETYPE_SIGN', 'г')+'. ') +
@@ -125,9 +122,9 @@ begin
     GetXmlAttr(ndAdress, 'BUILDING', ', корп. ')+
     GetXmlAttr(ndAdress, 'FLAT', ', кв. ');
   result:= ReplaceAll(Result, '  ', ' ');
-end;
+end;}
 
-procedure TFrameClient.Read;
+{procedure TFrameClient.Read;
 begin
   txtAdress.Caption:= FullAdress;
   dedLastName.Text:= GetXmlAttr(ndClient, 'LAST_NAME');
@@ -137,9 +134,9 @@ begin
   dedStaticPhone.Text:= GetXmlAttr(ndClient, 'STATIC_PHONE');
   dedEmail.Text:= GetXmlAttr(ndClient, 'EMAIL');
   actClientSearch.Execute;
-end;
+end;}
 
-procedure TFrameClient.Write;
+{procedure TFrameClient.Write;
 begin
   inherited;
   SetXmlAttr(ndClient, 'LAST_NAME', dedLastName.Text);
@@ -171,12 +168,11 @@ begin
   dmOtto.ObjectGet(ndAccount, AccountId, trnWrite);
   dmOtto.ObjectGet(ndClient, ClientId, trnWrite);
   UpdateCaptions;
-end;
+end;}
 
 procedure TFrameClient.actClientSearchExecute(Sender: TObject);
 begin
-  SetXmlAttr(ndClient, 'LAST_NAME', dedLastName.Text);
-  if ndClient.ReadAttributeString('LAST_NAME', '') <> '' then
+  if ndClient.HasAttribute('LAST_NAME') then
   begin
     qryClient.DisableControls;
     qryClientOrders.DisableControls;
@@ -210,24 +206,24 @@ end;
 
 procedure TFrameClient.grdClientDblClick(Sender: TObject);
 begin
-  if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'NEW,DRAFT') then
+  if ndOrder.Attr['STATUS_SIGN'].ValueIn(['NEW','DRAFT']) then
   begin
-    ClearClient;
+//    ClearClient;
     dmOtto.ClientRead(ndClient, qryClient['CLIENT_ID'], trnRead);
     dmOtto.AdressReadByClient(ndAdress, qryClient['CLIENT_ID'], trnRead);
     Read;
-    SetXmlAttr(ndOrder, 'CLIENT_ID', ClientId);
-    UpdateCaptions;
+    ndOrder['CLIENT_ID']:= ClientId;
   end;
 end;
 
-procedure TFrameClient.OpenTables;
+{procedure TFrameClient.OpenTables;
 begin
   inherited;
   qryClient.Open;
   qryClientOrders.Open;
   qryClientOrderItems.Open;
 end;
+}
 
 procedure TFrameClient.EditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
@@ -240,24 +236,25 @@ begin
   dedEmail.Text:= LowerCase(dedEmail.Text);
 end;
 
-procedure TFrameClient.UpdateCaptions;
+{procedure TFrameClient.UpdateCaptions;
 begin
   grBoxClient.Caption:= DetectCaption(ndClient, 'Клиент');
   grBoxAdress.Caption:= DetectCaption(ndAdress, 'Адрес');
 end;
+}
 
 procedure TFrameClient.dedLastNameKeyPress(Sender: TObject; var Key: Char);
 begin
-  if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'NEW,DRAFT') then
+  if ndOrder.Attr['STATUS_SIGN'].ValueIn(['NEW','DRAFT']) then
   begin
-    if (GetXmlAttrValue(ndClient, 'ID') <> null) and
+    if ndClient.HasAttribute('ID') and
        (MessageDlg('Вы хотите заменить клиента?', mtWarning, [mbYes,mbNo], 0) = mrYes) then
-      ClearClient;
-    UpdateCaptions;
+//      ClearClient;
+//    UpdateCaptions;
   end;
 end;
 
-procedure TFrameClient.ClearClient;
+{procedure TFrameClient.ClearClient;
 begin
   SetXmlAttr(ndClient, 'ID', null);
   SetXmlAttr(ndOrder, 'CLIENT_ID', null);
@@ -269,5 +266,5 @@ begin
   ndAdress.AttributesClear;
   ndPlace.AttributesClear;
 end;
-
+}
 end.

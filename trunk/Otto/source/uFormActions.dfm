@@ -1,6 +1,6 @@
 object frmActionCodeSetup: TfrmActionCodeSetup
-  Left = 186
-  Top = 119
+  Left = 184
+  Top = 71
   Width = 1092
   Height = 576
   Caption = 'frmActionCodeSetup'
@@ -93,7 +93,7 @@ object frmActionCodeSetup: TfrmActionCodeSetup
         Columns = <>
       end
     end
-    inline frmParamActionCode: TFrame2
+    inline frmParamActionCode: TFrameParams
       Left = 1
       Top = 254
       Width = 548
@@ -113,7 +113,7 @@ object frmActionCodeSetup: TfrmActionCodeSetup
         DataSet = qryActionCodeParams
       end
     end
-    inline frmCritActionCode: TFrame1
+    inline frmCriteriaActionCode: TFrameCriterias
       Left = 1
       Top = 387
       Width = 548
@@ -125,8 +125,7 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       end
       inherited grdCriterias: TDBGridEh
         Width = 548
-        Height = 124
-        AutoFitColWidths = True
+        Height = 125
       end
       inherited dsCriterias: TDataSource
         DataSet = qryActionCodeCrit
@@ -176,7 +175,7 @@ object frmActionCodeSetup: TfrmActionCodeSetup
         DynProps = <>
         Flat = True
         IndicatorOptions = [gioShowRowIndicatorEh]
-        TabOrder = 0
+        TabOrder = 1
         OnDblClick = grdActionTreeDblClick
         Columns = <
           item
@@ -243,29 +242,13 @@ object frmActionCodeSetup: TfrmActionCodeSetup
         end
       end
     end
-    inline frmCritActionTree: TFrame1
-      Left = 1
-      Top = 387
-      Width = 521
-      Height = 150
-      Align = alBottom
-      TabOrder = 1
-      inherited dckTop: TTBXDock
-        Width = 521
-      end
-      inherited grdCriterias: TDBGridEh
-        Width = 521
-        Height = 124
-        AutoFitColWidths = True
-      end
-    end
-    inline frmParamActionTree: TFrame2
+    inline frmParamActionTree: TFrameParams
       Left = 1
       Top = 254
       Width = 521
       Height = 130
       Align = alClient
-      TabOrder = 2
+      TabOrder = 1
       inherited grdParams: TDBGridEh
         Width = 521
         Height = 105
@@ -276,6 +259,24 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       end
       inherited dsParams: TDataSource
         DataSet = qryActionTreeParams
+      end
+    end
+    inline frmCriteriaActionTree: TFrameCriterias
+      Left = 1
+      Top = 387
+      Width = 521
+      Height = 150
+      Align = alBottom
+      TabOrder = 2
+      inherited dckTop: TTBXDock
+        Width = 521
+      end
+      inherited grdCriterias: TDBGridEh
+        Width = 521
+        Height = 125
+      end
+      inherited dsCriterias: TDataSource
+        DataSet = qryActionTreeCrit
       end
     end
   end
@@ -304,7 +305,6 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       'WHERE /*FILTER*/ 1=1'
       'ORDER by OBJECT_SIGN')
     Active = True
-    AfterScroll = qryActionCodesAfterScroll
     Transaction = trnWrite
     Database = dmOtto.dbOtto
     Left = 297
@@ -390,6 +390,7 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       'WHERE OBJECT_ID = :ACTION_CODE'
       'ORDER BY PARAM_NAME')
     Active = True
+    BeforePost = qryActionCodeParamsBeforePost
     Transaction = trnWrite
     Database = dmOtto.dbOtto
     DataSource = dsActionCodes
@@ -412,6 +413,7 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       '    ACTIONCODE_CRITERIAS '
       'WHERE OBJECT_ID = :ACTION_CODE')
     Active = True
+    BeforePost = qryActionCodeCritBeforePost
     Transaction = trnWrite
     Database = dmOtto.dbOtto
     DataSource = dsActionCodes
@@ -433,6 +435,7 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       'WHERE OBJECT_ID = :ACTIONTREEITEM_ID'
       'ORDER BY PARAM_NAME')
     Active = True
+    BeforePost = qryActionTreeCritBeforePost
     Transaction = trnWrite
     Database = dmOtto.dbOtto
     DataSource = dsActionTree
@@ -452,6 +455,7 @@ object frmActionCodeSetup: TfrmActionCodeSetup
       'WHERE OBJECT_ID = :ACTIONTREEITEM_ID'
       'ORDER BY PARAM_NAME')
     Active = True
+    BeforePost = qryActionTreeParamsBeforePost
     Transaction = trnWrite
     Database = dmOtto.dbOtto
     DataSource = dsActionTree

@@ -7,7 +7,7 @@ uses
   Dialogs, ImgList, PngImageList, ActnList, FIBDatabase,
   pFIBDatabase, TBXStatusBars, TB2Dock, TB2Toolbar, TBX, 
   MemTableDataEh, Db, FIBDataSet, pFIBDataSet, MemTableEh, ExtCtrls,
-  JvExExtCtrls, JvImage, GridsEh, DBGridEh, NativeXml, JvComponentBase,
+  JvExExtCtrls, JvImage, GridsEh, DBGridEh, GvXml, JvComponentBase,
   JvProgressComponent, TB2Item, StdCtrls, JvExStdCtrls, JvGroupBox,
   JvEmbeddedForms, JvFormAutoSize, uFrameBase1, DBGridEhGrouping,
   ToolCtrlsEh, DBGridEhToolCtrls, DBAxisGridsEh;
@@ -54,13 +54,11 @@ type
     subDiscard: TTBXSubmenuItem;
     actDiscard: TAction;
     btnDiscard: TTBXItem;
-    procedure ProgressCheckAvailShow(Sender: TObject);
     procedure grdOrderItemsColEnter(Sender: TObject);
     procedure mtblOrderItemsSetFieldValue(MemTable: TCustomMemTableEh;
       Field: TField; var Value: Variant);
     procedure mtblOrderItemsBeforeEdit(DataSet: TDataSet);
     procedure mtblOrderItemsBeforeInsert(DataSet: TDataSet);
-    procedure mtblOrderItemsBeforePost(DataSet: TDataSet);
     procedure actCancelRequestExecute(Sender: TObject);
     procedure actCancelRequestUpdate(Sender: TObject);
     procedure actReturnRequestExecute(Sender: TObject);
@@ -85,14 +83,9 @@ type
     function GetOrderId: Integer;
   public
     { Public declarations }
-    ndOrder: TXmlNode;
-    ndOrderItems: TXmlNode;
-    ndOrderItem: TXmlNode;
-    procedure InitData; override;
-    procedure FreeData; override;
-    procedure OpenTables; override;
-    procedure Read; override;
-    procedure Write; override;
+    ndOrder: TGvXmlNode;
+    ndOrderItems: TGvXmlNode;
+    ndOrderItem: TGvXmlNode;
     property OrderId: Integer read GetOrderId;
   end;
 
@@ -104,27 +97,15 @@ implementation
 {$R *.dfm}
 
 Uses
-  GvNativeXml, udmOtto, GvStr, GvColor, GvVariant;
+  GvXmlUtils, udmOtto, GvStr, GvColor, GvVariant;
 { TFrameOrderItems }
-
-procedure TFrameOrderItems.FreeData;
-begin
-  inherited;
-  qryStatuses:= RestoreComponent(qryStatuses, FqryStatuses);
-end;
-
-procedure TFrameOrderItems.InitData;
-begin
-  inherited;
-  qryStatuses:= StoreComponent(qryStatuses, FqryStatuses);
-end;
 
 function TFrameOrderItems.GetOrderId: Integer;
 begin
-  Result:= ndOrder.ReadAttributeInteger('ID', 0)
+  Result:= ndOrder.Attr['ID'].AsIntegerDef(0);
 end;
 
-procedure TFrameOrderItems.Write;
+{procedure TFrameOrderItems.Write;
 var
   OrderItemId, i: Integer;
 begin
@@ -150,9 +131,9 @@ begin
   finally
     mtblOrderItems.Tag:= 0;
   end;
-end;
+end;}
 
-procedure TFrameOrderItems.Read;
+{procedure TFrameOrderItems.Read;
 begin
   mtblOrderItems.Tag:= 1;
   try
@@ -167,74 +148,7 @@ begin
     mtblOrderItems.Tag:= 0;
   end;
   mtblOrderItemsAfterScroll(mtblOrderItems);
-end;
-
-procedure TFrameOrderItems.ProgressCheckAvailShow(Sender: TObject);
-var
-  PluginExec: procedure (URL, RootNodeName: WideString; var aParams: WideString); stdcall;
-  PluginName: String;
-  URL: WideString;
-  handle: THandle;
-  XmlText: UTF8String;
-  WXml: WideString;
-  xmlAvail: TNativeXml;
-  i: Integer;
-  nDimension: string;
-  OrderItemId: Integer;
-begin
-  ndOrder.Document.XmlFormat:= xfReadable;
-  ndOrder.Document.SaveToFile('Order.xml');
-  for i:= 0 to ndOrderItems.NodeCount - 1 do
-  begin
-    ndOrderItem:= ndOrderItems[i];
-    OrderItemId:= GetXmlAttrValue(ndOrderItem, 'ID');
-    if FlagPresent('DELETEABLE', ndOrderItem, 'STATUS_FLAG_LIST') then
-    begin
-      nDimension:= GetXmlAttrValue(ndOrderItem, 'DIMENSION');
-
-      PluginName:= 'otto_check_available';
-      Url:= dmOtto.dbOtto.QueryValue('select o_value from plugin_value(:plugin_sign, :param_sign)',
-          0, [PluginName, 'URL']);
-
-      handle := LoadLibrary('request_xml.plg');
-      xmlAvail:= TNativeXml.Create;
-      try
-        try
-          if handle > 0 then
-          try
-            @PluginExec := GetProcAddress(handle,'Execute');
-            XmlText:= ndOrderItem.WriteToString;
-            WXml:= XmlText;
-            PluginExec(url, 'availability', WXml);
-            if WXml <> '' then
-              xmlAvail.ReadFromString(WXml);
-          finally
-            FreeLibrary(handle);
-          end;
-          BatchMoveFields2(ndOrderItem, xmlAvail.Root, 'AVAILABLE=available;AVAILABILITY_CODE=availability_code');
-          if AttrExists(ndOrderItem, 'AVAILABLE') then
-          begin
-            Case GetXmlAttrValue(ndOrderItem, 'AVAILABLE') of
-             0: begin
-                  SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'UNAVAILABLE');
-                  SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'SOLD');
-                end;
-             1: SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'AVAILABLE');
-             2: SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'DELAY3WEEK');
-             21: SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'DELAY3WEEK');
-            end;
-          end;
-        finally
-          xmlAvail.Free;
-        end;
-      except
-      end;
-
-      dmOtto.ActionExecute(trnWrite, ndOrderItem);
-      dmOtto.ObjectGet(ndOrderItem, OrderItemId, trnWrite);
-    end
-  end;
-end;
+end;}
 
 procedure TFrameOrderItems.grdOrderItemsColEnter(Sender: TObject);
 var
@@ -247,51 +161,20 @@ end;
 procedure TFrameOrderItems.mtblOrderItemsBeforeEdit(DataSet: TDataSet);
 begin
   if DataSet.Tag = 1 then Exit;
-  if not FlagPresent('EDITABLE', ndOrderItem, 'STATUS_FLAG_LIST') then
+  if not FlagPresent(ndOrderItem, 'STATUS_FLAG_LIST', 'EDITABLE') then
     Abort;
 end;
 
 procedure TFrameOrderItems.mtblOrderItemsBeforeInsert(DataSet: TDataSet);
 begin
   if DataSet.Tag = 1 then Exit;
-  if not FlagPresent('APPENDABLE', ndOrder, 'STATUS_FLAG_LIST') then
+  if not FlagPresent(ndOrder, 'STATUS_FLAG_LIST', 'APPENDABLE') then
     Abort;
-end;
-
-procedure TFrameOrderItems.OpenTables;
-begin
-  inherited;
-  mtblOrderItems.Open;
-  qryNextStatus.open;
-end;
-
-procedure TFrameOrderItems.mtblOrderItemsBeforePost(DataSet: TDataSet);
-begin
-  if DataSet['ARTICLE_CODE']=null then
-    abort;
-
-  ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM', 'ID', DataSet['ORDERITEM_ID']);
-  if ndOrderItem = nil then
-  begin
-    ndOrderItem:= ndOrderItems.NodeNew('ORDERITEM');
-    BatchMoveFields2(ndOrderItem, DataSet,
-      'ID=ORDERITEM_ID;MAGAZINE_ID="1";ARTICLE_CODE;DIMENSION;'+
-      'PRICE_EUR;COST_EUR;NAME_RUS;STATUS_ID', true);
-    BatchMoveFields2(ndOrderItem, DataSet,
-      'STATUS_SIGN;KIND_RUS;STATE_ID;WEIGHT', false);
-  end;
-  SetXmlAttr(ndOrderItem, 'ORDER_ID', OrderId);
-
-  if DataSet['WEIGHT'] = null then
-  try
-    SetXmlAttr(ndOrderItem, 'WEIGHT', DataSet['WEIGHT']);
-  except
-  end;
 end;
 
 procedure TFrameOrderItems.actCancelRequestExecute(Sender: TObject);
 begin
-  ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM','ID', mtblOrderItems['ORDERITEM_ID']);
+  ndOrderItem:= ndOrderItems.Find('ORDERITEM', 'ID', [mtblOrderItems['ORDERITEM_ID']]);
   if ndOrderItem <> nil then
   begin
     if Pos(',DELETEABLE,', mtblOrderItems['FLAG_SIGN_LIST']) > 0 then
@@ -299,13 +182,11 @@ begin
       mtblOrderItems.Delete;
       trnWrite.ExecSQLImmediate(Format(
         'delete from orderitems where orderitem_id = %u',
-        [Integer(GetXmlAttrValue(ndOrderItem, 'ID'))]));
-      ndOrderItem.Delete;
+        [ndOrderItem.Attr['ID'].AsInteger]));
     end
     else
     begin
-      SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'CANCELREQUEST');
-      ndOrderItem.ValueAsBool:= True;
+      ndOrderItem['NEW.STATUS_SIGN']:= 'CANCELREQUEST';
       dmOtto.ActionExecute(trnWrite, ndOrderItem);
       dmOtto.ObjectGet(ndOrderItem, mtblOrderItems['ORDERITEM_ID'], trnWrite);
       Read;
@@ -320,7 +201,7 @@ var
 begin
   if not mtblOrderItems.Eof then
   begin
-    OrderFlagList:= dmOtto.GetFlagListById(GetXmlAttrValue(ndOrder, 'STATUS_ID'));
+    OrderFlagList:= dmOtto.GetFlagListById(ndOrder['STATUS_ID']);
     ItemFlagList:= mtblOrderItems.FieldByName('FLAG_SIGN_LIST').AsString;
     Cancelable:= (Pos(',CANCELABLE,', OrderFlagList) > 0)
       and (Pos(',DELETEABLE,', ItemFlagList)+Pos(',CANCELABLE,', ItemFlagList) > 0);
@@ -340,10 +221,10 @@ begin
   try
     Write;
     try
-      ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM','ID', OrderItemId);
+      ndOrderItem:= ndOrderItems.Find('ORDERITEM','ID', OrderItemId);
       if ndOrderItem <> nil then
       begin
-        SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'RETURNING');
+        ndOrderItem['NEW.STATUS_SIGN']:= 'RETURNING';
         dmOtto.ActionExecute(trnWrite, ndOrderItem);
         dmOtto.ObjectGet(ndOrderItem, OrderItemId, trnWrite);
       end;
@@ -358,11 +239,11 @@ end;
 
 procedure TFrameOrderItems.actDiscardUpdate(Sender: TObject);
 var
-  ndOrderItem: TXmlNode;
+  ndOrderItem: TGvXmlNode;
 begin
-  ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM', 'ID', mtblOrderItems['OrderItem_Id']);
+  ndOrderItem:= ndOrderItems.Find('ORDERITEM', 'ID', [mtblOrderItems['OrderItem_Id']]);
   if Assigned(ndOrderItem) then
-    actDiscard.Enabled:= xmlAttrIn(ndOrderItem, 'STATUS_SIGN', 'DELIVERING,DELIVERED')
+    actDiscard.Enabled:= ndOrderItem.Attr['STATUS_SIGN'].ValueIn(['DELIVERING','DELIVERED'])
   else
     actDiscard.Enabled:= False;
 end;
@@ -377,10 +258,10 @@ begin
   try
     Write;
     try
-      ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM','ID', OrderItemId);
+      ndOrderItem:= ndOrderItems.Find('ORDERITEM','ID', OrderItemId);
       if ndOrderItem <> nil then
       begin
-        SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'DISCARDED');
+        ndOrderItem['NEW.STATUS_SIGN']:= 'DISCARDED';
         dmOtto.ActionExecute(trnWrite, ndOrderItem);
         dmOtto.ObjectGet(ndOrderItem, OrderItemId, trnWrite);
       end;
@@ -396,16 +277,16 @@ end;
 
 procedure TFrameOrderItems.actReturnRequestUpdate(Sender: TObject);
 begin
-  ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM', 'ID', mtblOrderItems['OrderItem_Id']);
+  ndOrderItem:= ndOrderItems.Find('ORDERITEM', 'ID', [mtblOrderItems['OrderItem_Id']]);
   if Assigned(ndOrderItem) then
-    actReturnRequest.Enabled:= xmlAttrIn(ndOrderItem, 'STATUS_SIGN', 'DELIVERING,DELIVERED')
+    actReturnRequest.Enabled:= ndOrderItem.Attr['STATUS_SIGN'].ValueIn(['DELIVERING','DELIVERED'])
   else
     actReturnRequest.Enabled:= False;
 end;
 
 procedure TFrameOrderItems.actCheckAvailableUpdate(Sender: TObject);
 begin
-  actCheckAvailable.Enabled:= XmlAttrIn(ndOrder, 'STATUS_SIGN', 'NEW,DRAFT,APPROVED,ACCEPTREQUEST,ACCEPTED');
+  actCheckAvailable.Enabled:= ndOrder.Attr['STATUS_SIGN'].ValueIn(['NEW','DRAFT','APPROVED','ACCEPTREQUEST','ACCEPTED']);
 end;
 
 procedure TFrameOrderItems.grdOrderItemsEnter(Sender: TObject);
@@ -416,13 +297,13 @@ end;
 
 procedure TFrameOrderItems.actDublicateExecute(Sender: TObject);
 begin
-  ndOrderItem:= ndOrderItems.NodeNew('ORDERITEM');
-  SetXmlAttr(ndOrderItem, 'ID', dmOtto.GetNewObjectId('ORDERITEM'));
-  BatchMoveFields2(ndOrderItem, mtblOrderItems,
+  ndOrderItem:= ndOrderItems.AddChild('ORDERITEM');
+  ndOrderItem['ID']:= dmOtto.GetNewObjectId('ORDERITEM');
+  BatchMoveFields(ndOrderItem, mtblOrderItems,
     'ORDER_ID;MAGAZINE_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR;NAME_RUS;'+
     'STATUS_SIGN;KIND_RUS;WEIGHT');
   mtblOrderItems.Append;
-  BatchMoveFields2(mtblOrderItems, ndOrderItem,
+  BatchMoveFields(mtblOrderItems, ndOrderItem,
     'ORDERITEM_ID=ID;ORDER_ID;MAGAZINE_ID;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR;NAME_RUS;'+
     'STATUS_SIGN;KIND_RUS;WEIGHT');
   mtblOrderItems.Post;
@@ -437,10 +318,10 @@ begin
   OrderItemId:= mtblOrderItems['ORDERITEM_ID'];
   Write;
   try
-    ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM','ID', OrderItemId);
+    ndOrderItem:= ndOrderItems.Find('ORDERITEM','ID', OrderItemId);
     if ndOrderItem <> nil then
     begin
-      SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'APPROVED');
+      ndOrderItem['NEW.STATUS_SIGN']:= 'APPROVED';
       dmOtto.ActionExecute(trnWrite, ndOrderItem);
       dmOtto.ObjectGet(ndOrderItem, OrderItemId, trnWrite);
     end;
@@ -475,12 +356,12 @@ begin
   OrderItemId:= mtblOrderItems['ORDERITEM_ID'];
   Write;
   try
-    ndOrderItem:= ndOrderItems.NodeByAttributeValue('ORDERITEM','ID', OrderItemId);
+    ndOrderItem:= ndOrderItems.Find('ORDERITEM','ID', OrderItemId);
     if ndOrderItem <> nil then
     begin
       StatusId:= TAction(Sender).ActionComponent.Tag;
       StatusSign:= qryStatuses.Lookup('STATUS_ID', StatusId, 'STATUS_SIGN');
-      SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', StatusSign);
+      ndOrderItem['NEW.STATUS_SIGN']:= StatusSign;
       dmOtto.ActionExecute(trnWrite, ndOrderItem);
       dmOtto.ObjectGet(ndOrderItem, OrderItemId, trnWrite);
     end;

@@ -1,65 +1,56 @@
 inherited FrameOrderItems: TFrameOrderItems
-  Left = 139
-  Top = 96
-  Width = 1125
-  Height = 462
-  PixelsPerInch = 96
-  TextHeight = 13
-  inherited dckTop: TTBXDock
-    Width = 1109
-    inherited tlBarTop: TTBXToolbar
-      object btnCheckAvailable: TTBXItem
-        Action = actCheckAvailable
-        Caption = #1055#1088#1086#1074#1077#1088#1080#1090#1100' '#1085#1072#1083#1080#1095#1080#1077
-        DisplayMode = nbdmImageAndText
-      end
-      object btn3: TTBXItem
-        Action = actDublicate
-        DisplayMode = nbdmImageAndText
-      end
-      object btn2: TTBXItem
-        Action = actCancelRequest
-        Caption = #1059#1076#1072#1083#1080#1090#1100'/A'#1085#1091#1083#1080#1088#1086#1074#1072#1090#1100
-        DisplayMode = nbdmImageAndText
-      end
-      object subDiscard: TTBXSubmenuItem
-        Caption = #1042#1086#1079#1074#1088#1072#1090
-        DisplayMode = nbdmImageAndText
-        ImageIndex = 2
-        object btn1: TTBXItem
-          Action = actReturnRequest
+  inherited pnlFrame: TPanel
+    inherited dckTop: TTBXDock
+      inherited tbBarTop: TTBXToolbar
+        object btnCheckAvailable: TTBXItem
+          Action = actCheckAvailable
+          Caption = #1055#1088#1086#1074#1077#1088#1080#1090#1100' '#1085#1072#1083#1080#1095#1080#1077
           DisplayMode = nbdmImageAndText
         end
-        object btnDiscard: TTBXItem
-          Action = actDiscard
+        object btn3: TTBXItem
+          Action = actDublicate
+          DisplayMode = nbdmImageAndText
         end
-      end
-      object btn4: TTBXItem
-        Action = actApprove
-        DisplayMode = nbdmImageAndText
-      end
-      object subSetStatuses: TTBXSubmenuItem
-        Caption = #1059#1089#1090#1072#1085#1086#1074#1080#1090#1100' '#1089#1090#1072#1090#1091#1089
+        object btn2: TTBXItem
+          Action = actCancelRequest
+          Caption = #1059#1076#1072#1083#1080#1090#1100'/A'#1085#1091#1083#1080#1088#1086#1074#1072#1090#1100
+          DisplayMode = nbdmImageAndText
+        end
+        object subDiscard: TTBXSubmenuItem
+          Caption = #1042#1086#1079#1074#1088#1072#1090
+          DisplayMode = nbdmImageAndText
+          ImageIndex = 2
+          object btn1: TTBXItem
+            Action = actReturnRequest
+            DisplayMode = nbdmImageAndText
+          end
+          object btnDiscard: TTBXItem
+            Action = actDiscard
+          end
+        end
+        object btn4: TTBXItem
+          Action = actApprove
+          DisplayMode = nbdmImageAndText
+        end
+        object subSetStatuses: TTBXSubmenuItem
+          Caption = #1059#1089#1090#1072#1085#1086#1074#1080#1090#1100' '#1089#1090#1072#1090#1091#1089
+        end
       end
     end
   end
-  inherited sb: TTBXStatusBar
-    Top = 402
-    Width = 1109
-  end
-  object grBoxOrderItems: TJvGroupBox [2]
+  object grBoxOrderItems: TJvGroupBox [1]
     Left = 0
-    Top = 26
-    Width = 1109
-    Height = 376
+    Top = 0
+    Width = 435
+    Height = 266
     Align = alClient
     Caption = #1040#1088#1090#1080#1082#1091#1083#1099' '#1079#1072#1103#1074#1082#1080
     TabOrder = 1
     object grdOrderItems: TDBGridEh
       Left = 2
       Top = 15
-      Width = 1105
-      Height = 359
+      Width = 431
+      Height = 249
       Align = alClient
       AllowedOperations = [alopInsertEh, alopUpdateEh, alopAppendEh]
       AutoFitColWidths = True
@@ -528,7 +519,6 @@ inherited FrameOrderItems: TFrameOrderItems
     BeforeInsert = mtblOrderItemsBeforeInsert
     AfterInsert = mtblOrderItemsAfterInsert
     BeforeEdit = mtblOrderItemsBeforeEdit
-    BeforePost = mtblOrderItemsBeforePost
     AfterScroll = mtblOrderItemsAfterScroll
     OnSetFieldValue = mtblOrderItemsSetFieldValue
     Left = 33
@@ -780,7 +770,6 @@ inherited FrameOrderItems: TFrameOrderItems
       'select *'
       'from statuses s'
       'order by s.status_id')
-    Transaction = trnRead
     Database = dmOtto.dbOtto
     Left = 200
     Top = 288
@@ -791,7 +780,6 @@ inherited FrameOrderItems: TFrameOrderItems
       'from status_rules sr'
       '  inner join statuses s on (s.status_id = sr.new_status_id)'
       'where sr.old_status_id = :status_id')
-    Transaction = trnWrite
     Database = dmOtto.dbOtto
     DataSource = dsOrderItems
     Left = 272

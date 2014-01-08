@@ -2,37 +2,37 @@ unit uExportSMSReject;
 
 interface
 uses
-  Classes, NativeXml, FIBDatabase, pFIBDatabase;
+  Classes, GvXml, FIBDatabase, pFIBDatabase;
 
 procedure ExportSMS(aTransaction: TpFIBTransaction);
 
 implementation
 uses
-  GvNativeXml, udmOtto, GvStr, SysUtils, GvFile, Dialogs;
+  GvXmlUtils, udmOtto, GvStr, SysUtils, GvFile, Dialogs;
 
 function ExportNotify(aTransaction: TpFIBTransaction;
-  ndClient: TXmlNode; ClientNotifyId: Integer): string;
+  ndClient: TGvXmlNode; ClientNotifyId: Integer): string;
 var
-  ndNotify: TXmlNode;
+  ndNotify: TGvXmlNode;
 begin
-  ndNotify:= ndClient.NodeNew('CLIENTNOTIFY');
+  ndNotify:= ndClient.AddChild('CLIENTNOTIFY');
   dmOtto.ObjectGet(ndNotify, ClientNotifyId, aTransaction);
-  Result:= GetXmlAttr(ndNotify, 'NOTIFY_TEXT');
-  SetXmlAttr(ndNotify, 'NEW.STATUS_SIGN', 'SENT');
+  Result:= ndNotify['NOTIFY_TEXT'];
+  ndNotify['NEW.STATUS_SIGN']:= 'SENT';
   dmOtto.ActionExecute(aTransaction, 'CLIENTNOTIFY_SEND', ndNotify);
 end;
 
 function ExportClient(aTransaction: TpFIBTransaction;
-  ndClients: TXmlNode; ClientId: Integer): string;
+  ndClients: TGvXmlNode; ClientId: Integer): string;
 var
-  ndClient: TXmlNode;
+  ndClient: TGvXmlNode;
   NotifiesList: String;
   ClientNotifyId: Variant;
 begin
   Result:= '';
-  ndClient:= ndClients.NodeNew('CLIENT');
+  ndClient:= ndClients.AddChild('CLIENT');
   dmOtto.ObjectGet(ndClient, ClientId, aTransaction);
-  Result:= GetXmlAttr(ndClient, 'MOBILE_PHONE');
+  Result:= ndClient['MOBILE_PHONE'];
 
   NotifiesList:= aTransaction.DefaultDatabase.QueryValue(
     'select list(distinct cn.clientnotify_id) '+
@@ -51,16 +51,16 @@ end;
 
 procedure ExportSMS(aTransaction: TpFIBTransaction);
 var
-  ndClients: TXmlNode;
+  ndClients: TGvXmlNode;
   ClientList, FileName: string;
   ClientId: variant;
   SmsText: string;
-  Xml: TNativeXml;
+  Xml: TGvXml;
 begin
   SmsText:= '';
   aTransaction.StartTransaction;
   try
-    xml:= TNativeXml.CreateName('CLIENTTS');
+    xml:= TGvXml.Create('CLIENTTS');
     try
       ndClients:= Xml.Root;
       ClientList:= aTransaction.DefaultDatabase.QueryValue(

@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uFormWizardBase, FIBDatabase, pFIBDatabase, ActnList,
-  JvExControls, JvWizard, NativeXml, ExtCtrls, JvExExtCtrls,
+  JvExControls, JvWizard, GvXml, ExtCtrls, JvExExtCtrls,
   JvPanel, uFrameOrderItems, uFrameOrder, uFrameClient,
   uFrameAdress, uFrameOrderSummary, StdCtrls;
 
@@ -42,18 +42,18 @@ type
       const FromPage: TJvWizardCustomPage);
   private
     { Private declarations }
-    ndOrder: TXmlNode;
-    ndOrderItems: TXmlNode;
-    ndOrderItem: TXmlNode;
-    ndArticle: TXmlNode;
-    ndAdress: TXmlNode;
-    ndPlace: TXmlNode;
-    ndClient: TXmlNode;
-    ndOrderTaxs: TXmlNode;
-    ndOrderTax: TXmlNode;
-    ndOrderMoneys: TXmlNode;
-    ndAccount: TXmlNode;
-    ndProduct: TXmlNode;
+    ndOrder: TGvXmlNode;
+    ndOrderItems: TGvXmlNode;
+    ndOrderItem: TGvXmlNode;
+    ndArticle: TGvXmlNode;
+    ndAdress: TGvXmlNode;
+    ndPlace: TGvXmlNode;
+    ndClient: TGvXmlNode;
+    ndOrderTaxs: TGvXmlNode;
+    ndOrderTax: TGvXmlNode;
+    ndOrderMoneys: TGvXmlNode;
+    ndAccount: TGvXmlNode;
+    ndProduct: TGvXmlNode;
     frmOrderItems: TFrameOrderItems;
     frmOrder: TFrameOrder;
     frmClient: TFrameClient;
@@ -77,7 +77,7 @@ var
 implementation
 
 uses
-  udmOtto, GvNativeXml, uParseOrder;
+  udmOtto, GvXmlUtils, uParseOrder;
 
 {$R *.dfm}
 
@@ -86,40 +86,40 @@ uses
 procedure TFormWizardOrder.BuildXml;
 begin
   inherited;
-  Root.Name:= 'ORDER';
+  Root.NodeName:= 'ORDER';
   ndOrder:= Root;
-  ndAdress:= ndOrder.NodeFindOrCreate('ADRESS');
-  ndProduct:= ndOrder.NodeFindOrCreate('PRODUCT');
-  ndPlace:= ndAdress.NodeFindOrCreate('PLACE');
-  ndClient:= ndOrder.NodeFindOrCreate('CLIENT');
-  ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
-  ndOrderTaxs:= ndOrder.NodeFindOrCreate('ORDERTAXS');
-  ndOrderMoneys:= ndOrder.NodeFindOrCreate('ORDERMONEYS');
-  ndAccount:= ndClient.NodeFindOrCreate('ACCOUNT');
+  ndAdress:= ndOrder.FindOrCreate('ADRESS');
+  ndProduct:= ndOrder.FindOrCreate('PRODUCT');
+  ndPlace:= ndAdress.FindOrCreate('PLACE');
+  ndClient:= ndOrder.FindOrCreate('CLIENT');
+  ndOrderItems:= ndOrder.FindOrCreate('ORDERITEMS');
+  ndOrderTaxs:= ndOrder.FindOrCreate('ORDERTAXS');
+  ndOrderMoneys:= ndOrder.FindOrCreate('ORDERMONEYS');
+  ndAccount:= ndClient.FindOrCreate('ACCOUNT');
 end;
 
 constructor TFormWizardOrder.CreateBlank(AOwner: TComponent);
 begin
   inherited;
-  OrderId:= dmOtto.GetNewObjectId(ndOrder.Name);
-  SetXmlAttr(ndOrder, 'SOURCE', 'Телефон/Лично');
-  SetXmlAttr(ndOrder, 'ID', ObjectId);
-  SetXmlAttr(ndOrder, 'BYR2EUR', dmOtto.SettingGet(trnRead, 'BYR2EUR'));
-  SetXmlAttr(ndOrder, 'CREATE_DTM', Now);
+  OrderId:= dmOtto.GetNewObjectId('ORDER');
+  ndOrder['SOURCE']:= 'Телефон/Лично';
+  ndOrder['ID']:= ObjectId;
+  ndOrder['BYR2EUR']:= dmOtto.SettingGet(trnRead, 'BYR2EUR');
+  ndOrder['CREATE_DTM']:= Now;
   dmOtto.ActionExecute(trnWrite, 'ORDER_CREATE', ndOrder);
   dmOtto.ObjectGet(ndOrder, OrderId, trnWrite);
-  Caption:= GetXmlAttr(ndOrder, 'ID', 'Новая заявка [ID=', ']');
+  Caption:= 'Новая заявка [ID='+ndOrder['ID']+']';
 end;
 
 constructor TFormWizardOrder.CreateMessage(AOwner: TComponent;
   aMessageId: integer);
 begin
   inherited;
-  OrderId:= dmOtto.GetNewObjectId(ndOrder.Name);
-  SetXmlAttr(ndOrder, 'SOURCE', 'Internet');
-  SetXmlAttr(ndOrder, 'ID', ObjectId);
-  SetXmlAttr(ndOrder, 'BYR2EUR', dmOtto.SettingGet(trnRead, 'BYR2EUR'));
-  SetXmlAttr(ndOrder, 'CREATE_DTM', Now);
+  OrderId:= dmOtto.GetNewObjectId('ORDER');
+  ndOrder['SOURCE']:= 'Internet';
+  ndOrder['ID']:= ObjectId;
+  ndOrder['BYR2EUR']:= StrToCurr(dmOtto.SettingGet(trnRead, 'BYR2EUR'));
+  ndOrder['CREATE_DTM']:= Now;
   BuildXml;
   dmOtto.ActionExecute(trnWrite, 'ORDER_CREATE', ndOrder);
   dmOtto.ObjectGet(ndOrder, OrderId, trnWrite);
@@ -131,17 +131,17 @@ procedure TFormWizardOrder.ReadFromDB(aObjectId: Integer);
 begin
   inherited;
   dmOtto.ObjectGet(ndOrder, OrderId, trnRead);
-  dmOtto.ObjectGet(ndClient, GetXmlAttrValue(ndOrder, 'CLIENT_ID'), trnRead);
-  dmOtto.ObjectGet(ndAccount, GetXmlAttrValue(ndClient, 'ACCOUNT_ID'), trnRead);
-  dmOtto.ObjectGet(ndAdress, GetXmlAttrValue(ndOrder, 'ADRESS_ID'), trnRead);
-  dmOtto.ObjectGet(ndPlace, GetXmlAttrValue(ndAdress, 'PLACE_ID'), trnRead);
-  dmOtto.ObjectGet(ndProduct, GetXmlAttrValue(ndOrder, 'PRODUCT_ID'), trnRead);
+  dmOtto.ObjectGet(ndClient, ndOrder['CLIENT_ID'], trnRead);
+  dmOtto.ObjectGet(ndAccount, ndClient['ACCOUNT_ID'], trnRead);
+  dmOtto.ObjectGet(ndAdress, ndOrder['ADRESS_ID'], trnRead);
+  dmOtto.ObjectGet(ndPlace, ndAdress['PLACE_ID'], trnRead);
+  dmOtto.ObjectGet(ndProduct, ndOrder['PRODUCT_ID'], trnRead);
   dmOtto.OrderItemsGet(ndOrderItems, OrderId, trnRead);
   dmOtto.OrderTaxsGet(ndOrderTaxs, OrderId, trnRead);
   dmOtto.OrderMoneysGet(ndOrderMoneys, OrderId, trnRead);
   Caption:= Format('Заявка %s [ID=%s]',
-                   [GetXmlAttr(ndOrder, 'ORDER_CODE'),
-                    GetXmlAttr(ndOrder, 'ID')]);
+                   [ndOrder.Attr['ORDER_CODE'].AsString,
+                    ndOrder.Attr['ID'].AsString]);
 end;
 
 
@@ -273,51 +273,51 @@ end;
 procedure TFormWizardOrder.wzIPageAdressNextButtonClick(Sender: TObject;
   var Stop: Boolean);
 begin
-  frmAdress.Write;
-  Stop:= not AttrExists(ndAdress, 'ID');
+//  frmAdress.Write;
+  Stop:= not ndAdress.HasAttribute('ID');
 end;
 
 procedure TFormWizardOrder.wzIPageClientNextButtonClick(Sender: TObject;
   var Stop: Boolean);
 begin
-  frmClient.Write;
-  Stop:= not AttrExists(ndClient, 'ID');
+//  frmClient.Write;
+  Stop:= not ndClient.HasAttribute('ID');
 end;
 
 procedure TFormWizardOrder.wzIPageOrderNextButtonClick(Sender: TObject;
   var Stop: Boolean);
 begin
-  frmOrder.Write;
+//  frmOrder.Write;
 end;
 
 procedure TFormWizardOrder.wzIPageOrderItemsNextButtonClick(
   Sender: TObject; var Stop: Boolean);
 begin
-  frmOrderItems.Write;
+//  frmOrderItems.Write;
 end;
 
 procedure TFormWizardOrder.wzIPageAdressEnterPage(Sender: TObject;
   const FromPage: TJvWizardCustomPage);
 begin
-  frmAdress.FormShow(sender);
+///  frmAdress.FormShow(sender);
 end;
 
 procedure TFormWizardOrder.wzIPageClientEnterPage(Sender: TObject;
   const FromPage: TJvWizardCustomPage);
 begin
-  frmClient.FormShow(sender);
+//  frmClient.FormShow(sender);
 end;
 
 procedure TFormWizardOrder.wzIPageOrderSummaryEnterPage(Sender: TObject;
   const FromPage: TJvWizardCustomPage);
 begin
-  frmOrderSummary.FormShow(sender);
+//  frmOrderSummary.FormShow(sender);
 end;
 
 procedure TFormWizardOrder.wzIPageOrderEnterPage(Sender: TObject;
   const FromPage: TJvWizardCustomPage);
 begin
-  frmOrder.FormShow(sender);
+//  frmOrder.FormShow(sender);
 end;
 
 end.

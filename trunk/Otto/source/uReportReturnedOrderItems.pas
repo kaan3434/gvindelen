@@ -2,22 +2,22 @@ unit uReportReturnedOrderItems;
 
 interface
 uses
-  NativeXml, FIBDatabase, pFIBDatabase, frxClass;
+  GvXml, FIBDatabase, pFIBDatabase, frxClass;
 
 procedure ReportReturnedOrderItems(aTransaction: TpFIBTransaction);
 
 implementation
 
 uses
-  udmOtto, GvStr, GvFile, SysUtils, GvNativeXml, DateUtils, uMain;
+  udmOtto, GvStr, GvFile, SysUtils, GvXmlUtils, DateUtils, uMain;
 
-procedure ExportProduct(aTransaction: TpFIBTransaction; ndProducts: TXmlNode; aProductId: Integer);
+procedure ExportProduct(aTransaction: TpFIBTransaction; ndProducts: TGvXmlNode; aProductId: Integer);
 var
-  ndProduct: TXmlNode;
+  ndProduct: TGvXmlNode;
   OrderItemList, FileName, Text: string;
   OrderItemId: variant;
 begin
-  ndProduct:= ndProducts.NodeFindOrCreate('PRODUCT');
+  ndProduct:= ndProducts.FindOrCreate('PRODUCT');
   try
     if not aTransaction.Active then
       aTransaction.StartTransaction;
@@ -39,7 +39,7 @@ begin
       end;
       ForceDirectories(Path['ReturnRequests']);
       FileName:= GetNextFileName(Format('%sr%s_%%.2u.%.3d', [
-        Path['ReturnRequests'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
+        Path['ReturnRequests'], ndProduct['PARTNER_NUMBER'],
         DayOfTheYear(Date)]));
       SaveStringAsFile(Text, FileName);
 //      dmOtto.CreateAlert('Запрос на ануляцию', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
@@ -54,19 +54,20 @@ end;
 
 
 procedure ReportOrderItemsByProduct(aTransaction: TpFIBTransaction;
-  ndProducts: TXmlNode; aProductId: Integer);
+  ndProducts: TGvXmlNode; aProductId: Integer);
 var
-  ndProduct, ndFastReport: TXmlNode;
+  ndProduct, ndFastReport: TGvXmlNode;
   FileName, PartnerNumber: String;
   i: Integer;
+  Att: TGvXmlAttribute;
 begin
-  ndProduct:= ndProducts.NodeNew('PRODUCT');
-  ndFastReport:= ndProducts.NodeFindOrCreate('FASTREPORT');
+  ndProduct:= ndProducts.AddChild('PRODUCT');
+  ndFastReport:= ndProducts.FindOrCreate('FASTREPORT');
   dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
   ForceDirectories(Path['Returns']);
   FileName:= GetNextFileName(Format(
     '%s%s_retart_%%.2u.%.3d', [
-    Path['Returns'], GetXmlAttr(ndProduct, 'PARTNER_NUMBER'), DayOfTheYear(Date)]));
+    Path['Returns'], ndProduct['PARTNER_NUMBER'], DayOfTheYear(Date)]));
   with dmOtto do
   begin
     frxExportXLS.DefaultPath:= Path['Returns'];
@@ -81,12 +82,15 @@ begin
     frxPDFExport.ShowDialog:= False;
 
     frxReport.LoadFromFile(Path['FastReport'] + 'OrderItemReturns.fr3');
-    for i:= 0 to ndFastReport.AttributeCount-1 do
-      frxReport.Variables[ndFastReport.AttributeName[i]]:= ndFastReport.AttributeValue[i];
+    for i:= 0 to ndFastReport.Attributes.Count-1 do
+    begin
+      Att:= ndFastReport.Attributes[i];
+      frxReport.Variables[Att.Name]:= Att.AsString;
+    end;
     frxReport.Variables['ProductId']:= aProductId;
     frxReport.PrepareReport(true);
     for i:= 0 to frxReport.Variables.Count-1 do
-      SetXmlAttr(ndFastReport, frxReport.Variables.Items[i].Name, frxReport.Variables.Items[i].Value);
+      ndFastReport[frxReport.Variables.Items[i].Name]:= frxReport.Variables.Items[i].Value;
 
     frxReport.Export(frxExportXLS);
     frxReport.Export(frxPDFExport);
@@ -97,12 +101,12 @@ end;
 
 procedure ReportReturnedOrderItems(aTransaction: TpFIBTransaction);
 var
-  Xml: TNativeXml;
-  ndProducts: TXmlNode;
+  Xml: TGvXml;
+  ndProducts: TGvXmlNode;
   ProductId: Variant;
   ProductList: string;
 begin
-  xml:= TNativeXml.CreateName('PRODUCTS');
+  xml:= TGvXml.Create('PRODUCTS');
   try
     ndProducts:= Xml.Root;
     ProductList:= aTransaction.DefaultDatabase.QueryValue(
@@ -123,12 +127,12 @@ end;
 
 procedure ExportReturns(aTransaction: TpFIBTransaction; frxReport: TFrxReport);
 var
-  Xml: TNativeXml;
-  ndProducts: TXmlNode;
+  Xml: TGvXml;
+  ndProducts: TGvXmlNode;
   ProductId: Variant;
   ProductList: string;
 begin
-  xml:= TNativeXml.CreateName('PRODUCTS');
+  xml:= TGvXml.Create('PRODUCTS');
   try
     ndProducts:= Xml.Root;
     ProductList:= aTransaction.DefaultDatabase.QueryValue(

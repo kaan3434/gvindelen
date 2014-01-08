@@ -7,36 +7,39 @@ procedure ExportInvoices(aTransaction: TpFIBTransaction);
 
 implementation
 uses
-  udmOtto, NativeXml, GvNativeXml, GvStr, GvFile, DateUtils, Dialogs;
+  udmOtto, GvXml, GvXmlUtils, GvStr, GvFile, DateUtils, Dialogs;
 
 function ExportOrder(aTransaction: TpFIBTransaction;
-  ndProduct, ndOrders: TXmlNode; aOrderId: integer): string;
+  ndProduct, ndOrders: TGvXmlNode; aOrderId: integer): string;
 var
   InvoiceList: string;
-  ndOrder, ndInvoice: TXmlNode;
+  ndOrder, ndInvoice: TGvXmlNode;
   InvoiceId: Variant;
 begin
   Result:= '';
-  ndOrder:= ndOrders.NodeNew('ORDER');
+  ndOrder:= ndOrders.AddChild('ORDER');
   dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
-  result:= GetXmlAttr(ndProduct, 'PARTNER_NUMBER')+';'+
-           CopyLast(GetXmlAttr(ndorder, 'ORDER_CODE'), 5)+';1'#13#10;
-  if GetXmlAttr(ndOrder, 'STATUS_SIGN') <> 'PAID' then
-    SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'PAID');
-  SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'PAYSENT');
+  result:=  FillPattern(
+    '[PARTNER_NUMBER];[ORDER_CODE|SUBSTR=2,5];1'#13#10,
+    XmlAttrs2Attr(ndProduct, 'PARTNER_NUMBER',
+    XmlAttrs2Attr(ndOrder, 'ORDER_CODE'
+  )));
+  if not ndOrder.Attr['STATUS_SIGN'].ValueIn(['PAID']) then
+    ndOrder['NEW.STATUS_SIGN']:= 'PAID';
+  ndOrder['NEW.STATE_SIGN']:= 'PAYSENT';
   dmOtto.ActionExecute(aTransaction, ndOrder);
 end;
 
 procedure ExportProduct(aTransaction: TpFIBTransaction;
-  ndProducts: TXmlNode; aProductId: integer);
+  ndProducts: TGvXmlNode; aProductId: integer);
 var
-  ndProduct, ndOrders: TXmlNode;
+  ndProduct, ndOrders: TGvXmlNode;
   OrderList, FileName, OrderText: string;
   OrderId: variant;
 begin
   OrderText:= '';
-  ndProduct:= ndProducts.NodeFindOrCreate('PRODUCT');
-  ndOrders:= ndProduct.NodeNew('ORDERS');
+  ndProduct:= ndProducts.FindOrCreate('PRODUCT');
+  ndOrders:= ndProduct.AddChild('ORDERS');
   dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
   OrderList:= aTransaction.DefaultDatabase.QueryValue(
     'select list(distinct order_id) from ('+
@@ -57,7 +60,7 @@ begin
 
   ForceDirectories(Path['PaidInvoices']);
   FileName:= GetNextFileName(Format('%szlg_%s_%%.2u.%.3d', [
-    Path['PaidInvoices'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
+    Path['PaidInvoices'], ndProduct['PARTNER_NUMBER'],
     DayOfTheYear(Date)]));
   SaveStringAsFile(OrderText, FileName);
   dmOtto.CreateAlert('Отправка платежей', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
@@ -65,15 +68,15 @@ end;
 
 procedure ExportInvoices(aTransaction: TpFIBTransaction);
 var
-  Xml: TNativeXml;
-  ndProducts: TXmlNode;
+  Xml: TGvXml;
+  ndProducts: TGvXmlNode;
   ProductId: Variant;
   ProductList: string;
   Files: TStringList;
 begin
   aTransaction.StartTransaction;
   try
-    xml:= TNativeXml.CreateName('PRODUCTS');
+    xml:= TGvXml.Create('PRODUCTS');
     try
       ndProducts:= Xml.Root;
       ProductList:= aTransaction.DefaultDatabase.QueryValue(

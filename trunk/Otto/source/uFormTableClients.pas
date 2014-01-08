@@ -57,7 +57,7 @@ var
 implementation
 
 uses
-  udmOtto, NativeXml, GvNativeXml, uDlgPayment, uFormWizardMoneyBack3;
+  udmOtto, GvXml, GvXmlUtils, uDlgPayment, uFormWizardMoneyBack3;
 
 {$R *.dfm}
 
@@ -73,8 +73,8 @@ var
   AccountId: Integer;
   Amount_Eur: Double;
   Byr2Eur: Integer;
-  Xml: TNativeXml;
-  ndClient: TXmlNode;
+  Xml: TGvXml;
+  ndClient: TGvXmlNode;
   DlgManualPayment: TDlgManualPayment;
   Annotate: string;
   bm: TBookmark;
@@ -88,27 +88,27 @@ begin
     begin
       Amount_Eur:= DlgManualPayment.edtAmountEur.Value;
       Byr2Eur:= DlgManualPayment.edtByr2Eur.Value;
-      Xml:= TNativeXml.CreateName('CLIENT');
+      Xml:= TGvXml.Create('CLIENT');
       Annotate:= DlgManualPayment.memAnnotate.Lines.Text;
       ndClient:= Xml.Root;
       try
         trnWrite.StartTransaction;
         dmOtto.ObjectGet(ndClient, qryMain['CLIENT_ID'], trnWrite);
         try
-        if GetXmlAttrValue(ndClient, 'ACCOUNT_ID') = null then
+        if not ndClient.HasAttribute('ACCOUNT_ID') then
           begin
             // Создаем счет
             AccountId:= dmOtto.GetNewObjectId('ACCOUNT');
-            dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_CREATE', '', AccountId);
-            SetXmlAttr(ndClient, 'ACCOUNT_ID', AccountId);
+            dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_CREATE', nil, AccountId);
+            ndClient['ACCOUNT_ID']:= AccountId;
             dmOtto.ActionExecute(trnWrite, ndClient);
           end
           else
             AccountId:= qryMain['ACCOUNT_ID'];
           dmOtto.ActionExecute(trnWrite, 'ACCOUNT','ACCOUNT_MANUALDEBIT',
-            Value2Vars(Amount_EUR, 'AMOUNT_EUR',
-            Value2Vars(Byr2Eur, 'BYR2EUR',
-            Value2Vars(Annotate, 'ANNOTATE'))), AccountId);
+            Value2Attr(Amount_EUR, 'AMOUNT_EUR',
+            Value2Attr(Byr2Eur, 'BYR2EUR',
+            Value2Attr(Annotate, 'ANNOTATE'))), AccountId);
           trnWrite.Commit;
         except
           on E:Exception do
@@ -135,8 +135,8 @@ procedure TFormTableClients.actAccountManualCreditExecute(Sender: TObject);
 var
   Amount_Eur: Double;
   Byr2Eur: Integer;
-  Xml: TNativeXml;
-  ndClient: TXmlNode;
+  Xml: TGvXml;
+  ndClient: TGvXmlNode;
   DlgManualPayment: TDlgManualPayment;
   Annotate: string;
   bm : TBookmark;
@@ -151,16 +151,16 @@ begin
       Amount_Eur:= DlgManualPayment.edtAmountEur.Value;
       Byr2Eur:= DlgManualPayment.edtByr2Eur.Value;
       Annotate:= DlgManualPayment.memAnnotate.Lines.Text;
-      Xml:= TNativeXml.CreateName('CLIENT');
+      Xml:= TGvXml.Create('CLIENT');
       ndClient:= Xml.Root;
       try
         trnWrite.StartTransaction;
         dmOtto.ObjectGet(ndClient, qryMain['CLIENT_ID'], trnWrite);
         try
           dmOtto.ActionExecute(trnWrite, 'ACCOUNT','ACCOUNT_MANUALCREDIT',
-            Value2Vars(Amount_EUR, 'AMOUNT_EUR',
-            Value2Vars(Byr2Eur, 'BYR2EUR',
-            Value2Vars(Annotate, 'ANNOTATE'))), qryMain['ACCOUNT_ID']);
+            Value2Attr(Amount_EUR, 'AMOUNT_EUR',
+            Value2Attr(Byr2Eur, 'BYR2EUR',
+            Value2Attr(Annotate, 'ANNOTATE'))), qryMain['ACCOUNT_ID']);
           trnWrite.Commit;
         except
           on E:Exception do

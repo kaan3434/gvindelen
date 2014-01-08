@@ -8,31 +8,30 @@ procedure ExportToSite(aTransaction: TpFIBTransaction);
 implementation
 
 uses
-  NativeXml, GvNativeXml, udmOtto, GvStr, GvFile, Dialogs;
+  GvXml, GvXmlUtils, udmOtto, GvStr, GvFile, Dialogs;
 
 procedure ExportOrder(aTransaction: TpFIBTransaction;
   aOrderId: integer);
 var
-  xml: TNativeXml;
-  ndOrder, ndClient, ndOrderItems, ndOrderTaxs, ndOrderMoneys: TXmlNode;
+  xml: TGvXml;
+  ndOrder, ndClient, ndOrderItems, ndOrderTaxs, ndOrderMoneys: TGvXmlNode;
   OrderCode, FileName: string;
 begin
-  xml:= TNativeXml.CreateName('ORDERS');
+  xml:= TGvXml.Create('ORDERS');
   try
-    ndOrder:= xml.Root.NodeNew('ORDER');
-    ndClient:= ndOrder.NodeNew('CLIENT');
-    ndOrderItems:= ndOrder.NodeNew('ORDERITEMS');
-    ndOrderTaxs:= ndOrder.NodeNew('ORDERTAXS');
-    ndOrderMoneys:= ndOrder.NodeNew('ORDERMONEYS');
+    ndOrder:= xml.Root.AddChild('ORDER');
+    ndClient:= ndOrder.AddChild('CLIENT');
+    ndOrderItems:= ndOrder.AddChild('ORDERITEMS');
+    ndOrderTaxs:= ndOrder.AddChild('ORDERTAXS');
+    ndOrderMoneys:= ndOrder.AddChild('ORDERMONEYS');
     dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
     dmOtto.OrderItemsGet(ndOrderItems, aOrderId, aTransaction);
     dmOtto.OrderTaxsGet(ndOrderTaxs, aOrderId, aTransaction);
     dmOtto.OrderMoneysGet(ndOrderMoneys, aOrderId, aTransaction);
-    dmOtto.ObjectGet(ndClient, GetXmlAttrValue(ndOrder, 'CLIENT_ID'), aTransaction);
-    OrderCode:= GetXmlAttrValue(ndOrder, 'ORDER_CODE');
+    dmOtto.ObjectGet(ndClient, ndOrder['CLIENT_ID'], aTransaction);
+    OrderCode:= ndOrder['ORDER_CODE'];
     FileName:= Format('%s%s.xml',[Path['ExportToSite'], OrderCode]);
-    xml.EncodingString:= 'Windows-1251';
-    xml.XmlFormat:= xfReadable;
+    xml.Header.Attr['Encoding'].AsString:= 'Windows-1251';
     xml.SaveToFile(FileName);
   finally
     xml.Free;
@@ -41,8 +40,8 @@ end;
 
 procedure ExportToSite(aTransaction: TpFIBTransaction);
 var
-  Xml: TNativeXml;
-  ndOrders: TXmlNode;
+  Xml: TGvXml;
+  ndOrders: TGvXmlNode;
   OrderId: Variant;
   OrderList: string;
   OrderCount: Integer;

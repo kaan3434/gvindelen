@@ -8,51 +8,40 @@ procedure ExportReturns(aTransaction: TpFIBTransaction);
 implementation
 
 uses
-  NativeXml, GvNativeXml, udmOtto, GvStr, GvFile, GvDtTm, DateUtils, Dialogs;
+  GvXml, GvXmlUtils, udmOtto, GvStr, GvFile, GvDtTm, DateUtils, Dialogs;
 
 //var
 //  ProgressIndicator: TJvProgressComponent;
 
 function ExportOrderItem(aTransaction: TpFIBTransaction;
-  ndProduct, ndOrder, ndOrderItems: TXmlNode; aOrderItemId: integer): string;
+  ndProduct, ndOrder, ndOrderItems: TGvXmlNode; aOrderItemId: integer): string;
 var
-  ndOrderItem: TXmlNode;
+  ndOrderItem: TGvXmlNode;
   Line: TStringList;
 begin
-  ndOrderItem:= ndOrderItems.NodeNew('ORDERITEM');
-  Line:= TStringList.Create;
-  try
-    dmOtto.ObjectGet(ndOrderItem, aOrderItemId, aTransaction);
-    Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
-    Line.Add(CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5));
-    Line.Add('300');
-    Line.Add(GetXmlAttr(ndOrderItem, 'AUFTRAG_ID'));
-    Line.Add(GetXmlAttr(ndOrderItem, 'ORDERITEM_INDEX'));
-    Line.Add(GetXmlAttr(ndOrderItem, 'ARTICLE_CODE'));
-    Line.Add(dmOtto.Recode('ORDERITEM', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION')));
-    Line.Add('1');
-    Line.Add(GetXmlAttr(ndOrderItem, 'NRRETCODE'));
-    Line.Add(GetXmlAttr(ndOrderItem, 'NREGWG'));
-    Line.Add(GetXmlAttr(ndOrder, 'PACKLIST_NO'));
-    Line.Add(ReplaceAll(GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR'),'.', ','));
-    Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
-    SetXmlAttr(ndOrderItem, 'NEW.STATE_SIGN', 'RETURNSENT');
-    dmOtto.ActionExecute(aTransaction, ndOrderItem);
-  finally
-    Line.Free;
-  end;
+  ndOrderItem:= ndOrderItems.AddChild('ORDERITEM');
+  Result:= FillPattern(
+    '[PARTNER_NUMBER];[ORDER_CODE|SUBSTR=2,5];300;[AUFTRAG_ID];[ORDERITEM_INDEX];'+
+    '[ARTICLE_CODE];[DIMENSION];1;[NRRETCODE];[NREGWG];[PACKLIST_NO];[PRICE_EUR]'#13#10,
+    XmlAttrs2Attr(ndProduct, 'PARTNER_NUMBER',
+    XmlAttrs2Attr(ndOrder, 'ORDER_CODE;PACKLIST_NO',
+    XmlAttrs2Attr(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;NRRETCODE;NREGWG;PRICE_EUR',
+    Value2Attr(dmOtto.Recode('ORDERITEM', 'DIMENSION_ENCODE', ndOrderItem['DIMENSION']), 'DIMENSION'
+  )))));
+  ndOrderItem['NEW.STATE_SIGN']:= 'RETURNSENT';
+  dmOtto.ActionExecute(aTransaction, ndOrderItem);
 end;
 
 function ExportOrder(aTransaction: TpFIBTransaction;
-  ndProduct, ndOrders: TXmlNode; aOrderId: integer): string;
+  ndProduct, ndOrders: TGvXmlNode; aOrderId: integer): string;
 var
   OrderItemList: string;
-  ndOrder, ndOrderItems: TXmlNode;
+  ndOrder, ndOrderItems: TGvXmlNode;
   OrderItemId: Variant;
 begin
   Result:= '';
-  ndOrder:= ndOrders.NodeNew('ORDER');
-  ndOrderItems:= ndOrder.NodeNew('ORDERITEMS');
+  ndOrder:= ndOrders.AddChild('ORDER');
+  ndOrderItems:= ndOrder.AddChild('ORDERITEMS');
 
   dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
   OrderItemList:= aTransaction.DefaultDatabase.QueryValue(
@@ -73,15 +62,15 @@ begin
 end;
 
 procedure ExportProduct(aTransaction: TpFIBTransaction;
-  ndProducts: TXmlNode; aProductId: integer);
+  ndProducts: TGvXmlNode; aProductId: integer);
 var
-  ndProduct, ndOrders: TXmlNode;
+  ndProduct, ndOrders: TGvXmlNode;
   OrderList, FileName, Text: string;
   OrderId: variant;
 begin
   Text:= '';
-  ndProduct:= ndProducts.NodeFindOrCreate('PRODUCT');
-  ndOrders:= ndProduct.NodeNew('ORDERS');
+  ndProduct:= ndProducts.FindOrCreate('PRODUCT');
+  ndOrders:= ndProduct.AddChild('ORDERS');
 
   dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
   OrderList:= aTransaction.DefaultDatabase.QueryValue(
@@ -102,7 +91,7 @@ begin
   end;
   ForceDirectories(Path['ReturnRequests']);
   FileName:= GetNextFileName(Format('%ss%s_%%.2u.%.3d', [
-    Path['ReturnRequests'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
+    Path['ReturnRequests'], ndProduct['PARTNER_NUMBER'],
     DayOfTheYear(Date)]));
   SaveStringAsFile(Text, FileName);
   dmOtto.CreateAlert('Запрос на возврат', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
@@ -110,14 +99,14 @@ end;
 
 procedure ExportReturns(aTransaction: TpFIBTransaction);
 var
-  Xml: TNativeXml;
-  ndProducts: TXmlNode;
+  Xml: TGvXml;
+  ndProducts: TGvXmlNode;
   ProductId: Variant;
   ProductList: string;
 begin
   aTransaction.StartTransaction;
   try
-    xml:= TNativeXml.CreateName('PRODUCTS');
+    xml:= TGvXml.Create('PRODUCTS');
     try
       ndProducts:= Xml.Root;
       ProductList:= aTransaction.DefaultDatabase.QueryValue(

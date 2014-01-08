@@ -7,125 +7,116 @@ procedure ExportApprovedOrder(aTransaction: TpFIBTransaction);
 
 implementation
 uses
-  udmOtto, NativeXml, GvNativeXml, GvStr, GvMath, GvFile, DateUtils, Dialogs, 
+  udmOtto, GvXml, GvXmlUtils, GvStr, GvMath, GvFile, DateUtils, Dialogs, 
   uExportSuissen;
 
-function GetPlace(ndPlace: TXmlNode; MaxLen: integer): string;
+function GetPlace(ndPlace: TGvXmlNode): string;
 begin
-  if GetXmlAttrValue(ndPlace, 'PLACETYPE_CODE', '4') = 4 then
-    Result:= Translit(GetXmlAttr(ndPlace, 'PLACE_NAME'))
-  else
-    Result:= Translit(GetXmlAttr(ndPlace, 'PLACETYPE_SIGN') +
-                     GetXmlAttr(ndPlace, 'PLACE_NAME', '. '));
-  result:= Copy(Result, 1, MaxLen);
+  Result:= FillPattern(
+    '{PLACETYPE_CODE <> "4" THEN [PLACETYPE_SIGN]. }[PLACE_NAME]',
+    XmlAttrs2Attr(ndPlace, 'PLACETYPE_CODE;PLACETYPE_SIGN;PLACE_NAME'));
 end;
 
-function GetAdress(ndAdress: TXmlNode; MaxLen: integer): string;
+function GetAdress(ndAdress: TGvXmlNode; MaxLen: integer): string;
 var
   Part1, Part2: string;
 begin
-   if GetXmlAttrValue(ndAdress, 'STREETTYPE_CODE', '1') > 1 then
-     Part1:= Translit(GetXmlAttr(ndAdress, 'STREETTYPE_NAME', ' ', '. ') +
-                      GetXmlAttr(ndAdress, 'STREET_NAME'))
-   else
-     Part1:= Translit(GetXmlAttr(ndAdress, 'STREET_NAME'));
+   Part1:= FillPattern('{STREETTYPE_CODE <> "1" THEN  [STREETTYPE_NAME]. }[STREET_NAME]',
+     XmlAttrs2Attr(ndAdress, 'STREETTYPE_CODE;STREETTYPE_NAME;STREET_NAME'));
 
-   Part2:= Translit(GetXmlAttr(ndAdress, 'HOUSE', ', ') +
-                    GetXmlAttr(ndAdress, 'BUILDING', '/') +
-                    GetXmlAttr(ndAdress, 'FLAT', '-'));
+   Part2:= FillPattern('{HOUSE THEN , [HOUSE]{BUILDING THEN /[BUILDING]}}{FLAT THEN -[FLAT]}',
+     XmlAttrs2Attr(ndAdress, 'HOUSE;BUILDIND;FLAT'));
+
    Result:= Part1 + Part2;
    if Length(Result) <= MaxLen then Exit;
    Result:= Copy(Part1, 1, MaxLen-Length(Part2)-1)+'.'+Part2;
 end;
 
 function ExportClient(aTransaction: TpFIBTransaction;
-  ndProduct, ndOrders: TXmlNode; aOrderId: integer): string;
+  ndProduct, ndOrders: TGvXmlNode; aOrderId: integer): string;
 var
-  ndOrder, ndClient, ndAdress, ndPlace: TXmlNode;
+  ndOrder, ndClient, ndAdress, ndPlace: TGvXmlNode;
   Line: TStringList;
 begin
   Result:= '';
-  ndOrder:= ndOrders.NodeNew('ORDER');
-  ndClient:= ndOrder.NodeFindOrCreate('CLIENT');
-  ndAdress:= ndOrder.NodeFindOrCreate('ADRESS');
-  ndPlace:= ndAdress.NodeFindOrCreate('PLACE');
-  Line:= TStringList.Create;
-  try
-    dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
-    dmOtto.ObjectGet(ndClient, GetXmlAttrValue(ndOrder, 'CLIENT_ID'), aTransaction);
-    dmOtto.ObjectGet(ndAdress, GetXmlAttrValue(ndOrder, 'ADRESS_ID'), aTransaction);
-    dmOtto.ObjectGet(ndPlace, GetXmlAttrValue(ndAdress, 'PLACE_ID'), aTransaction);
-    if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'APPROVED') then
-    begin
-      Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
-      Line.Add(CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5));
-      Line.Add('100');
-      Line.Add(IfThen(LastChar(GetXmlAttr(ndClient, 'FIRST_NAME')) in ['а', 'я'], '3', '1'));
-      Line.Add(Translit(GetXmlAttr(ndClient, 'LAST_NAME')));
-      Line.Add(Translit(GetXmlAttr(ndClient, 'FIRST_NAME') + ' '+ Copy(GetXmlAttr(ndClient, 'MID_NAME'), 1, 1)));
-      Line.Add('');
-      Line.Add(GetAdress(ndAdress, 32));
-      Line.Add(Translit(GetXmlAttr(ndPlace, 'AREA_NAME', '', ' r-n')));
-      Line.Add(GetXmlAttr(ndAdress, 'POSTINDEX'));
-      Line.Add(GetPlace(ndPlace, 24));
-      Line.Add('N');
-      Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
-      SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'ACCEPTREQUEST');
-      dmOtto.ActionExecute(aTransaction, ndOrder);
-      IncXmlAttr(ndProduct, 'ORDER_COUNT');
-    end;
-  finally
-    Line.Free;
+  ndOrder:= ndOrders.AddChild('ORDER');
+  ndClient:= ndOrder.FindOrCreate('CLIENT');
+  ndAdress:= ndOrder.FindOrCreate('ADRESS');
+  ndPlace:= ndAdress.FindOrCreate('PLACE');
+  dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
+  dmOtto.ObjectGet(ndClient, ndOrder['CLIENT_ID'], aTransaction);
+  dmOtto.ObjectGet(ndAdress, ndOrder['ADRESS_ID'], aTransaction);
+  dmOtto.ObjectGet(ndPlace, ndAdress['PLACE_ID'], aTransaction);
+  if ndOrder.Attr['STATUS_SIGN'].ValueIn(['APPROVED']) then
+  begin
+    Result:= FillPattern(
+      '[PARTNER_NUMBER];[ORDER_CODE|SUBSTR=2,5];100;[GENDER];'+
+      '[LASTNAME|TRANSLIT];[FIRST_NAME|TRANSLIT]{MID_NAME THEN  [MID_NAME|TRANSLIT|SUBSTR=1,1]};;'+
+      '[ADRESS_TEXT|TRANSLIT|SUBSTR=1,32];{AREA_NAME THEN [AREA_NAME|TRANSLIT] r-n};'+
+      '[POSTINDEX];[PLACE_TEXT|TRANSLIT|SUBSTR=1,24];N',
+      XmlAttrs2Attr(ndProduct, 'PARTNER_NUMBER',
+      XmlAttrs2Attr(ndOrder, 'ORDER_CODE',
+      XmlAttrs2Attr(ndAdress, 'POSTINDEX',
+      XmlAttrs2Attr(ndClient, 'FIRST_NAME;LAST_NAME;MID_NAME',
+      Value2Attr(GetAdress(ndAdress, 32), 'ADRESS_TEXT',
+      Value2Attr(GetPlace(ndPlace), 'PLACE_TEXT',
+      Value2Attr(IfThen(LastChar(ndClient['FIRST_NAME']) in ['а', 'я'], '3', '1'), 'GENDER'
+    ))))))));
+    ndOrder['NEW.STATUS_SIGN']:= 'ACCEPTREQUEST';
+    dmOtto.ActionExecute(aTransaction, ndOrder);
   end;
 end;
 
 function ExportOrderItem(aTransaction: TpFIBTransaction;
-  ndProduct, ndOrder, ndOrderItems: TXmlNode; aOrderItemId: integer): string;
+  ndProduct, ndOrder, ndOrderItems: TGvXmlNode; aOrderItemId: integer): string;
 var
-  ndOrderItem: TXmlNode;
+  ndOrderItem: TGvXmlNode;
   Line: TStringList;
 begin
-  ndOrderItem:= ndOrderItems.NodeNew('ORDERITEM');
-  Line:= TStringList.Create;
-  try
-    dmOtto.ObjectGet(ndOrderItem, aOrderItemId, aTransaction);
-    ndOrderItem.ValueAsBool:= True;
-    Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
-    Line.Add(CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5));
-    Line.Add('200');
-    Line.Add(CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5));
-    Line.Add(GetXmlAttr(ndOrderItem, 'ARTICLE_CODE'));
-    Line.Add(dmOtto.Recode('ORDERITEM', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION')));
-    Line.Add('1');
-    Line.Add(GetXmlAttr(ndOrderItem, 'COST_EUR'));
-    Line.Add('');
-    Line.Add('');
-    Line.Add('');
-    Line.Add('0');
-    Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
-    SetXmlAttr(ndOrderItem, 'NEW.STATUS_SIGN', 'ACCEPTREQUEST');
-    dmOtto.ActionExecute(aTransaction, ndOrderItem);
-    IncXmlAttr(ndProduct, 'ORDERITEM_COUNT');
-  finally
-    Line.Free;
-  end;
+  ndOrderItem:= ndOrderItems.AddChild('ORDERITEM');
+  dmOtto.ObjectGet(ndOrderItem, aOrderItemId, aTransaction);
+  Result:= FillPattern(
+    '[PARTNER_NUMBER];[ORDER_CODE|SUBSTR=2,5];200;[ORDER_CODE|SUBSTR=2,5];'+
+    '[ARTICLE_CODE];[DIMENSION];1;[PRICE_EUR];;;;0',
+    XmlAttrs2Attr(ndProduct, 'PARTNER_NUMBER',
+    XmlAttrs2Attr(ndOrder, 'ORDER_CODE',
+    XmlAttrs2Attr(ndOrderItem, 'ARTICLE_CODE;PRICE_EUR',
+    Value2Attr(dmOtto.Recode('ORDERITEM', 'DIMENSION_ENCODE', ndOrderItem['DIMENSION']),'DIMENSION')
+  ))));
+
+//    Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
+//    Line.Add(CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5));
+//    Line.Add('200');
+//    Line.Add(CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5));
+//    Line.Add(GetXmlAttr(ndOrderItem, 'ARTICLE_CODE'));
+//    Line.Add(dmOtto.Recode('ORDERITEM', 'DIMENSION_ENCODE', GetXmlAttr(ndOrderItem, 'DIMENSION')));
+//    Line.Add('1');
+//    Line.Add(GetXmlAttr(ndOrderItem, 'COST_EUR'));
+//    Line.Add('');
+//    Line.Add('');
+//    Line.Add('');
+//    Line.Add('0');
+//    Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
+  ndOrderItem['NEW.STATUS_SIGN']:= 'ACCEPTREQUEST';
+  dmOtto.ActionExecute(aTransaction, ndOrderItem);
+//    IncXmlAttr(ndProduct, 'ORDERITEM_COUNT');
 end;
 
 function ExportOrder(aTransaction: TpFIBTransaction;
-  ndProduct, ndOrders: TXmlNode; aOrderId: Integer): string;
+  ndProduct, ndOrders: TGvXmlNode; aOrderId: Integer): string;
 var
   OrderItemList: string;
-  ndOrder, ndOrderItems: TXmlNode;
+  ndOrder, ndOrderItems: TGvXmlNode;
   OrderItemId: Variant;
 begin
   Result:= '';
-  ndOrder:= ndOrders.NodeByAttributeValue('ORDER', 'ID', IntToStr(aOrderId), false);
+  ndOrder:= ndOrders.Find('ORDER', 'ID', [aOrderId]);
   if ndOrder = nil then
   begin
-    ndOrder:= ndOrders.NodeNew('ORDER');
+    ndOrder:= ndOrders.AddChild('ORDER');
     dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
   end;
-  ndOrderItems:= ndOrder.NodeNew('ORDERITEMS');
+  ndOrderItems:= ndOrder.AddChild('ORDERITEMS');
 
   dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
   OrderItemList:= aTransaction.DefaultDatabase.QueryValue(
@@ -144,13 +135,13 @@ begin
 end;
 
 procedure ExportProductOtto(aTransaction: TpFIBTransaction;
-  ndProduct: TXmlNode; aProductId: integer);
+  ndProduct: TGvXmlNode; aProductId: integer);
 var
-  ndOrders: TXmlNode;
+  ndOrders: TGvXmlNode;
   OrderList, FileName, ClientText, OrderItemText: string;
   OrderId: variant;
 begin
-  ndOrders:= ndProduct.NodeNew('ORDERS');
+  ndOrders:= ndProduct.AddChild('ORDERS');
   try
     dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
     OrderList:= aTransaction.DefaultDatabase.QueryValue(
@@ -171,7 +162,7 @@ begin
 
     ForceDirectories(Path['OrderRequests']);
     FileName:= GetNextFileName(Format('%sa%s_%.1u%%.1u.%.3d', [
-      Path['OrderRequests'], GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER'),
+      Path['OrderRequests'], ndProduct['PARTNER_NUMBER'],
       Integer(dmOtto.DealerId), DayOfTheYear(Date)]));
     SaveStringAsFile(ClientText+OrderItemText, FileName);
     dmOtto.CreateAlert('Отправка заявок', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
@@ -182,14 +173,14 @@ end;
 
 procedure ExportApprovedOrder(aTransaction: TpFIBTransaction);
 var
-  Xml: TNativeXml;
-  ndProducts, ndProduct: TXmlNode;
+  Xml: TGvXml;
+  ndProducts, ndProduct: TGvXmlNode;
   ProductId: Variant;
   ArjName, ProductList: string;
 begin
   aTransaction.StartTransaction;
   try
-    xml:= TNativeXml.CreateName('PRODUCTS');
+    xml:= TGvXml.Create('PRODUCTS');
     try
       ndProducts:= Xml.Root;
       ProductList:= aTransaction.DefaultDatabase.QueryValue(
@@ -201,10 +192,10 @@ begin
       while ProductList <> '' do
       begin
         ProductId:= TakeFront5(ProductList, ',');
-        ndProduct:= ndProducts.NodeFindOrCreate('PRODUCT');
+        ndProduct:= ndProducts.FindOrCreate('PRODUCT');
         try
           dmOtto.ObjectGet(ndProduct, ProductId, aTransaction);
-          if GetXmlAttr(ndProduct, 'VENDOR_NAME') = 'OTTO' then
+          if ndProduct['VENDOR_NAME'] = 'OTTO' then
             ExportProductOtto(aTransaction, ndProduct, ProductId)
           else
           begin

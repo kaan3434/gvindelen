@@ -3,31 +3,31 @@ unit uParsePayments;
 interface
 
 uses
-  NativeXml, FIBDatabase, pFIBDatabase;
+  GvXml, FIBDatabase, pFIBDatabase;
 
 procedure ProcessPayment(aMessageId: Integer; aTransaction: TpFIBTransaction);
 
 implementation
 
 uses
-  Classes, SysUtils, GvStr, udmOtto, Variants, GvNativeXml,
+  Classes, SysUtils, GvStr, udmOtto, Variants, GvXmlUtils,
   Dialogs, Controls, GvDtTm;
 
 var
   PayInDeltaByr : Integer;
 
 procedure ParsePaymentLine(aMessageId, LineNo: Integer; aLine: string;
-  ndOrders: TXmlNode; aTransaction: TpFIBTransaction);
+  ndOrders: TGvXmlNode; aTransaction: TpFIBTransaction);
 var
   sl: TStringList;
   PayDate: TDateTime;
   PaymentId, OrderId: Variant;
-  Xml: TNativeXml;
-  ndOrder, ndAccount, ndOrderMoneys, ndOrderMoney: TXmlNode;
+  Xml: TGvXml;
+  ndOrder, ndAccount, ndOrderMoneys, ndOrderMoney: TGvXmlNode;
 begin
-  ndOrder:= ndOrders.NodeNew('ORDER');
-  ndAccount:= ndOrder.NodeNew('ACCOUNT');
-  ndOrderMoneys:= ndOrder.NodeNew('ORDERMONEYS');
+  ndOrder:= ndOrders.AddChild('ORDER');
+  ndAccount:= ndOrder.AddChild('ACCOUNT');
+  ndOrderMoneys:= ndOrder.AddChild('ORDERMONEYS');
   sl:= TStringList.Create;
   try
     sl.Delimiter:= ';';
@@ -39,98 +39,98 @@ begin
     if OrderId <> null then
     begin
       dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
-      dmOtto.ObjectGet(ndAccount, GetXmlAttrValue(ndOrder, 'ACCOUNT_ID'), aTransaction);
+      dmOtto.ObjectGet(ndAccount, ndOrder['ACCOUNT_ID'], aTransaction);
       dmOtto.OrderMoneysGet(ndOrderMoneys, OrderId, aTransaction);
 
       PayDate:= DateTimeStrEval('DD.MM.YYYY', sl[0]);
 
-      SetXmlAttrAsMoney(ndAccount, 'AMOUNT_BYR', sl[1]);
+      ndAccount['AMOUNT_BYR']:= StrToCurr(sl[1]);
 
-      ndOrderMoney:= ndOrderMoneys.NodeByAttributeValue('ORDERMONEY', 'AMOUNT_BYR', sl[1], false);
+      ndOrderMoney:= ndOrderMoneys.Find('ORDERMONEY', 'AMOUNT_BYR', sl[1]);
       if ndOrderMoney <> nil then
       begin
         dmOtto.Notify(aMessageId,
           '[LINE_NO]. Повторное зачисление суммы [AMOUNT_BYR] BYR на заявку [ORDER_CODE] c задолженностью [COST_BYR]. Сумма не зачислена.',
           'E',
-          XmlAttrs2Vars(ndOrder, 'ORDER_CODE;COST_BYR',
-          XmlAttrs2Vars(ndAccount, 'AMOUNT_BYR',
-          Value2Vars(LineNo, 'LINE_NO'))));
+          XmlAttrs2Attr(ndOrder, 'ORDER_CODE;COST_BYR',
+          XmlAttrs2Attr(ndAccount, 'AMOUNT_BYR',
+          Value2Attr(LineNo, 'LINE_NO'))));
         Exit;
       end;
 
-      if not FlagPresent('PAYINABLE', ndOrder, 'STATUS_FLAG_LIST') then
+      if not FlagPresent(ndOrder, 'STATUS_FLAG_LIST', 'PAYINABLE') then
       begin
         dmOtto.Notify(aMessageId,
           '[LINE_NO]. Попытка зачисления суммы [AMOUNT_BYR] BYR на заявку [ORDER_CODE] в статусе [STATUS_NAME]',
           'W',
-          XmlAttrs2Vars(ndOrder, 'ORDER_CODE;STATUS_NAME',
-          XmlAttrs2Vars(ndAccount, 'AMOUNT_BYR',
-          Value2Vars(LineNo, 'LINE_NO'))));
+          XmlAttrs2Attr(ndOrder, 'ORDER_CODE;STATUS_NAME',
+          XmlAttrs2Attr(ndAccount, 'AMOUNT_BYR',
+          Value2Attr(LineNo, 'LINE_NO'))));
       end;
 
 
-      if Abs(GetXmlAttrValue(ndOrder, 'COST_BYR', 0)-GetXmlAttrValue(ndAccount, 'AMOUNT_BYR', 0)) > PayInDeltaByr then
+      if Abs(ndOrder.Attr['COST_BYR'].AsMoneyDef(0)-ndAccount.Attr['AMOUNT_BYR'].AsMoneyDef(0)) > PayInDeltaByr then
       begin
         dmOtto.Notify(aMessageId,
           '[LINE_NO]. Попытка зачисления суммы [AMOUNT_BYR] BYR на заявку [ORDER_CODE] c задолженностью [COST_BYR]. Сумма не зачислена',
           'E',
-          XmlAttrs2Vars(ndOrder, 'ORDER_CODE;COST_BYR',
-          XmlAttrs2Vars(ndAccount, 'AMOUNT_BYR',
-          Value2Vars(LineNo, 'LINE_NO'))));
+          XmlAttrs2Attr(ndOrder, 'ORDER_CODE;COST_BYR',
+          XmlAttrs2Attr(ndAccount, 'AMOUNT_BYR',
+          Value2Attr(LineNo, 'LINE_NO'))));
         Exit;
       end;
 
       try
         dmOtto.ActionExecute(aTransaction, 'ACCOUNT', 'ACCOUNT_PAYMENTIN',
-          XmlAttrs2Vars(ndAccount, 'ID;AMOUNT_BYR',
-          XmlAttrs2Vars(ndOrder, 'ORDER_ID=ID')));
+          XmlAttrs2Attr(ndAccount, 'ID;AMOUNT_BYR',
+          XmlAttrs2Attr(ndOrder, 'ORDER_ID=ID')));
         dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
 
         dmOtto.Notify(aMessageId,
           '[LINE_NO]. Сумма [AMOUNT_BYR] BYR зачислена на заявку [ORDER_CODE]. Статус заявки - [STATUS_NAME]',
           'I',
-          XmlAttrs2Vars(ndOrder, 'ORDER_CODE;STATUS_NAME',
-          Strings2Vars(sl, 'AMOUNT_BYR=1',
-          Value2Vars(LineNo, 'LINE_NO'))));
+          XmlAttrs2Attr(ndOrder, 'ORDER_CODE;STATUS_NAME',
+          Strings2Attr(sl, 'AMOUNT_BYR=1',
+          Value2Attr(LineNo, 'LINE_NO'))));
       except
         on E: Exception do
           dmOtto.Notify(aMessageId,
             '[LINE_NO]. Сумма [AMOUNT_BYR] BYR. Заявка [ORDER_CODE]. [ERROR_TEXT]',
             'E',
-            XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
-            XmlAttrs2Vars(ndAccount, 'AMOUNT_BYR',
-            Value2Vars(LineNo, 'LINE_NO',
-            Value2Vars(DeleteChars(e.Message, #10#13), 'ERROR_TEXT')))));
+            XmlAttrs2Attr(ndOrder, 'ORDER_CODE',
+            XmlAttrs2Attr(ndAccount, 'AMOUNT_BYR',
+            Value2Attr(LineNo, 'LINE_NO',
+            Value2Attr(DeleteChars(e.Message, #10#13), 'ERROR_TEXT')))));
       end;
     end
     else
       dmOtto.Notify(aMessageId,
         '[LINE_NO]. Сумма [AMOUNT_BYR] BYR. Неизвестная заявка [ORDER_CODE]',
         'E',
-        Strings2Vars(sl, 'ORDER_CODE=3;AMOUNT_BYR=1',
-        Value2Vars(LineNo, 'LINE_NO')));
+        Strings2Attr(sl, 'ORDER_CODE=3;AMOUNT_BYR=1',
+        Value2Attr(LineNo, 'LINE_NO')));
   finally
     sl.Free;
   end;
 end;
 
-procedure ParsePayment(aMessageId: Integer; ndMessage: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParsePayment(aMessageId: Integer; ndMessage: TGvXmlNode; aTransaction: TpFIBTransaction);
 var
   LineNo: Integer;
   Lines: TStringList;
   MessageFileName: variant;
-  ndOrders: TXmlNode;
+  ndOrders: TGvXmlNode;
 begin
   dmOtto.ClearNotify(aMessageId);
   aTransaction.StartTransaction;
   try
     dmOtto.ObjectGet(ndMessage, aMessageId, aTransaction);
-    ndOrders:= ndMessage.NodeFindOrCreate('ORDERS');
+    ndOrders:= ndMessage.FindOrCreate('ORDERS');
 
-    MessageFileName:= GetXmlAttrValue(ndMessage, 'FILE_NAME');
+    MessageFileName:= ndMessage['FILE_NAME'];
     dmOtto.Notify(aMessageId,
       'Начало обработки файла: [FILE_NAME]', '',
-      Value2Vars(MessageFileName, 'FILE_NAME'));
+      Value2Attr(MessageFileName, 'FILE_NAME'));
 
     if FileExists(Path['Messages.In']+MessageFileName) then
     begin
@@ -151,11 +151,11 @@ begin
     else
       dmOtto.Notify(aMessageId,
         'Файл [FILE_NAME] не найден.', 'E',
-        Value2Vars(MessageFileName, 'FILE_NAME'));
+        Value2Attr(MessageFileName, 'FILE_NAME'));
 
     dmOtto.Notify(aMessageId,
       'Конец обработки файла: [FILE_NAME]', '',
-      Value2Vars(MessageFileName, 'FILE_NAME'));
+      Value2Attr(MessageFileName, 'FILE_NAME'));
     dmOtto.ShowProtocol(aTransaction, aMessageId);
     dmOtto.MessageCommit(aTransaction, aMessageId);
   except
@@ -165,10 +165,10 @@ end;
 
 procedure ProcessPayment(aMessageId: Integer; aTransaction: TpFIBTransaction);
 var
-  aXml: TNativeXml;
+  aXml: TGvXml;
 begin
   PayInDeltaByr:= dmOtto.SettingGet(aTransaction, 'PAYIN_DELTA_BYR');
-  aXml:= TNativeXml.CreateName('MESSAGE');
+  aXml:= TGvXml.Create('MESSAGE');
   try
     ParsePayment(aMessageId, aXml.Root, aTransaction);
   finally

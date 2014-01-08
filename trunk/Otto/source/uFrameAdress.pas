@@ -9,7 +9,8 @@ uses
   TBXStatusBars, TB2Dock, TB2Toolbar, TBX, DB,
   FIBDataSet, pFIBDataSet, GridsEh, DBGridEh, JvNetscapeSplitter, StdCtrls,
   DBCtrlsEh, Mask, JvExMask, JvToolEdit, JvMaskEdit, JvExStdCtrls,
-  JvGroupBox, NativeXml, uFrameBase1, DBGridEhGrouping;
+  JvGroupBox, GvXml, uFrameBase1, DBGridEhGrouping, ToolCtrlsEh,
+  DBGridEhToolCtrls, DBAxisGridsEh;
 
 type
   TFrameAdress = class(TFrameBase1)
@@ -66,16 +67,10 @@ type
     { Private declarations }
   public
     { Public declarations }
-    ndOrder: TXmlNode;
-    ndClient: TXmlNode;
-    ndAdress: TXmlNode;
-    ndPlace: TXmlNode;
-    procedure InitData; override;
-    procedure FreeData; override;
-    procedure OpenTables; override;
-    procedure Read; override;
-    procedure Write; override;
-    procedure UpdateCaptions; override;
+    ndOrder: TGvXmlNode;
+    ndClient: TGvXmlNode;
+    ndAdress: TGvXmlNode;
+    ndPlace: TGvXmlNode;
     property OrderId: Integer read GetOrderId;
     property ClientId: Integer read GetClientId;
     property AdressId: Integer read GetAdressId;
@@ -88,39 +83,33 @@ var
 implementation
 
 uses
-  udmOtto, GvNativeXml, GvKbd;
+  udmOtto, GvXmlUtils, GvKbd;
 
 {$R *.dfm}
 
 { TFrameAdress }
 
-procedure TFrameAdress.FreeData;
-begin
-  inherited;
-
-end;
-
 function TFrameAdress.GetAdressId: Integer;
 begin
-  Result:= ndAdress.ReadAttributeInteger('ID', 0)
+  Result:= ndAdress.Attr['ID'].AsIntegerDef(0);
 end;
 
 function TFrameAdress.GetClientId: Integer;
 begin
-  Result:= ndClient.ReadAttributeInteger('ID', 0)
+  Result:= ndClient.Attr['ID'].AsIntegerDef(0);
 end;
 
 function TFrameAdress.GetOrderId: Integer;
 begin
-  Result:= ndOrder.ReadAttributeInteger('ID', 0)
+  Result:= ndOrder.Attr['ID'].AsIntegerDef(0);
 end;
 
 function TFrameAdress.GetPlaceId: Integer;
 begin
-  Result:= ndPlace.ReadAttributeInteger('ID', 0)
+  Result:= ndPlace.Attr['ID'].AsIntegerDef(0);
 end;
 
-procedure TFrameAdress.InitData;
+{procedure TFrameAdress.InitData;
 begin
   inherited;
   dmOtto.FillComboStrings(cbPlaceType.KeyItems, cbPlaceType.Items,
@@ -130,8 +119,9 @@ begin
   dmOtto.FillComboStrings(cbStreetType.KeyItems, cbStreetType.Items,
     'select streettype_code, streettype_sign from StreetTypes order by streettype_sign', trnRead);
 end;
+}
 
-procedure TFrameAdress.Read;
+{procedure TFrameAdress.Read;
 begin
   txtClientName.Caption:= GetXmlAttr(ndClient, 'LAST_NAME') +
     GetXmlAttr(ndClient, 'FIRST_NAME', ' ')+
@@ -183,7 +173,7 @@ begin
     else
       Exit;
   end;
-  
+
   SetXmlAttr(ndAdress, 'PLACE_ID', PlaceId);
   SetXmlAttr(ndAdress, 'POSTINDEX', medPostIndex.Text);
   Combo2XmlAttr(cbStreetType, ndAdress, 'STREETTYPE_CODE', 'STREETTYPE_SIGN');
@@ -215,7 +205,7 @@ begin
   dmOtto.ObjectGet(ndPlace, PlaceId, trnWrite);
   UpdateCaptions;
 end;
-
+}
 procedure TFrameAdress.cbPlaceTypeChange(Sender: TObject);
 var
   NeedArea: Boolean;
@@ -226,27 +216,27 @@ end;
 
 procedure TFrameAdress.grdAdressesDblClick(Sender: TObject);
 begin
-  if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'NEW,DRAFT,APPROVED') then
+  if ndOrder.Attr['STATUS_SIGN'].ValueIn(['NEW','DRAFT','APPROVED']) then
   begin
     dmOtto.AdressRead(ndAdress, qryAdresses['ADRESS_ID'], trnRead);
     Read;
-    UpdateCaptions;
+//    UpdateCaptions;
   end;
 end;
 
 procedure TFrameAdress.grdPlacesDblClick(Sender: TObject);
 begin
-  if XmlAttrIn(ndOrder, 'STATUS_SIGN', 'NEW,DRAFT,APPROVED') then
+  if ndOrder.Attr['STATUS_SIGN'].ValueIn(['NEW','DRAFT','APPROVED']) then
   begin
     dmOtto.ObjectGet(ndPlace, qryPlaces['PLACE_ID'], trnRead);
-    UpdateCaptions;
+//    UpdateCaptions;
   end;
 end;
 
 procedure TFrameAdress.actPlaceSearchExecute(Sender: TObject);
 begin
-  SetXmlAttr(ndPlace, 'PLACE_NAME', dedPlaceName.Text);
-  if ndPlace.ReadAttributeString('PLACE_NAME', '') <> '' then
+  ndPlace['PLACE_NAME']:= dedPlaceName.Text;
+  if ndPlace.HasAttribute('PLACE_NAME') then
   begin
     qryPlaces.DisableControls;
     try
@@ -264,7 +254,7 @@ begin
   end;
 end;
 
-procedure TFrameAdress.OpenTables;
+{procedure TFrameAdress.OpenTables;
 begin
   inherited;
   qryAdresses.OpenWP([ClientId]);
@@ -273,7 +263,7 @@ begin
 
   qryPlaces.OpenWP([GetXmlAttrValue(ndPlace, 'PLACE_NAME')]);
 end;
-
+}
 procedure TFrameAdress.EditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -290,26 +280,26 @@ begin
   dmOtto.SetKeyLayout(TControl(Sender).Tag);
 end;
 
-procedure TFrameAdress.UpdateCaptions;
+{procedure TFrameAdress.UpdateCaptions;
 begin
   grBoxClient.Caption:= DetectCaption(ndClient, 'Клиент');
   grBoxAdress.Caption:= DetectCaption(ndAdress, 'Адрес');
   grBoxPlace.Caption:= DetectCaption(ndPlace, 'Населенный пункт');
 end;
-
+}
 procedure TFrameAdress.AddressChanged(Sender: TObject;
   var Key: Char);
 begin
   inherited;
-  if GetXmlAttrValue(ndAdress, 'ID') <> null then
+  if ndAdress.HasAttribute('ID') then
   begin
     if MessageDlg('Добавить адрес клиента?', mtConfirmation, mbOKCancel, 0) = mrOk then
     begin
-      SetXmlAttr(ndOrder, 'ADRESS_ID', null);
-      SetXmlAttr(ndAdress, 'ID', null);
-      SetXmlAttr(ndAdress, 'PLACE_ID', null);
-      SetXmlAttr(ndPlace, 'ID', null);
-      UpdateCaptions;
+      ndOrder['ADRESS_ID']:= null;
+      ndAdress['ID']:= null;
+      ndAdress['PLACE_ID']:= null;
+      ndPlace['ID']:= null;
+//      UpdateCaptions;
     end;
   end;
 end;

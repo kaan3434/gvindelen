@@ -1,4 +1,4 @@
-object Frame2: TFrame2
+object FrameParams: TFrameParams
   Left = 0
   Top = 0
   Width = 560
@@ -14,8 +14,10 @@ object Frame2: TFrame2
     DynProps = <>
     Flat = True
     IndicatorOptions = [gioShowRowIndicatorEh]
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit]
+    OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
     ReadOnly = True
-    TabOrder = 0
+    TabOrder = 1
     Columns = <
       item
         DynProps = <>
@@ -69,6 +71,7 @@ object Frame2: TFrame2
       DockMode = dmCannotFloatOrChangeDocks
       DragHandleStyle = dhNone
       FullSize = True
+      Images = imgListParams
       Stretch = True
       TabOrder = 0
       object btnNew: TTBXItem
@@ -82,11 +85,11 @@ object Frame2: TFrame2
       end
       object tbsepseparator: TTBXSeparatorItem
       end
-      object btnPaste: TTBXItem
-        Action = actPaste
-      end
       object btnCopy: TTBXItem
         Action = actCopy
+      end
+      object btnPaste: TTBXItem
+        Action = actPaste
       end
       object btnClear: TTBXItem
         Action = actClear
@@ -97,28 +100,44 @@ object Frame2: TFrame2
     Left = 104
     Top = 64
     object actNew: TAction
-      Caption = 'actNew'
+      Caption = #1053#1086#1074#1099#1081
       OnExecute = actNewExecute
-    end
-    object actDelete: TAction
-      Caption = 'actDelete'
+      OnUpdate = actNewUpdate
     end
     object actEdit: TAction
-      Caption = 'actEdit'
+      Caption = #1048#1079#1084#1077#1085#1080#1090#1100
+      OnExecute = actEditExecute
+      OnUpdate = actEditUpdate
+    end
+    object actDelete: TAction
+      Caption = #1059#1076#1072#1083#1080#1090#1100
+      OnExecute = actDeleteExecute
+      OnUpdate = actDeleteUpdate
     end
     object actCopy: TAction
-      Caption = 'actCopy'
+      Caption = #1050#1086#1087#1080#1088#1086#1074#1072#1090#1100
+      OnExecute = actCopyExecute
+      OnUpdate = actCopyUpdate
     end
     object actPaste: TAction
-      Caption = 'actPaste'
+      Caption = #1042#1089#1090#1072#1074#1080#1090#1100
+      OnExecute = actPasteExecute
+      OnUpdate = actPasteUpdate
     end
     object actClear: TAction
-      Caption = 'actClear'
+      Caption = #1054#1095#1080#1089#1090#1080#1090#1100
+      OnExecute = actClearExecute
+      OnUpdate = actClearUpdate
     end
   end
   object dsParams: TDataSource
     AutoEdit = False
     Left = 160
+    Top = 64
+  end
+  object imgListParams: TPngImageList
+    PngImages = <>
+    Left = 216
     Top = 64
   end
 end

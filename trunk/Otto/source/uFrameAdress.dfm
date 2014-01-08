@@ -1,23 +1,21 @@
 inherited FrameAdress: TFrameAdress
-  Left = 247
-  Top = 160
-  Width = 920
-  Height = 502
+  Height = 450
   Constraints.MinHeight = 450
-  PixelsPerInch = 96
-  TextHeight = 13
-  inherited dckTop: TTBXDock
-    Width = 904
+  inherited pnlFrame: TPanel
+    Width = 145
+    Height = 450
+    inherited sBarFrame: TTBXStatusBar
+      Width = 135
+    end
+    inherited dckTop: TTBXDock
+      Width = 135
+    end
   end
-  inherited sb: TTBXStatusBar
-    Top = 442
-    Width = 904
-  end
-  object pnlRightOnAdress: TJvPanel [2]
-    Left = 614
-    Top = 26
+  object pnlRightOnAdress: TJvPanel [1]
+    Left = 145
+    Top = 0
     Width = 290
-    Height = 416
+    Height = 450
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
@@ -30,7 +28,7 @@ inherited FrameAdress: TFrameAdress
     TabOrder = 2
     object grBoxAdress: TJvGroupBox
       Left = 5
-      Top = 260
+      Top = 294
       Width = 280
       Height = 151
       Align = alBottom
@@ -97,6 +95,7 @@ inherited FrameAdress: TFrameAdress
         Top = 40
         Width = 57
         Height = 21
+        DynProps = <>
         EditButtons = <>
         TabOrder = 1
         Visible = True
@@ -110,6 +109,7 @@ inherited FrameAdress: TFrameAdress
         Top = 40
         Width = 145
         Height = 21
+        DynProps = <>
         EditButtons = <>
         TabOrder = 2
         Visible = True
@@ -122,6 +122,7 @@ inherited FrameAdress: TFrameAdress
         Top = 112
         Width = 57
         Height = 21
+        DynProps = <>
         EditButtons = <>
         TabOrder = 5
         Visible = True
@@ -134,6 +135,7 @@ inherited FrameAdress: TFrameAdress
         Top = 88
         Width = 57
         Height = 21
+        DynProps = <>
         EditButtons = <>
         TabOrder = 4
         Visible = True
@@ -146,6 +148,7 @@ inherited FrameAdress: TFrameAdress
         Top = 64
         Width = 57
         Height = 21
+        DynProps = <>
         EditButtons = <>
         TabOrder = 3
         Visible = True
@@ -156,7 +159,7 @@ inherited FrameAdress: TFrameAdress
     end
     object grBoxPlace: TJvGroupBox
       Left = 5
-      Top = 140
+      Top = 174
       Width = 280
       Height = 120
       Align = alBottom
@@ -203,6 +206,7 @@ inherited FrameAdress: TFrameAdress
         Top = 16
         Width = 57
         Height = 21
+        DynProps = <>
         EditButtons = <>
         TabOrder = 0
         Visible = True
@@ -217,6 +221,7 @@ inherited FrameAdress: TFrameAdress
         Top = 40
         Width = 193
         Height = 21
+        DynProps = <>
         EditButtons = <
           item
             Style = ebsEllipsisEh
@@ -235,6 +240,7 @@ inherited FrameAdress: TFrameAdress
         Top = 64
         Width = 193
         Height = 21
+        DynProps = <>
         EditButtons = <>
         TabOrder = 2
         Visible = False
@@ -249,6 +255,7 @@ inherited FrameAdress: TFrameAdress
         Height = 21
         TabStop = False
         Color = clBtnFace
+        DynProps = <>
         EditButtons = <>
         ReadOnly = True
         TabOrder = 3
@@ -259,7 +266,7 @@ inherited FrameAdress: TFrameAdress
       Left = 5
       Top = 5
       Width = 280
-      Height = 135
+      Height = 169
       Align = alClient
       Caption = #1050#1083#1080#1077#1085#1090' ('#1053#1086#1074#1099#1081')'
       TabOrder = 0
@@ -268,7 +275,7 @@ inherited FrameAdress: TFrameAdress
         Left = 2
         Top = 15
         Width = 276
-        Height = 118
+        Height = 152
         Align = alClient
         AutoSize = False
         BorderStyle = sbsSunken
@@ -276,19 +283,19 @@ inherited FrameAdress: TFrameAdress
       end
     end
   end
-  object pnlCenterOnAdress: TPanel [3]
+  object pnlCenterOnAdress: TPanel [2]
     Left = 0
-    Top = 26
-    Width = 614
-    Height = 416
+    Top = 0
+    Width = 145
+    Height = 450
     Align = alClient
     BorderWidth = 4
     Caption = 'pCenter'
     TabOrder = 1
     object split1: TJvNetscapeSplitter
       Left = 5
-      Top = 225
-      Width = 604
+      Top = 259
+      Width = 135
       Height = 10
       Cursor = crVSplit
       Align = alBottom
@@ -299,52 +306,43 @@ inherited FrameAdress: TFrameAdress
     object grBoxgb2: TJvGroupBox
       Left = 5
       Top = 5
-      Width = 604
-      Height = 220
+      Width = 135
+      Height = 254
       Align = alClient
       Caption = #1053#1072#1089#1077#1083#1077#1085#1085#1099#1077' '#1087#1091#1085#1082#1090#1099
       TabOrder = 0
       object grdPlaces: TDBGridEh
         Left = 2
         Top = 15
-        Width = 600
-        Height = 203
+        Width = 131
+        Height = 237
         TabStop = False
         Align = alClient
         AutoFitColWidths = True
         Ctl3D = True
-        DataGrouping.GroupLevels = <>
         DataSource = dsPlaces
+        DynProps = <>
         Flat = True
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = []
-        FooterColor = clWindow
-        FooterFont.Charset = DEFAULT_CHARSET
-        FooterFont.Color = clWindowText
-        FooterFont.Height = -11
-        FooterFont.Name = 'MS Sans Serif'
-        FooterFont.Style = []
+        FooterParams.Color = clWindow
+        IndicatorOptions = [gioShowRowIndicatorEh]
         Options = [dgTitles, dgIndicator, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
         OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghMultiSortMarking, dghIncSearch, dghPreferIncSearch, dghRowHighlight, dghExtendVertLines]
         ParentCtl3D = False
         ParentFont = False
-        RowDetailPanel.Color = clBtnFace
         STFilter.InstantApply = True
         STFilter.Local = True
         STFilter.Location = stflInTitleFilterEh
         STFilter.Visible = True
         TabOrder = 0
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -11
-        TitleFont.Name = 'MS Sans Serif'
-        TitleFont.Style = []
         OnDblClick = grdPlacesDblClick
         Columns = <
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'PLACETYPE_SIGN'
             Footers = <>
@@ -354,6 +352,7 @@ inherited FrameAdress: TFrameAdress
             Width = 50
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'PLACE_NAME'
             Footers = <>
@@ -363,6 +362,7 @@ inherited FrameAdress: TFrameAdress
             Width = 250
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'AREA_NAME'
             Footers = <>
@@ -372,6 +372,7 @@ inherited FrameAdress: TFrameAdress
             Width = 120
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'REGION_NAME'
             Footers = <>
@@ -387,8 +388,8 @@ inherited FrameAdress: TFrameAdress
     end
     object grBoxgb1: TJvGroupBox
       Left = 5
-      Top = 235
-      Width = 604
+      Top = 269
+      Width = 135
       Height = 176
       Align = alBottom
       Caption = #1040#1076#1088#1077#1089#1072
@@ -396,30 +397,21 @@ inherited FrameAdress: TFrameAdress
       object grdAdresses: TDBGridEh
         Left = 2
         Top = 15
-        Width = 600
+        Width = 131
         Height = 159
         TabStop = False
         Align = alBottom
         AutoFitColWidths = True
-        DataGrouping.GroupLevels = <>
         DataSource = dsAdresses
+        DynProps = <>
         Flat = True
-        FooterColor = clWindow
-        FooterFont.Charset = DEFAULT_CHARSET
-        FooterFont.Color = clWindowText
-        FooterFont.Height = -11
-        FooterFont.Name = 'MS Sans Serif'
-        FooterFont.Style = []
-        RowDetailPanel.Color = clBtnFace
+        FooterParams.Color = clWindow
+        IndicatorOptions = [gioShowRowIndicatorEh]
         TabOrder = 0
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -11
-        TitleFont.Name = 'MS Sans Serif'
-        TitleFont.Style = []
         OnDblClick = grdAdressesDblClick
         Columns = <
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'ADRESS_ID'
             Footers = <>
@@ -427,6 +419,7 @@ inherited FrameAdress: TFrameAdress
             Title.Caption = 'Id'
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'PLACE_ID'
             Footers = <>
@@ -434,6 +427,7 @@ inherited FrameAdress: TFrameAdress
             Visible = False
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'PLACE_TEXT'
             Footers = <>
@@ -442,6 +436,7 @@ inherited FrameAdress: TFrameAdress
             Width = 250
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'CLIENT_ID'
             Footers = <>
@@ -449,6 +444,7 @@ inherited FrameAdress: TFrameAdress
             Visible = False
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'ADRESS_TEXT'
             Footers = <>
@@ -457,6 +453,7 @@ inherited FrameAdress: TFrameAdress
             Width = 300
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'STATUS_ID'
             Footers = <>
@@ -468,14 +465,14 @@ inherited FrameAdress: TFrameAdress
       end
     end
   end
-  inherited trnWrite: TpFIBTransaction
-    Active = True
-  end
   inherited actList: TActionList
     object actPlaceSearch: TAction
       Caption = 'actPlaceSearch'
       OnExecute = actPlaceSearchExecute
     end
+  end
+  object trnWrite: TpFIBTransaction
+    TimeoutAction = TARollback
   end
   object qryAdresses: TpFIBDataSet
     SelectSQL.Strings = (

@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uFormWizardBase, fib, FIBDatabase, pFIBDatabase, ActnList,
-  JvExControls, JvWizard, uFrameOrderItems, uFrameReturn, NativeXml,
+  JvExControls, JvWizard, uFrameOrderItems, uFrameReturn, GvXml,
   ExtCtrls, JvExStdCtrls, JvGroupBox;
 
 type
@@ -14,22 +14,22 @@ type
     wzIPageMoneyBackKind: TJvWizardInteriorPage;
     wzWPage: TJvWizardWelcomePage;
     procedure FormCreate(Sender: TObject);
-    procedure wzFormActivePageChanging(Sender: TObject;
-      var ToPage: TJvWizardCustomPage);
+//    procedure wzFormActivePageChanging(Sender: TObject;
+//      var ToPage: TJvWizardCustomPage);
   private
     { Private declarations }
-    ndOrder: TXmlNode;
-    ndOrderItems: TXmlNode;
-    ndOrderItem: TXmlNode;
-    ndArticle: TXmlNode;
-    ndAdress: TXmlNode;
-    ndPlace: TXmlNode;
-    ndClient: TXmlNode;
-    ndOrderTaxs: TXmlNode;
-    ndOrderTax: TXmlNode;
-    ndOrderMoneys: TXmlNode;
-    ndAccount: TXmlNode;
-    ndMoneyBack: TXmlNode;
+    ndOrder: TGvXmlNode;
+    ndOrderItems: TGvXmlNode;
+    ndOrderItem: TGvXmlNode;
+    ndArticle: TGvXmlNode;
+    ndAdress: TGvXmlNode;
+    ndPlace: TGvXmlNode;
+    ndClient: TGvXmlNode;
+    ndOrderTaxs: TGvXmlNode;
+    ndOrderTax: TGvXmlNode;
+    ndOrderMoneys: TGvXmlNode;
+    ndAccount: TGvXmlNode;
+    ndMoneyBack: TGvXmlNode;
     frmOrderItems: TFrameOrderItems;
     frmMoneyBack: TFrameMoneyBack;
 //    frmClient: TFrameClient;
@@ -50,7 +50,7 @@ var
 implementation
 
 uses
-  udmOtto, GvNativeXml;
+  udmOtto, GvXmlUtils;
 
 {$R *.dfm}
 
@@ -69,16 +69,16 @@ end;
 procedure TFormWizardReturn.BuildXml;
 begin
   inherited;
-  Root.Name:= 'ORDER';
+  Root.NodeName:= 'ORDER';
   ndOrder:= Root;
-  ndAdress:= ndOrder.NodeFindOrCreate('ADRESS');
-  ndPlace:= ndAdress.NodeFindOrCreate('PLACE');
-  ndClient:= ndOrder.NodeFindOrCreate('CLIENT');
-  ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
-  ndOrderTaxs:= ndOrder.NodeFindOrCreate('ORDERTAXS');
-  ndOrderMoneys:= ndOrder.NodeFindOrCreate('ORDERMONEYS');
-  ndAccount:= ndClient.NodeFindOrCreate('ACCOUNT');
-  ndMoneyBack:= ndOrder.NodeFindOrCreate('MONEYBACK');
+  ndAdress:= ndOrder.FindOrCreate('ADRESS');
+  ndPlace:= ndAdress.FindOrCreate('PLACE');
+  ndClient:= ndOrder.FindOrCreate('CLIENT');
+  ndOrderItems:= ndOrder.FindOrCreate('ORDERITEMS');
+  ndOrderTaxs:= ndOrder.FindOrCreate('ORDERTAXS');
+  ndOrderMoneys:= ndOrder.FindOrCreate('ORDERMONEYS');
+  ndAccount:= ndClient.FindOrCreate('ACCOUNT');
+  ndMoneyBack:= ndOrder.FindOrCreate('MONEYBACK');
 end;
 
 procedure TFormWizardReturn.ReadFromDB(aObjectId: Integer);
@@ -86,9 +86,9 @@ begin
   inherited;
   dmOtto.ObjectGet(ndOrder, aObjectId, trnRead);
   trnWrite.StartTransaction;
-  if not FlagPresent('DELIVERED', ndOrder, 'STATUS_FLAG_LIST') then
+  if not FlagPresent(ndOrder, 'STATUS_FLAG_LIST', 'DELIVERED') then
   begin
-    SetXmlAttr(ndOrder, 'NEW.STATUS_SIGN', 'DELIVERED');
+    ndOrder['NEW.STATUS_SIGN']:= 'DELIVERED';
     dmOtto.ActionExecute(trnWrite, ndOrder);
     dmOtto.ObjectGet(ndOrder, OrderId, trnWrite);
   end;
@@ -96,10 +96,10 @@ begin
   dmOtto.OrderItemsGet(ndOrderItems, aObjectId, trnWrite);
   dmOtto.OrderTaxsGet(ndOrderTaxs, aObjectId, trnWrite);
   dmOtto.OrderMoneysGet(ndOrderMoneys, aObjectId, trnWrite);
-  dmOtto.ObjectGet(ndClient, GetXmlAttrValue(ndOrder, 'CLIENT_ID'), trnWrite);
-  dmOtto.ObjectGet(ndAccount, GetXmlAttrValue(ndClient, 'ACCOUNT_ID'), trnWrite);
-  dmOtto.ObjectGet(ndAdress, GetXmlAttrValue(ndOrder, 'ADRESS_ID'), trnWrite);
-  dmOtto.ObjectGet(ndPlace, GetXmlAttrValue(ndAdress, 'PLACE_ID'), trnWrite);
+  dmOtto.ObjectGet(ndClient, ndOrder['CLIENT_ID'], trnWrite);
+  dmOtto.ObjectGet(ndAccount, ndClient['ACCOUNT_ID'], trnWrite);
+  dmOtto.ObjectGet(ndAdress, ndOrder['ADRESS_ID'], trnWrite);
+  dmOtto.ObjectGet(ndPlace, ndAdress['PLACE_ID'], trnWrite);
 end;
 
 
@@ -129,6 +129,7 @@ begin
   end;
 end;
 
+{
 procedure TFormWizardReturn.wzFormActivePageChanging(Sender: TObject;
   var ToPage: TJvWizardCustomPage);
 begin
@@ -139,5 +140,5 @@ begin
   if wzForm.ActivePage = wzIPageMoneyBackKind then
     frmMoneyBack.Write;
 end;
-
+}
 end.

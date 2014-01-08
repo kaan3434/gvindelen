@@ -6,9 +6,6 @@ uses
   Forms,
   udmOtto in 'udmOtto.pas' {dmOtto: TDataModule},
   uParseCancellation in 'uParseCancellation.pas',
-  uFormWizardBase in 'uFormWizardBase.pas' {FormWizardBase},
-  GvNativeXml in 'GvNativeXml.pas',
-  uParseMagazine in 'uParseMagazine.pas',
   uBaseNSIForm in 'uBaseNSIForm.pas' {BaseNSIForm},
   uFormTableOrder in 'uFormTableOrder.pas' {FormTableOrders},
   uFormTableClients in 'uFormTableClients.pas' {FormTableClients},
@@ -51,16 +48,25 @@ uses
   uExportDealerData in 'uExportDealerData.pas',
   uExportSuissen in 'uExportSuissen.pas',
   uFormActions in 'uFormActions.pas' {frmActionCodeSetup},
-  uFrameParams in 'uFrameParams.pas' {Frame2: TFrame},
-  uFrameCriterias in 'uFrameCriterias.pas' {Frame1: TFrame},
-  uFormParamEdit in 'uFormParamEdit.pas' {frmParamEdit};
+  uFrameParams in 'uFrameParams.pas' {FrameParams: TFrame},
+  uFrameCriterias in 'uFrameCriterias.pas' {FrameCriterias: TFrame},
+  uFormParamEdit in 'uFormParamEdit.pas' {FormParamEdit},
+  GvClipboard in 'GvClipboard.pas',
+  uFormCriteriaEdit in 'uFormCriteriaEdit.pas' {FormCriteriaEdit},
+  uFormOrder in 'uFormOrder.pas' {FormOrder},
+  uFrameClientView in 'uFrameClientView.pas' {FrameClientView: TFrame},
+  uFrameClientEdit in 'uFrameClientEdit.pas' {FrameClientEdit: TFrame},
+  uParseArtN in 'uParseArtN.pas';
 
 {$R *.res}
 
 begin
-  DecimalSeparator:= '.';
+  DecimalSeparator := '.';
   Application.Initialize;
   Application.CreateForm(TdmOtto, dmOtto);
   Application.CreateForm(TMainForm, MainForm);
+  Application.CreateForm(TFormOrder, FormOrder);
   Application.Run;
 end.
+
+

@@ -3,14 +3,14 @@ unit uParseOrder;
 interface
 
 uses
-  NativeXml, FIBDatabase, pFIBDatabase;
+  GvXml, FIBDatabase, pFIBDatabase;
 
-procedure ParseFileOrder(aFileName: string; ndOrder: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseFileOrder(aFileName: string; ndOrder: TGvXmlNode; aTransaction: TpFIBTransaction);
 
 implementation
 
 uses
-  Classes, SysUtils, GvStr, udmOtto, Variants, GvNativeXml, GvMath,
+  Classes, SysUtils, GvStr, udmOtto, Variants, GvXmlUtils, GvMath,
   Dialogs, Controls;
 
 function ToFloat(aStr: string): Double;
@@ -22,74 +22,72 @@ begin
 end;
 
 
-procedure ParseOrderHeaderXml(aLine: string; ndOrder: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseOrderHeaderXml(aLine: string; ndOrder: TGvXmlNode; aTransaction: TpFIBTransaction);
 var
   sl: TStringList;
   strStream: TStringStream;
   St: string;
-  ndClient, ndAdress, ndPlace: TXmlNode;
+  ndClient, ndAdress, ndPlace: TGvXmlNode;
   ProductId: Integer;
 begin
   sl:= TStringList.Create;
-  ndAdress:= ndOrder.NodeFindOrCreate('ADRESS');
-  ndClient:= ndOrder.NodeFindOrCreate('CLIENT');
-  ndPlace:= ndAdress.NodeFindOrCreate('PLACE');
+  ndAdress:= ndOrder.FindOrCreate('ADRESS');
+  ndClient:= ndOrder.FindOrCreate('CLIENT');
+  ndPlace:= ndAdress.FindOrCreate('PLACE');
 
   try
     sl.Delimiter:= ';';
     sl.DelimitedText:= '"'+ReplaceAll(aLine, ';', '";"')+'"';
-    st:= UpCaseFirst(EscapeString(sl[0]));
-    SetXmlAttr(ndClient, 'LAST_NAME', st);
-    st:= UpCaseFirst(EscapeString(sl[1]));
-    SetXmlAttr(ndClient, 'FIRST_NAME', st);
-    st:= UpCaseFirst(EscapeString(sl[2]));
-    SetXmlAttr(ndClient, 'MID_NAME', st);
-    SetXmlAttr(ndClient, 'EMAIL', EscapeString(sl[3]));
-    SetXmlAttr(ndClient, 'STATIC_PHONE', EscapeString(DeleteChars(sl[11], ' -()')));
-    SetXmlAttr(ndClient, 'MOBILE_PHONE', EscapeString(DeleteChars(sl[13]+sl[12], ' -()')));
+    ndClient['LAST_NAME']:= UpCaseFirst(EscapeString(sl[0]));
+    ndClient['FIRST_NAME']:= UpCaseFirst(EscapeString(sl[1]));
+    ndClient['MID_NAME']:= UpCaseFirst(EscapeString(sl[2]));
+    ndClient['EMAIL']:= EscapeString(sl[3]);
+    ndClient['STATIC_PHONE']:= EscapeString(DeleteChars(sl[11], ' -()'));
+    ndClient['MOBILE_PHONE']:= EscapeString(DeleteChars(sl[13]+sl[12], ' -()'));
 
     if WordCount(sl[4]) = 1 then
     begin
-      SetXmlAttr(ndAdress, 'STREETTYPE_NAME', 'ул');
-      SetXmlAttr(ndAdress, 'STREET_NAME', UpCaseFirst(EscapeString(sl[4])));
+      ndAdress['STREETTYPE_NAME']:= 'ул';
+      ndAdress['STREET_NAME']:= UpCaseFirst(EscapeString(sl[4]));
     end
     else
     begin
       St:= sl[4];
-      SetXmlAttr(ndAdress, 'STREETTYPE_NAME',TakeFront5(st));
-      SetXmlAttr(ndAdress, 'STREET_NAME', UpCaseFirst(EscapeString(st)));
+      ndAdress['STREETTYPE_NAME']:= TakeFront5(st);
+      ndAdress['STREET_NAME']:= UpCaseFirst(EscapeString(st));
     end;
-    SetXmlAttr(ndAdress, 'HOUSE', EscapeString(sl[5]));
-    SetXmlAttr(ndAdress, 'BUILDING', EscapeString(sl[6]));
-    SetXmlAttr(ndAdress, 'FLAT', EscapeString(sl[7]));
-    SetXmlAttr(ndAdress, 'POSTINDEX', EscapeString(sl[8]));
+    ndAdress['HOUSE']:= EscapeString(sl[5]);
+    ndAdress['BUILDING']:= EscapeString(sl[6]);
+    ndAdress['FLAT']:= EscapeString(sl[7]);
+    ndAdress['POSTINDEX']:= EscapeString(sl[8]);
 
     if WordCount(sl[9]) = 1 then
     begin
-      SetXmlAttr(ndPlace, 'PLACETYPE_NAME', 'г');
-      SetXmlAttr(ndPlace, 'PLACE_NAME', UpCaseFirst(EscapeString(sl[9])));
+      ndPlace['PLACETYPE_NAME']:= 'г';
+      ndPlace['PLACE_NAME']:= UpCaseFirst(EscapeString(sl[9]));
     end
     else
     begin
       St:= sl[9];
-      SetXmlAttr(ndPlace, 'PLACETYPE_NAME', takefront5(st));
-      SetXmlAttr(ndPlace, 'PLACE_NAME', UpCaseFirst(EscapeString(st)));
+      ndPlace['PLACETYPE_NAME']:= takefront5(st);
+      ndPlace['PLACE_NAME']:= UpCaseFirst(EscapeString(st));
     end;
 
     // разбираем Область, район
     if WordCount(sl[10]) = 2 then
     begin
-      SetXmlAttr(ndPlace, 'REGION_NAME', UpCaseFirst(EscapeString(sl[10])));
-      SetXmlAttr(ndPlace, 'AREA_NAME', UpCaseFirst(EscapeString(sl[10])));
+      St:= sl[10];
+      ndPlace['REGION_NAME']:=  UpCaseFirst(takefront5(St));
+      ndPlace['AREA_NAME']:= UpCaseFirst(EscapeString(St));
     end
     else
     if WordCount(sl[10]) = 1 then
     begin
-      SetXmlAttr(ndPlace, 'REGION_NAME', UpCaseFirst(EscapeString(sl[10])));
+      ndPlace['REGION_NAME']:= UpCaseFirst(EscapeString(sl[10]));
     end;
     try
       ProductId:= dmOtto.Recode('ORDER', 'PRODUCT_NAME2ID', EscapeString(sl[14]));
-      SetXmlAttr(ndOrder, 'PRODUCT_ID', ProductId)
+      ndOrder['PRODUCT_ID']:= ProductId;
     except
       ShowMessage(Format('Неизвеcтный тип продукта. Выставьте правильный тип. В заявке указан "%s"',
        [sl[14]]));
@@ -116,127 +114,119 @@ begin
       [aCatalogId]);
 end;
 
-procedure ParseOrderItemXml(aLine: string; ndOrderItems: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseOrderItemXml(aLine: string; ndOrderItems: TGvXmlNode; aTransaction: TpFIBTransaction);
 var
   sl: TStringList;
   st: string;
   strStream: TStringStream;
   OrderItemId: Integer;
-  ndOrderItem: TXmlNode;
+  ndOrderItem: TGvXmlNode;
   CatalogId, CatalogName, MagazineId: variant;
   ArticleCode: Variant;
   StatusId: Integer;
 
 begin
   sl:= TStringList.Create;
-  ndOrderItem:= ndOrderItems.NodeNew('ORDERITEM');
+  ndOrderItem:= ndOrderItems.AddChild('ORDERITEM');
   try
     sl.Delimiter:= ';';
     sl.DelimitedText:= '"'+ReplaceAll(aLine, ';', '";"')+'"';
-    SetXmlAttr(ndOrderItem, 'ID', dmOtto.GetNewObjectId('ORDERITEM'));
+    ndOrderItem['ID']:= dmOtto.GetNewObjectId('ORDERITEM');
     st:= FilterString(sl[1], '0123456789');
     CatalogId:= null;
     if st='' then
       CatalogId:= CatalogDetect('Internet', aTransaction);
-    SetXmlAttr(ndOrderItem, 'PAGE_NO', st);
-    st:= FilterString(sl[2], '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-    SetXmlAttr(ndOrderItem, 'POSITION_SIGN', st);
-    st:= FilterString(UpperCase(sl[3]), '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-    SetXmlAttr(ndOrderItem, 'ARTICLE_CODE', st);
+    ndOrderItem['PAGE_NO']:= st;
+    ndOrderItem['POSITION_SIGN']:= FilterString(sl[2], '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+    ndOrderItem['ARTICLE_CODE']:= FilterString(UpperCase(sl[3]), '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ');
     st:= FilterString(UpperCase(sl[4]), '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ');
     if st='' then st:= '0';
-    SetXmlAttr(ndOrderItem, 'DIMENSION', st);
-    SetXmlAttr(ndOrderItem, 'PRICE_EUR', ToFloat(EscapeString(sl[5])));
-    SetXmlAttr(ndOrderItem, 'AMOUNT', 1);
-    SetXmlAttr(ndOrderItem, 'COST_EUR', ToFloat(EscapeString(sl[5])));
-    st:= sl[6];
-    SetXmlAttr(ndOrderItem, 'NAME_RUS', EscapeString(TakeFront5(st)));
-    SetXmlAttr(ndOrderItem, 'KIND_RUS', EscapeString(st));
+    ndOrderItem['DIMENSION']:= st;
+    ndOrderItem['PRICE_EUR']:= StrToCurr(EscapeString(sl[5]));
+    ndOrderItem['AMOUNT']:= 1;
+    ndOrderItem['COST_EUR']:= StrToCurr(EscapeString(sl[5]));
+    ndOrderItem['NAME_RUS']:= EscapeString(sl[6]);
 
     // Validate OrderItem
 
     CatalogId:= CatalogDetect('Internet', aTransaction);
     // Ищем действующий каталог
     MagazineId:= MagazineDetect(CatalogId, aTransaction);
-    SetXmlAttr(ndOrderItem, 'MAGAZINE_ID', MagazineId);
+    ndOrderItem['MAGAZINE_ID']:= MagazineId;
   finally
     sl.Free;
   end;
 end;
 
-procedure DetectClient(ndClient: TXmlNode; aTransaction: TpFIBTransaction);
+procedure DetectClient(ndClient: TGvXmlNode; aTransaction: TpFIBTransaction);
 var
   Phone: String;
 begin
-  Phone:= FilterString(GetXmlAttr(ndClient, 'MOBILE_PHONE'), '0123456789');
+  Phone:= FilterString(ndClient['MOBILE_PHONE'], '0123456789');
   if Copy(Phone, 1, 3) = '375' then
     Phone:= Recode(Phone, '+[1][2][3]([4][5])[6][7][8]-[9][10][11][12]')
   else
   if Copy(Phone, 1, 2) = '80' then
     Phone:= Recode(Phone, '+375([3][4])[5][6][7]-[8][9][10][11]');
-  SetXmlAttr(ndClient, 'MOBILE_PHONE', Phone);
+  ndClient['MOBILE_PHONE']:= Phone;
 
-  Phone:= FilterString(GetXmlAttr(ndClient, 'STATIC_PHONE'), '0123456789');
+  Phone:= FilterString(ndClient['STATIC_PHONE'], '0123456789');
   if Copy(Phone, 1, 3) = '375' then
     Phone:= Recode(Phone, '8-0[4][5][6][7][8][9][10][11][12]')
   else
   if Copy(Phone, 1, 2) = '80' then
     Phone:= Recode(Phone, '8-0[3][4][5][6][7][8][9][10][11]');
-  SetXmlAttr(ndClient, 'STATIC_PHONE', Phone);
+  ndClient['STATIC_PHONE']:= Phone;
 end;
 
-procedure DetectProduct(ndProduct: TXmlNode; aTransaction: TpFIBTransaction);
-var
-  ProductId: Variant;
+procedure DetectProduct(ndProduct: TGvXmlNode; aTransaction: TpFIBTransaction);
 begin
-  ProductId:= aTransaction.DefaultDatabase.QueryValue(
+  ndProduct['ID']:= aTransaction.DefaultDatabase.QueryValue(
     'select pa.object_id from v_product_attrs pa where pa.attr_sign = ''PARTNER_NUMBER'' and pa.attr_value = :partner_number',
-    0, [GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER')], aTransaction);
-  SetXmlAttr(ndProduct, 'ID', ProductId);
+    0, [ndProduct['PARTNER_NUMBER']], aTransaction);
 end;
 
-procedure DetectOrderItem(ndOrderItem: TXmlNode; aTransaction: TpFIBTransaction);
+procedure DetectOrderItem(ndOrderItem: TGvXmlNode; aTransaction: TpFIBTransaction);
 var
   OrderItemId: Variant;
   StatusId: Integer;
 begin
-  SetXmlAttr(ndOrderItem, 'ID', dmOtto.GetNewObjectId('ORDERITEM'));
-  SetXmlAttr(ndOrderItem, 'CATALOG_ID', CatalogDetect('Internet', aTransaction));
-  SetXmlAttr(ndOrderItem, 'MAGAZINE_ID', MagazineDetect(GetXmlAttrValue(ndOrderItem, 'CATALOG_ID'), aTransaction));
-  SetXmlAttr(ndOrderItem, 'AMOUNT', 1);
-  StatusId:= dmOtto.GetDefaultStatusId('ORDERITEM');
-  SetXmlAttr(ndOrderItem, 'STATUS_ID', StatusId);
-  SetXmlAttr(ndOrderItem, 'STATUS_FLAG_LIST', dmOtto.GetFlagListById(StatusId));
-  BatchMoveFields2(ndOrderItem, ndOrderItem, 'COST_EUR=PRICE_EUR');
+  ndOrderItem['ID']:= dmOtto.GetNewObjectId('ORDERITEM');
+  ndOrderItem['CATALOG_ID']:= CatalogDetect('Internet', aTransaction);
+  ndOrderItem['MAGAZINE_ID']:= MagazineDetect(ndOrderItem['CATALOG_ID'], aTransaction);
+  ndOrderItem['AMOUNT']:= 1;
+  ndOrderItem['STATUS_ID']:= dmOtto.GetDefaultStatusId('ORDERITEM');
+  ndOrderItem['STATUS_FLAG_LIST']:= dmOtto.GetFlagListById(ndOrderItem['STATUS_ID']);
+  BatchMoveFields(ndOrderItem, ndOrderItem, 'COST_EUR=PRICE_EUR');
 end;
 
-procedure ParseXmlOrder(aFileName: string; ndOrder: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseXmlOrder(aFileName: string; ndOrder: TGvXmlNode; aTransaction: TpFIBTransaction);
 var
-  xml: TNativeXml;
+  xml: TGvXml;
   i: Integer;
-  nd, ndOrderItems: TXmlNode;
+  nd, ndOrderItems: TGvXmlNode;
 begin
-  xml:= TNativeXml.Create;
+  xml:= TGvXml.Create;
   try
     xml.LoadFromFile(aFileName);
-    TranscodeXmlUtf2Ansi(xml);
-    MergeNode(ndOrder, xml.Root);
-    DetectClient(ndOrder.NodeByName('CLIENT'), aTransaction);
-    DetectProduct(ndOrder.NodeByName('PRODUCT'), aTransaction);
-    BatchMoveFields2(ndOrder, ndOrder.NodeByName('PRODUCT'), 'PRODUCT_ID=ID');
-    ndOrderItems:= ndOrder.NodeByName('ORDERITEMS');
-    for i:= 0 to ndOrderItems.NodeCount-1 do
-      DetectOrderItem(ndOrderItems[i], aTransaction);
+//    TranscodeXmlUtf2Ansi(xml);
+//    MergeNode(ndOrder, xml.Root);
+    DetectClient(ndOrder.Find('CLIENT'), aTransaction);
+    DetectProduct(ndOrder.Find('PRODUCT'), aTransaction);
+    BatchMoveFields(ndOrder, ndOrder.Find('PRODUCT'), 'PRODUCT_ID=ID');
+    ndOrderItems:= ndOrder.Find('ORDERITEMS');
+    for i:= 0 to ndOrderItems.ChildNodes.Count-1 do
+      DetectOrderItem(ndOrderItems.Nodes[i], aTransaction);
   finally
     xml.Free;
   end;
 end;
 
-procedure ParseFileOrder(aFileName: string; ndOrder: TXmlNode; aTransaction: TpFIBTransaction);
+procedure ParseFileOrder(aFileName: string; ndOrder: TGvXmlNode; aTransaction: TpFIBTransaction);
 var
   Lines: TStringList;
   i: Integer;
-  ndOrderItems: TXmlNode;
+  ndOrderItems: TGvXmlNode;
 
 begin
   if LowerCase(ExtractFileExt(aFileName)) = '.xml' then
@@ -247,7 +237,7 @@ begin
     try
       Lines.LoadFromFile(aFileName);
       ParseOrderHeaderXml(Lines[0], ndOrder, aTransaction);
-      ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
+      ndOrderItems:= ndOrder.FindOrCreate('ORDERITEMS');
       for i:= 1 to lines.count-1 do
         ParseOrderItemXml(Lines[i], ndOrderItems, aTransaction);
     finally

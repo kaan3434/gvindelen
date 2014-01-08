@@ -8,9 +8,9 @@ uses
   ImgList, PngImageList, ActnList, DB, FIBDataSet, pFIBDataSet, GridsEh,
   DBGridEh, StdCtrls, JvExStdCtrls, JvGroupBox, ExtCtrls, JvExExtCtrls,
   JvExtComponent, JvPanel, TB2Item, TBX, TB2Dock, TB2Toolbar, ComCtrls,
-  NativeXml, GvNativeXml, EhLibFIB, DBGridEhGrouping, frxClass,
+  EhLibFIB, DBGridEhGrouping, frxClass,
   frxFIBComponents, frxExportPDF, frxExportMail, DBCtrls, ToolCtrlsEh,
-  DBGridEhToolCtrls, DBAxisGridsEh;
+  DBGridEhToolCtrls, DBAxisGridsEh, GvXml;
 
 type
   TFormTableOrders = class(TBaseNSIForm)
@@ -113,7 +113,7 @@ var
 implementation
 
 uses
-  udmOtto, uFormWizardOrder, uMain, uDlgPayment, GvStr, GvVariant, GvColor,
+  udmOtto, uMain, uDlgPayment, GvStr, GvVariant, GvColor, GvXmlUtils,
   Math;
 
 {$R *.dfm}
@@ -148,109 +148,109 @@ end;
 
 procedure TFormTableOrders.grdMainDblClick(Sender: TObject);
 begin
-  TFormWizardOrder.CreateDB(Self, qryMain['order_id']).Show;
+//  TFormWizardOrder.CreateDB(Self, qryMain['order_id']).Show;
 end;
 
 procedure TFormTableOrders.actMakeInvoiceExecute(Sender: TObject);
 var
   InvoiceFileName: string;
-  Xml: TNativeXml;
-  ndOrder, ndProduct: TXmlNode;
+  Xml: TGvXml;
+  ndOrder, ndProduct: TGvXmlNode;
   OrderId, InvoiceEUR, InvoiceBYR: Variant;
 
-procedure PushInvoiceMoney(ndOrder: TXmlNode; Index: Integer = 0);
+procedure PushInvoiceMoney(ndOrder: TGvXmlNode; Index: Integer = 0);
 begin
-  if AttrExists(ndOrder, 'INVOICE_EUR_'+IntTostr(Index+1)) then
-    PushInvoiceMoney(ndOrder, Index + 1);
-  BatchMoveFields2(ndOrder, ndOrder,
-    Format('INVOICE_EUR_%u=INVOICE_EUR_%u;INVOICE_BYR_%u=INVOICE_BYR_%u;',
-           [Index+1, Index, Index+1, Index]));
+//  if ndOrder.HasAttribute('INVOICE_EUR_'+IntTostr(Index+1)) then
+//    PushInvoiceMoney(ndOrder, Index + 1);
+//  BatchMoveFields(ndOrder, ndOrder,
+//    Format('INVOICE_EUR_%u=INVOICE_EUR_%u;INVOICE_BYR_%u=INVOICE_BYR_%u;',
+//           [Index+1, Index, Index+1, Index]));
 end;
 
 begin
-  OrderId:= qryMain['ORDER_ID'];
-  Xml:= TNativeXml.CreateName('ORDER');
-  ndOrder:= Xml.Root;
-  ndProduct:= ndOrder.NodeNew('PRODUCT');
-  try
-    trnWrite.StartTransaction;
-    try
-      dmOtto.ObjectGet(ndOrder, OrderId, trnWrite);
-      dmOtto.ObjectGet(ndProduct, GetXmlAttrValue(ndOrder, 'PRODUCT_ID'), trnWrite);
-      InvoiceFileName:= Format('inv_%s.pdf', [GetXmlAttrValue(ndOrder, 'ORDER_CODE')]);
-      ForceDirectories(Path['Invoices']);
-      frxPDFExport.FileName:= Path['Invoices']+InvoiceFileName;
-      frxInvoice.LoadFromFile(GetXmlAttr(ndProduct, 'PARTNER_NUMBER', Path['FastReport']+'invoice_', '.fr3'));
-      frxInvoice.Variables.Variables['OrderId']:= Format('''%u''', [Integer(OrderId)]);
-      frxInvoice.PrepareReport(true);
-      frxInvoice.Export(frxPDFExport);
-      // Переносим сумму извещения на заявку
-
-      BatchMoveFields2(ndOrder, ndOrder, 'NEW.INVOICE_EUR=COST_EUR;NEW.INVOICE_BYR=COST_BYR');
-      if AttrExists(ndOrder, 'INVOICE_EUR_0') or AttrExists(ndOrder, 'INVOICE_BYR_0') then
-      begin
-        if (GetXmlAttrAsMoney(ndOrder, 'NEW.INVOICE_EUR') <> GetXmlAttrAsMoney(ndOrder, 'INVOICE_EUR_0')) or
-           (GetXmlAttrAsMoney(ndOrder, 'NEW.INVOICE_BYR') <> GetXmlAttrAsMoney(ndOrder, 'INVOICE_BYR_0')) then
-          PushInvoiceMoney(ndOrder);
-      end;
-      BatchMoveFields2(ndOrder, ndOrder,
-        'INVOICE_EUR_0=COST_EUR;INVOICE_BYR_0=COST_BYR');
-      SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'INVOICED');
-      dmOtto.ActionExecute(trnWrite, ndOrder);
-      frxInvoice.ShowPreparedReport;
-      trnWrite.Commit;
-    except
-      trnWrite.Rollback;
-    end;
-  finally
-    Xml.Free;
-  end;
+//  OrderId:= qryMain['ORDER_ID'];
+//  Xml:= TGvXml.CreateName('ORDER');
+//  ndOrder:= Xml.Root;
+//  ndProduct:= ndOrder.AddChild('PRODUCT');
+//  try
+//    trnWrite.StartTransaction;
+//    try
+//      dmOtto.ObjectGet(ndOrder, OrderId, trnWrite);
+//      dmOtto.ObjectGet(ndProduct, GetXmlAttrValue(ndOrder, 'PRODUCT_ID'), trnWrite);
+//      InvoiceFileName:= Format('inv_%s.pdf', [GetXmlAttrValue(ndOrder, 'ORDER_CODE')]);
+//      ForceDirectories(Path['Invoices']);
+//      frxPDFExport.FileName:= Path['Invoices']+InvoiceFileName;
+//      frxInvoice.LoadFromFile(GetXmlAttr(ndProduct, 'PARTNER_NUMBER', Path['FastReport']+'invoice_', '.fr3'));
+//      frxInvoice.Variables.Variables['OrderId']:= Format('''%u''', [Integer(OrderId)]);
+//      frxInvoice.PrepareReport(true);
+//      frxInvoice.Export(frxPDFExport);
+//      // Переносим сумму извещения на заявку
+//
+//      BatchMoveFields2(ndOrder, ndOrder, 'NEW.INVOICE_EUR=COST_EUR;NEW.INVOICE_BYR=COST_BYR');
+//      if AttrExists(ndOrder, 'INVOICE_EUR_0') or AttrExists(ndOrder, 'INVOICE_BYR_0') then
+//      begin
+//        if (GetXmlAttrAsMoney(ndOrder, 'NEW.INVOICE_EUR') <> GetXmlAttrAsMoney(ndOrder, 'INVOICE_EUR_0')) or
+//           (GetXmlAttrAsMoney(ndOrder, 'NEW.INVOICE_BYR') <> GetXmlAttrAsMoney(ndOrder, 'INVOICE_BYR_0')) then
+//          PushInvoiceMoney(ndOrder);
+//      end;
+//      BatchMoveFields2(ndOrder, ndOrder,
+//        'INVOICE_EUR_0=COST_EUR;INVOICE_BYR_0=COST_BYR');
+//      SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'INVOICED');
+//      dmOtto.ActionExecute(trnWrite, ndOrder);
+//      frxInvoice.ShowPreparedReport;
+//      trnWrite.Commit;
+//    except
+//      trnWrite.Rollback;
+//    end;
+//  finally
+//    Xml.Free;
+//  end;
 end;
 
 procedure TFormTableOrders.actAssignPaymentExecute(Sender: TObject);
 var
   Amount_BYR: Double;
-  Xml: TNativeXml;
-  ndOrder, ndClient: TXmlNode;
+  Xml: TGvXml;
+  ndOrder, ndClient: TGvXmlNode;
   DlgManualPayment: TDlgManualPayment;
   Annotate: string;
 begin
-  DlgManualPayment:= TDlgManualPayment.Create(self);
-  Xml:= TNativeXml.CreateName('ORDER');
-  ndOrder:= Xml.Root;
-  try
-    dmOtto.ObjectGet(ndOrder, qryMain['ORDER_ID'], trnRead);
-
-    DlgManualPayment.Caption:= 'Ручное зачисление банковского платежа на заявку';
-    DlgManualPayment.lblAmountEur.Caption:= 'Сумма, BYR';
-    DlgManualPayment.edtAmountEur.DecimalPlaces:= 0;
-    DlgManualPayment.edtAmountEur.DisplayFormat:= '### ### ##0';
-    DlgManualPayment.edtByr2Eur.Value:= GetXmlAttrValue(ndOrder, 'BYR2EUR');
-    DlgManualPayment.edtByr2Eur.ReadOnly:= True;
-    DlgManualPayment.edtByr2Eur.Color:= clBtnFace;
-    if DlgManualPayment.ShowModal = mrOk then
-    begin
-      Amount_BYR:= DlgManualPayment.edtAmountEur.Value;
-      Annotate:= DlgManualPayment.memAnnotate.Lines.Text;
-      trnWrite.StartTransaction;
-      try
-        dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_PAYMENTIN',
-          XmlAttrs2Vars(ndOrder, 'ORDER_ID=ID;ID=ACCOUNT_ID',
-          Value2Vars(Amount_BYR, 'AMOUNT_BYR',
-          Value2Vars(Annotate, 'ANNOTATE'))));
-        trnWrite.Commit;
-      except
-        on E:Exception do
-          begin
-            trnWrite.Rollback;
-            ShowMessage(E.Message);
-          end
-      end;
-    end;
-  finally
-    Xml.Free;
-    DlgManualPayment.Free;
-  end;
+//  DlgManualPayment:= TDlgManualPayment.Create(self);
+//  Xml:= TGvXml.CreateName('ORDER');
+//  ndOrder:= Xml.Root;
+//  try
+//    dmOtto.ObjectGet(ndOrder, qryMain['ORDER_ID'], trnRead);
+//
+//    DlgManualPayment.Caption:= 'Ручное зачисление банковского платежа на заявку';
+//    DlgManualPayment.lblAmountEur.Caption:= 'Сумма, BYR';
+//    DlgManualPayment.edtAmountEur.DecimalPlaces:= 0;
+//    DlgManualPayment.edtAmountEur.DisplayFormat:= '### ### ##0';
+//    DlgManualPayment.edtByr2Eur.Value:= GetXmlAttrValue(ndOrder, 'BYR2EUR');
+//    DlgManualPayment.edtByr2Eur.ReadOnly:= True;
+//    DlgManualPayment.edtByr2Eur.Color:= clBtnFace;
+//    if DlgManualPayment.ShowModal = mrOk then
+//    begin
+//      Amount_BYR:= DlgManualPayment.edtAmountEur.Value;
+//      Annotate:= DlgManualPayment.memAnnotate.Lines.Text;
+//      trnWrite.StartTransaction;
+//      try
+//        dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_PAYMENTIN',
+//          XmlAttrs2Attr(ndOrder, 'ORDER_ID=ID;ID=ACCOUNT_ID',
+//          Value2Attr(Amount_BYR, 'AMOUNT_BYR',
+//          Value2Attr(Annotate, 'ANNOTATE'))));
+//        trnWrite.Commit;
+//      except
+//        on E:Exception do
+//          begin
+//            trnWrite.Rollback;
+//            ShowMessage(E.Message);
+//          end
+//      end;
+//    end;
+//  finally
+//    Xml.Free;
+//    DlgManualPayment.Free;
+//  end;
 end;
 
 procedure TFormTableOrders.qryMainAfterScroll(DataSet: TDataSet);
@@ -299,7 +299,7 @@ begin
       trnWrite.SetSavePoint('SetStatus');
       StatusId:= TAction(Sender).ActionComponent.Tag;
       StatusSign:= qryStatuses.Lookup('STATUS_ID', StatusId, 'STATUS_SIGN');
-      dmOtto.ActionExecute(trnWrite, 'ORDER', '', Value2Vars(StatusSign, 'NEW.STATUS_SIGN'), OrderId);
+      dmOtto.ActionExecute(trnWrite, 'ORDER', '', Value2Attr(StatusSign, 'NEW.STATUS_SIGN'), OrderId);
     except
       trnWrite.RollBackToSavePoint('SetStatus');
     end;
@@ -374,7 +374,7 @@ begin
     trnWrite.SetSavePoint('BeforeBalanceOrder');
     try
       dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_DEBITORDER',
-        DataSet2Vars(qryMain, 'ORDER_ID;AMOUNT_EUR=COST_EUR'), qryMain['ACCOUNT_ID']);
+        DataSet2Attr(qryMain, 'ORDER_ID;AMOUNT_EUR=COST_EUR'), qryMain['ACCOUNT_ID']);
       trnWrite.Commit;
       ShowMessage('Заявка сбалансирована');
     except
@@ -414,20 +414,20 @@ end;
 
 procedure TFormTableOrders.frxInvoiceAfterPrintReport(Sender: TObject);
 var
-  Xml: TNativeXml;
-  ndOrder: TXmlNode;
+  Xml: TGvXml;
+  ndOrder: TGvXmlNode;
   OrderId: Variant;
 begin
-  Xml:= TNativeXml.CreateName('ORDER');
-  ndOrder:= Xml.Root;
-  try
-    OrderId:= ReplaceAll(frxInvoice.Variables.Variables['OrderId'], '''', '');
-    dmOtto.ObjectGet(ndOrder, OrderId, trnWrite);
-    SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'INVOICEPRINTED');
-    dmOtto.ActionExecute(trnWrite, ndOrder);
-  except
-    xml.Free
-  end;
+//  Xml:= TGvXml.CreateName('ORDER');
+//  ndOrder:= Xml.Root;
+//  try
+//    OrderId:= ReplaceAll(frxInvoice.Variables.Variables['OrderId'], '''', '');
+//    dmOtto.ObjectGet(ndOrder, OrderId, trnWrite);
+//    SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'INVOICEPRINTED');
+//    dmOtto.ActionExecute(trnWrite, ndOrder);
+//  except
+//    xml.Free
+//  end;
 end;
 
 procedure TFormTableOrders.grdMainGetCellParams(Sender: TObject;
@@ -505,8 +505,8 @@ begin
     try
       vAmount:= Min(qryMain.FieldByName('COST_EUR').AsFloat, qryMain.FieldByName('REST_EUR').AsFloat);
       dmOtto.ActionExecute(trnWrite, 'ACCOUNT', 'ACCOUNT_CREDITORDER',
-        DataSet2Vars(qryMain, 'ORDER_ID',
-        Value2Vars(vAmount, 'AMOUNT_EUR')), qryMain['ACCOUNT_ID']);
+        DataSet2Attr(qryMain, 'ORDER_ID',
+        Value2Attr(vAmount, 'AMOUNT_EUR')), qryMain['ACCOUNT_ID']);
       trnWrite.Commit;
       ShowMessage(Format('%3.2f EUR перенесены на заявку', [vAmount]));
     except
@@ -530,26 +530,26 @@ end;
 
 procedure TFormTableOrders.actSetBarCodeExecute(Sender: TObject);
 var
-  Xml: TNativeXml;
-  ndProduct, ndOrder: TXmlNode;
+  Xml: TGvXml;
+  ndProduct, ndOrder: TGvXmlNode;
   BarCode: String;
   OrderId: Integer;
 begin
   OrderId:= qryMain['ORDER_ID'];
   qryMain.DisableControls;
-  xml:= TNativeXml.CreateName('PRODUCT');
+  xml:= TGvXml.Create('PRODUCT');
   ndProduct:= Xml.Root;
-  ndOrder:= ndProduct.NodeNew('ORDER');
+  ndOrder:= ndProduct.AddChild('ORDER');
   try
     dmOtto.ObjectGet(ndOrder, qryMain['Order_id'], trnRead);
     dmOtto.ObjectGet(ndProduct, qryMain['Product_id'], trnRead);
-    BarCode:= InputBox('Редактирование заявки', 'Введите код посылки', GetXmlAttr(ndProduct, 'BARCODE_SIGN'));
+    BarCode:= InputBox('Редактирование заявки', 'Введите код посылки', ndProduct.Attr['BARCODE_SIGN'].AsString);
 
     if Length(Trim(BarCode)) = 13 then
     begin
       trnWrite.StartTransaction;
       try
-        SetXmlAttr(ndOrder, 'BAR_CODE', BarCode);
+        ndOrder.Attr['BAR_CODE'].AsString:= BarCode;
         dmOtto.ActionExecute(trnWrite, ndOrder);
         trnWrite.Commit;
         ShowMessage(Format('Код посылки %s установлен на заявку', [BarCode]));

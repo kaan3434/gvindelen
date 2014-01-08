@@ -13,18 +13,18 @@ procedure ReportMoneyBackAccount(aTransaction: TpFIBTransaction);
 implementation
 
 uses
-  NativeXml, udmOtto, GvStr, GvNativeXml, GvFile, DateUtils, uMain;
+  GvXml, udmOtto, GvStr, GvXmlUtils, GvFile, DateUtils, uMain;
 
 procedure ReportMoneyBackBelpost(aTransaction: TpFIBTransaction);
 var
   MoneyBacks: string;
   MoneyBackId: Variant;
-  xml: TNativeXml;
-  ndMoneyBacks, ndMoneyBack: TXmlNode;
+  xml: TGvXml;
+  ndMoneyBacks, ndMoneyBack: TGvXmlNode;
   FileName, ReestrNum: String;
 begin
   ForceDirectories(Path['Returns']);
-  xml:= TNativeXml.CreateName('MoneyBack');
+  xml:= TGvXml.Create('MoneyBack');
   try
     aTransaction.StartTransaction;
     try
@@ -60,10 +60,10 @@ begin
 
         while MoneyBacks <> '' do
         begin
-          ndMoneyBack:= ndMoneyBacks.NodeNew('MONEYBACK');
+          ndMoneyBack:= ndMoneyBacks.AddChild('MONEYBACK');
           MoneyBackId:= TakeFront5(MoneyBacks,',');
           dmOtto.ObjectGet(ndMoneyBack, MoneyBackId, aTransaction);
-          SetXmlAttr(ndMoneyBack, 'NEW.STATUS_SIGN', 'APPROVED');
+          ndMoneyBack['NEW.STATUS_SIGN']:= 'APPROVED';
           dmOtto.ActionExecute(aTransaction, ndMoneyBack);
         end;
       end;
@@ -80,12 +80,12 @@ procedure ReportMoneyBackBank(aTransaction: TpFIBTransaction);
 var
   MoneyBacks, FileName: string;
   MoneyBackId: Variant;
-  xml: TNativeXml;
-  ndMoneyBacks, ndMoneyBack: TXmlNode;
+  xml: TGvXml;
+  ndMoneyBacks, ndMoneyBack: TGvXmlNode;
   ReestrNum: string;
 begin
   ForceDirectories(Path['Returns']);
-  xml:= TNativeXml.CreateName('MoneyBack');
+  xml:= TGvXml.Create('MoneyBack');
   try
     aTransaction.StartTransaction;
     try
@@ -122,10 +122,10 @@ begin
         end;
         while MoneyBacks <> '' do
         begin
-          ndMoneyBack:= ndMoneyBacks.NodeNew('MONEYBACK');
+          ndMoneyBack:= ndMoneyBacks.AddChild('MONEYBACK');
           MoneyBackId:= TakeFront5(MoneyBacks,',');
           dmOtto.ObjectGet(ndMoneyBack, MoneyBackId, aTransaction);
-          SetXmlAttr(ndMoneyBack, 'NEW.STATUS_SIGN', 'APPROVED');
+          ndMoneyBack['NEW.STATUS_SIGN']:= 'APPROVED';
           dmOtto.ActionExecute(aTransaction, ndMoneyBack);
         end;
       end;
@@ -142,10 +142,10 @@ procedure ReportMoneyBackAccount(aTransaction: TpFIBTransaction);
 var
   Orders: string;
   OrderId: Variant;
-  xml: TNativeXml;
-  ndOrder: TXmlNode;
+  xml: TGvXml;
+  ndOrder: TGvXmlNode;
 begin
-  xml:= TNativeXml.CreateName('Order');
+  xml:= TGvXml.Create('Order');
   try
     ndOrder:= xml.Root;
     with dmOtto do
@@ -165,7 +165,7 @@ begin
       begin
         OrderId:= TakeFront5(Orders,',');
         dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
-        SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'MONEYSENT');
+        ndOrder['NEW.STATE_SIGN']:= 'MONEYSENT';
         dmOtto.ActionExecute(aTransaction, ndOrder);
       end;
     end;

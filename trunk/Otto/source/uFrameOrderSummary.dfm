@@ -1,33 +1,29 @@
 inherited FrameOrderSummary: TFrameOrderSummary
-  Left = 289
-  Top = 228
-  Width = 896
-  Height = 495
-  PixelsPerInch = 96
-  TextHeight = 13
-  inherited dckTop: TTBXDock
-    Width = 880
-    Height = 25
-    inherited tlBarTop: TTBXToolbar
-      object btn2: TTBXItem
-        Action = actSetStateDraft
-      end
-      object btn1: TTBXItem
-        Action = actSetStateApproved
-      end
-      object btn3: TTBXItem
-        Action = actStore
+  inherited pnlFrame: TPanel
+    Top = 131
+    Height = 135
+    inherited sBarFrame: TTBXStatusBar
+      Top = 108
+    end
+    inherited dckTop: TTBXDock
+      Height = 25
+      inherited tbBarTop: TTBXToolbar
+        object btn2: TTBXItem
+          Action = actSetStateDraft
+        end
+        object btn1: TTBXItem
+          Action = actSetStateApproved
+        end
+        object btn3: TTBXItem
+          Action = actStore
+        end
       end
     end
   end
-  inherited sb: TTBXStatusBar
-    Top = 435
-    Width = 880
-  end
-  object pnlTopOnFinal: TJvPanel [2]
+  object pnlTopOnFinal: TJvPanel [1]
     Left = 0
-    Top = 25
-    Width = 880
+    Top = 0
+    Width = 435
     Height = 131
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
@@ -49,7 +45,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
       HotTrackFont.Style = []
       Align = alClient
       BorderWidth = 4
-      TabOrder = 0
+      TabOrder = 1
       object grBoxClientOfFinal: TJvGroupBox
         Left = 5
         Top = 5
@@ -220,7 +216,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
       end
     end
     object pnlOrderOnFinal: TJvPanel
-      Left = 368
+      Left = -77
       Top = 0
       Width = 512
       Height = 131
@@ -232,7 +228,7 @@ inherited FrameOrderSummary: TFrameOrderSummary
       Align = alRight
       BorderWidth = 4
       Caption = 'pnlOrderOnFinal'
-      TabOrder = 1
+      TabOrder = 0
       object grBoxSummaryOrder: TJvGroupBox
         Left = 5
         Top = 5
@@ -308,19 +304,19 @@ inherited FrameOrderSummary: TFrameOrderSummary
       end
     end
   end
-  object grBoxSummaryOrderItems: TJvGroupBox [3]
+  object grBoxSummaryOrderItems: TJvGroupBox [2]
     Left = 0
-    Top = 156
-    Width = 880
-    Height = 279
+    Top = 131
+    Width = 435
+    Height = 135
     Align = alClient
     Caption = 'grBoxSummaryOrderItems'
     TabOrder = 2
     object grdOrderFullSpecification: TDBGridEh
       Left = 2
       Top = 15
-      Width = 876
-      Height = 262
+      Width = 431
+      Height = 118
       Align = alClient
       AutoFitColWidths = True
       DataSource = dsOrderFullSpecifications
@@ -518,7 +514,6 @@ inherited FrameOrderSummary: TFrameOrderSummary
       '    V_ORDER_FULL_SPECIFICATION '
       'WHERE ORDER_ID = :ORDER_ID'
       'ORDER BY ORD, SUBJECT_ID')
-    Transaction = trnWrite
     Database = dmOtto.dbOtto
     Left = 160
     Top = 72

@@ -8,38 +8,29 @@ procedure ExportPrePackList(aTransaction: TpFIBTransaction);
 implementation
 
 uses
-  NativeXml, GvNativeXml, udmOtto, GvStr, GvFile, DateUtils, Dialogs;
+  GvXml, GvXmlUtils, udmOtto, GvStr, GvFile, DateUtils, Dialogs;
 
 function ExportOrder(aTransaction: TpFIBTransaction;
-  ndProduct, ndOrders: TXmlNode; aOrderId: integer): string;
+  ndProduct, ndOrders: TGvXmlNode; aOrderId: integer): string;
 var
-  ndOrder: TXmlNode;
+  ndOrder: TGvXmlNode;
   Line: TStringList;
-  CostByr: Variant;
 begin
   Result:= '';
-  ndOrder:= ndOrders.NodeFindOrCreate('ORDER');
-  Line:= TStringList.Create;
-  try
-    dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
-    CostByr:= GetXmlAttr(ndOrder, 'COST_BYR');
-    Line.Add(GetXmlAttr(ndProduct, 'PARTNER_NUMBER'));
-    Line.Add(GetXmlAttr(ndOrder, 'PACKLIST_NO'));
-    Line.Add(CopyLast(GetXmlAttr(ndOrder, 'ORDER_CODE'), 5));
-    Line.Add(string(CostByr)+'.00');
-    SetXmlAttr(ndOrder, 'INVOICE_BYR_0', CostByr);
-    SetXmlAttr(ndOrder, 'INVOICE_EUR_0', GetXmlAttr(ndOrder, 'COST_EUR'));
-    SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'PREPACKSENT');
-    Result:= ReplaceAll(Line.Text, #13#10, ';')+#13#10;
-    Result:= ReplaceAll(Result, ';'#13#10, #13#10);
-    dmOtto.ActionExecute(aTransaction, ndOrder);
-  finally
-    Line.Free;
-  end;
+  ndOrder:= ndOrders.FindOrCreate('ORDER');
+  dmOtto.ObjectGet(ndOrder, aOrderId, aTransaction);
+  Result:= FillPattern(
+    '[PARTNER_NUMBER];[PACKLIST_NO];[ORDER_CODE|SUBSTR=2,5];[COST_BYR].00'#13#10,
+    XmlAttrs2Attr(ndProduct, 'PARTNER_NUMBER',
+    XmlAttrs2Attr(ndOrder, 'PACKLIST_NO;ORDER_CODE;COST_BYR')));
+  ndOrder['INVOICE_BYR_0']:= ndOrder.Attr['COST_BYR'].AsMoney;
+  ndOrder['INVOICE_EUR_0']:=  ndOrder.Attr['COST_EUR'].AsMoney;
+  ndOrder['NEW.STATE_SIGN']:= 'PREPACKSENT';
+  dmOtto.ActionExecute(aTransaction, ndOrder);
 end;
 
 procedure ExportPacklist(aTransaction: TpFIBTransaction;
-  ndProduct, ndOrders: TXmlNode; aPacklistNo: integer);
+  ndProduct, ndOrders: TGvXmlNode; aPacklistNo: integer);
 var
   OrderList, FileName, Text: string;
   OrderId: Variant;
@@ -66,7 +57,7 @@ begin
     end;
     ForceDirectories(Path['PrePacklists']);
     FileName:= Format('%spay_%u_%u.%.3u',
-      [Path['PrePacklists'], Integer(GetXmlAttrValue(ndProduct, 'PARTNER_NUMBER')),
+      [Path['PrePacklists'], Integer(ndProduct['PARTNER_NUMBER']),
        aPacklistNo, DayOfTheYear(Date)]);
     SaveStringAsFile(Text, FileName);
     dmOtto.CreateAlert('Ответ на ПреПаклист', Format('Сформирован файл %s', [ExtractFileName(FileName)]), mtInformation, 10000);
@@ -76,15 +67,15 @@ begin
 end;
 
 procedure ExportProduct(aTransaction: TpFIBTransaction;
-  ndProducts: TXmlNode; aProductId: integer);
+  ndProducts: TGvXmlNode; aProductId: integer);
 var
-  ndProduct, ndOrders: TXmlNode;
+  ndProduct, ndOrders: TGvXmlNode;
   PackList, FileName, Text: string;
   PacklistNo: variant;
 begin
   Text:= '';
-  ndProduct:= ndProducts.NodeFindOrCreate('PRODUCT');
-  ndOrders:= ndProduct.NodeNew('ORDERS');
+  ndProduct:= ndProducts.FindOrCreate('PRODUCT');
+  ndOrders:= ndProduct.AddChild('ORDERS');
   dmOtto.ObjectGet(ndProduct, aProductId, aTransaction);
 
   PackList:= aTransaction.DefaultDatabase.QueryValue(
@@ -104,14 +95,14 @@ end;
 
 procedure ExportPrePackList(aTransaction: TpFIBTransaction);
 var
-  Xml: TNativeXml;
-  ndProducts: TXmlNode;
+  Xml: TGvXml;
+  ndProducts: TGvXmlNode;
   ProductId: Variant;
   ProductList: string;
 begin
   aTransaction.StartTransaction;
   try
-    xml:= TNativeXml.CreateName('PRODUCTS');
+    xml:= TGvXml.Create('PRODUCTS');
     try
       ndProducts:= Xml.Root;
       ProductList:= aTransaction.DefaultDatabase.QueryValue(

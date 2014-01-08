@@ -3,22 +3,22 @@ unit uParseInfo2Pay;
 interface
 
 uses
-  NativeXml, FIBDatabase, pFIBDatabase;
+  GvXml, FIBDatabase, pFIBDatabase;
 
 procedure ProcessInfo2Pay(aMessageId: Integer; aTransaction: TpFIBTransaction);
 
 implementation
 
 uses
-  Classes, SysUtils, GvStr, udmOtto, Variants, GvNativeXml,
+  Classes, SysUtils, GvStr, udmOtto, Variants, GvXmlUtils,
   Dialogs, Controls, GvFile, GvDtTm;
 
 procedure ParseInfo2PayLine(aMessageId, LineNo: Integer; aLine: string;
-  ndProduct, ndOrders: TXmlNode; aOnDate: TDateTime; aTransaction: TpFIBTransaction);
+  ndProduct, ndOrders: TGvXmlNode; aOnDate: TDateTime; aTransaction: TpFIBTransaction);
 var
   OrderId, OrderItemId, DealerId: variant;
   sl: TStringList;
-  ndOrder, ndOrderItems, ndOrderItem: TXmlNode;
+  ndOrder, ndOrderItems, ndOrderItem: TGvXmlNode;
   NewStatusSign: variant;
   StateSign: Variant;
   StatusName, MessageClass: Variant;
@@ -32,75 +32,74 @@ begin
     OrderId:= dmOtto.DetectOrderId(ndProduct, sl[2], aTransaction);
     if OrderId<>null then
     begin
-      ndOrder:= ndOrders.NodeByAttributeValue('ORDER', 'ID', OrderId, false);
+      ndOrder:= ndOrders.Find('ORDER', 'ID', OrderId);
       if ndOrder = nil then
       begin
-        ndOrder:= ndOrders.NodeNew('ORDER');
-        ndOrderItems:= ndOrder.NodeNew('ORDERITEMS');
+        ndOrder:= ndOrders.AddChild('ORDER');
+        ndOrderItems:= ndOrder.AddChild('ORDERITEMS');
         dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
-        SetXmlAttr(ndorder, 'INVOICE_DT_0', aOnDate);
-        SetXmlAttr(ndOrder, 'BYR2EUR', dmOtto.SettingGet(aTransaction, 'BYR2EUR', aOnDate+1));
-        SetXmlAttr(ndOrder, 'PACKLIST_NO', sl[1]);
-        SetXmlAttr(ndOrder, 'NEW.STATE_SIGN', 'NULL');
+        ndorder['INVOICE_DT_0']:= aOnDate;
+        ndOrder['BYR2EUR']:= StrToCurr(dmOtto.SettingGet(aTransaction, 'BYR2EUR', aOnDate+1));
+        ndOrder['PACKLIST_NO']:= sl[1];
+        ndOrder['NEW.STATE_SIGN']:= null;
         dmOtto.ActionExecute(aTransaction, ndOrder, 'PREPACKED');
         dmOtto.ObjectGet(ndOrder, OrderId, aTransaction);
         dmOtto.OrderItemsGet(ndOrderItems, OrderId, aTransaction);
       end
       else
-        ndOrderItems:= ndOrder.NodeFindOrCreate('ORDERITEMS');
+        ndOrderItems:= ndOrder.FindOrCreate('ORDERITEMS');
 
       Dimension:= dmOtto.Recode('ORDERITEM', 'DIMENSION', sl[9]);
 
-      ndOrderItem:= ChildByAttributes(ndOrderItems, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
+      ndOrderItem:= ndOrderItems.Find('ORDERITEM', 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
                     [sl[6], sl[7], sl[8], VarArrayOf([Dimension, sl[9]])]);
       if ndOrderItem = nil then
-        ndOrderItem:= ChildByAttributes(ndOrderItems, 'ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION;STATUS_SIGN',
+        ndOrderItem:= ndOrderItems.Find('ORDERITEM', 'ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION;STATUS_SIGN',
                       [sl[7], sl[8], VarArrayOf([Dimension, sl[9]]), VarArrayOf(['ACCEPTED','BUNDLING','PREPACK','CANCELREQUEST'])]);
       if ndOrderItem <> nil then
       begin
-        OrderItemId:= GetXmlAttrValue(ndOrderItem, 'ID');
+        OrderItemId:= ndOrderItem['ID'];
 
-        SetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR', sl[3]);
-        if GetXmlAttrAsMoney(ndOrderItem, 'PRICE_EUR') <> GetXmlAttrAsMoney(ndOrderItem, 'COST_EUR') then
+        ndOrderItem['PRICE_EUR']:= StrToCurr(sl[3]);
+        if ndOrderItem['PRICE_EUR'] <> ndOrderItem['COST_EUR'] then
         begin
           dmOtto.Notify(aMessageId,
             '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Измнена цена [COST_EUR] => [PRICE_EUR].',
             'W',
-            XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR',
-            XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
-            Value2Vars(LineNo, 'LINE_NO'))));
-          SetXmlAttrAsMoney(ndOrderItem, 'COST_EUR', GetXmlAttrValue(ndOrderItem, 'PRICE_EUR')*getXmlAttrValue(ndOrderItem, 'AMOUNT'));
+            XmlAttrs2Attr(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION;PRICE_EUR;COST_EUR',
+            XmlAttrs2Attr(ndOrder, 'ORDER_CODE',
+            Value2Attr(LineNo, 'LINE_NO'))));
+          ndOrderItem.Attr['COST_EUR'].AsMoney:=  ndOrderItem.Attr['PRICE_EUR'].AsMoney*ndOrderItem['AMOUNT'];
         end;
 
         try
-          ndOrderItem.ValueAsBool:= True;
           dmOtto.ActionExecute(aTransaction, ndOrderItem, 'PREPACKED');
           dmOtto.ObjectGet(ndOrderItem, OrderItemId, aTransaction);
           dmOtto.Notify(aMessageId,
             '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. [STATUS_NAME]',
             'I',
-            XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION;STATUS_NAME',
-            XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
-            Value2Vars(LineNo, 'LINE_NO'))));
+            XmlAttrs2Attr(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION;STATUS_NAME',
+            XmlAttrs2Attr(ndOrder, 'ORDER_CODE',
+            Value2Attr(LineNo, 'LINE_NO'))));
         except
           on E: Exception do
             dmOtto.Notify(aMessageId,
               '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Ошибка ([ERROR_TEXT])',
               'E',
-              XmlAttrs2Vars(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
-              XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
-              Value2Vars(LineNo, 'LINE_NO',
-              Value2Vars(DeleteChars(E.Message, #10#13), 'ERROR_TEXT')))));
+              XmlAttrs2Attr(ndOrderItem, 'AUFTRAG_ID;ORDERITEM_INDEX;ARTICLE_CODE;DIMENSION',
+              XmlAttrs2Attr(ndOrder, 'ORDER_CODE',
+              Value2Attr(LineNo, 'LINE_NO',
+              Value2Attr(DeleteChars(E.Message, #10#13), 'ERROR_TEXT')))));
         end;
       end
       else
         dmOtto.Notify(aMessageId,
           '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Позиция не найдена в заявке [ORDER_CODE].',
           'E',
-          Strings2Vars(sl, 'AUFTRAG_ID=6;ORDERITEM_INDEX=7;ARTICLE_CODE=8',
-          Value2Vars(Dimension, 'DIMENSION',
-          XmlAttrs2Vars(ndOrder, 'ORDER_CODE',
-          Value2Vars(LineNo, 'LINE_NO')))));
+          Strings2Attr(sl, 'AUFTRAG_ID=6;ORDERITEM_INDEX=7;ARTICLE_CODE=8',
+          Value2Attr(Dimension, 'DIMENSION',
+          XmlAttrs2Attr(ndOrder, 'ORDER_CODE',
+          Value2Attr(LineNo, 'LINE_NO')))));
     end
     else
     begin
@@ -110,47 +109,47 @@ begin
         dmOtto.Notify(aMessageId,
           '[LINE_NO]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Заявка дилера [DEALER_ID]',
           'I',
-          Strings2Vars(sl, 'AUFTRAG_ID=6;ORDERITEM_INDEX=7;ARTICLE_CODE=8;DIMENSION=9',
-          Value2Vars(LineNo, 'LINE_NO',
-          Value2Vars(DealerId, 'DEALER_ID',
-          Value2Vars(dmOtto.DetectOrderCode(ndProduct, sl[2]), 'ORDER_CODE')))));
+          Strings2Attr(sl, 'AUFTRAG_ID=6;ORDERITEM_INDEX=7;ARTICLE_CODE=8;DIMENSION=9',
+          Value2Attr(LineNo, 'LINE_NO',
+          Value2Attr(DealerId, 'DEALER_ID',
+          Value2Attr(dmOtto.DetectOrderCode(ndProduct, sl[2]), 'ORDER_CODE')))));
         dmOtto.DealerNotify(aMessageId, DealerId, aLine, aTransaction);
       end
       else
         dmOtto.Notify(aMessageId,
           '[LINE_NO]. Заявка [ORDER_CODE]. Auftrag [AUFTRAG_ID]. Позиция [ORDERITEM_INDEX]. Артикул [ARTICLE_CODE], Размер [DIMENSION]. Неизвестная заявка [ORDER_CODE].',
           'E',
-          Strings2Vars(sl, 'ORDER_CODE=2;AUFTRAG_ID=6;ORDERITEM_INDEX=7;ARTICLE_CODE=8;DIMENSION=9',
-          Value2Vars(LineNo, 'LINE_NO')));
+          Strings2Attr(sl, 'ORDER_CODE=2;AUFTRAG_ID=6;ORDERITEM_INDEX=7;ARTICLE_CODE=8;DIMENSION=9',
+          Value2Attr(LineNo, 'LINE_NO')));
       end;
   finally
     sl.Free;
   end;
 end;
 
-procedure ParseInfo2Pay(aMessageId: Integer; ndMessage: TXmlNode;
+procedure ParseInfo2Pay(aMessageId: Integer; ndMessage: TGvXmlNode;
   aTransaction: TpFIBTransaction);
 var
   LineNo, ErrorCount: Integer;
   NeedCommit: Boolean;
   Lines: TStringList;
   MessageFileName: String;
-  ndProduct, ndOrders, ndOrder, ndOrderItems: TXmlNode;
+  ndProduct, ndOrders, ndOrder, ndOrderItems: TGvXmlNode;
   OnDate: TDateTime;
 begin
   dmOtto.ClearNotify(aMessageId);
   aTransaction.StartTransaction;
   try
     dmOtto.ObjectGet(ndMessage, aMessageId, aTransaction);
-    ndProduct:= ndMessage.NodeFindOrCreate('PRODUCT');
+    ndProduct:= ndMessage.FindOrCreate('PRODUCT');
     dmOtto.ObjectGet(ndProduct, dmOtto.DetectProductId(ndMessage, aTransaction), aTransaction);
-    ndOrders:= ndMessage.NodeFindOrCreate('ORDERS');
+    ndOrders:= ndMessage.FindOrCreate('ORDERS');
 
-    MessageFileName:= GetXmlAttrValue(ndMessage, 'FILE_NAME');
-    OnDate:= DateOfYear(GetXmlAttrValue(ndMessage, 'DAYNO'));
+    MessageFileName:= ndMessage['FILE_NAME'];
+    OnDate:= DateOfYear(ndMessage['DAYNO']);
     dmOtto.Notify(aMessageId,
       'Начало обработки файла: [FILE_NAME]', '',
-      Value2Vars(MessageFileName, 'FILE_NAME'));
+      Value2Attr(MessageFileName, 'FILE_NAME'));
 
     Lines:= TStringList.Create;
     try
@@ -169,12 +168,12 @@ begin
       else
         dmOtto.Notify(aMessageId,
           'Файл [FILE_NAME] не найден.', 'E',
-          Value2Vars(MessageFileName, 'FILE_NAME'));
+          Value2Attr(MessageFileName, 'FILE_NAME'));
     finally
       dmOtto.InitProgress;
       dmOtto.Notify(aMessageId,
         'Конец обработки файла: [FILE_NAME]', '',
-        Value2Vars(MessageFileName, 'FILE_NAME'));
+        Value2Attr(MessageFileName, 'FILE_NAME'));
       Lines.Free;
     end;
     dmOtto.ShowProtocol(aTransaction, aMessageId);
@@ -186,10 +185,10 @@ end;
 
 procedure ProcessInfo2Pay(aMessageId: Integer; aTransaction: TpFIBTransaction);
 var
-  aXml: TNativeXml;
+  aXml: TGvXml;
 begin
   dmOtto.SilentMode:= true;
-  aXml:= TNativeXml.CreateName('MESSAGE');
+  aXml:= TGvXml.Create('MESSAGE');
   try
     ParseInfo2Pay(aMessageId, aXml.Root, aTransaction);
   finally

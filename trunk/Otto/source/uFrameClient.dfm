@@ -1,29 +1,25 @@
 inherited FrameClient: TFrameClient
-  Left = 145
-  Top = 95
-  Width = 1116
-  Height = 569
-  PixelsPerInch = 96
-  TextHeight = 13
-  inherited dckTop: TTBXDock
-    Width = 1100
+  inherited pnlFrame: TPanel
+    Width = 145
+    inherited sBarFrame: TTBXStatusBar
+      Width = 135
+    end
+    inherited dckTop: TTBXDock
+      Width = 135
+    end
   end
-  inherited sb: TTBXStatusBar
-    Top = 509
-    Width = 1100
-  end
-  object pnlCenterOnClient: TPanel [2]
+  object pnlCenterOnClient: TPanel [1]
     Left = 0
-    Top = 26
-    Width = 810
-    Height = 483
+    Top = 0
+    Width = 145
+    Height = 266
     Align = alClient
     BorderWidth = 4
     TabOrder = 1
     object splitClient: TJvNetscapeSplitter
       Left = 5
-      Top = 323
-      Width = 800
+      Top = 106
+      Width = 135
       Height = 10
       Cursor = crVSplit
       Align = alBottom
@@ -34,33 +30,25 @@ inherited FrameClient: TFrameClient
     object grdClient: TDBGridEh
       Left = 5
       Top = 5
-      Width = 800
-      Height = 318
+      Width = 135
+      Height = 101
       Align = alClient
       AutoFitColWidths = True
-      DataGrouping.GroupLevels = <>
       DataSource = dsClients
+      DynProps = <>
       Flat = True
-      FooterColor = clWindow
-      FooterFont.Charset = DEFAULT_CHARSET
-      FooterFont.Color = clWindowText
-      FooterFont.Height = -11
-      FooterFont.Name = 'MS Sans Serif'
-      FooterFont.Style = []
+      FooterParams.Color = clWindow
+      IndicatorOptions = [gioShowRowIndicatorEh]
       Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
       OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghMultiSortMarking, dghIncSearch, dghPreferIncSearch, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove, dghHotTrack, dghExtendVertLines]
       ReadOnly = True
       RowDetailPanel.Height = 34
       RowDetailPanel.ParentColor = True
       TabOrder = 0
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -11
-      TitleFont.Name = 'MS Sans Serif'
-      TitleFont.Style = []
       OnDblClick = grdClientDblClick
       Columns = <
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'FIO_TEXT'
           Footers = <>
@@ -69,6 +57,7 @@ inherited FrameClient: TFrameClient
           Width = 300
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'PLACE_TEXT'
           Footers = <>
@@ -78,6 +67,7 @@ inherited FrameClient: TFrameClient
           InRowLinePos = 1
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'ADRESS_TEXT'
           Footers = <>
@@ -86,6 +76,7 @@ inherited FrameClient: TFrameClient
           Width = 230
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'EMAIL'
           Footers = <>
@@ -95,6 +86,7 @@ inherited FrameClient: TFrameClient
           InRowLinePos = 1
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'STATUS_ID'
           Footers = <>
@@ -103,6 +95,7 @@ inherited FrameClient: TFrameClient
           InRowLinePos = 1
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'MOBILE_PHONE'
           Footers = <>
@@ -112,6 +105,7 @@ inherited FrameClient: TFrameClient
           InRowLinePos = 1
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'STATUS_NAME'
           Footers = <>
@@ -125,31 +119,22 @@ inherited FrameClient: TFrameClient
     end
     object grdClientOrders: TDBGridEh
       Left = 5
-      Top = 333
-      Width = 800
+      Top = 116
+      Width = 135
       Height = 145
       Align = alBottom
       AutoFitColWidths = True
-      DataGrouping.GroupLevels = <>
       DataSource = dsClientOrders
+      DynProps = <>
       Flat = True
-      FooterColor = clWindow
-      FooterFont.Charset = DEFAULT_CHARSET
-      FooterFont.Color = clWindowText
-      FooterFont.Height = -11
-      FooterFont.Name = 'MS Sans Serif'
-      FooterFont.Style = []
       FooterRowCount = 1
+      FooterParams.Color = clWindow
+      IndicatorOptions = [gioShowRowIndicatorEh]
       RowDetailPanel.Active = True
-      RowDetailPanel.Color = clBtnFace
       TabOrder = 1
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -11
-      TitleFont.Name = 'MS Sans Serif'
-      TitleFont.Style = []
       Columns = <
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'ORDER_ID'
           Footers = <>
@@ -158,6 +143,7 @@ inherited FrameClient: TFrameClient
         end
         item
           AutoFitColWidth = False
+          DynProps = <>
           EditButtons = <>
           FieldName = 'ORDER_CODE'
           Footers = <>
@@ -166,6 +152,7 @@ inherited FrameClient: TFrameClient
           Width = 80
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'PRODUCT_ID'
           Footers = <>
@@ -173,6 +160,7 @@ inherited FrameClient: TFrameClient
           Visible = False
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'CLIENT_ID'
           Footers = <>
@@ -180,6 +168,7 @@ inherited FrameClient: TFrameClient
           Visible = False
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'ADRESS_ID'
           Footers = <>
@@ -187,6 +176,7 @@ inherited FrameClient: TFrameClient
           Visible = False
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'CREATE_DTM'
           Footers = <>
@@ -194,6 +184,7 @@ inherited FrameClient: TFrameClient
           Title.Caption = #1044#1072#1090#1072' '#1079#1072#1103#1074#1082#1080
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'STATUS_ID'
           Footers = <>
@@ -201,6 +192,7 @@ inherited FrameClient: TFrameClient
           Visible = False
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'STATUS_NAME'
           Footers = <>
@@ -209,6 +201,7 @@ inherited FrameClient: TFrameClient
           Width = 150
         end
         item
+          DynProps = <>
           EditButtons = <>
           FieldName = 'STATUS_DTM'
           Footers = <>
@@ -217,6 +210,7 @@ inherited FrameClient: TFrameClient
         end
         item
           AutoFitColWidth = False
+          DynProps = <>
           EditButtons = <>
           FieldName = 'BAR_CODE'
           Footers = <>
@@ -227,46 +221,40 @@ inherited FrameClient: TFrameClient
         object grdClientOrderItems: TDBGridEh
           Left = 0
           Top = 0
-          Width = 442
-          Height = 110
+          Width = 100
+          Height = 93
           Align = alClient
           AutoFitColWidths = True
-          DataGrouping.GroupLevels = <>
           DataSource = dsClientOrderItems
+          DynProps = <>
           Flat = True
-          FooterColor = clWindow
-          FooterFont.Charset = DEFAULT_CHARSET
-          FooterFont.Color = clWindowText
-          FooterFont.Height = -11
-          FooterFont.Name = 'MS Sans Serif'
-          FooterFont.Style = []
-          RowDetailPanel.Color = clBtnFace
+          FooterParams.Color = clWindow
+          IndicatorOptions = [gioShowRowIndicatorEh]
           TabOrder = 0
-          TitleFont.Charset = DEFAULT_CHARSET
-          TitleFont.Color = clWindowText
-          TitleFont.Height = -11
-          TitleFont.Name = 'MS Sans Serif'
-          TitleFont.Style = []
           Columns = <
             item
+              DynProps = <>
               EditButtons = <>
               FieldName = 'ORDER_ID'
               Footers = <>
               Visible = False
             end
             item
+              DynProps = <>
               EditButtons = <>
               FieldName = 'ORD'
               Footers = <>
               Visible = False
             end
             item
+              DynProps = <>
               EditButtons = <>
               FieldName = 'SUBJECT_ID'
               Footers = <>
               Visible = False
             end
             item
+              DynProps = <>
               EditButtons = <>
               FieldName = 'SUBJECT_NAME'
               Footers = <>
@@ -274,57 +262,67 @@ inherited FrameClient: TFrameClient
               Width = 200
             end
             item
+              DynProps = <>
               EditButtons = <>
               FieldName = 'DIMENSION'
               Footers = <>
               Title.Caption = #1056#1072#1079#1084#1077#1088
             end
             item
+              DynProps = <>
               EditButtons = <>
               FieldName = 'WEIGHT'
               Footers = <>
               Title.Caption = #1042#1077#1089', '#1075
             end
             item
+              DynProps = <>
               EditButtons = <>
               FieldName = 'PRICE_EUR'
               Footers = <>
               Title.Caption = #1062#1077#1085#1072', EUR'
             end
             item
+              DynProps = <>
               EditButtons = <>
               FieldName = 'AMOUNT'
               Footers = <>
               Title.Caption = #1050#1086#1083'-'#1074#1086
             end
             item
+              DynProps = <>
               EditButtons = <>
               FieldName = 'COST_EUR'
               Footers = <>
               Title.Caption = #1057#1090#1086#1080#1084#1086#1089#1090#1100
             end
             item
+              DynProps = <>
               EditButtons = <>
               FieldName = 'NAME_RUS'
               Footers = <>
             end
             item
+              DynProps = <>
               EditButtons = <>
               FieldName = 'KIND_RUS'
               Footers = <>
             end
             item
+              DynProps = <>
               EditButtons = <>
               FieldName = 'STATUS_NAME'
               Footers = <>
             end
             item
+              DynProps = <>
               EditButtons = <>
               FieldName = 'COUNT_WEIGHT'
               Footers = <>
               Visible = False
             end
             item
+              DynProps = <>
               EditButtons = <>
               FieldName = 'COST_BYR'
               Footers = <>
@@ -336,11 +334,11 @@ inherited FrameClient: TFrameClient
       end
     end
   end
-  object pnlRightOnClient: TPanel [3]
-    Left = 810
-    Top = 26
+  object pnlRightOnClient: TPanel [2]
+    Left = 145
+    Top = 0
     Width = 290
-    Height = 483
+    Height = 266
     Align = alRight
     BorderWidth = 4
     Constraints.MaxWidth = 290
@@ -418,6 +416,7 @@ inherited FrameClient: TFrameClient
         Width = 169
         Height = 21
         AutoSize = False
+        DynProps = <>
         EditButtons = <
           item
             Action = actClientSearch
@@ -436,6 +435,7 @@ inherited FrameClient: TFrameClient
         Top = 48
         Width = 169
         Height = 21
+        DynProps = <>
         EditButtons = <>
         TabOrder = 1
         Visible = True
@@ -450,6 +450,7 @@ inherited FrameClient: TFrameClient
         Top = 72
         Width = 169
         Height = 21
+        DynProps = <>
         EditButtons = <>
         TabOrder = 2
         Visible = True
@@ -464,6 +465,7 @@ inherited FrameClient: TFrameClient
         Top = 144
         Width = 169
         Height = 21
+        DynProps = <>
         EditButtons = <>
         TabOrder = 5
         Visible = True
@@ -476,6 +478,7 @@ inherited FrameClient: TFrameClient
         Top = 120
         Width = 169
         Height = 21
+        DynProps = <>
         EditButtons = <>
         TabOrder = 4
         Visible = True
@@ -487,6 +490,7 @@ inherited FrameClient: TFrameClient
         Top = 96
         Width = 169
         Height = 21
+        DynProps = <>
         EditButtons = <>
         TabOrder = 3
         Visible = True
@@ -498,7 +502,7 @@ inherited FrameClient: TFrameClient
       Left = 5
       Top = 189
       Width = 280
-      Height = 289
+      Height = 72
       Align = alClient
       Caption = #1040#1076#1088#1077#1089
       TabOrder = 1
@@ -506,7 +510,7 @@ inherited FrameClient: TFrameClient
         Left = 2
         Top = 15
         Width = 276
-        Height = 272
+        Height = 55
         Align = alClient
         AutoSize = False
         BorderStyle = sbsSunken
@@ -514,14 +518,14 @@ inherited FrameClient: TFrameClient
       end
     end
   end
-  inherited trnWrite: TpFIBTransaction
-    Active = True
-  end
   inherited actList: TActionList
     object actClientSearch: TAction
       Caption = #1053#1072#1081#1090#1080
       OnExecute = actClientSearchExecute
     end
+  end
+  object trnWrite: TpFIBTransaction
+    TimeoutAction = TARollback
   end
   object qryClient: TpFIBDataSet
     SelectSQL.Strings = (

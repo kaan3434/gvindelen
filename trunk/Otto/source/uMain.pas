@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ActnList, ImgList, TB2Item, TBX, TB2Dock, TB2Toolbar,
-  TBXStatusBars, GvVars, PngImageList, DB, FIBDataSet, pFIBDataSet, NativeXml,
+  TBXStatusBars, GvVars, PngImageList, DB, FIBDataSet, pFIBDataSet, 
   JvComponentBase, JvFormAutoSize, Menus, StdActns,
   FIBDatabase, pFIBDatabase, JvDSADialogs, frxClass, frxExportPDF,
   frxFIBComponents, ExtCtrls, DBGridEh,
@@ -13,7 +13,7 @@ uses
   JvBaseDlg,
   gsFileVersionInfo, JvLogFile, JvProgressDialog,
   frxExportXML,
-  ComCtrls, TBXExtItems, frxExportXLS, frxDCtrl;
+  ComCtrls, TBXExtItems, frxExportXLS, frxDCtrl, gvXml;
 
 type
   TMainForm = class(TForm)
@@ -226,7 +226,7 @@ type
   public
     { Public declarations }
     procedure PrintPackList(aTransaction: TpFIBTransaction; Packlist_No: Integer;
-      aFileName: String);
+      aFileName: string);
   end;
 
 var
@@ -236,15 +236,15 @@ implementation
 
 {$R *.dfm}
 uses
-  GvFile, GvStr, udmOtto, FIBQuery, GvNativeXml,
+  GvFile, GvStr, udmOtto, FIBQuery, 
   uBaseNSIForm,
   uFormTableOrder, uFormTableClients, uParseProtocol, uParseLiefer,
   uParseConsignment, pFIBQuery, uParsePayments,
   uFormWizardOrder, uSetByr2Eur, uExportSMSReject,
   uExportCancellation, uExportOrder, uExportInvoices, uExportPackList,
   uParseArtN, uParseCancellation, uFormWizardReturn, uParseInfo2Pay,
-  uExportToSite, uExportPrePackList, uMoneyBack, uReportReturnedOrderItems, 
-  uExportReturns, uParseInfoKomnr, uParseArt, uParsePaymentsBP, 
+  uExportToSite, uExportPrePackList, uMoneyBack, uReportReturnedOrderItems,
+  uExportReturns, uParseInfoKomnr, uParseArt, uParsePaymentsBP,
   uExportDealerData, uFormActions;
 
 procedure TMainForm.actParseOrderXmlExecute(Sender: TObject);
@@ -257,9 +257,9 @@ begin
     TFormWizardOrder.CreateMessage(self, MessageId).Show;
     Exit;
   except
-    on E:Exception do
+    on E: Exception do
     begin
-      if MessageDlg(E.Message +#13#10'Забраковать заявку?' , mtConfirmation, [mbYes,mbNo], 0) = mrYes then
+      if MessageDlg(E.Message + #13#10'Забраковать заявку?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
         dmOtto.MessageError(trnWrite, MessageId);
     end;
   end;
@@ -270,9 +270,9 @@ begin
     TFormWizardOrder.CreateMessage(self, MessageId).Show;
     exit;
   except
-    on E:Exception do
+    on E: Exception do
     begin
-      if MessageDlg(E.Message +#13#10'Забраковать заявку?' , mtConfirmation, [mbYes,mbNo], 0) = mrYes then
+      if MessageDlg(E.Message + #13#10'Забраковать заявку?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
         dmOtto.MessageError(trnWrite, MessageId);
     end;
   end
@@ -375,10 +375,10 @@ procedure TMainForm.PrintPackList(aTransaction: TpFIBTransaction;
 begin
   with dmOtto do
   begin
-    frxExportXLS.DefaultPath:= Path['DbfPackLists'];
-    frxExportXLS.FileName:= aFileName;
+    frxExportXLS.DefaultPath := Path['DbfPackLists'];
+    frxExportXLS.FileName := aFileName;
     frxReport.LoadFromFile(Path['FastReport'] + 'packlistpi3.fr3');
-    frxReport.Variables.Variables['PackList_No']:= Format('''%u''', [Packlist_No]);
+    frxReport.Variables.Variables['PackList_No'] := Format('''%u''', [Packlist_No]);
     frxReport.PrepareReport(true);
     frxReport.Export(frxExportXLS);
   end;
@@ -494,15 +494,15 @@ begin
       for i := 0 to sl.Count - 1 do
       begin
         // проверяем зарегистрирован ли файл
-        MessageId:= trnTimer.DefaultDatabase.QueryValue(
+        MessageId := trnTimer.DefaultDatabase.QueryValue(
           'select m.message_id from messages m where lower(m.file_name) = lower(:file_name)',
           0, [ExtractFileName(sl[i])], trnTimer);
         // Если зарегистрирован, проверяем статус обработки
         if MessageId <> null then
         begin
-          StatusSign:= trnTimer.DefaultDatabase.QueryValue(
-            'select s.status_sign from messages m'+
-            ' inner join statuses s on (s.status_id = m.status_id)'+
+          StatusSign := trnTimer.DefaultDatabase.QueryValue(
+            'select s.status_sign from messages m' +
+            ' inner join statuses s on (s.status_id = m.status_id)' +
             ' where m.message_id = :message_id',
             0, [MessageId], trnTimer);
           if StatusSign = 'SUCCESS' then
@@ -513,9 +513,9 @@ begin
           trnTimer.SetSavePoint('CreateMessage');
           FileName := AnsiToUtf8(Copy(sl[i], Length(Path['Messages.In']) + 1,
             Length(sl[i])));
-          ParamByName('I_FILE_NAME').Value:= AnsiLowerCaseFileName(FileName);
-          ParamByName('I_FILE_SIZE').Value:= GetFileSize(sl[i]);
-          ParamByName('I_FILE_DTM').AsDateTime:= FileDateToDateTime(fileAge(sl[i]));
+          ParamByName('I_FILE_NAME').Value := AnsiLowerCaseFileName(FileName);
+          ParamByName('I_FILE_SIZE').Value := GetFileSize(sl[i]);
+          ParamByName('I_FILE_DTM').AsDateTime := FileDateToDateTime(fileAge(sl[i]));
           ExecProc;
           if VarIsNull(ParamValue('O_MESSAGE_ID')) then
           begin
@@ -538,7 +538,7 @@ end;
 
 procedure TMainForm.actExportOrdersExecute(Sender: TObject);
 var
-  ProductXml: TNativeXml;
+  ProductXml: TGvXml;
   p: Integer;
   FileName: string;
 begin
@@ -548,11 +548,11 @@ end;
 procedure TMainForm.actSetByr2EurExecute(Sender: TObject);
 begin
   with TFormSetByr2Eur.Create(Self) do
-    try
-      ShowModal;
-    finally
-      Free;
-    end;
+  try
+    ShowModal;
+  finally
+    Free;
+  end;
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
@@ -675,10 +675,10 @@ var
   i: Integer;
 begin
   verInfo.Filename := ParamStr(0);
-  Caption:= Format('PPZ2 Builds:%s/%s %s', [verInfo.GetBuildOnly, dmOtto.Build, dmOtto.UserName]);
-  for i:= 0 to tbrMain.Items.Count -1 do
+  Caption := Format('PPZ2 Builds:%s/%s %s', [verInfo.GetBuildOnly, dmOtto.Build, dmOtto.UserName]);
+  for i := 0 to tbrMain.Items.Count - 1 do
     if tbrMain.Items[i].GroupIndex = 1 then
-      tbrMain.Items[i].Visible:= dmOtto.isAdminRole;
+      tbrMain.Items[i].Visible := dmOtto.isAdminRole;
 end;
 
 procedure TMainForm.scrptUpdateExecuteError(Sender: TObject; StatementNo,
@@ -720,15 +720,15 @@ begin
   Build := FillFront(IntToStr(dmOtto.Build), 6, '0');
   dmOtto.CreateAlert(HeaderText, Format('Создание копии %s ...', [Build]),
     mtInformation, 10000);
-  FileName:= GetNextFileName(Format('%s%s_%s_%%u',
+  FileName := GetNextFileName(Format('%s%s_%s_%%u',
     [Path['Backup'], FormatDateTime('YYYYMMDD', Date), Build]), 1);
   try
     if dmOtto.dbOtto.Connected then
       dmOtto.dbOtto.Close;
-    dmOtto.BackupDatabase(FileName+'.fbk');
-    dmOtto.MoveToZip(FileName+'.fbk', FileName+'.7z');
+    dmOtto.BackupDatabase(FileName + '.fbk');
+    dmOtto.MoveToZip(FileName + '.fbk', FileName + '.7z');
     dmOtto.CreateAlert(HeaderText, Format('Резерная копия %s создана',
-       [ExtractFileNameOnly(FileName)]), mtInformation);
+      [ExtractFileNameOnly(FileName)]), mtInformation);
   finally
     dmOtto.dbOtto.Open;
   end;
@@ -740,13 +740,13 @@ const
 var
   Build, BeforeBackupFileName: string;
 begin
-  dlgOpenRestore.InitialDir:= Path['Backup'];
+  dlgOpenRestore.InitialDir := Path['Backup'];
   if dlgOpenRestore.Execute then
   begin
-    Build:= FillFront(IntToStr(dmOtto.Build), 6, '0');
+    Build := FillFront(IntToStr(dmOtto.Build), 6, '0');
     dmOtto.CreateAlert(HeaderText, Format('Создание копии %s ...', [Build]),
       mtInformation, 10000);
-    BeforeBackupFileName:= Format('%s%s_%s_prerestore.fbk',
+    BeforeBackupFileName := Format('%s%s_%s_prerestore.fbk',
       [Path['Backup'], FormatDateTime('YYYYMMDD', Date), Build]);
     if dmOtto.dbOtto.Connected then
       dmOtto.dbOtto.Close;
@@ -785,7 +785,7 @@ procedure TMainForm.alMainUpdate(Action: TBasicAction;
 begin
   actInstallPatch.Enabled := verInfo.GetBuildOnly > dmOtto.Build;
   if actInstallPatch.Enabled then
-    subMenuSystem.ImageIndex:= actInstallPatch.ImageIndex;
+    subMenuSystem.ImageIndex := actInstallPatch.ImageIndex;
 end;
 
 
@@ -799,8 +799,8 @@ begin
   if InputQuery('Возврат позиций заявки', 'Укажите номер заявки', OrderCode) then
   begin
     OrderId := trnRead.DefaultDatabase.QueryValue(
-      'select o.order_id from orders o '+
-      ' inner join statuses s on (s.status_id = o.status_id) '+
+      'select o.order_id from orders o ' +
+      ' inner join statuses s on (s.status_id = o.status_id) ' +
       'where order_code like ''%''||:order_code '
       , 0, [FillFront(FilterString(OrderCode, '0123456789'), 5, '0')], trnRead);
     if OrderId <> null then
@@ -847,7 +847,7 @@ end;
 
 procedure TMainForm.FormActivate(Sender: TObject);
 begin
-  lblBYR2EUR.Caption:= Format('Курс Евро: %s BYR',
+  lblBYR2EUR.Caption := Format('Курс Евро: %s BYR',
     [dmOtto.SettingGet(trnRead, 'BYR2EUR')]);
 end;
 
@@ -860,7 +860,7 @@ procedure TMainForm.actReportByPeriodExecute(Sender: TObject);
 begin
   with dmOtto do
   begin
-    frxReport.LoadFromFile(Path['FastReport']+'OperStats.fr3');
+    frxReport.LoadFromFile(Path['FastReport'] + 'OperStats.fr3');
     frxReport.ShowReport;
   end;
 end;
@@ -874,15 +874,15 @@ begin
   if InputQuery('Возврат невостребованной заявки', 'Укажите номер заявки', OrderCode) then
   begin
     OrderId := trnRead.DefaultDatabase.QueryValue(
-      'select o.order_id from orders o '+
-      ' inner join statuses s on (s.status_id = o.status_id and s.status_sign = ''DELIVERING'') '+
+      'select o.order_id from orders o ' +
+      ' inner join statuses s on (s.status_id = o.status_id and s.status_sign = ''DELIVERING'') ' +
       'where order_code like ''%''||:order_code '
       , 0, [FillFront(FilterString(OrderCode, '0123456789'), 5, '0')], trnRead);
     if OrderId <> null then
     begin
       trnWrite.StartTransaction;
       try
-        dmOtto.ActionExecute(trnWrite, 'ORDER', 'ORDER_UNCLAIM', '', OrderId);
+        dmOtto.ActionExecute(trnWrite, 'ORDER', 'ORDER_UNCLAIM', nil, OrderId);
         trnWrite.Commit;
         ShowMessage('Заявка переведена в статус "Невостребована"');
       except
@@ -898,7 +898,7 @@ procedure TMainForm.actPacklistByPeriodExecute(Sender: TObject);
 begin
   with dmOtto do
   begin
-    frxReport.LoadFromFile(Path['FastReport']+'PacklistStats.fr3');
+    frxReport.LoadFromFile(Path['FastReport'] + 'PacklistStats.fr3');
     frxReport.ShowReport;
   end;
 end;
@@ -907,7 +907,7 @@ procedure TMainForm.btnUnclaimedClick(Sender: TObject);
 begin
   with dmOtto do
   begin
-    frxReport.LoadFromFile(Path['FastReport']+'UnClaimed.fr3');
+    frxReport.LoadFromFile(Path['FastReport'] + 'UnClaimed.fr3');
     frxReport.ShowReport;
   end;
 end;
@@ -963,16 +963,16 @@ procedure TMainForm.actAdressListExecute(Sender: TObject);
 begin
   with dmOtto do
   begin
-    frxReport.LoadFromFile(Path['FastReport']+'Adresses.fr3');
+    frxReport.LoadFromFile(Path['FastReport'] + 'Adresses.fr3');
     frxReport.ShowReport;
   end;
 end;
 
 procedure TMainForm.actActionCodesExecute(Sender: TObject);
 var
-  frmActionCodes : TfrmActionCodeSetup;
+  frmActionCodes: TfrmActionCodeSetup;
 begin
-  frmActionCodes:= TfrmActionCodeSetup.Create(Self);
+  frmActionCodes := TfrmActionCodeSetup.Create(Self);
   try
     frmActionCodes.ShowModal;
   finally
@@ -981,4 +981,5 @@ begin
 end;
 
 end.
+
 

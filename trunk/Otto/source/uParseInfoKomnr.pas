@@ -3,18 +3,18 @@ unit uParseInfoKomnr;
 interface
 
 uses
-  NativeXml, FIBDatabase, pFIBDatabase;
+  GvXml, FIBDatabase, pFIBDatabase;
 
 procedure ProcessInfoKomnR(aMessageId: Integer; aTransaction: TpFIBTransaction);
 
 implementation
 
 uses
-  Classes, SysUtils, GvStr, udmOtto, Variants, GvNativeXml,
+  Classes, SysUtils, GvStr, udmOtto, Variants, GvXmlUtils,
   Dialogs, Controls, GvFile, GvDtTm;
 
 procedure ParseInfoKomnrLine(aMessageId, LineNo: Integer; aLine: string;
-  ndProduct: TXmlNode; aTransaction: TpFIBTransaction);
+  ndProduct: TGvXmlNode; aTransaction: TpFIBTransaction);
 var
   sl: TStringList;
 begin
@@ -29,16 +29,16 @@ begin
       dmOtto.Notify(aMessageId,
         '[LINE_NO]. Паклист [PACKLIST_NO]. Код [PACKLIST_CODE]',
         'I',
-        Strings2Vars(sl, 'PACKLIST_NO=1;PACKLIST_CODE=2',
-        Value2Vars(LineNo, 'LINE_NO')));
+        Strings2Attr(sl, 'PACKLIST_NO=1;PACKLIST_CODE=2',
+        Value2Attr(LineNo, 'LINE_NO')));
     except
       on E: Exception do
         dmOtto.Notify(aMessageId,
           '[LINE_NO]. Паклист [PACKLIST_NO]. Код [PACKLIST_CODE]. Ошибка ([ERROR_TEXT])',
           'E',
-          Strings2Vars(sl, 'PACKLIST_NO=1;PACKLIST_CODE=2',
-          Value2Vars(DeleteChars(E.Message, #10#13), 'ERROR_TEXT',
-          Value2Vars(LineNo, 'LINE_NO'))));
+          Strings2Attr(sl, 'PACKLIST_NO=1;PACKLIST_CODE=2',
+          Value2Attr(DeleteChars(E.Message, #10#13), 'ERROR_TEXT',
+          Value2Attr(LineNo, 'LINE_NO'))));
     end;
     dmOtto.AllDealersNotify(aMessageId, aLine, aTransaction);
   finally
@@ -46,25 +46,25 @@ begin
   end;
 end;
 
-procedure ParseInfoKomnr(aMessageId: Integer; ndMessage: TXmlNode;
+procedure ParseInfoKomnr(aMessageId: Integer; ndMessage: TGvXmlNode;
   aTransaction: TpFIBTransaction);
 var
   LineNo: Integer;
   Lines: TStringList;
   MessageFileName: String;
-  ndProduct: TXmlNode;
+  ndProduct: TGvXmlNode;
 begin
   dmOtto.ClearNotify(aMessageId);
   aTransaction.StartTransaction;
   try
     dmOtto.ObjectGet(ndMessage, aMessageId, aTransaction);
-    ndProduct:= ndMessage.NodeFindOrCreate('PRODUCT');
+    ndProduct:= ndMessage.FindOrCreate('PRODUCT');
     dmOtto.ObjectGet(ndProduct, dmOtto.DetectProductId(ndMessage, aTransaction), aTransaction);
 
-    MessageFileName:= GetXmlAttrValue(ndMessage, 'FILE_NAME');
+    MessageFileName:= ndMessage['FILE_NAME'];
     dmOtto.Notify(aMessageId,
       'Начало обработки файла: [FILE_NAME]', '',
-      Value2Vars(MessageFileName, 'FILE_NAME'));
+      Value2Attr(MessageFileName, 'FILE_NAME'));
 
     Lines:= TStringList.Create;
     try
@@ -83,12 +83,12 @@ begin
       else
         dmOtto.Notify(aMessageId,
           'Файл [FILE_NAME] не найден.', 'E',
-          Value2Vars(MessageFileName, 'FILE_NAME'));
+          Value2Attr(MessageFileName, 'FILE_NAME'));
     finally
       dmOtto.InitProgress;
       dmOtto.Notify(aMessageId,
         'Конец обработки файла: [FILE_NAME]', '',
-        Value2Vars(MessageFileName, 'FILE_NAME'));
+        Value2Attr(MessageFileName, 'FILE_NAME'));
       Lines.Free;
     end;
     dmOtto.ShowProtocol(aTransaction, aMessageId);
@@ -100,9 +100,9 @@ end;
 
 procedure ProcessInfoKomnr(aMessageId: Integer; aTransaction: TpFIBTransaction);
 var
-  aXml: TNativeXml;
+  aXml: TGvXml;
 begin
-  aXml:= TNativeXml.CreateName('MESSAGE');
+  aXml:= TGvXml.Create('MESSAGE');
   try
     ParseInfoKomnr(aMessageId, aXml.Root, aTransaction);
   finally

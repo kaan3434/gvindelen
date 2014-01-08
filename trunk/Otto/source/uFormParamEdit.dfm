@@ -1,9 +1,9 @@
-object frmParamEdit: TfrmParamEdit
-  Left = 638
-  Top = 254
+object FormParamEdit: TFormParamEdit
+  Left = 368
+  Top = 177
   Width = 352
   Height = 319
-  Caption = 'frmParamEdit'
+  Caption = 'FormParamEdit'
   Color = clBtnFace
   Constraints.MinHeight = 250
   Constraints.MinWidth = 250
@@ -99,6 +99,7 @@ object frmParamEdit: TfrmParamEdit
     Default = True
     ModalResult = 1
     TabOrder = 3
+    OnClick = btnOkClick
   end
   object btnCancel: TButton
     Left = 247

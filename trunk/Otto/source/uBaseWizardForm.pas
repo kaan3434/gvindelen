@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, JvWizard, JvWizardRouteMapNodes, JvExControls, 
-  Buttons, ActnList, NativeXml, FIBDatabase, pFIBDatabase;
+  Buttons, ActnList, GvXml, FIBDatabase, pFIBDatabase;
 
 type
   TBaseWizardForm = class(TForm)
@@ -19,15 +19,15 @@ type
     { Private declarations }
   public
     { Public declarations }
-    XmlData: TNativeXml;
+    XmlData: TGvXml;
     ObjectId: Integer;
     constructor Create(AOwner: TComponent; aObjectSign: String);
     constructor CreateDB(AOwner: TComponent; aObjectSign: String; aObjectId: Integer); virtual;
-    constructor CreateXml(AOwner: TComponent; aObjectSign: String; aXml: TNativeXml);
+    constructor CreateXml(AOwner: TComponent; aObjectSign: String; aXml: TGvXml);
     destructor Destroy; override;
     procedure GetFromDB; virtual;
     procedure SetToDB; virtual; abstract;
-    function Root: TXmlNode;
+    function Root: TGvXmlNode;
     procedure BuildXml; virtual;
     procedure UpdateCaptions; virtual;
     procedure UpdateControls(aPage: TJvWizardCustomPage); virtual;
@@ -47,7 +47,7 @@ constructor TBaseWizardForm.Create(AOwner: TComponent; aObjectSign: String);
 begin
   inherited Create(AOwner);
   trnRead.StartTransaction;
-  XmlData:= TNativeXml.CreateName(aObjectSign);
+  XmlData:= TGvXml.Create(aObjectSign);
   BuildXml;
   UpdateCaptions;
 end;
@@ -65,11 +65,11 @@ end;
 
 procedure TBaseWizardForm.GetFromDB;
 begin
-  XmlData.XmlFormat:= xfReadable;
-  XmlData.SaveToFile('xmlData.xml');
+//  XmlData.XmlFormat:= xfReadable;
+ // XmlData.SaveToFile('xmlData.xml');
 end;
 
-function TBaseWizardForm.Root: TXmlNode;
+function TBaseWizardForm.Root: TGvXmlNode;
 begin
   Result:= XmlData.Root;
 end;
@@ -84,12 +84,12 @@ begin
 end;
 
 constructor TBaseWizardForm.CreateXml(AOwner: TComponent;
-  aObjectSign: String; aXml: TNativeXml);
+  aObjectSign: String; aXml: TGvXml);
 var
   St: string;
 begin
   inherited Create(AOwner);
-  XmlData:= TNativeXml.CreateName(aObjectSign);
+  XmlData:= TGvXml.Create(aObjectSign);
   XmlData.Assign(aXml);
   BuildXml;
   UpdateCaptions;
