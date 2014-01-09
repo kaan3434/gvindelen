@@ -119,6 +119,7 @@ type
     function IndexInParent: integer;
     procedure Assign(const aXmlNode: TGvXmlNode);
     procedure AttrDelete(const aAttribute: TGvXmlAttribute);
+    function NodeByPath(aXPath: String): TGvXmlNode;
     property Attributes: TGvXmlAttributeList read FAttributes;
     property AttrValue[const aAttrName: String]: Variant read GetAttrValue
       write SetAttrValue; default;
@@ -374,16 +375,10 @@ var
   Nodes: TGvXmlNodeList;
   i: Integer;
 begin
-{$IFDEF VER230}
-  for Node in FindNodes(aNodeName, aStates) do
-  begin
-    Node.State:= aNewState;
-{$ELSE}
   Nodes := FindNodes(aNodeName, aStates);
   for i:= 0 to Nodes.Count - 1 do
   begin
     Node:= TGvXmlNode(Nodes[i]);
-{$ENDIF}
     Node.State:= aNewState;
   end;
 end;
@@ -430,15 +425,10 @@ var
   Nodes: TGvXmlNodeList;
   i: Integer;
 begin
-{$IFDEF VER230}
-  for Node in FindNodes(aNodeName, aStates) do
-  begin
-{$ELSE}
   Nodes := FindNodes(aNodeName, aStates);
   for i:= 0 to Nodes.Count - 1 do
   begin
     Node:= TGvXmlNode(Nodes[i]);;
-{$ENDIF}
     Node.Clear;
     ChildNodes.Delete(ChildNodes.IndexOf(Node));
   end;
@@ -459,18 +449,11 @@ end;
 procedure TGvXmlNode.ExportAttrs(aStringList: TStringList);
 var
   Att: TGvXmlAttribute;
-{$IFNDEF VER230}
   i: Integer;
-{$ENDIF}
 begin
-{$IFDEF VER230}
-  for Att in FAttributes do
-  begin
-{$ELSE}
   for i:= 0 to FAttributes.count-1 do
   begin
     Att:= FAttributes[i];
-{$ENDIF}
     aStringList.Values[Att.Name]:= Att.FValue;
   end;
 end;
@@ -478,19 +461,12 @@ end;
 function TGvXmlNode.Find(aNodeName: String): TGvXmlNode;
 var
   Node: TGvXmlNode;
-{$IFNDEF VER230}
   i: Integer;
-{$ENDIF}
 begin
   Result := NIL;
-{$IFDEF VER230}
-  for Node in ChildNodes do
-  begin
-{$ELSE}
   for i:= 0 to ChildNodes.Count-1 do
   begin
     Node:= ChildNodes[i];
-{$ENDIF}
     if lowercase(Node.NodeName) = lowercase(aNodeName) then
     begin
       Result := Node;
@@ -502,19 +478,12 @@ end;
 function TGvXmlNode.Find(aNodeName, aAttrName, aAttrValue: String): TGvXmlNode;
 var
   Node: TGvXmlNode;
-{$IFNDEF VER230}
   i: Integer;
-{$ENDIF}
 begin
   Result := NIL;
-{$IFDEF VER230}
-  for Node in ChildNodes do
-  begin
-{$ELSE}
   for i:= 0 to ChildNodes.Count - 1 do
   begin
     Node:= ChildNodes[i];
-{$ENDIF}
     if (lowercase(Node.NodeName) = lowercase(aNodeName)) and
        (Node.HasAttribute(aAttrName)) and
        (Node[aAttrName] = aAttrValue) then
@@ -528,19 +497,12 @@ end;
 function TGvXmlNode.Find(aNodeName, aAttrName: String): TGvXmlNode;
 var
   Node: TGvXmlNode;
-{$IFNDEF VER230}
   i: Integer;
-{$ENDIF}
 begin
   Result := NIL;
-{$IFDEF VER230}
-  for Node in ChildNodes do
-  begin
-{$ELSE}
   for i:= 0 to ChildNodes.Count - 1 do
   begin
     Node:= ChildNodes[i];
-{$ENDIF}
     if (lowercase(Node.NodeName) = lowercase(aNodeName)) and
        (Node.HasAttribute(aAttrName)) then
     begin
@@ -600,19 +562,12 @@ function TGvXmlNode.FindNodes(aNodeName: String;
   aStates: TGvNodeStateSet = []): TGvXmlNodeList;
 var
   Node: TGvXmlNode;
-{$IFNDEF VER230}
   i: Integer;
-{$ENDIF}
 begin
   Result := TGvXmlNodeList.Create(False);
-{$IFDEF VER230}
-  for Node in ChildNodes do
-  begin
-{$ELSE}
   for i:= 0 to ChildNodes.count-1 do
   begin
     Node:= ChildNodes[i];
-{$ENDIF}
     if (lowercase(Node.NodeName) = lowercase(aNodeName)) and
        ((aStates = []) or (Node.State in aStates)) then
       Result.Add(Node);
@@ -816,9 +771,7 @@ var
   Lines: TStringList;
   Attribute: TGvXmlAttribute;
   Child: TGvXmlNode;
-{$IFNDEF VER230}
   i: Integer;
-{$ENDIF}
 function Ident: string;
 begin
   if aReadable then
@@ -841,14 +794,9 @@ begin
   else
   begin
     Result:= Ident + '<' + FullNodeName;
-{$IFDEF VER230}
-    for Attribute in FAttributes do
-    begin
-{$ELSE}
     for i:= 0 to FAttributes.count-1 do
     begin
       Attribute:= FAttributes[i];
-{$ENDIF}
       Result:= Result + ' '+Attribute.FullName+'="'+Attribute.AsString+'"';
     end;
     if (Text = '') and (ChildNodes.Count = 0) then
@@ -859,18 +807,31 @@ begin
     else
     begin
       Result:= Result +'>'+Text+EOL;
-{$IFDEF VER230}
-      for Child in ChildNodes do
-      begin
-{$ELSE}
       for i:= 0 to ChildNodes.Count-1 do
       begin
         Child:= ChildNodes[i];
-{$ENDIF}
         Result:= Result+Child.WriteToString(aReadable, aLevel+1);
       end;
       Result:= Result + Ident+'</'+FullNodeName+'>'+EOL;
     end;
+  end;
+end;
+
+function TGvXmlNode.NodeByPath(aXPath: String): TGvXmlNode;
+var
+  sl: TStringList;
+  i: Integer;
+begin
+  sl:= TStringList.Create;
+  try
+    sl.Delimiter:= '/';
+    sl.DelimitedText:= aXPath;
+    Result:= Self;
+    for i:= 0 to sl.Count-1 do
+      if Trim(sl[i])<>'' then
+        Result:= Find(Trim(sl[i]));
+  finally
+    sl.Free;
   end;
 end;
 

@@ -6,14 +6,27 @@ uses
   GvListDataSet, GvCustomDataSet, TypInfo, db, classes, sysutils, GvXml;
 
 type
+  TGvXmlFieldDef = class(TFieldDef)
+  private
+    FXPath: string;
+    FAttrName: string;
+    function GetFullPath: String;
+    procedure SetFullPath(const Value: String);
+  public
+    constructor Create(Owner: TFieldDefs; const Name: String; DataType: TFieldType; Size: Integer; Required: Boolean; FieldNo: Integer; Path:String); overload;
+    property XPath: String read FXPath;
+    property AttrName: String read FAttrName;
+    property FullPath: String read GetFullPath write SetFullPath;
+  end;
+
   TGvNodeDataSet = class(TGvListDataSet)
   private
     FDataSetNode: TGvXmlNode;
-    DataBackup: TStringList;
+    FDataBackup: TStringList;
     FInitFieldDefs: TStringList;
     procedure SetDataSetNode(const Value: TGvXmlNode);
     procedure SetInitFieldDefs(const Value: TStringList);
-    function ActiveNode:TGvXmlNode;
+    function ActiveNode(FieldDef: TGvXmlFieldDef):TGvXmlNode;
   protected
     procedure InternalInitFieldDefs; override;
     procedure InternalPost; override;
@@ -24,6 +37,8 @@ type
     function GetCanModify: Boolean; override;
     procedure InternalPreOpen; override;
     procedure InternalClose; override;
+    procedure InternalBackupData; virtual;
+    procedure InternalRestoreData; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -39,7 +54,7 @@ procedure Register;
 implementation
 
 uses
-  Contnrs, Dialogs, Windows, Forms, Controls, GvMath, Variants, GvVariant;
+  Contnrs, Dialogs, Windows, Forms, Controls, GvMath, Variants, GvVariant, GvStr;
 
 {$R GvNodeDataSet.res}
 
@@ -50,8 +65,10 @@ begin
 end;
 
 procedure TGvNodeDataSet.InternalInitFieldDefs;
+type
+  FInitDefItems = (idiFieldName,idiXPath,idiFieldType,idiSize,idiPrecision);
 var
-  FieldName: string;
+  FieldName, XPath: string;
   I, nSize: Integer;
   FieldType: TFieldType;
   FieldDef: TFieldDef;
@@ -67,14 +84,15 @@ begin
       if Trim(FInitFieldDefs[i]) = '' then Continue;
       sl.CommaText:= Trim(FInitFieldDefs[i])+',,,,,,,';
       // create the field
-      FieldName:= sl[0];
+      FieldName:= sl[Byte(idiFieldName)];
       if FieldName = '' then
         raise EGvDataSetError.Create('InitFieldsDefs: No name for field '+IntToStr(I));
-      FieldType:= TFieldType(GetEnumValue(TypeInfo(TFieldType), sl[1]));
+      XPath:= sl[Byte(idiXPath)];
+      FieldType:= TFieldType(GetEnumValue(TypeInfo(TFieldType), sl[Byte(idiFieldType)]));
       nSize:= 0;
       case FieldType of
         ftString:
-          nSize:= StrToIntDef(sl[2], 0);
+          nSize:= StrToIntDef(sl[Byte(idiSize)], 0);
         ftBoolean,
         ftSmallInt, ftWord,
         ftInteger, ftDate, ftTime,
@@ -83,12 +101,12 @@ begin
         raise EGvDataSetError.Create (
           'InitFieldsDefs: Unsupported field type');
       end;
-      FieldDef:= TFieldDef.Create(FieldDefs, FieldName, FieldType, nSize, False, i);
+      FieldDef:= TGvXmlFieldDef.Create(FieldDefs, FieldName, FieldType, nSize, False, i, XPath);
       case FieldType of
         ftCurrency:
           FieldDef.Precision:= 4;
         ftFloat:
-          FieldDef.Precision:= StrToIntDef(sl[3],0);
+          FieldDef.Precision:= StrToIntDef(sl[Byte(idiPrecision)],0);
       else
         FieldDef.Precision:= 0;
       end;
@@ -100,19 +118,15 @@ end;
 
 procedure TGvNodeDataSet.InternalPost;
 begin
-  DataBackup.Clear;
+  FDataBackup.Clear;
 end;
 
 procedure TGvNodeDataSet.InternalCancel;
 var
   Node: TGvXmlNode;
 begin
-  Node:= TGvXmlNode(fList[fCurrentRecord]);
   if State = dsEdit then
-  begin
-    Node.Attributes.Clear;
-    Node.ImportAttrs(DataBackup);
-  end
+    InternalRestoreData;
 end;
 
 function TGvNodeDataSet.GetFieldData (
@@ -167,16 +181,18 @@ end;
 
 var
   OutValue: Variant;
+  FieldDef: TGvXmlFieldDef;
 begin
   Result:= False;
   if ActiveRecord >= InternalRecordCount then Exit;
 
-  if ActiveNode.HasAttribute(Field.FieldName) then
+  FieldDef:= FieldDefs[Field.FieldNo] as TGvXmlFieldDef;
+  if ActiveNode(FieldDef).HasAttribute(FieldDef.AttrName) then
     case Field.DataType of
       ftDate, ftTime, ftDateTime:
-        OutValue:= ActiveNode.Attr[Field.FieldName].AsDateTime;
+        OutValue:= ActiveNode(FieldDef).Attr[FieldDef.AttrName].AsDateTime;
     else
-      OutValue:= ActiveNode[Field.FieldName]
+      OutValue:= ActiveNode(FieldDef)[FieldDef.AttrName];
     end
   else
     OutValue:= null;
@@ -248,6 +264,8 @@ var
     end;
   end;
 
+var
+  FieldDef: TGvXmlFieldDef;
 begin
   Field.Validate(Buffer);
 
@@ -256,7 +274,8 @@ begin
   else
     BufferToVar(v);
 
-  ActiveNode[Field.FieldName]:= v;
+  FieldDef:= FieldDefs[Field.FieldNo] as TGvXmlFieldDef;
+  ActiveNode(FieldDef)[FieldDef.AttrName]:= v;
   SetModified(True);
 end;
 
@@ -267,8 +286,8 @@ end;
 
 procedure TGvNodeDataSet.InternalEdit;
 begin
-  DataBackup.Clear;
-  ActiveNode.ExportAttrs(DataBackup);
+  FDataBackup.Clear;
+  InternalBackupData;
 end;
 
 function TGvNodeDataSet.GetCanModify: Boolean;
@@ -281,14 +300,14 @@ begin
   FMaxRecords:= 1;
   FList := TObjectList.Create(false);
   FList.Add(FDataSetNode);
-  DataBackup:= TStringList.Create;
+  FDataBackup:= TStringList.Create;
   inherited;
 end;
 
 procedure TGvNodeDataSet.InternalClose;
 begin
   FList.Extract(FDataSetNode);
-  FreeAndNil(DataBackup);
+  FreeAndNil(FDataBackup);
   inherited;
 end;
 
@@ -314,9 +333,54 @@ begin
   inherited;
 end;
 
-function TGvNodeDataSet.ActiveNode: TGvXmlNode;
+function TGvNodeDataSet.ActiveNode(FieldDef: TGvXmlFieldDef): TGvXmlNode;
 begin
-  Result:= FDataSetNode;
+  result:= FDataSetNode.NodeByPath(FieldDef.XPath);
+end;
+
+{ TGvXmlFieldDef }
+
+constructor TGvXmlFieldDef.Create(Owner: TFieldDefs; const Name: String;
+  DataType: TFieldType; Size: Integer; Required: Boolean; FieldNo: Integer;
+  Path: String);
+begin
+  inherited Create(Owner, Name, DataType, Size, Required, FieldNo);
+  FullPath:= IfThen(Path='', Name, Path);
+end;
+
+procedure TGvNodeDataSet.InternalBackupData;
+var
+  FieldDef: TGvXmlFieldDef;
+  i: Integer;
+begin
+  for i:= 0 to FieldDefs.Count-1 do
+  begin
+    FieldDef:= FieldDefs[i] as TGvXmlFieldDef;
+    FDataBackup.Values[FieldDef.FullPath]:= Fields[i].AsString;
+  end;
+end;
+
+procedure TGvNodeDataSet.InternalRestoreData;
+var
+  FieldDef: TGvXmlFieldDef;
+  i: Integer;
+begin
+  for i:= 0 to FieldDefs.Count-1 do
+  begin
+    FieldDef:= FieldDefs[i] as TGvXmlFieldDef;
+    Fields[i].AsString:= FDataBackup.Values[FieldDef.FullPath];
+  end;
+end;
+
+function TGvXmlFieldDef.GetFullPath: String;
+begin
+  Result:= IfThen(FXPath='', '', FXPath+':') + FAttrName;
+end;
+
+procedure TGvXmlFieldDef.SetFullPath(const Value: String);
+begin
+  FXPath:= Value;
+  FAttrName:= TakeBack5(FXPath, ':');
 end;
 
 end.

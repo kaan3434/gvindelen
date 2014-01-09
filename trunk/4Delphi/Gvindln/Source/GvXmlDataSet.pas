@@ -54,6 +54,8 @@ begin
 end;
 
 procedure TGvXmlDataSet.InternalInitFieldDefs;
+type
+  FInitDefItems = (idiFieldName,idiFieldType,idiSize,idiPrecision);
 var
   FieldName: string;
   I, nSize: Integer;
@@ -71,14 +73,14 @@ begin
       if Trim(FInitFieldDefs[i]) = '' then Continue;
       sl.CommaText:= Trim(FInitFieldDefs[i])+',,,,,,,';
       // create the field
-      FieldName:= sl[0];
+      FieldName:= sl[Byte(idiFieldName)];
       if FieldName = '' then
         raise EGvDataSetError.Create('InitFieldsDefs: No name for field '+IntToStr(I));
-      FieldType:= TFieldType(GetEnumValue(TypeInfo(TFieldType), sl[1]));
+      FieldType:= TFieldType(GetEnumValue(TypeInfo(TFieldType), sl[Byte(idiFieldType)]));
       nSize:= 0;
       case FieldType of
         ftString:
-          nSize:= StrToIntDef(sl[2], 0);
+          nSize:= StrToIntDef(sl[Byte(idiSize)], 0);
         ftBoolean,
         ftSmallInt, ftWord,
         ftInteger, ftDate, ftTime,
@@ -92,7 +94,7 @@ begin
         ftCurrency:
           FieldDef.Precision:= 4;
         ftFloat:
-          FieldDef.Precision:= StrToIntDef(sl[3],0);
+          FieldDef.Precision:= StrToIntDef(sl[Byte(idiPrecision)],0);
       else
         FieldDef.Precision:= 0;
       end;
