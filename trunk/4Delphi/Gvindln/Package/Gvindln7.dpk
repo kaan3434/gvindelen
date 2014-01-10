@@ -29,7 +29,8 @@ requires
   vcl,
   rtl,
   vclx,
-  dbrtl;
+  dbrtl,
+  vcldb;
 
 contains
   GvDtTm in '..\Source\GvDtTm.pas',
