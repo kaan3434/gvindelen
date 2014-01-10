@@ -161,10 +161,37 @@ type
     procedure Assign(const aXml: TGvXml);
   end;
 
+  TGvXmlStorage = class(TComponent)
+  private
+    FXml: TGvXml;
+    function GetAsText: String;
+    procedure SetAsText(const Value: String);
+  public
+    constructor Create(aOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Clear; virtual;
+    procedure LoadFromFile(const aFileName: String); virtual;
+    procedure LoadFromStream(const aStream: TStream); virtual;
+    procedure LoadFromString(const aText: string); virtual;
+    procedure SaveToStream(const aStream: TStream); virtual;
+    procedure SaveToFile(const aFileName: String); virtual;
+    procedure Assign(const aXml: TGvXml);
+    property Xml: TGvXml read FXml;
+  published
+    property Text: String read GetAsText write SetAsText;
+  end;
+
+procedure Register;
+
 implementation
 
 uses
   SysUtils, StrUtils, GvStr;
+
+procedure Register;
+begin
+  RegisterComponents('Gvindelen', [TGvXmlStorage]);
+end;
 
 { TGvXml }
 
@@ -1087,5 +1114,64 @@ begin
   Result:= TGvXmlNode(inherited Items[aIndex]);
 end;
 
+
+{ TGvXmlStorage }
+
+constructor TGvXmlStorage.Create(aOwner: TComponent);
+begin
+  inherited;
+  FXml:= TGvXml.Create;
+end;
+
+destructor TGvXmlStorage.Destroy;
+begin
+  FXml.Free;
+  inherited;
+end;
+
+procedure TGvXmlStorage.Assign(const aXml: TGvXml);
+begin
+  FXml.Assign(aXml);
+end;
+
+procedure TGvXmlStorage.Clear;
+begin
+  FXml.Clear;
+end;
+
+function TGvXmlStorage.GetAsText: String;
+begin
+  Result := FXml.SaveToString;
+end;
+
+procedure TGvXmlStorage.LoadFromFile(const aFileName: String);
+begin
+  FXml.LoadFromFile(aFileName);
+end;
+
+procedure TGvXmlStorage.LoadFromStream(const aStream: TStream);
+begin
+  FXml.LoadFromStream(aStream);
+end;
+
+procedure TGvXmlStorage.LoadFromString(const aText: string);
+begin
+  FXml.LoadFromString(aText);
+end;
+
+procedure TGvXmlStorage.SaveToFile(const aFileName: String);
+begin
+  FXml.SaveToFile(aFileName);
+end;
+
+procedure TGvXmlStorage.SaveToStream(const aStream: TStream);
+begin
+  FXml.SaveToStream(aStream);
+end;
+
+procedure TGvXmlStorage.SetAsText(const Value: String);
+begin
+  FXml.LoadFromString(Value);
+end;
 
 end.
