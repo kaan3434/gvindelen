@@ -32,7 +32,7 @@ procedure Register;
 implementation
 
 uses
-  Dialogs;
+  Dialogs, Variants;
 
 procedure Register;
 begin
@@ -44,10 +44,33 @@ end;
 function TXmlNodeListDriverEh.ReadData(MemTableData: TMemTableDataEh;
   Count: Integer): Integer;
 var
-  i: Integer;
+  Rec: TMemoryRecordEh;
+  AProviderEOF: Boolean;
 begin
-  for i:= 0 to Count-1 do;
-//    ShowMessage(IntToStr(i));
+  Result := 0;
+  if ProviderEOF = True then Exit;
+  while Count <> 0 do
+  begin
+    Rec := MemTableData.RecordsList.NewRecord;
+    try
+      if Assigned(OnReadRecord) then
+        OnReadRecord(Self, MemTableData, Rec, AProviderEOF)
+      else
+        DefaultReadRecord(MemTableData, Rec, AProviderEOF);
+    except
+      Rec.Free;
+      raise;
+    end;
+    ProviderEOF := AProviderEOF;
+    if ProviderEOF then
+      Rec.Free
+    else
+      MemTableData.RecordsList.FetchRecord(Rec);
+
+    Inc(Result);
+    if ProviderEOF then Exit;
+    Dec(Count);
+  end;
 end;
 
 procedure TXmlNodeListDriverEh.SetRowNodeName(const Value: String);

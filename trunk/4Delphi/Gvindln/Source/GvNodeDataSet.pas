@@ -54,7 +54,7 @@ procedure Register;
 implementation
 
 uses
-  Contnrs, Dialogs, Windows, Forms, Controls, GvMath, Variants, GvVariant, GvStr;
+  Contnrs, Windows, Forms, Controls, GvMath, Variants, GvVariant, GvStr;
 
 {$R GvNodeDataSet.res}
 
@@ -74,8 +74,6 @@ var
   FieldDef: TFieldDef;
   sl: TStringList;
 begin
-  if not (csDesigning in ComponentState) and (FDataSetNode = nil) then
-    raise EGvDataSetError.Create ('Missing DataSet Node');
   sl:= TStringList.Create;
   FieldDefs.Clear;
   try
@@ -185,24 +183,26 @@ var
 begin
   Result:= False;
   if ActiveRecord >= InternalRecordCount then Exit;
-
-  FieldDef:= FieldDefs[Field.FieldNo] as TGvXmlFieldDef;
-  if ActiveNode(FieldDef).HasAttribute(FieldDef.AttrName) then
-    case Field.DataType of
-      ftDate, ftTime, ftDateTime:
-        OutValue:= ActiveNode(FieldDef).Attr[FieldDef.AttrName].AsDateTime;
-    else
-      OutValue:= ActiveNode(FieldDef)[FieldDef.AttrName];
-    end
-  else
-    OutValue:= null;
-  if IsNull(OutValue) then
-    Result := False
-  else
-  if Buffer <> nil then
+  if not IsEmpty and (Field.FieldNo > 0) then
   begin
-    VarToBuffer(OutValue);
-    Result:= True
+    FieldDef:= FieldDefs[Field.FieldNo-1] as TGvXmlFieldDef;
+    if ActiveNode(FieldDef).HasAttribute(FieldDef.AttrName) then
+      case Field.DataType of
+        ftDate, ftTime, ftDateTime:
+          OutValue:= ActiveNode(FieldDef).Attr[FieldDef.AttrName].AsDateTime;
+      else
+        OutValue:= ActiveNode(FieldDef)[FieldDef.AttrName];
+      end
+    else
+      OutValue:= null;
+    if IsNull(OutValue) then
+      Result := False
+    else
+    if Buffer <> nil then
+    begin
+      VarToBuffer(OutValue);
+      Result:= True
+    end;
   end;
 end;
 
@@ -267,16 +267,20 @@ var
 var
   FieldDef: TGvXmlFieldDef;
 begin
-  Field.Validate(Buffer);
+  if csDesigning in ComponentState then Exit;
+  if Field.FieldNo >= 0 then
+  begin
+    Field.Validate(Buffer);
 
-  if Buffer = nil then
-    v := Null
-  else
-    BufferToVar(v);
+    if Buffer = nil then
+      v := Null
+    else
+      BufferToVar(v);
 
-  FieldDef:= FieldDefs[Field.FieldNo] as TGvXmlFieldDef;
-  ActiveNode(FieldDef)[FieldDef.AttrName]:= v;
-  SetModified(True);
+    FieldDef:= FieldDefs[Field.FieldNo-1] as TGvXmlFieldDef;
+    ActiveNode(FieldDef)[FieldDef.AttrName]:= v;
+    SetModified(True);
+  end;
 end;
 
 procedure TGvNodeDataSet.SetFieldData(Field: TField; Buffer: Pointer);
@@ -298,15 +302,21 @@ end;
 procedure TGvNodeDataSet.InternalPreOpen;
 begin
   FMaxRecords:= 1;
-  FList := TObjectList.Create(false);
-  FList.Add(FDataSetNode);
+  if Assigned(FDataSetNode) then
+  begin
+    FList := TObjectList.Create(false);
+    FList.Add(FDataSetNode);
+  end;
   FDataBackup:= TStringList.Create;
   inherited;
+  if not Assigned(FDataSetNode) then
+    FList.Add(TGvXmlNode.Create('Node'));
 end;
 
 procedure TGvNodeDataSet.InternalClose;
 begin
-  FList.Extract(FDataSetNode);
+  if Assigned(FDataSetNode) then
+    FList.Extract(FDataSetNode);
   FreeAndNil(FDataBackup);
   inherited;
 end;
@@ -335,7 +345,7 @@ end;
 
 function TGvNodeDataSet.ActiveNode(FieldDef: TGvXmlFieldDef): TGvXmlNode;
 begin
-  result:= FDataSetNode.NodeByPath(FieldDef.XPath);
+  result:= TGvXmlNode(FList[FCurrentRecord]).NodeByPath(FieldDef.XPath);
 end;
 
 { TGvXmlFieldDef }

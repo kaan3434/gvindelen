@@ -1,6 +1,7 @@
 unit GvXmlUtils;
 
 interface
+{$I Gvindln.inc}
 
 uses
    Classes, GvXml, DB, Variants;
@@ -54,7 +55,7 @@ var
   Attr: TGvXmlAttribute;
   AttrName: String;
   idxAsterix: integer;
-{$IFNDEF VER230}
+{$IFNDEF D_XE2}
   i: Integer;
 {$ENDIF}
 begin
@@ -67,7 +68,7 @@ begin
     if idxAsterix >= 0 then
     begin
       sl.Delete(idxAsterix);
-{$IFDEF VER230}
+{$IFDEF D_XE2}
       for Attr in aNode.Attributes do
       begin
 {$ELSE}
@@ -214,7 +215,7 @@ var
   ndDest: TGvXmlNode;
   St, FldSrc, FldDest: String;
   Node: TGvXmlNode;
-{$IFNDEF VER230}
+{$IFNDEF D_XE2}
   i: Integer;
 {$ENDIF}
 begin
@@ -225,7 +226,7 @@ begin
   end;
   aDestDataSet.DisableControls;
   try
-{$IFDEF VER230}
+{$IFDEF D_XE2}
     for Node in aSrcNode.ChildNodes do
     begin
 {$ELSE}
@@ -251,9 +252,7 @@ var
   ndDest: TGvXmlNode;
   St, FldSrc, FldDest: String;
   Node: TGvXmlNode;
-{$IFNDEF VER230}
   i: Integer;
-{$ENDIF}
 begin
   if aAppendMode <> amAppend then
   begin
@@ -264,14 +263,9 @@ begin
     aDestNode.ChildNodes.Clear
   else
     aDestNode.ChangeChildsState(aRowNodeName, [stChanged], stNone);
-{$IFDEF VER230}
-  for Node in aSrcNode.ChildNodes do
-  begin
-{$ELSE}
   for i:= 0 to aSrcNode.ChildNodes.Count-1 do
   begin
     Node:= aSrcNode.ChildNodes[i];
-{$ENDIF}
     if aAppendMode = amAppend then
       ndDest:= aDestNode.AddChild(aRowNodeName)
     else

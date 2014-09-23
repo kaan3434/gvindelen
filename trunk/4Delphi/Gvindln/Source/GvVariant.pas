@@ -1,6 +1,8 @@
 unit GvVariant;
 
 interface
+
+{$I Gvindln.inc}
 uses
   Variants, SysUtils;
 
@@ -43,10 +45,10 @@ begin
   p1 := Pos(',', St);
   p2 := Pos('.', St);
   if p1 > 0 then
-    St[p1] := DecimalSeparator
+    St[p1] := {$IFDEF D_XE6+}FormatSettings.{$ENDIF}DecimalSeparator
   else
     if p2 > 0 then
-      St[p2] := DecimalSeparator;
+      St[p2] := {$IFDEF D_XE6+}FormatSettings.{$ENDIF}DecimalSeparator;
   Result := St;
 end;
 

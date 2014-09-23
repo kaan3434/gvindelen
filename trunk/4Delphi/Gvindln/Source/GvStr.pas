@@ -2,7 +2,7 @@ unit GvStr;
 
 interface
 
-uses Classes, Controls, Messages;
+uses Classes, Messages;
 
 // SkipFront ¬озвращает строку без лидирующих символов из списка KeyChar
 // аналогична LTrim, только можно пропускать любые символы

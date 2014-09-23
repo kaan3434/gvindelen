@@ -1,6 +1,7 @@
 unit GvDtTm;
 
 interface
+{$I Gvindln.inc}
 
 function DayOfYear(ADate: TDateTime): integer;
 function DateOfYear(aDayNo: Word): TDateTime;
@@ -237,7 +238,7 @@ var
 begin
   if MonthNo in [1..12] then
   begin
-    result:= LongMonthNames[MonthNo];
+    result:= {$IFDEF D_XE6+}FormatSettings.{$ENDIF}LongMonthNames[MonthNo];
     LCh:= TakeLastChar(result);
     case Padeg of
       1: if LCh in ['ü','é'] then result:= result+'ÿ' else result:= result+LCh+'à';
@@ -507,9 +508,9 @@ begin
             Tmp := copy(Data,1,3);
             for iii := 1 to 7 do
             begin
-              if Tmp = Uppercase(copy(LongDayNames[iii],1,3)) then
+              if Tmp = Uppercase(copy({$IFDEF D_XE6+}FormatSettings.{$ENDIF}LongDayNames[iii],1,3)) then
               begin
-                delete(Data,1,length(LongDayNames[iii]));
+                delete(Data,1,length({$IFDEF D_XE6+}FormatSettings.{$ENDIF}LongDayNames[iii]));
                 Break;
               end;
             end;
@@ -528,7 +529,7 @@ begin
             Tmp := copy(Data,1,3);
             for iii := 1 to 12 do
             begin
-              if Tmp = Uppercase(copy(LongMonthNames[iii],1,3)) then
+              if Tmp = Uppercase(copy({$IFDEF D_XE6+}FormatSettings.{$ENDIF}LongMonthNames[iii],1,3)) then
               begin
                 Month := iii;
                 delete(Data,1,3);
@@ -544,10 +545,10 @@ begin
             Tmp := copy(Data,1,3);
             for iii := 1 to 12 do
             begin
-              if Tmp = Uppercase(copy(LongMonthNames[iii],1,3)) then
+              if Tmp = Uppercase(copy({$IFDEF D_XE6+}FormatSettings.{$ENDIF}LongMonthNames[iii],1,3)) then
               begin
                 Month := iii;
-                delete(Data,1,length(LongMonthNames[iii]));
+                delete(Data,1,length({$IFDEF D_XE6+}FormatSettings.{$ENDIF}LongMonthNames[iii]));
                 Break;
               end;
             end;
@@ -558,7 +559,7 @@ begin
           begin
             Year := StrToIntDef(copy(Data,1,2),0);
             delete(Data,1,2);
-            if Year < TwoDigitYearCenturyWindow then
+            if Year < {$IFDEF D_XE6+}FormatSettings.{$ENDIF}TwoDigitYearCenturyWindow then
               Year := (YearNo(Date) div 100) * 100 + Year
             else
               Year := (YearNo(Date) div 100 - 1) * 100 + Year;
