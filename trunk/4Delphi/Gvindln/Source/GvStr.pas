@@ -1,5 +1,7 @@
 unit GvStr;
 
+{$I Gvindln.inc}
+
 interface
 
 uses Classes, Messages;
@@ -186,6 +188,8 @@ function ReplaceAll(ASt, ASubSt, ANewSt: String;
 
 function ReplaceAllBE(ASt, ABegin, AContain1, AContain2, AContain3, AEnd, ANew: String;
   ACaseSensitive: Boolean = false): String; overload;
+//function ReplaceAllBE(ASt, ABegin, AContain1, AContain2, AContain3, AEnd, ANew: WideString;
+//  ACaseSensitive: Boolean = false): WideString; overload;
 function ReplaceAllBE(ASt, ABegin, AContain1, AContain2, AEnd, ANew: String;
   ACaseSensitive: Boolean = false): String; overload;
 function ReplaceAllBE(ASt, ABegin, AContain1, AEnd, ANew: String;
@@ -1531,7 +1535,7 @@ begin
     end;
   finally
     if P=0 then P:= Length(Value);
-    if Value[P] in [';', ','] then Dec(P);
+    if CharInSet(Value[P], [';', ',']) then Dec(P);
     result:= Copy(Value, 1, P);
   end;
 end;
@@ -1790,21 +1794,22 @@ begin
         end;
         break
       until false;
-      Move(ASt[PSES+1], result[lr+1], (PSB-1)-PSES);
+      Move(ASt[PSES+1], result[lr+1], ((PSB-1)-PSES)*SizeOf(char));
       inc(lr, (PSB-1)-PSES);
       if LSN > 0 then
       begin
-        Move(ANew[1], result[lr+1], LSN);
+        Move(ANew[1], result[lr+1], LSN*SizeOf(char));
         inc(lr, LSN);
       end;
       PSES:= PSEN+LSE-1;
     until false;
   finally
-    Move(ASt[PSES+1], result[lr+1], Length(ASt)-PSES);
+    Move(ASt[PSES+1], result[lr+1], (Length(ASt)-PSES)*SizeOf(char));
     inc(lr, Length(ASt)-PSES);
     SetLength(result, lr);
   end;
 end;
+
 
 function ReplaceAllBEKeyChar(ASt, ABegin: String; AKeyChar: String; ANew: String;
   ACaseSensitive: Boolean = false): String; overload;
@@ -2263,10 +2268,10 @@ end;
 
 function UnEscapeString(St: Ansistring; AddChar: AnsiString = ''): AnsiString;
 const
-  EscChar : WideString = '|,';
+  EscChar : AnsiString = '|,';
 var
   i: Byte;
-  EscChars: WideString;
+  EscChars: AnsiString;
 begin
   EscChars:= EscChar + AddChar;
   for i:= 1 to Length(EscChars) do

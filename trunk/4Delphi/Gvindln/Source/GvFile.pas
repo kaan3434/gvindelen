@@ -70,6 +70,8 @@ procedure SetFileAge(FileName: string; DateTime: TDateTime);
 
 function GetFileSize(FileName: string): Integer;
 
+function GetFileDateTime(aFilename: string): TDateTime;
+
 function ReadIniSection(IniFileName, SectionName: String;
   Notes: Boolean = false; BlankRow: Boolean = false): String;
 
@@ -79,10 +81,28 @@ function GetAppVersion: string;
 
 function GetAppBuild: Integer;
 
+function GetFolderLocation(dir: Integer): string;
+
 implementation
 
 uses
-  GvStr, SysUtils, Dialogs, Consts, FileCtrl, DateUtils, ShellApi, Forms;
+  GvStr, SysUtils, Dialogs, Consts, FileCtrl, DateUtils, ShellApi, Forms, ShlObj, ActiveX;
+
+function GetFolderLocation(dir: Integer): string;
+var
+  pidl: PItemIDList;
+  buffer: array[0..MAX_PATH] of Char;
+begin
+  if Succeeded(SHGetFolderLocation(0, dir, 0, 0, pidl)) then
+    try
+      if SHGetPathFromIDList(pidl, buffer) then
+        Result:=buffer;
+    finally
+      CoTaskMemFree(pidl);
+    end
+  else
+    Result:=SysErrorMessage(GetLastError());
+end;
 
 function FileCopyEx(const FileName, DestName: string;
   OverwriteReadOnly: Boolean; ProgressControl: TProgressBar;
@@ -694,6 +714,28 @@ end;
 function GetAppBuild: Integer;
 begin
   result := StrToInt(ExtractWord(4, GetAppVersion, '.'));
+end;
+
+
+function GetFileDateTime(aFilename: string): TDateTime;
+
+  function FileTime2DateTime(const FileTime: TFileTime): TDateTime;
+  var
+    SystemTime, LocalTime: TSystemTime;
+  begin
+    if not FileTimeToSystemTime(FileTime, SystemTime) then
+      RaiseLastOSError;
+    if not SystemTimeToTzSpecificLocalTime(nil, SystemTime, LocalTime) then
+      RaiseLastOSError;
+    result := SystemTimeToDateTime(LocalTime);
+  end;
+
+var
+  fad: TWin32FileAttributeData;
+begin
+  if not GetFileAttributesEx(PChar(aFileName), GetFileExInfoStandard, @fad) then
+    RaiseLastOSError;
+  result:= FileTime2DateTime(fad.ftLastWriteTime);
 end;
 
 end.
